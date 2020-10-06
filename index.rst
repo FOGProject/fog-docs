@@ -1,19 +1,12 @@
-.. FOG Project documentation master file, created by
-   sphinx-quickstart on Fri Apr 21 11:34:59 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to FOG Project's documentation!
-=======================================
+Welcome to the Fog Project documentation!
+=========================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 3
 
-
-
-Indices and tables
-==================
+   /introduction/index.rst
+   /installation/index.rst
+   /reference/index.rst
 
 * :ref:`genindex`
 * :ref:`modindex`
