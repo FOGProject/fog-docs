@@ -1,0 +1,7 @@
+site_name: FogProject
+nav:
+  - Home: index.md
+  - Getting Started: gettingStarted.md
+  - Installation: 'installation/install-index.md'
+  
+theme: readthedocs
