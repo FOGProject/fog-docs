@@ -18,3 +18,10 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+Fog Project documentation
+=========================
+
+| Fog Project is really cool
+| This documentation is under construction
