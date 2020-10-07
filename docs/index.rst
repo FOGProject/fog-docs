@@ -11,3 +11,10 @@ Welcome to the Fog Project documentation!
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+Fog Project documentation
+=========================
+
+| Fog Project is really cool
+| This documentation is under construction
