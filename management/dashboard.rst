@@ -6,7 +6,6 @@ Overview
 
 |dashboard|
 
-
 - The FOG dashboard is the first page you are presented with after login.
 - This page just gives you an overview of what is happening on your FOG server.
 
@@ -43,8 +42,6 @@ System Activity
     - This text field is a CSV setup. If you type (1,2,3,4,5) it will display all tasks of Deploy, Capture, Debug, Memtest, and Testdisk as queued/active depending on their current state.
     - The exception to this rule, is Task Type ID 8 (multicast) in which case it takes the Jobs, not each individual host task, as a queued slot.
 
-.. |configIcon| Image:: img/Config.png
-
 Disk Information
 ----------------
 
@@ -61,48 +58,22 @@ Disk Information
 Menu Bar
 --------
 
-.. Image:: img/FogMenu.jpeg
+|menuBar|
 
 This menu appears at the top of every page on Fog's web UI. The icons
 are, from left to right:
 
 |homeIcon| **Home/Dashboard** - This is the home screen of the FOG management portal.
-.. |homeIcon| Image:: img/Home.png
-
 |users| :ref:`User Management <user-management>` - Individual administrators of the FOG resources. 
-.. |users| Image:: img/Users.png 
-
 |hosts| :ref:`Host Management <host-management>` - This section houses the hosts, which are the pcs to be imaged or to extract images from.
-.. |hosts| Image:: img/Hosts.png
-
 |groups| :ref:`Group Management <group-management>` - This section houses groups, which are similar PCS’ that need tasks done en-masse.
-.. |groups| Image:: img/Groups.png
-
 |Images| :ref:`Image Management <image-management>` - This section allows you to manage the image files stored on the FOG server.
-.. |Images| Image:: img/Images.png
-
 |storage| :ref:`Storage Node Management <storage-node-management>` - This section allows you to add/remove storage nodes from the FOG system.
-.. |storage| Image:: img/Storage.png
-
 |snapin| :ref:`Snap-in Management <snapin-management>` - This section provides ways to automate various post-imaging tasks, not covered in this document
-.. |snapin| Image:: img/snapins.png
-
 |printer| :ref:`Printer Management <printer-management>` - This section allows for management of printers, allowing you create printer objects that can later be assigned to hosts or groups.
-.. |printer| Image:: img/Printers.png
-
 |service| :ref:`:Service Configuration <service-management>` - This section allows you to control how the ''client'' service functions.
-.. |service| Image:: img/Services.png
-
 |tasks| :ref:`Task Management <task-management>` - This section allow you to perform imaging tasks such as acquiring or deploying images.
-.. |tasks| Image:: img/Tasks.png
-
 |reports| :ref:`Report Management <report-management>` - Reports let you pull information from the FOG database either as HTML, pdf, or csv.
-.. |reports| Image:: img/Reports.png
-
 |configIcon| :ref:`Fog Configuration/Settings <fog-configuration>` - The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
-
-|plugins| :ref:`Plugins <plugin-management>` - Plugins add more functionality to FOG. Must be enabled in ''Fog Configuration''
-.. |plugins| Image:: img/Plugins.png
-
+|plugins| :ref:`Plugins <plugin-management>` - Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
 |logoff| **Logoff** - Click this to log off of the Fog web UI.
-.. |logoff| Image:: img/Logoff.png
