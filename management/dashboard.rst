@@ -84,10 +84,8 @@ are, from left to right:
 '''Home/Dashboard''' - This is the home screen of the
 FOG management portal.
 
-.. Image:: img/Users.png
-:doc:`user-management`
-'''[[Managing\_FOG#Users \| User Management]]''' -
-Individual administrators of the FOG resources.
+.. Image:: img/Users.png 
+:doc:`User Management <user-management>` - Individual administrators of the FOG resources.
 
 .. Image:: img/Hosts.png
 '''[[Managing\_FOG#Hosts \| Host Management]]''' -
