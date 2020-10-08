@@ -1,29 +1,31 @@
 Dashboard
-===========
+^^^^^^^^^
 
 Overview
-===========
+--------
 
 .. Image:: img/Dashboard.png
 
 
 - The FOG dashboard is the first page you are presented with after
-login. This page just gives you an overview of what is happening on your
+login.
+- This page just gives you an overview of what is happening on your
 FOG server.
 
 System overview
-===============
+---------------
 
-- The system overview box is the the top left hand box on this page. Thekv
-information presented in this box is the current user, the server IP
-addresse or hostnames for your web server, tftp server and storage
-server (which can all be different). This section also gives you the
-system uptime or how long the system has been running without restart,
-the number of users logged into the Linux box, and lastly the system
-load.
+- The system overview box is the the top left hand box on this page. 
+- The information presented in this box is 
+  - the current user
+  - the server IP addresses or hostnames for your web server
+  - the server IP addresses or hostnames for your tftp server
+  - the server IP addresses or hostnames for your storage server
+  - This section also gives you the system uptime or how long the system has been running without restart
+  - The system load
 
 System Activity
-===============
+---------------
 
 The system activity box is in the top row, the middle box.
 This section shows the unicast queue, or the number of
@@ -55,7 +57,7 @@ Type ID 8 (multicast) in which case it takes the Jobs, not each
 individual host task, as a queued slot.
 
 Disk Information
-================
+----------------
 
 *The disk information box is the top, right hand section of the
 dashboard page. This is a semi-realtime display of the storage remaining
@@ -65,12 +67,12 @@ you get an error in this box, please see [[Dashboard Error: Permission
 denied...]]
 
 30 Day Imaging History
-======================
+----------------------
 
 \*This image shows your imaging trends for the past 30 days
 
 Menu Bar
-========
+--------
 
 .. Image:: img/FogMenu.jpeg
 
