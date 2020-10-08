@@ -6,7 +6,7 @@ This gets built by readthedocs via this readthedocs project https://readthedocs.
 
 The latest version will be available at https://docs.fogproject.org/
 
-The documentation is written in restructured text and built with sphinx to 
+The documentation is written in restructured text and built with sphinx
 
 ## Building locally
 
