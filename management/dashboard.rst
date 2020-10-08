@@ -7,14 +7,14 @@ Overview
 .. Image:: img/Dashboard.png
 
 
-\*The FOG dashboard is the first page you are presented with after
+- The FOG dashboard is the first page you are presented with after
 login. This page just gives you an overview of what is happening on your
 FOG server.
 
 System overview
 ===============
 
-\*The system overview box is the the top left hand box on this page. Thekv
+- The system overview box is the the top left hand box on this page. Thekv
 information presented in this box is the current user, the server IP
 addresse or hostnames for your web server, tftp server and storage
 server (which can all be different). This section also gives you the
@@ -25,8 +25,8 @@ load.
 System Activity
 ===============
 
-*The system activity box is in the top row,
-the middle box. This section shows the unicast queue, or the number of
+The system activity box is in the top row, the middle box.
+This section shows the unicast queue, or the number of
 unicast deploys that are currently in progress. The queue size can
 change and is based on the the Storage Group(s). Each storage node has a
 setting ''Max Clients'' making this the maximum number of hosts that
