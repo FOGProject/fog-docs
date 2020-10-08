@@ -4,7 +4,7 @@ Dashboard
 Overview
 ===========
 
-..image::img/Dashboard.png
+.. image::img/Dashboard.png
 
 
 \*The FOG dashboard is the first page you are presented with after
