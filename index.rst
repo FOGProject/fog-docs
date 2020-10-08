@@ -11,8 +11,8 @@ Welcome to the Fog Project documentation!
 
    /introduction/index.rst
    /installation/index.rst
-   /reference/index.rst
    /management/index.rst
+   /reference/index.rst
 
 * :ref:`genindex`
 * :ref:`modindex`

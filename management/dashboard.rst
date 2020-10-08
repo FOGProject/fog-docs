@@ -83,6 +83,7 @@ are, from left to right:
 FOG management portal.
 
 .. Image:: img/Users.png
+:doc:`user-management`
 '''[[Managing\_FOG#Users \| User Management]]''' -
 Individual administrators of the FOG resources.
 
