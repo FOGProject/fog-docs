@@ -5,6 +5,7 @@ Overview
 ===========
 
 .. image::img/Dashboard.png
+:width: auto
 
 
 \*The FOG dashboard is the first page you are presented with after
