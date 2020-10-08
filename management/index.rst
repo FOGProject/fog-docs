@@ -2,7 +2,6 @@ Managing FOG
 ============
 
 .. include:: dashboard.rst
-.. include:: fog-configuration.rst
 .. include:: user-management.rst
 .. include:: host-management.rst
 .. include:: group-management.rst
@@ -13,4 +12,5 @@ Managing FOG
 .. include:: service-management.rst
 .. include:: task-management.rst
 .. include:: report-management.rst
+.. include:: fog-configuration.rst
 .. include:: plugin-management.rst
