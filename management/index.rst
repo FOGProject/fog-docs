@@ -14,3 +14,5 @@ Managing FOG
 .. include:: task-management.rst
 .. include:: report-management.rst
 .. include:: plugins.rst
+
+.. |dashboard| Image:: img/Dashboard.png
