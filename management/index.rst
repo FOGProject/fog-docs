@@ -13,4 +13,4 @@ Managing FOG
 .. include:: service-management.rst
 .. include:: task-management.rst
 .. include:: report-management.rst
-.. include:: plugins.rst
+.. include:: plugin-management.rst
