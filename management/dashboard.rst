@@ -92,4 +92,4 @@ This menu appears at the top of every page on Fog's web UI. The icons are, from 
 - |reports| :doc:`Report Management <report-management>` - Reports let you pull information from the FOG database either as HTML, pdf, or csv.
 - |configIcon| :doc:`Fog Configuration/Settings <fog-configuration>` - The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
 - |plugins| :doc:`Plugins <plugin-management>` - Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
-- |logoff| **Logoff** - Click this to log off of the Fog web UI.
+- |logoff| **Logoff** - Click this to log off of the Fog web UI
