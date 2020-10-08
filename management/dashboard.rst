@@ -68,9 +68,9 @@ This menu appears at the top of every page on Fog's web UI. The icons are, from 
 - |groups| :ref:`Group Management <group-management>` - This section houses groups, which are similar PCS’ that need tasks done en-masse.
 - |Images| :ref:`Image Management <image-management>` - This section allows you to manage the image files stored on the FOG server.
 - |storage| :ref:`Storage Node Management <storage-node-management>` - This section allows you to add/remove storage nodes from the FOG system.
-- |snapin| :ref:`Snap-in Management <snapin-management>` - This section provides ways to automate various post-imaging tasks, not covered in this document
+- |snapinIcon| :ref:`Snap-in Management <snapin-management>` - This section provides ways to automate various post-imaging tasks, not covered in this document
 - |printer| :ref:`Printer Management <printer-management>` - This section allows for management of printers, allowing you create printer objects that can later be assigned to hosts or groups.
-- |service| :ref:`:Service Configuration <service-management>` - This section allows you to control how the ''client'' service functions.
+- |service| :ref:`:Service Configuration <service-management>` - This section allows you to control how the *client* service functions.
 - |tasks| :ref:`Task Management <task-management>` - This section allow you to perform imaging tasks such as acquiring or deploying images.
 - |reports| :ref:`Report Management <report-management>` - Reports let you pull information from the FOG database either as HTML, pdf, or csv.
 - |configIcon| :ref:`Fog Configuration/Settings <fog-configuration>` - The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer

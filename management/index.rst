@@ -23,7 +23,7 @@ Managing FOG
 .. |groups| Image:: img/Groups.png
 .. |Images| Image:: img/Images.png
 .. |storage| Image:: img/Storage.png
-.. |snapin| Image:: img/snapins.png
+.. |snapinIcon| Image:: img/snapins.png
 .. |printer| Image:: img/Printers.png
 .. |service| Image:: img/Services.png
 .. |tasks| Image:: img/Tasks.png
