@@ -6,7 +6,19 @@ This gets built by readthedocs via this readthedocs project https://readthedocs.
 
 The latest version will be available at https://docs.fogproject.org/
 
+See also for more discussion - https://forums.fogproject.org/topic/14794/improve-documentation?_=1602258264683
+
 The documentation is written in restructured text and built with sphinx
+
+## Resources from writing in rst
+
+These links are some good references for how to write in rst and how to configure and customize the readthedocs site
+
+- https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html
+- https://www.ericholscher.com/blog/2016/jul/1/sphinx-and-rtd-for-writers/
+- https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html
+- https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html?highlight=css
+- https://docs.readthedocs.io/en/stable/custom_domains.html?highlight=domain
 
 ## Building locally
 
