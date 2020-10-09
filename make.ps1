@@ -5,7 +5,6 @@ param (
 
 if (! $ENV:SPHINXBUILD) {
 	$sphinxBuild = "Sphinx-build.exe"
-	if (! )
 } else {
 	$sphinxBuild = $ENV:SPHINXBUILD
 }
