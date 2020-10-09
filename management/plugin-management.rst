@@ -1,2 +1,4 @@
+.. _plugin-management:
+
 Plugins
 ^^^^^^^

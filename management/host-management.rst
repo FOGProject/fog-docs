@@ -9,6 +9,8 @@
 .. role:: yellow
 
 
+.. _host-management:
+
 Host Management
 ^^^^^^^^^^^^^^^
 

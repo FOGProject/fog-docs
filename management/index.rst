@@ -1,3 +1,5 @@
+.. _managing-fog:
+
 Managing FOG
 ============
 
