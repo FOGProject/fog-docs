@@ -22,14 +22,14 @@ Hosts
 .. raw:: html
 
     <div style="text-align: center; margin-bottom: 2em;">
-    <iframe width="100%" height="350" src="http://freeghost.sourceforge.net/videotutorials/hostinfo.html" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <iframe width="100%" height="350" src="http://freeghost.sourceforge.net/videotutorials/hostinfo.html" frameborder="0" allow="autoplay;" allowfullscreen></iframe>
     </div>
 
 
 .. raw:: html
 
     <div style="text-align: center; margin-bottom: 2em;">
-    <iframe width="100%" height="350" src="https://www.youtube.com/watch?v=sI2AuA5jdYA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <iframe width="100%" height="350" src="https://www.youtube.com/watch?v=sI2AuA5jdYA" frameborder="0" allow="autoplay;" allowfullscreen></iframe>
     </div>
 
 
