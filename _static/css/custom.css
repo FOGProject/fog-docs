@@ -9,3 +9,8 @@
 .yellow {
     color: yellow;
 }
+
+.wy-nav-content {
+    max-width: 1500px;
+    width: auto;
+}
