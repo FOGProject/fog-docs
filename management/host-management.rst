@@ -2,7 +2,7 @@
 
 .. |AllHosts| Image:: img/All_Hosts.png
 .. |configIcon| Image:: img/Config.png
-.. |hosts| Image:: img/hosts.png
+.. |hosts| Image:: img/Hosts.png
 
 .. role:: red
 .. role:: orange
