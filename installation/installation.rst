@@ -33,24 +33,26 @@ Please choose the distribution you have the most knowledge about. This list is b
 Install FOG server
 ^^^^^^^^^^^^^^^^^^
 
+The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
+
+Install Git
+-----------
+
 The preferred method of getting FOG is via Git.
 
-Install Git on Debian or Ubuntu
--------------------------------
+**Debian or Ubuntu**
 ::
 
   sudo -i
   apt-get -y install git
 
-Install git on CentOS 7 or RHEL 7
----------------------------------
+**CentOS 7 or RHEL 7**
 ::
 
   sudo -i
   yum -y install git
 
-Install git on CentOS 8 or RHEL 8
----------------------------------
+**CentOS 8 or RHEL 8**
 ::
 
   sudo -i
@@ -164,10 +166,13 @@ All tasks should end without errors.
 
 Now your FOG Server is ready to use!
 
-**Fog installation settings**
+Fog installation settings
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All your choices during the installation are saved in the file /opt/fog/.fogsettings.
 
 Then next time you start the installer, it will skip all questions and continue at the 'Recap'.
 
 In this way you can easily re-install or update a Fog server.
+
+For an overview of all settings in the .fogsettings file, see :ref:`fogsettings_file` 

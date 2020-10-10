@@ -1,3 +1,5 @@
+.. _fogsettings_file:
+
 The .fogsettings file
 ---------------------
 
