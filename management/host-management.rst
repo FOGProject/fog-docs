@@ -158,6 +158,8 @@ Host Status
 - With an increase in Hosts(250+) this "ping" will delay the loading of the List *All Hosts* page. Disabling this feature will help in loading this page.
     1. **Fog Configuration** |configIcon| --> **Fog Settings** --> **General Settings** --> Untick *FOG_HOST_LOOKUP*
 
+.. _host-management-creating-groups:
+
 Creating Host Groups
 ~~~~~~~~~~~~~~~~~~~~
 
