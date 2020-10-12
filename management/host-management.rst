@@ -1,5 +1,3 @@
-.. _host-management:
-
 ---------------
 Host Management
 ---------------

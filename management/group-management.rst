@@ -1,9 +1,3 @@
-.. images
-
-.. |groups| Image:: img/Groups.png
-
-.. _group-management:
-
 ----------------
 Group Management
 ----------------

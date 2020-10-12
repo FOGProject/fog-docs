@@ -8,4 +8,4 @@ Then next time you start the installer, it will skip all questions and continue 
 
 In this way you can easily re-install or update a Fog server.
 
-For an overview of all settings in the .fogsettings file, see :ref:`fogsettings_file`
+For an overview of all settings in the .fogsettings file, see :ref:`reference/install_fogsettings:.fogsettings file options`
