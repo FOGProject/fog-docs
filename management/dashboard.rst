@@ -3,7 +3,7 @@ Dashboard
 ---------
 
 Overview
---------
+========
 
 |dashboard|
 
@@ -11,7 +11,7 @@ Overview
 - This page just gives you an overview of what is happening on your FOG server.
 
 System overview
----------------
+===============
 
 - The system overview box is the the top left hand box on this page. 
 - The information presented in this box is 
@@ -24,7 +24,7 @@ System overview
     - The system load
 
 System Activity
----------------
+===============
 
 - The system activity box is in the top row, the middle box.
 - This section shows the unicast queue, or the number of unicast deploys that are currently in progress.
@@ -44,7 +44,7 @@ System Activity
     - The exception to this rule, is Task Type ID 8 (multicast) in which case it takes the Jobs, not each individual host task, as a queued slot.
 
 Disk Information
-----------------
+================
 
 - The disk information box is the top, right hand section of the dashboard page.
 - This is a semi-realtime display of the storage remaining on the storage server.
@@ -52,12 +52,12 @@ Disk Information
 - If you get an error in this box, please see [[Dashboard Error: Permission denied...]] #page doesn't exist in rst yet
 
 30 Day Imaging History
-----------------------
+======================
 
 - This image shows your imaging trends for the past 30 days
 
 Menu Bar
---------
+========
 
 |menuBar|
 
@@ -65,17 +65,15 @@ This menu appears at the top of every page on Fog's web UI. The icons are, from 
 
 - |homeIcon| **Home/Dashboard** - This is the home screen of the FOG management portal.
 - |users| `User Management`_ - Individual administrators of the FOG resources. 
-
-
 - |hosts| `Host Management`_ - This section houses the hosts, which are the pcs to be imaged or to extract images from.
 - |groups| `Group Management`_ - This section houses groups, which are similar PCS’ that need tasks done en-masse.
 - |Images| `Image Management`_ - This section allows you to manage the image files stored on the FOG server.
-- |storage| `Storage Node Management <storag`_ - This section allows you to add/remove storage nodes from the FOG system.
-- |snapinIcon| `Snap-in Management`_ - This section provides ways to automate various post-imaging tasks, not covered in this refument
+- |storage| `Storage Node Management`_ - This section allows you to add/remove storage nodes from the FOG system.
+- |snapinIcon| `Snapin Management`_ - This section provides ways to automate various post-imaging tasks, not covered in this refument
 - |printer| `Printer Management`_ - This section allows for management of printers, allowing you create printer objects that can later be assigned to hosts or groups.
-- |service| `:Service Configuration`_ - This section allows you to control how the *client* service functions.
+- |service| `Fog Service/Client Management`_ - This section allows you to control how the *client* service functions.
 - |tasks| `Task Management`_ - This section allow you to perform imaging tasks such as acquiring or deploying images.
 - |reports| `Report Management`_ - Reports let you pull information from the FOG database either as HTML, pdf, or csv.
-- |configIcon| `Fog Configuration/Settings`_ - The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
+- |configIcon| `Other Settings`_ - The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
 - |plugins| `Plugins`_ - Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
 - |logoff| **Logoff** - Click this to log off of the Fog web UI

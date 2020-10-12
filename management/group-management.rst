@@ -12,7 +12,7 @@ Creating Groups
 
 - Groups are created in two sections:
 1. **Group Management** |groups| --> **Create New Group**
-2. Hosts section of FOG based on searches, for information on how to create groups, please see :ref:`Host Management - Creating Host Groups <host-management-creating-groups>`
+2. Hosts section of FOG based on searches, for information on how to create groups, please see `Creating Host Groups`_
 
 Managing Groups
 ===============

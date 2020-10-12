@@ -9,14 +9,6 @@ Hosts
 
 `Video Overview of Hosts <http://freeghost.sourceforge.net/videotutorials/hostinfo.html>`_
 
-.. raw:: html
-
-    <div style="text-align: center; margin-bottom: 2em;">
-    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/sI2AuA5jdYA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
-
-
-
 - A host in FOG is typically a computer, but it can be any network device.
 - Hosts are used to identify a computer on the network and are used to manage the device.
 
@@ -110,6 +102,34 @@ Importing the File
 3. On the left-hand menu, click on **Import Hosts**.
 4. Browse for your file, then click "**Upload CSV**".
 
+Create CSV From Network Scan
+############################
+
+Per a community user in the forums. You can also use powershell to scan the network and create a csv.
+See `Creating a csv host import from a network scan <https://forums.fogproject.org/topic/9560/creating-a-csv-host-import-from-a-network-scan?_=1602530061175>`_
+
+.. code-block:: powershell
+   :emphasize-lines: 3,12
+
+    # examples, just gotta put subnets minus the final .x in a string array
+    # Could also be params if this was a function
+    $subnets = @("192.168.1", "192.168.2", "10.2.114", "192.168.0"); 
+    $subnets | ForEach-Object { # loop through each subnet
+        for ($i=0; $i -lt 255; $i++) { # loop through 0 to 255 of the subnet
+            $hn = nslookup "$_.$i"; # run nslookup on the current ip in the loop
+            if ($hn[3] -ne $null -AND $hn[3] -ne "") { # does the ip have a dns entry
+                $hostN = $hn[3].Replace("Name:","").Trim(); # parse the nslookup output into a fqdn host name
+                $mac = getMac /S $hostN; # does the hostname have a mac addr. Can also add /U and /P for user and password if not running from a administrative account
+                if ($mac -ne $null) { # was there a mac for the host?
+                    $macAddr = $mac[3].Split(' ')[0]; # use the first found mac address and parse it
+                    "$hostN,$macAddr" | Out-File C:\hosts.csv -Append -Encoding UTF8; # add the hostname,macaddress to the csv
+                }
+            }
+        }
+    }
+
+
+
 Managing Hosts
 ==============
 
@@ -145,8 +165,6 @@ Host Status
 - If after this, you still can't ping your clients, the problem may be due to a firewall issue with the clients.  In this case, client specific configuration changes might be needed.
 - With an increase in Hosts(250+) this "ping" will delay the loading of the List *All Hosts* page. Disabling this feature will help in loading this page.
     1. **Fog Configuration** |configIcon| --> **Fog Settings** --> **General Settings** --> Untick *FOG_HOST_LOOKUP*
-
-.. _host-management-creating-groups:
 
 Creating Host Groups
 --------------------
