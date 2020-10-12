@@ -54,23 +54,65 @@ Method 3: Manually Adding
 - Then by clicking on the "Add New Host" button on the left hand menu.
 - At least a hostname and a MAC address must be entered in order to add the host to the FOG database.
 
-A host consists of the :red:`required` fields: 
+-----
 
-1. **Hostname** - A string used for the Windows Hostname of client, this must be less than 15 characters long. 
-2. **MAC address** - This field is used in for for a unique identifier for the host.  The string must be separated by ``:`` (colon), in the format of ``00:11:22:33:44:55``. 
+:red:`Required` Fields
+######################
+
+A host consists of the following :red:`Required` Fields:
+
+Hostname
+^^^^^^^^
+
+ A string used for the Windows Hostname of client, this must be less than 15 characters long. 
+
+MAC address
+^^^^^^^^^^^
+
+ This field is used in for for a unique identifier for the host.  The string must be separated by ``:`` (colon), in the format of ``00:11:22:33:44:55``. 
+
+-----
+
+Optional Fields
+###############
 
 Hosts can also include, but are not required:
 
-1. **Description** - Information for your own reference.
-2. **Image Association** - This field is a drop down box that will allow you select an image object created in the **Images** section.  
-3. **Operating System** - Drop down box that allow you to select the primary type of operating system running on this host.
-4. **Kernel** - This is only used if you want to overwrite the default kernel used for FOG. Needs to be specified as fog/kernel/mybzImage
-5. **Kernel Arguments** - This allowd you to add additional kernel arguments for booting the host (ie: vga=6, or irqpoll).  
-6. **Primary Disk** - This option allows you to force a device to use during imaging if fog fails to detect the correct device node.
+Description
+^^^^^^^^^^^
+
+ Information for your own reference.
+
+Image Association
+^^^^^^^^^^^^^^^^^
+
+ This field is a drop down box that will allow you select an image object created in the **Images** section.  
+
+Operating System
+^^^^^^^^^^^^^^^^
+
+ Drop down box that allow you to select the primary type of operating system running on this host.
+
+Kernel
+^^^^^^
+
+ This is only used if you want to overwrite the default kernel used for FOG. Needs to be specified as fog/kernel/mybzImage
+
+Kernel Arguments
+^^^^^^^^^^^^^^^^
+
+ This allows you to add additional kernel arguments for booting the host (ie: vga=6, or irqpoll).  
+
+Primary Disk
+^^^^^^^^^^^^
+
+ This option allows you to force a device to use during imaging if fog fails to detect the correct device node.
+
+-----
 
 .. note:: This page also allows for configuration of Active Directory integration, but this topic will be covered later.  
 
-When all settings are added, click on the "Add" button.
+**When all settings are added, click on the "Add" button.**
 
 Method 4: Importing Host Information
 ------------------------------------
