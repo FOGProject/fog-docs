@@ -32,6 +32,7 @@ Method 2: Adding a new host via Quick Registration
 
 - Quick registration is very much like the Full host registration, with the exception that it will not prompt you for any input, nor give you the option to image the computer directly from the registration screen.  When the host is added to the FOG server, it will be named with the hosts primary mac address.  This method is great for adding a lab of 30 computers to FOG quickly and easily.
 - This feature is disabled by default, to enable this feature:
+
 1. Go to **FOG Configuration** |configIcon|
 2. Select **FOG Settings**
 3. Find section **FOG Quick Registration**

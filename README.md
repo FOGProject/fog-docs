@@ -2,11 +2,11 @@
 
 Documentation for FOG 1.X
 
-This gets built by readthedocs via this readthedocs project https://readthedocs.org/projects/fogproject/
+This gets built by readthedocs via this readthedocs project [https://readthedocs.org/projects/fogproject/](https://readthedocs.org/projects/fogproject/)
 
-The latest version will be available at https://docs.fogproject.org/
+The latest version will be available at [https://docs.fogproject.org/](https://docs.fogproject.org/)
 
-See also for more discussion - https://forums.fogproject.org/topic/14794/improve-documentation?_=1602258264683
+See also for more discussion - [https://forums.fogproject.org/topic/14794/improve-documentation?_=1602258264683](https://forums.fogproject.org/topic/14794/improve-documentation?_=1602258264683)
 
 The documentation is written in restructured text and built with sphinx
 
@@ -19,21 +19,20 @@ Anything defined as a heading or title can be linked to from anywhere else with 
 
 - If you want to reference a heading within the same section use this syntax
 
-```
+```:rst
 `Heading Name`_
 ```
 
 - if you want to cross-reference a section from a different page/section use this syntax. The below example links to the install instructions for CentOS/Rhel 7
-  - See also https://docs.readthedocs.io/en/stable/guides/cross-referencing-with-sphinx.html#automatically-label-sections
+  - See also [Cross-Referencing with Sphinx - Auto label sections](https://docs.readthedocs.io/en/stable/guides/cross-referencing-with-sphinx.html#automatically-label-sections)
 
-```
+```:rst
 :ref:`installation/install_fog_server:CentOS 7 or RHEL 7`
 ```
 
-
 ### Title/heading 1
 
-```
+```:rst
 ==============
 Title/Heading1
 ==============
@@ -56,7 +55,7 @@ Section/Page Title
 
 .. toctree::
    :maxdepth: 4
-   
+
    index.rst
 
 .. include:: every.rst
@@ -120,7 +119,7 @@ Heading 6
 
 This heading level should rarely be used, but it is provided so that you have at least 4 levels to traverse through when writing out a section of documentation.
 
-## Including images, css, videos, javascript, etc.
+## Including images, css, videos, javascript, etc
 
 At the top of every index.rst we have the line `.. include:: /includes.rst`
 This is a file at the root of the project that includes all the indexes in the `_static` directory.
@@ -154,6 +153,7 @@ html_css_files = [
     'js/custom.js'
 ]
 ```
+
 The static path defines the root folder name `_static` (which is the default/standard naming) and the second array defines the relative paths to css and js files. We don't currently have anything in the custom.js file, it's there as a place holder just in case we need it later.
 
 #### Using css roles
@@ -201,7 +201,7 @@ Additional rules can be added at our leisure.
 
 ### Videos
 
-Videos are hosted on our youtube channel https://www.youtube.com/channel/UCrvOQPcm1SDIfIrzWZ9K3bA/videos.
+Videos are hosted on our [FogProject youtube channel](https://www.youtube.com/channel/UCrvOQPcm1SDIfIrzWZ9K3bA/videos).
 For every video in that channel we should add a substitution label in the video index.rst at `/_static/video/index.rst`
 The format of the label is like this
 
@@ -225,15 +225,15 @@ Below are resources for writing in rst and building locally
 
 These links are some good references for how to write in rst and how to configure and customize the readthedocs site
 
-- https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html
-- https://www.ericholscher.com/blog/2016/jul/1/sphinx-and-rtd-for-writers/
-- https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html
-- https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html?highlight=css
-- https://docs.readthedocs.io/en/stable/custom_domains.html?highlight=domain
+- [https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html](https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html)
+- [https://www.ericholscher.com/blog/2016/jul/1/sphinx-and-rtd-for-writers/](https://www.ericholscher.com/blog/2016/jul/1/sphinx-and-rtd-for-writers/)
+- [https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html](https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html)
+- [https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html?highlight=css](https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html?highlight=css)
+- [https://docs.readthedocs.io/en/stable/custom_domains.html?highlight=domain](https://docs.readthedocs.io/en/stable/custom_domains.html?highlight=domain)
 
 ## Building locally
 
-see also (https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html)
+see also [https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html](https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html)
 
 To test and build documemtation locally you need the following
 
