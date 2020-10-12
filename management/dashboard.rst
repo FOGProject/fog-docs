@@ -74,6 +74,6 @@ This menu appears at the top of every page on Fog's web UI. The icons are, from 
 - |service| `Fog Service/Client Management`_ - This section allows you to control how the *client* service functions.
 - |tasks| `Task Management`_ - This section allow you to perform imaging tasks such as acquiring or deploying images.
 - |reports| `Report Management`_ - Reports let you pull information from the FOG database either as HTML, pdf, or csv.
-- |configIcon| `Other Settings`_ - The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
+- |configIcon| `Fog Configuration <Other Settings>`_ - The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
 - |plugins| `Plugins`_ - Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
 - |logoff| **Logoff** - Click this to log off of the Fog web UI
