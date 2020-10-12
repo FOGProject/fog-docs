@@ -1,22 +1,6 @@
-.. |dashboard| Image:: img/Dashboard.png
-.. |configIcon| Image:: img/Config.png
-.. |homeIcon| Image:: img/Home.png
-.. |users| Image:: img/Users.png 
-.. |hosts| Image:: img/Hosts.png
-.. |groups| Image:: img/Groups.png
-.. |Images| Image:: img/Images.png
-.. |storage| Image:: img/Storage.png
-.. |snapinIcon| Image:: img/Snapins.png
-.. |printer| Image:: img/Printers.png
-.. |service| Image:: img/Services.png
-.. |tasks| Image:: img/Tasks.png
-.. |reports| Image:: img/Reports.png
-.. |plugins| Image:: img/Plugins.png
-.. |logoff| Image:: img/Logoff.png
-.. |menuBar| Image:: img/FogMenu.jpeg
-
+---------
 Dashboard
-^^^^^^^^^
+---------
 
 Overview
 --------
@@ -81,6 +65,8 @@ This menu appears at the top of every page on Fog's web UI. The icons are, from 
 
 - |homeIcon| **Home/Dashboard** - This is the home screen of the FOG management portal.
 - |users| :ref:`User Management <user-management>` - Individual administrators of the FOG resources. 
+- :ref:"`CentOS 7 or RHEL 7`_"
+
 - |hosts| :ref:`Host Management <host-management>` - This section houses the hosts, which are the pcs to be imaged or to extract images from.
 - |groups| :ref:`Group Management <group-management>` - This section houses groups, which are similar PCS’ that need tasks done en-masse.
 - |Images| :ref:`Image Management <image-management>` - This section allows you to manage the image files stored on the FOG server.

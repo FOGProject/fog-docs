@@ -1,5 +1,13 @@
+.. include:: /includes.rst
+
+===================
 Installation of FOG
 ===================
+
+.. toctree::
+   :maxdepth: 4
+   
+   index.rst
 
 .. include:: network_setup.rst
 .. include:: requirements.rst

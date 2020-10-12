@@ -1,21 +1,11 @@
-.. images
-
-.. |AllHosts| Image:: img/All_Hosts.png
-.. |configIcon| Image:: img/Config.png
-.. |hosts| Image:: img/Hosts.png
-
-.. role:: red
-.. role:: orange
-.. role:: yellow
-
-
 .. _host-management:
 
+---------------
 Host Management
-^^^^^^^^^^^^^^^
+---------------
 
 Hosts
------
+=====
 
 |AllHosts|
 
@@ -33,10 +23,10 @@ Hosts
 - Hosts are used to identify a computer on the network and are used to manage the device.
 
 Adding a new host
------------------
+=================
 
 Method 1: Adding a new host via Full registration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------------
 
 - This is the preferred method, and maybe the easiest method for getting a host into the FOG database, but it requires you to visit the host.
     - When at the client computer, during the boot up process when you see the PXE/iPXE boot menu select **Perform Full Host Registration and Inventory**.
@@ -48,7 +38,7 @@ Method 1: Adding a new host via Full registration
 - For more information on these commands please see: [[FOGUserGuide#FOG_Tasks | Client Side Tasks]]
 
 Method 2: Adding a new host via Quick Registration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------------------
 
 - Quick registration is very much like the Full host registration, with the exception that it will not prompt you for any input, nor give you the option to image the computer directly from the registration screen.  When the host is added to the FOG server, it will be named with the hosts primary mac address.  This method is great for adding a lab of 30 computers to FOG quickly and easily.
 - This feature is disabled by default, to enable this feature:
@@ -65,7 +55,7 @@ Method 2: Adding a new host via Quick Registration
 
 
 Method 3: Manually Adding
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 `Add Host Video Tutorial <http://freeghost.sourceforge.net/videotutorials/addimghost.html>`_
 
@@ -92,7 +82,7 @@ Hosts can also include, but are not required:
 When all settings are added, click on the "Add" button.
 
 Method 4: Importing Host Information
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 
 - When getting started with FOG, you need to enter the host information for the devices on your network.  We understand this can be a long difficult process, so in order to make this process easier we created a page that allows you to import most of the host information from a CSV file.  
 - The CSV file that is imported to FOG must be in the following format, and the file should not have a header row. 
@@ -123,17 +113,17 @@ Importing the File
 4. Browse for your file, then click "**Upload CSV**".
 
 Managing Hosts
---------------
+==============
 
 General
-~~~~~~~
+-------
 
 - Once hosts have been added to the FOG database you can modify or delete them.  Finding a host which you wish to edit can be done in two ways, the first is by listing all the hosts that exist. This is done by clicking on the "List All Hosts" button.  The second way to locate a host is to use the search function.  To search for hosts click on the "New Search" button, if you would like to search for all hosts you can enter a "*" or "%".  The search function will search in the host's name, description, IP and MAC address.  
 - Once a host is located, it can be edited by clicking on the edit button or on the Host Name itself.  Clicking on the edit button will display all the properties that were shown during host creation with the addition of snapin, printers, active directory, service settings, hardware, virus history, and login information.  
 - The entire host object can be removed from the FOG system by clicking on the delete option at the bottom of the Host Menu.
 
 Multiple MAC Address Support
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 - When FOG first registers your HOST computer it uses the first connected Ethernet cable and defaults it to the Primary MAC Address. Once the FOG Client is installed and reporting data back to the FOG server it may register other additional MAC addresses, such as wireless and other wired connections. Also, an additional MAC can also be added directly under the Host definition.
 - These new MAC Addresses will need to be approved before FOG will take advantage of them.
@@ -142,7 +132,7 @@ Multiple MAC Address Support
 - **Fog Configuration** |configIcon|--> **MAC Address List** At this location you can also *"Update Current Listings"* giving updated information on the MAC Addresses and their manufactures, listing it under the Host.
 
 Host Status
-~~~~~~~~~~~
+-----------
 
 - Host Status displays an indicator icon next to the host within the FOG UI showing the status of the machine.  This function executes a ping based on the host's name.  So in order for this to work you must have an internal DNS server that is tied in with your DHCP server, so that when a DHCP address is given out, the DNS server is notified with the new IP.  If that is setup correctly, you must make sure your FOG server is able to ping a host from the command line using::
     
@@ -161,7 +151,7 @@ Host Status
 .. _host-management-creating-groups:
 
 Creating Host Groups
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 - FOG allows you to create groups of hosts which then allows you to take action on a whole grouping of hosts.
 - Hosts can be created either on the "List All Hosts" section or by doing a search for hosts.

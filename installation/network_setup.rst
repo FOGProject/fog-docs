@@ -1,7 +1,8 @@
 .. _other_dhcp_server_than_fog:
 
+--------------------------
 Other DHCP Server than FOG
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 If you do not use FOG to provide DHCP services in your network, then you must change the existing DHCP server to allow clients to boot from the network.
 

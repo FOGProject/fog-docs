@@ -1,7 +1,15 @@
+.. include:: /includes.rst
+
 .. _managing-fog:
 
+============
 Managing FOG
 ============
+
+.. toctree::
+   :maxdepth: 4
+   
+   index.rst
 
 .. include:: dashboard.rst
 .. include:: host-management.rst

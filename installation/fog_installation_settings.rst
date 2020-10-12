@@ -1,5 +1,6 @@
+-------------------------
 Fog installation settings
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 All your choices during the installation are saved in the file /opt/fog/.fogsettings.
 

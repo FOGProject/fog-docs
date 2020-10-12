@@ -10,7 +10,85 @@ See also for more discussion - https://forums.fogproject.org/topic/14794/improve
 
 The documentation is written in restructured text and built with sphinx
 
-## Resources from writing in rst
+# Rst Styling rules for the project
+
+## Headings
+
+Below are examples of how to define the titles and headings and where they should be separated into new pages
+Anything defined as a heading or title can be linked to from anywhere else with the following syntax
+
+- If there are no spaces
+
+```
+`HeadingName`_
+```
+
+- if there are spaces
+
+```
+"`Heading Name`_"
+```
+
+### Title/heading 1
+
+```
+==============
+Title/Heading1
+==============
+```
+
+Titles go with top level title pages that match the root folder structure.
+i.e. we have a `Management` folder. The index.rst in that folder contains the title for that section of pages.
+The index.rst file for each title should have the title and then `..include:: filename.rst` lines for each file included.
+
+Each of these titles should also be referenced in the root index page.
+
+### SubTitle/Heading 2
+
+```
+------------------
+SubTitle/Heading 2
+------------------
+```
+
+#### Heading 3
+
+```
+Heading 3
+=========
+```
+
+#### Heading 4
+
+```
+Heading 4
+---------
+```
+
+#### Heading 5
+
+```
+Heading 5
+#########
+```
+
+#### Heading 6
+
+```
+Heading 6
+^^^^^^^^^
+```
+
+## Images
+
+## Roles
+
+
+# Additional Info
+
+Below are resources for writing in rst and building locally
+
+## Resources for writing in rst
 
 These links are some good references for how to write in rst and how to configure and customize the readthedocs site
 

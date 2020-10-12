@@ -1,5 +1,6 @@
+*****************************************
 Welcome to the Fog Project documentation!
-=========================================
+*****************************************
 
 | Fog Project is really cool
 | This documentation is under construction
@@ -7,7 +8,7 @@ Welcome to the Fog Project documentation!
 | Once all existing docs are moved over we'll start updating the docs
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    /introduction/index.rst
    /installation/index.rst
@@ -18,4 +19,4 @@ Welcome to the Fog Project documentation!
 * :ref:`modindex`
 * :ref:`search`
 
-
+.. include:: /includes.rst
