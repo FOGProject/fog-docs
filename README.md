@@ -45,7 +45,8 @@ The index.rst file for each title should have the title and then `..include:: fi
 Each of these titles should also be referenced in the root index page.
 
 So for every folder/section of the site there should be an index.rst page formatted like this to include all its child pages
-The `-----` inserts a horizontal rule/line to separate each section when viewing as a single page.
+- The `-----` inserts a horizontal rule/line to separate each section when viewing as a single page.
+- 
 
 ```:rst
 .. include:: /includes.rst
@@ -237,6 +238,20 @@ It is also good practice to add the `-vid` to the label name so that we keep ima
 # Additional Info
 
 Below are resources for writing in rst and building locally
+
+## Other tips for writing in rst
+
+- You can create a note with
+
+```:rst
+.. note:: note contents
+```
+
+- You can create a warning with
+
+```:rst
+.. warning:: this is a warning
+```
 
 ## Resources for writing in rst
 
