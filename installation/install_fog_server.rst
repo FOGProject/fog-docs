@@ -56,6 +56,7 @@ To start the installation process, you would follow the below steps. Running the
 
 SELinux
 -------
+*this only applies to Redhat based installs*
 
 If SELinux is enabled on your system, then the installer asks you to disable SELinux.
 
@@ -63,20 +64,21 @@ The current version of FOG will give problems when SELinux is enabled.
 
 Local firewall
 --------------
+*this only applies to Redhat based installs*
 
 If a local firewall (iptables or firewalld) is enabled, then the installer asks you to disable it. You can leave it enabled, but then you need to know how do manage the firewall and let all services pass. Best is to disable the firewall.
 
 Installer version
 -----------------
 
-The installer tries to guess the distribution you're running. Choose the apropriate option
+The installer tries to guess the distribution you're running. Choose the apropriate option.
 
 Installation mode
 -----------------
 
 With the same installer you can install a normal Fog server or a Fog Storage node. For the explanation of a storage node and how to install a storage node see *todo: install storage node*.
 
-As we're install a Fog Server here, choose N
+As we're installing a Fog Server here, choose N
 
 Default Network interface
 -------------------------
