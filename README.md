@@ -27,7 +27,7 @@ Anything defined as a heading or title can be linked to from anywhere else with 
   - See also [Cross-Referencing with Sphinx - Auto label sections](https://docs.readthedocs.io/en/stable/guides/cross-referencing-with-sphinx.html#automatically-label-sections)
 
 ```:rst
-:ref:`installation/install_fog_server:CentOS 7 or RHEL 7`
+:ref:`installation/index:CentOS 7 or RHEL 7`
 ```
 
 ### Title/heading 1
