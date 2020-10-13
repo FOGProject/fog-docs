@@ -45,6 +45,7 @@ The index.rst file for each title should have the title and then `..include:: fi
 Each of these titles should also be referenced in the root index page.
 
 So for every folder/section of the site there should be an index.rst page formatted like this to include all its child pages
+The `-----` inserts a horizontal rule/line to separate each section when viewing as a single page.
 
 ```:rst
 .. include:: /includes.rst
@@ -59,13 +60,29 @@ Section/Page Title
    index.rst
 
 .. include:: every.rst
+-----
+
 .. include:: child-page.rst
+-----
+
 .. include:: in-the.rst
+-----
+
 .. include:: folder.rst
+-----
+
 .. include:: in-the-order.rst
+-----
+
 .. include:: you-want.rst
+-----
+
 .. include:: them.rst
+-----
+
 .. include:: to-appear.rst
+-----
+
 
 ```
 
