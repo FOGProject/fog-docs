@@ -20,3 +20,5 @@ Installation of FOG
 
 .. include:: fog_installation_settings.rst
 -----
+
+.. 

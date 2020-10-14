@@ -52,102 +52,101 @@ To start the installation process, you would follow the below steps. Running the
 
   sudo -i
   cd /root/fogproject/bin
-  ./installfog.sh
+    ./installfog.sh
 
 SELinux
 -------
 
-If SELinux is enabled on your system, then the installer asks you to disable SELinux.
-
-The current version of FOG will give problems when SELinux is enabled.
+  If SELinux is enabled on your system, then the installer asks you to disable SELinux.
+  The current version of FOG will give problems when SELinux is enabled.
 
 Local firewall
 --------------
 
-If a local firewall (iptables or firewalld) is enabled, then the installer asks you to disable it. You can leave it enabled, but then you need to know how do manage the firewall and let all services pass. Best is to disable the firewall.
+  If a local firewall (iptables or firewalld) is enabled, then the installer asks you to disable it. You can leave it enabled, but then you need to know how do manage the firewall and let all services pass. Best is to disable the firewall.
 
 Installer version
 -----------------
 
-The installer tries to guess the distribution you're running. Choose the apropriate option
+  The installer tries to guess the distribution you're running. Choose the apropriate option
 
 Installation mode
 -----------------
 
-With the same installer you can install a normal Fog server or a Fog Storage node. For the explanation of a storage node and how to install a storage node see *todo: install storage node*.
+  With the same installer you can install a normal Fog server or a Fog Storage node. For the explanation of a storage node and how to install a storage node see *todo: install storage node*.
 
-As we're install a Fog Server here, choose N
+  As we're install a Fog Server here, choose N
 
 Default Network interface
 -------------------------
 
-The installer needs to know which netork interface will be used for the network connection. If the installer guessed the right interface, then choose N
+  The installer needs to know which netork interface will be used for the network connection. If the installer guessed the right interface, then choose N
 
-Otherwise, choose y and type in the name of the network interface (like eth0, ens192)
+  Otherwise, choose y and type in the name of the network interface (like eth0, ens192)
 
 DHCP Server
 -----------
 
-You have the option to run a DHCP server on the FOG server. If you alreaady have a DHCP server in your network, then you can answer N to the following questions. For more information on configuring an existing DHCP server to work with FOG, see :ref:`other_dhcp_server_than_fog`
+  You have the option to run a DHCP server on the FOG server. If you alreaady have a DHCP server in your network, then you can answer N to the following questions. For more information on configuring an existing DHCP server to work with FOG, see :ref:`other_dhcp_server_than_fog`
 
 DHCP Router address
 -------------------
 
-If you're going to run a DHCP server on this Fog server, then type Y and type in the router (or default gateway) address that the DHCP server will advertise.
+  If you're going to run a DHCP server on this Fog server, then type Y and type in the router (or default gateway) address that the DHCP server will advertise.
 
-If you already have an existing DHCP server in your network, choose N here.
+  If you already have an existing DHCP server in your network, choose N here.
 
 DHCP handle DNS
 ---------------
 
-If you're going to run a DHCP server on this Fog server, then type Y if you want the DHCP server to advertise DNS servers. Additionally type in the IP address of the DNS server.
+  If you're going to run a DHCP server on this Fog server, then type Y if you want the DHCP server to advertise DNS servers. Additionally type in the IP address of the DNS server.
 
-If you already have an existing DHCP server in your network, choose N here.
+  If you already have an existing DHCP server in your network, choose N here.
 
 Run DHCP server
 ---------------
 
-If you're going to run a DHCP server on this Fog server, then type y. Otherwise type N.
+  If you're going to run a DHCP server on this Fog server, then type y. Otherwise type N.
 
 Internationalization support
 ----------------------------
 
-If you want the Fog Web UI to provide additional languages, choose Y here
+  If you want the Fog Web UI to provide additional languages, choose Y here
 
 HTTPS Support
 -------------
 
-Even without HTTPS support, the clients and the FOG server use a secured channel to communicate. Setting up HTTPS support requires some extra steps to be taken.
+  Even without HTTPS support, the clients and the FOG server use a secured channel to communicate. Setting up HTTPS support requires some extra steps to be taken.
 
-For a standard server install say N here.
+  For a standard server install say N here.
 
 Hostname
 --------
 
-Check and correct the host name. This host name is used for configuring the Fog Web UI. Choose N to accept the suggested host name, otherwise, choose Y and enter the correct host name
+  Check and correct the host name. This host name is used for configuring the Fog Web UI. Choose N to accept the suggested host name, otherwise, choose Y and enter the correct host name
 
 Recap
 -----
 
-The installer shows all options. If you are sure all is correct, choose Y. If you choose N, the installer will stop and you have to restart the installation process.
+  The installer shows all options. If you are sure all is correct, choose Y. If you choose N, the installer will stop and you have to restart the installation process.
 
 Installation
 ------------
 
-The installer install the necessary packages and configure services.
+  The installer install the necessary packages and configure services.
 
-If the installer detects a mysql database server without a 'root' password, you are required to enter one.
+  If the installer detects a mysql database server without a 'root' password, you are required to enter one.
 
-At the end the installer will display the URL to the FOG Web UI.
+  At the end the installer will display the URL to the FOG Web UI.
 
-Open a browser and paste the URL. You will be prompted to install the database.
+  Open a browser and paste the URL. You will be prompted to install the database.
 
-when the database is installed, you will be redirected to the Fog Web UI Login page.
+  when the database is installed, you will be redirected to the Fog Web UI Login page.
 
-Then get back to the installer and press ENTER.
+  Then get back to the installer and press ENTER.
 
-The last parts of the installation will then run.
+  The last parts of the installation will then run.
 
-All tasks should end without errors.
+  All tasks should end without errors.
 
-Now your FOG Server is ready to use!
+  Now your FOG Server is ready to use!

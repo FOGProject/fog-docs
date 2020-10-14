@@ -9,12 +9,9 @@ It is possible to change the keymap or keyboard layout of the linux boot image. 
 
  Other Settings -> FOG Settings -> General Settings -> FOG_KEYMAP
 
-You can expand the possible values for this setting below, if left blank it will default to **us**.
+You can expand the possible values for keymaps below, if left blank it will default to **us**.
 
-.. raw:: html
-
-   <details>
-   <summary><a>Key Map Possible Settings</a></summary>
+|expandStart|
 
 .. code-block:: 
 
@@ -144,9 +141,7 @@ You can expand the possible values for this setting below, if left blank it will
     sk-qwertz 
     slovene
 
-.. raw:: html
-
-   </details></br>
+|expandEnd|
    
 
 FOG Client Kernel

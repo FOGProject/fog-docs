@@ -23,6 +23,7 @@
 .. |storage| Image:: /_static/img/management/Storage.png
 .. |storageGroups| Image:: /_static/img/management/StorageGroups.jpg
 .. |tasks| Image:: /_static/img/management/Tasks.png
-.. |users| Image:: /_static/img/management/Users.png 
+.. |users| Image:: /_static/img/management/Users.png
+.. |imageList| Image:: /_static/img/management/imageList.png
 
 
