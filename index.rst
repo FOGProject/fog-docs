@@ -13,7 +13,14 @@ Welcome to the Fog Project documentation!
    /introduction/index.rst
    /installation/index.rst
    /management/index.rst
+   /FAQ/index.rst
+   /customization/index.rst
+   /hardware/index.rst
+   /integrations/index.rst
+   /troubleshooting/index.rst
+   /misc/index.rst
    /reference/index.rst
+
 
 * :ref:`genindex`
 * :ref:`modindex`
