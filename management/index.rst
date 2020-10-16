@@ -54,6 +54,4 @@ Managing FOG
 .. include:: other-settings.rst
 -----
 
-.. include:: mobile-interface.rst
------
-
+.. 
