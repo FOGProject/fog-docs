@@ -27,7 +27,7 @@ Anything defined as a heading or title can be linked to from anywhere else with 
   - See also [Cross-Referencing with Sphinx - Auto label sections](https://docs.readthedocs.io/en/stable/guides/cross-referencing-with-sphinx.html#automatically-label-sections)
 
 ```:rst
-:ref:`installation/install_fog_server:CentOS 7 or RHEL 7`
+:ref:`installation/index:CentOS 7 or RHEL 7`
 ```
 
 ### Title/heading 1
@@ -45,6 +45,8 @@ The index.rst file for each title should have the title and then `..include:: fi
 Each of these titles should also be referenced in the root index page.
 
 So for every folder/section of the site there should be an index.rst page formatted like this to include all its child pages
+- The `-----` inserts a horizontal rule/line to separate each section when viewing as a single page.
+- 
 
 ```:rst
 .. include:: /includes.rst
@@ -59,13 +61,29 @@ Section/Page Title
    index.rst
 
 .. include:: every.rst
+-----
+
 .. include:: child-page.rst
+-----
+
 .. include:: in-the.rst
+-----
+
 .. include:: folder.rst
+-----
+
 .. include:: in-the-order.rst
+-----
+
 .. include:: you-want.rst
+-----
+
 .. include:: them.rst
+-----
+
 .. include:: to-appear.rst
+-----
+
 
 ```
 
@@ -220,6 +238,20 @@ It is also good practice to add the `-vid` to the label name so that we keep ima
 # Additional Info
 
 Below are resources for writing in rst and building locally
+
+## Other tips for writing in rst
+
+- You can create a note with
+
+```:rst
+.. note:: note contents
+```
+
+- You can create a warning with
+
+```:rst
+.. warning:: this is a warning
+```
 
 ## Resources for writing in rst
 

@@ -16,6 +16,9 @@
 .. |Nfsgroup| Image:: /_static/img/management/Nfsgroup.jpg
 .. |plugins| Image:: /_static/img/management/Plugins.png
 .. |printer| Image:: /_static/img/management/Printers.png
+.. |add-printer| Image:: /_static/img/management/add-printer.png
+.. |assign-printers| Image:: /_static/img/management/assign-printers.png
+.. |remove-printers| Image:: /_static/img/management/remove-printers.png
 .. |reports| Image:: /_static/img/management/Reports.png
 .. |schedTask| Image:: /_static/img/management/Sched.png 
 .. |service| Image:: /_static/img/management/Services.png
@@ -23,6 +26,7 @@
 .. |storage| Image:: /_static/img/management/Storage.png
 .. |storageGroups| Image:: /_static/img/management/StorageGroups.jpg
 .. |tasks| Image:: /_static/img/management/Tasks.png
-.. |users| Image:: /_static/img/management/Users.png 
+.. |users| Image:: /_static/img/management/Users.png
+.. |imageList| Image:: /_static/img/management/imageList.png
 
 

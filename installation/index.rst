@@ -10,6 +10,14 @@ Installation of FOG
    index.rst
 
 .. include:: requirements.rst
+-----
+
 .. include:: install_fog_server.rst
-.. include:: network_setup.rst
+-----
+
 .. include:: fog_installation_settings.rst
+-----
+
+
+.. include:: network_setup.rst
+-----

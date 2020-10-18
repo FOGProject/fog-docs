@@ -64,12 +64,12 @@ A host consists of the following :red:`Required` Fields:
 Hostname
 ^^^^^^^^
 
- A string used for the Windows Hostname of client, this must be less than 15 characters long. 
+    A string used for the Windows Hostname of client, this must be less than 15 characters long. 
 
 MAC address
 ^^^^^^^^^^^
 
- This field is used in for for a unique identifier for the host.  The string must be separated by ``:`` (colon), in the format of ``00:11:22:33:44:55``. 
+    This field is used in for for a unique identifier for the host.  The string must be separated by ``:`` (colon), in the format of ``00:11:22:33:44:55``. 
 
 -----
 
@@ -81,32 +81,32 @@ Hosts can also include, but are not required:
 Description
 ^^^^^^^^^^^
 
- Information for your own reference.
+    Information for your own reference.
 
 Image Association
 ^^^^^^^^^^^^^^^^^
 
- This field is a drop down box that will allow you select an image object created in the **Images** section.  
+    This field is a drop down box that will allow you select an image object created in the **Images** section.  
 
 Operating System
 ^^^^^^^^^^^^^^^^
 
- Drop down box that allow you to select the primary type of operating system running on this host.
+    Drop down box that allow you to select the primary type of operating system running on this host.
 
 Kernel
 ^^^^^^
 
- This is only used if you want to overwrite the default kernel used for FOG. Needs to be specified as fog/kernel/mybzImage
+    This is only used if you want to overwrite the default kernel used for FOG. Needs to be specified as fog/kernel/mybzImage
 
 Kernel Arguments
 ^^^^^^^^^^^^^^^^
 
- This allows you to add additional kernel arguments for booting the host (ie: vga=6, or irqpoll).  
+    This allows you to add additional kernel arguments for booting the host (ie: vga=6, or irqpoll).  
 
 Primary Disk
 ^^^^^^^^^^^^
 
- This option allows you to force a device to use during imaging if fog fails to detect the correct device node.
+    This option allows you to force a device to use during imaging if fog fails to detect the correct device node.
 
 -----
 
