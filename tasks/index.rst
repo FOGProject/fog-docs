@@ -12,3 +12,6 @@ Tasks and concepts
 .. include:: capture_an_image.rst
 -----
 
+.. include:: deploy_an_image.rst
+-----
+
