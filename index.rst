@@ -12,6 +12,7 @@ Welcome to the Fog Project documentation!
 
    /introduction/index.rst
    /installation/index.rst
+   /tasks/index.rst
    /management/index.rst
    /FAQ/index.rst
    /customization/index.rst
