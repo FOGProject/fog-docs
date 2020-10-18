@@ -77,19 +77,19 @@ Installation mode
 
   With the same installer you can install a normal Fog server or a Fog Storage node. For the explanation of a storage node and how to install a storage node see *todo: install storage node*.
 
-As we're installing a Fog Server here, choose N
+As we're installing a Fog Server here, choose N here.
 
 Default Network interface
 -------------------------
 
   The installer needs to know which netork interface will be used for the network connection. If the installer guessed the right interface, then choose N
 
-  Otherwise, choose y and type in the name of the network interface (like eth0, ens192)
+  Otherwise, choose y and type in the name of the network interface (like eth0, ens192).
 
 DHCP Server
 -----------
 
-  You have the option to run a DHCP server on the FOG server. If you alreaady have a DHCP server in your network, then you can answer N to the following questions. For more information on configuring an existing DHCP server to work with FOG, see :ref:`other_dhcp_server_than_fog`
+  You have the option to run a DHCP server on the FOG server. If you alreaady have a DHCP server in your network, then you can answer N to the following questions. For more information on configuring an existing DHCP server to work with FOG, see :ref:`other_dhcp_server_than_fog`.
 
 DHCP Router address
 -------------------
@@ -108,12 +108,12 @@ DHCP handle DNS
 Run DHCP server
 ---------------
 
-  If you're going to run a DHCP server on this Fog server, then type y. Otherwise type N.
+  If you're going to run a DHCP server on this Fog server, then choose Y. Otherwise choose N.
 
 Internationalization support
 ----------------------------
 
-  If you want the Fog Web UI to provide additional languages, choose Y here
+  If you want the Fog Web UI to provide additional languages, choose Y here.
 
 HTTPS Support
 -------------
@@ -125,7 +125,7 @@ HTTPS Support
 Hostname
 --------
 
-  Check and correct the host name. This host name is used for configuring the Fog Web UI. Choose N to accept the suggested host name, otherwise, choose Y and enter the correct host name
+  Check and correct the host name. This host name is used for configuring the Fog Web UI. Choose N to accept the suggested host name, otherwise, choose Y and enter the correct host name.
 
 Recap
 -----
