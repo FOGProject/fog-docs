@@ -1,14 +1,3 @@
-sphinx
-numpydoc
-recommonmark
-pandas
-jupyter_sphinx
-plotly
-numpy
-pytest
-pytest-regressions
-beautifulsoup4
 pydata-sphinx-theme
-pydata_sphinx_theme
 sphinx-panels
 sphinx_rtd_theme
