@@ -37,7 +37,7 @@ extensions = [
     'pydata_sphinx_theme',
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "numpydoc",
+    # "numpydoc",
     "recommonmark",
     "jupyter_sphinx",
     'sphinx_panels'
