@@ -32,11 +32,10 @@ import pydata_sphinx_theme
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_rtd_theme',
+    # 'sphinx_rtd_theme',
     'sphinx.ext.autosectionlabel',
     'pydata_sphinx_theme',
-    'numpydoc',
-    'recommonmark',
+    # 'recommonmark',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx_panels'
