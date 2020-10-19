@@ -126,7 +126,7 @@ Method 4: Importing Host Information
 
 - The **MAC Address** :red:`required` is the NIC's MAC address seperated by ``:`` (colon).
 - The **Host name** :red:`required` is the computer's Host name (must be less than 15 characters, should not include underscores, according to [http://tools.ietf.org/html/rfc952 | Network Working Group ]).
-- The **'Description** :orange:`Can be Left as Blank`is any text description you would like associated with the computer.
+- The **'Description** :orange:`Can be Left as Blank` is any text description you would like associated with the computer.
 - The **OSID** :red:`required` is the number representing the operating system.  It can be found in the table "supportedOS" in the field osID.
 - The **ImageID**:red:`required` is the number representing the images file linked to this image.  The image definition must already exist and this number can be found in the table "images" in the field imageID.
 

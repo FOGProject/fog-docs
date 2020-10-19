@@ -179,5 +179,5 @@ To do this perform the following steps:
 - Select the Kernel you would like to download, typically the newest kernels are on the top of the list.
 - Click the download icon
 - Select a file name for your kernel, to make it the default kernel leave the name as **bzImage**
-    - If you set it to a different name, you can set a host to use it in the `Kernel`_ hosts field
+    - If you set it to a different name, you can set a host to use it in the :ref:`management/host-management:Kernel` hosts field
 - Click the **Next** Button

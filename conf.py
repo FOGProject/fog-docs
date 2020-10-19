@@ -19,7 +19,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-import pydata_sphinx_theme
+# import pydata_sphinx_theme
 # import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
@@ -32,9 +32,9 @@ import pydata_sphinx_theme
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    # 'sphinx_rtd_theme',
+    'sphinx_rtd_theme',
     'sphinx.ext.autosectionlabel',
-    # 'pydata_sphinx_theme',
+    'pydata_sphinx_theme',
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "numpydoc",
@@ -133,7 +133,13 @@ htmlhelp_basename = 'FOGProjectdoc'
 
 html_css_files = [
     'css/custom.css',
-    'js/custom.js'
+    'js/custom.js',
+    'js/index.js',
+    'css/_admonitions.scss',
+    'css/_base.scss',
+    'css/_navbar.scss',
+    'css/_variables.scss',
+    'css/index.scss'
 ]
 
 

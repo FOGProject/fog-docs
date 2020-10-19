@@ -1,4 +1,5 @@
 pydata-sphinx-theme
+pydata_sphinx_theme
 sphinx
 numpydoc
 recommonmark
@@ -10,4 +11,4 @@ pytest
 pytest-regressions
 beautifulsoup4
 sphinx-panels
-sphinx_rtd_theme
+# sphinx_rtd_theme
