@@ -6,7 +6,7 @@ recommonmark
 pandas
 jupyter_sphinx
 plotly
-numpy
+# numpy
 # pytest
 # pytest-regressions
 beautifulsoup4
