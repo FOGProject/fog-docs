@@ -34,12 +34,15 @@ import pydata_sphinx_theme
 extensions = [
     # 'sphinx_rtd_theme',
     'sphinx.ext.autosectionlabel',
-    'pydata_sphinx_theme',
-    # 'recommonmark',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
+    # 'pydata_sphinx_theme',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "numpydoc",
+    "recommonmark",
+    "jupyter_sphinx",
     'sphinx_panels'
 ]
+autosummary_generate = True
 autosectionlabel_prefix_document = True
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -92,7 +95,8 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 html_theme = 'pydata_sphinx_theme'
-html_logo = "_static/img/management/fog-logo.png"
+html_logo = "_static/img/logo/fog-logo.png"
+html_favicon = "_static/img/logo/fog-logo.ico"
 
 html_theme_options = {
     "github_url": "https://github.com/FOGProject/fog-docs",
@@ -185,3 +189,10 @@ texinfo_documents = [
 
 
 
+# -- Auto-convert markdown pages to demo --------------------------------------
+import recommonmark
+from recommonmark.transform import AutoStructify
+
+
+def setup(app):
+    app.add_transform(AutoStructify)

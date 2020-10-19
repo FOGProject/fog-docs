@@ -27,7 +27,7 @@ Method 1: Adding a new host via Full registration
     - If desired, you can set the task and it will deploy the image on the next network boot. 
 - After the requested information is entered, FOG will pull a quick hardware inventory the client.
 - This method of registration will register the mac address(primary wired only), serial number(if available in BIOS), Make/Model, and other Hardware information with the FOG server.
-- For more information on these commands please see: [[FOGUserGuide#FOG_Tasks | Client Side Tasks]]
+- For more information on these commands please see: :ref:`management/client-side-tasks:Client Side Tasks`
 
 Method 2: Adding a new host via Quick Registration
 --------------------------------------------------
