@@ -1,3 +1,5 @@
+.. include:: /includes.rst
+
 ----------------------------------
 Fog installer command line options
 ----------------------------------

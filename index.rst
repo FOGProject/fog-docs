@@ -1,3 +1,5 @@
+.. include:: /includes.rst
+
 =========================================
 Welcome to the Fog Project documentation!
 =========================================
@@ -7,24 +9,54 @@ Welcome to the Fog Project documentation!
 | We are slowly moving from wiki.fogproject.org to here
 | Once all existing docs are moved over we'll start updating the docs
 
+
+.. panels::
+
+   introduction to fogproject
+   :ref:`introduction/index:Introduction`
+
+   ---
+
+   installation documentation
+   :ref:`installation/index:Installation`
+
+   ---
+
+   tasks and concepts
+
+   ---
+
+   management documentation
+
+   ---
+
+   Customizing fogproject
+
+   ---
+
+   Supported hardware
+
+   ---
+
+   Integrating with fog
+
+
 .. toctree::
    :maxdepth: 2
+   :titlesonly:
 
-   /introduction/index.rst
-   /installation/index.rst
-   /tasks/index.rst
-   /management/index.rst
-   /FAQ/index.rst
-   /customization/index.rst
-   /hardware/index.rst
-   /integrations/index.rst
-   /troubleshooting/index.rst
-   /misc/index.rst
-   /reference/index.rst
+   /introduction/index
+   /installation/index
+   /tasks/index
+   /management/index
+   /customization/index
+   /hardware/index
+   /integrations/index
+   /troubleshooting/index
+   /FAQ/index
+   /reference/index
 
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-.. include:: /includes.rst

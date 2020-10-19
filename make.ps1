@@ -3,6 +3,11 @@ param (
 	$makemode = "html"
 )
 
+# & python.exe -m pip install --upgrade pip
+# Get-Content .\requirements.txt | ForEach-Object {
+# 	pip install $_;
+# }
+
 if (! $ENV:SPHINXBUILD) {
 	$sphinxBuild = "Sphinx-build.exe"
 } else {

@@ -19,7 +19,8 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-import sphinx_rtd_theme
+import pydata_sphinx_theme
+# import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
 
@@ -32,7 +33,13 @@ import sphinx_rtd_theme
 # ones.
 extensions = [
     'sphinx_rtd_theme',
-    'sphinx.ext.autosectionlabel'
+    'sphinx.ext.autosectionlabel',
+    'pydata_sphinx_theme',
+    'numpydoc',
+    'recommonmark',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx_panels'
 ]
 autosectionlabel_prefix_document = True
 # Add any paths that contain templates here, relative to this directory.
@@ -71,7 +78,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'README.md']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -85,7 +92,24 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'pydata_sphinx_theme'
+html_logo = "_static/img/management/fog-logo.png"
+
+html_theme_options = {
+    "github_url": "https://github.com/FOGProject/fog-docs",
+    "twitter_url": "https://twitter.com/FOGProject",
+    "use_edit_page_button": True,
+    "show_toc_level": 1,
+}
+
+html_context = {
+    "github_user": "FOGProject",
+    "github_repo": "fog-focs",
+    "github_version": "master",
+    "doc_path": "/",
+}
+
+
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

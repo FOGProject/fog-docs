@@ -1,12 +1,15 @@
 .. include:: /includes.rst
 
-===================
-Introduction To Fog
-===================
+============
+Introduction
+============
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
    
-   index.rst
+   introduction
+   
+
+.. just include the page with the main page since it's the only page in the section for now
 
 .. include:: introduction.rst

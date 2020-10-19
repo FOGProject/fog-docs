@@ -1,23 +1,13 @@
 .. include:: /includes.rst
 
-===================
-Installation of FOG
-===================
+============
+Installation
+============
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
    
-   index.rst
-
-.. include:: requirements.rst
------
-
-.. include:: install_fog_server.rst
------
-
-.. include:: fog_installation_settings.rst
------
-
-
-.. include:: network_setup.rst
------
+   requirements
+   install_fog_server
+   fog_installation_settings
+   network_setup

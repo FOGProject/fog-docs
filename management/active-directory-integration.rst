@@ -1,3 +1,5 @@
+.. include:: /includes.rst
+
 ----------------------------
 Active Directory Integration
 ----------------------------

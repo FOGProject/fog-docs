@@ -1,3 +1,5 @@
+.. include:: /includes.rst
+
 -----------
 What is FOG
 -----------
@@ -48,6 +50,7 @@ Thanks for supporting open source software and enjoy!
 
 Background
 ==========
+
 Working in an educational environment our organization's techs very often re-imaged computers in their day to day activities. For a long time we used a commercial product that in many ways didn't meet our needs. It wasn't web based, and you needed to create driver disks, floppys or USB drives. Other things were very difficult, such as searching for a host by MAC address; and the product was expensive, even with an educational discount.
 
 So we started to investigate ways in which we could do things better, and as our organization struggled to make a commercial product work better by trying to pxe boot dos, and testing it in Windows PE, we, the FOG Team started to build linux based solution on our own time.

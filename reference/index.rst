@@ -1,18 +1,11 @@
 .. include:: /includes.rst
 
-============================
-FOG Project reference manual
-============================
+================
+Reference Manual
+================
 
 .. toctree::
-   :maxdepth: 4
-   
-   index.rst
+   :maxdepth: 6
 
-
-.. include:: command_line_options.rst
------
-
-.. include:: install_fogsettings.rst
------
-
+   command_line_options
+   install_fogsettings

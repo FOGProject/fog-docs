@@ -1,6 +1,8 @@
------------------------------
-Fog Service/Client Management
------------------------------
+.. include:: /includes.rst
+
+-----------------------------------
+Fog Service (aka Client) Management
+-----------------------------------
 
 .. === The FOG Client Service ===
 

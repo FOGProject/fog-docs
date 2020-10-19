@@ -1,8 +1,8 @@
 .. include:: /includes.rst
 
-================
-FOG Integrations
-================
+============
+Integrations
+============
 
 Documentation related to fog plugins and other Integrations
 This includes articles on how to do common setup for some services fog can utilize from other windows or linux servers (or can be added to the same server) 
@@ -10,4 +10,3 @@ This includes articles on how to do common setup for some services fog can utili
 .. toctree::
    :maxdepth: 6
    
-   index.rst

@@ -1,12 +1,11 @@
 .. include:: /includes.rst
 
-=========
-FOG FAQ's
-=========
+====
+FAQs
+====
 
 Frequently Asked questions with answers
 
 .. toctree::
    :maxdepth: 6
    
-   index.rst

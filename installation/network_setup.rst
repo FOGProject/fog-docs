@@ -1,4 +1,4 @@
-.. _other_dhcp_server_than_fog:
+.. include:: /includes.rst
 
 --------------------------
 Other DHCP Server than FOG

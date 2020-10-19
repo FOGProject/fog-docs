@@ -1,17 +1,13 @@
 .. include:: /includes.rst
 
 ==================
-Tasks and concepts
+Tasks and Concepts
 ==================
 
+Common tasks/how-tos and concepts of using
+
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
    
-   index.rst
-
-.. include:: capture_an_image.rst
------
-
-.. include:: deploy_an_image.rst
------
-
+   capture_an_image
+   deploy_an_image

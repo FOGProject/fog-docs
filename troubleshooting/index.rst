@@ -1,8 +1,8 @@
 .. include:: /includes.rst
 
-===================
-Troubleshooting FOG
-===================
+===============
+Troubleshooting
+===============
 
 Documetnation related to Troubleshooting common issues
 
@@ -10,4 +10,4 @@ Documetnation related to Troubleshooting common issues
 .. toctree::
    :maxdepth: 6
    
-   index.rst
+   

@@ -10,8 +10,8 @@
 .yellow {
     color: yellow;
 }
-/* Override default theme max width of 800px so wide screens can view more content responsively */
+/* Override default theme max width of 800px so wide screens can view more content responsively
 .wy-nav-content {
     max-width: 1500px;
     width: auto;
-}
+} */

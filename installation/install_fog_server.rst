@@ -1,3 +1,5 @@
+.. include:: /includes.rst
+
 ------------------
 Install FOG server
 ------------------
