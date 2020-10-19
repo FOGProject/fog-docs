@@ -1,7 +1,7 @@
 pydata-sphinx-theme
 pydata_sphinx_theme
 sphinx
-numpydoc
+# numpydoc
 recommonmark
 pandas
 jupyter_sphinx
