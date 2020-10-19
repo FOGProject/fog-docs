@@ -91,7 +91,7 @@ Default Network interface
 DHCP Server
 -----------
 
-  You have the option to run a DHCP server on the FOG server. If you alreaady have a DHCP server in your network, then you can answer N to the following questions. For more information on configuring an existing DHCP server to work with FOG, see :ref:`other_dhcp_server_than_fog`.
+  You have the option to run a DHCP server on the FOG server. If you alreaady have a DHCP server in your network, then you can answer N to the following questions. For more information on configuring an existing DHCP server to work with FOG, see :ref:`installation/network_setup:other_dhcp_server_than_fog`.
 
 DHCP Router address
 -------------------
