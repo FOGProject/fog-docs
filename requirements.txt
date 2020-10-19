@@ -1,5 +1,5 @@
 pydata-sphinx-theme
-pydata_sphinx_theme
+# pydata_sphinx_theme
 sphinx
 # numpydoc
 recommonmark
@@ -7,8 +7,8 @@ pandas
 jupyter_sphinx
 plotly
 # numpy
-pytest
-pytest-regressions
+# pytest
+# pytest-regressions
 beautifulsoup4
 sphinx-panels
 sphinx_rtd_theme
