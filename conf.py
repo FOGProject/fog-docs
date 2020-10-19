@@ -195,10 +195,10 @@ texinfo_documents = [
 
 
 
-# -- Auto-convert markdown pages to demo --------------------------------------
-import recommonmark
-from recommonmark.transform import AutoStructify
+# # -- Auto-convert markdown pages to demo --------------------------------------
+# import recommonmark
+# from recommonmark.transform import AutoStructify
 
 
-def setup(app):
-    app.add_transform(AutoStructify)
+# def setup(app):
+#     app.add_transform(AutoStructify)
