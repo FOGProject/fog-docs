@@ -44,6 +44,7 @@ extensions = [
 ]
 autosummary_generate = True
 autosectionlabel_prefix_document = True
+panels_add_bootstrap_css = False
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
