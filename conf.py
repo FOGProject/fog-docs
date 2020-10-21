@@ -101,9 +101,9 @@ html_favicon = "_static/img/logo/fog-logo.ico"
 
 html_theme_options = {
     "external_links": [
-      {"name": "Fog Project Forums", "url": "https://forums.fogproject.org"},
-      {"name": "Fog Project Homepage", "url": "https://fogproject.org"},
-      {"name": "Fog Project on Github", "url": "https://github.com/FOGProject"}
+      {"name": "Forums", "url": "https://forums.fogproject.org"},
+      {"name": "Fogproject", "url": "https://fogproject.org"},
+      {"name": "Github Repos", "url": "https://github.com/FOGProject"}
 
   ],
     "github_url": "https://github.com/FOGProject/fog-docs",
