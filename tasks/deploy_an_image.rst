@@ -16,7 +16,7 @@ Booting up the machine
 
 Plug in a cabled ethernet connection and in the BIOS, make sure the machine boots from the network.
 
-.. Image:: /_static/img/tasks/capture_pxe_boot.png
+.. |capture_pxe_boot|
 
 In the screenshot above you see a successful network boot:
 
@@ -26,7 +26,7 @@ In the screenshot above you see a successful network boot:
 
 Then you will be presented with the Fog boot menu:
 
-.. Image:: /_static/img/tasks/deploy_fog_menu.png
+.. |deploy_fog_menu|
 
 Use your arrow keys to move the selection up and down. The default, 'boot from hard disk' is chosen in 3 seconds, so be quick.
 
@@ -36,7 +36,7 @@ Choose 'Perform Full Host Registration and Inventory'.
 
 In the text modus, you will be asked several questions:
 
-.. Image:: /_static/img/tasks/deploy_fog_questions.png
+.. |deploy_fog_questions|
 
 Hostname
 --------
@@ -117,7 +117,7 @@ Make sure your machine boots from the network.
 
 After booting, partclone will be started and the image on the FOG server will be copied and unpacked on your machine:
 
-.. Image:: /_static/img/tasks/deploy_partclone.png
+.. |deploy_partclone|
 
 After imaging
 -------------

@@ -31,7 +31,7 @@ Now that the machine is ready to capture the image from, it is time to boot it f
 
 Plug in a cabled ethernet connection and in the BIOS, make sure the machine boots from the network.
 
-.. Image:: /_static/img/tasks/capture_pxe_boot.png
+|capture_pxe_boot|
 
 In the screenshot above you see a successful network boot:
 
@@ -41,7 +41,7 @@ In the screenshot above you see a successful network boot:
 
 Then you will be presented with the Fog boot menu:
 
-.. Image:: /_static/img/tasks/capture_fog_menu.png
+|capture_fog_menu.png|
 
 Use your arrow keys to move the selection up and down. The default, 'boot from hard disk' is chosen in 3 seconds, so be quick.
 
