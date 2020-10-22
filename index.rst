@@ -9,7 +9,6 @@ Welcome to the Fog Project documentation!
 | We are slowly moving from wiki.fogproject.org to here
 | Once all existing docs are moved over we'll start updating the docs
 
-
 .. panels::
 
    introduction to fogproject
@@ -60,3 +59,4 @@ Welcome to the Fog Project documentation!
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+

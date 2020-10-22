@@ -4,7 +4,7 @@
 .. include:: /_static/css/index.rst
 .. include:: /_static/video/index.rst
 
-.. raw html substitution snippets
+.. raw html and other helpful substitution snippets
 
 
 .. To add a expand/collapse section put your content inbetween a |expandStart| and |expandEnd|
@@ -17,3 +17,4 @@
 .. |expandEnd| raw:: html
 
    </details></br>
+

@@ -32,19 +32,13 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    # 'sphinx_rtd_theme',
     'sphinx.ext.autosectionlabel',
-    # 'pydata_sphinx_theme',
-    "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
-    # "numpydoc",
-    "recommonmark",
-    "jupyter_sphinx",
     'sphinx_panels'
 ]
-autosummary_generate = True
+# autosummary_generate = True
 autosectionlabel_prefix_document = True
 panels_add_bootstrap_css = False
+todo_include_todos = False
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -87,7 +81,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'README.md']
 pygments_style = 'sphinx'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = False
+# todo_include_todos = False
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -109,7 +103,8 @@ html_theme_options = {
     "github_url": "https://github.com/FOGProject/fog-docs",
     "twitter_url": "https://twitter.com/FOGProject",
     "use_edit_page_button": True,
-    "show_toc_level": 1,
+    "show_toc_level": 3,
+    "navigation_with_keys": True
 }
 
 html_context = {
@@ -140,13 +135,13 @@ htmlhelp_basename = 'FOGProjectdoc'
 
 html_css_files = [
     'css/custom.css',
-    'js/custom.js',
-    'js/index.js',
-    'css/_admonitions.scss',
-    'css/_base.scss',
-    'css/_navbar.scss',
-    'css/_variables.scss',
-    'css/index.scss'
+    # 'js/custom.js',
+    # 'js/index.js',
+    # 'css/_admonitions.scss',
+    # 'css/_base.scss',
+    # 'css/_navbar.scss',
+    # 'css/_variables.scss',
+    # 'css/index.scss'
 ]
 
 

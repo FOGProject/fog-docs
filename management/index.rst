@@ -4,10 +4,15 @@
 Management
 ==========
 
-Documentation related to using the management tools available in the fog web
+.. admonition:: info
+   
+   * Documentation related to using the management tools available in the fog web UI
+   * These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
+
+-----
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 3
 
    dashboard
    host-management

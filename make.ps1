@@ -3,10 +3,10 @@ param (
 	$makemode = "html"
 )
 
-# & python.exe -m pip install --upgrade pip
-# Get-Content .\requirements.txt | ForEach-Object {
-# 	pip install $_;
-# }
+& python.exe -m pip install --upgrade pip
+Get-Content .\requirements.txt | Where-Object { $_ -notmatch "#"} | ForEach-Object {
+	pip install $_;
+}
 
 if (! $ENV:SPHINXBUILD) {
 	$sphinxBuild = "Sphinx-build.exe"
@@ -48,3 +48,5 @@ try {
 
 & $SPHINXBUILD -M help $SOURCEDIR $BUILDDIR $SPHINXOPTS
 
+"Opening built index.html in default browser...." | Out-Host;
+& ".\_build\html\index.html"
