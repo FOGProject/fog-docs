@@ -11,21 +11,29 @@ Welcome to the Fog Project documentation!
 
 .. panels::
 
-   introduction to fogproject
    :ref:`introduction/index:Introduction`
-
+   
+      - An introduction to what fog is
+   
    ---
 
-   installation documentation
    :ref:`installation/index:Installation`
+   
+      - Documentation on the installation of fogserver
 
    ---
 
-   tasks and concepts
+   :ref:`tasks/index:Tasks And Concepts`
+      
+      - Common tasks/how-tos and concepts of using fog
+      - Includes things like how to capture and deploy images
 
    ---
 
-   management documentation
+   :ref:`management/index:Management`
+   
+      - Documentation related to using the management tools available in the fog web UI
+      - These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
 
    ---
 
