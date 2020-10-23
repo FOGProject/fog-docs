@@ -1,6 +1,6 @@
 # pydata-sphinx-theme
 git+https://github.com/pandas-dev/pydata-sphinx-theme.git@master
-sphinx
+# sphinx
 sphinx-panels
 pygments
 # sphinx_rtd_theme
