@@ -10,7 +10,9 @@ Tasks and Concepts
    * Includes things like how to capture and deploy images
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 6
    
    capture_an_image
    deploy_an_image
+   install_fog_client
+   fog_client_example_tasks

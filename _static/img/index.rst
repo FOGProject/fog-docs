@@ -42,3 +42,13 @@
 .. |deploy_fog_menu| Image:: /_static/img/tasks/deploy_fog_menu.png
 .. |deploy_fog_questions| Image:: /_static/img/tasks/deploy_fog_questions.png
 .. |deploy_partclone| Image:: /_static/img/tasks/deploy_partclone.png
+.. |fog_client_installer_options| Image:: /_static/img/tasks/fog_client_installer_options.png
+.. |fog_client_icon| Image:: /_static/img/tasks/fog_client_icon.png
+.. |fog_client_approve| Image:: /_static/img/tasks/fog_client_approve.png
+.. |fog_client_approved| Image:: /_static/img/tasks/fog_client_approved.png
+.. |fog_client_reboot_notification| Image:: /_static/img/tasks/fog_client_reboot_notification.png
+.. |create_new_snapin| Image:: /_static/img/tasks/create_new_snapin.png
+.. |snapin_7_zip| Image:: /_static/img/tasks/snapin_7_zip.png
+.. |snapin_host_task| Image:: /_static/img/tasks/snapin_host_task.png
+.. |snapin_task_settings| Image:: /_static/img/tasks/snapin_task_settings.png
+
