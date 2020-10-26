@@ -189,8 +189,24 @@ Welcome to the Fog Project documentation!
 
    - Common questions with detailed answers
 
+   ---
 
+   `Fog Forums <https://forums.fogproject.org>`_
 
+   - Search for solutions to your problems or ask the community for help
+
+   ---
+
+   `Fog Project Github repos <https://github.com/FOGProject>`_
+
+   - Browse the opensource code for FOGProject
+
+   ---
+
+   `Fog Home Page <https://fogproject.org>`_
+
+   - The homepage of the FOG Project
+   
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 .. * :ref:`search`
