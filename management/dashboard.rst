@@ -77,5 +77,5 @@ This menu appears at the top of every page on Fog's web UI. The icons are, from 
 - |tasks| :ref:`management/task-management:Task Management` - This section allow you to perform imaging tasks such as acquiring or deploying images.
 - |reports| :ref:`management/report-management:Report Management` - Reports let you pull information from the FOG database either as HTML, pdf, or csv.
 - |configIcon| :ref:`Fog Configuration <management/other-settings:Other Settings>` - The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
-- |plugins| :ref:`management/plugin-management:Plugins` - Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
+- |plugins| :ref:`management/plugins/plugin-management:Plugins` - Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
 - |logoff| **Logoff** - Click this to log off of the Fog web UI

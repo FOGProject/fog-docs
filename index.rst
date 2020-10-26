@@ -44,11 +44,7 @@ Welcome to the Fog Project documentation!
 
 .. panels::
 
-   ..   ============
-   ..   Introduction
-   ..   ============
-
-   :ref:`introduction/introduction:Introduction`
+   :ref:`Introduction <introduction/introduction:What is FOG>`
 
    - An introduction to what fog is
 
@@ -61,10 +57,6 @@ Welcome to the Fog Project documentation!
       introduction/*
 
    ---
-
-   ..   ============
-   ..   Installation
-   ..   ============
 
    :ref:`Installation <installation/install_fog_server:Install FOG server>`
    
@@ -79,10 +71,6 @@ Welcome to the Fog Project documentation!
       installation/*
 
    ---
-
-   ..   ================
-   ..   Tasks & Concepts
-   ..   ================
 
    :ref:`Tasks & Concepts <tasks/capture_an_image:Capture an Image>`
       
@@ -99,10 +87,6 @@ Welcome to the Fog Project documentation!
 
    ---
 
-   ..   ==========
-   ..   Management
-   ..   ==========
-
    :ref:`Management <management/dashboard:Dashboard>`
    
    - Documentation related to using the management tools available in the fog web UI
@@ -117,14 +101,9 @@ Welcome to the Fog Project documentation!
       management/*
       management/plugins/*
 
-
    ---
 
-   ..   =============
-   ..   Customization
-   ..   =============
-
-   :ref:`customization/customization:Customization`
+   :ref:`Customization <customization/ipxe/ipxe:Customizing FOG iPXE Settings>`
 
    - Docs related to customizing various parts of fog
 
@@ -134,15 +113,9 @@ Welcome to the Fog Project documentation!
       :glob:
       :caption: Customization
       
-      customization/*
       customization/ipxe/*
 
-
    ---
-
-   ..   ==================
-   ..   Supported Hardware
-   ..   ==================
 
    :ref:`hardware/hardware:Supported Hardware`
 
@@ -157,10 +130,6 @@ Welcome to the Fog Project documentation!
       hardware/*
 
    ---
-
-   ..   ============
-   ..   Integrations
-   ..   ============
 
    :ref:`integrations/integrations:integrations`
 
@@ -178,10 +147,6 @@ Welcome to the Fog Project documentation!
 
    ---
 
-   ..   ===============
-   ..   Troubleshooting
-   ..   ===============
-
    :ref:`troubleshooting/troubleshooting:Troubleshooting`
 
    .. toctree::
@@ -195,10 +160,6 @@ Welcome to the Fog Project documentation!
    - Docs related to Troubleshooting common issues
 
    ---
-
-   ..   =========
-   ..   Reference
-   ..   =========
 
    :ref:`Reference <reference/install_fogsettings:The .fogsettings file>`
 
@@ -215,10 +176,6 @@ Welcome to the Fog Project documentation!
       reference/*
 
    ---
-
-   ..   ====
-   ..   FAQs
-   ..   ====
 
    :ref:`FAQ/faq:FAQs`
 

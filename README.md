@@ -23,12 +23,6 @@ To create the caption headings for each section we make a panel in the root inde
 
 ```:rst
 
-   .. Section Name (put the name of the section in a title heading, this won't be visible)
-
-   ============
-   Installation
-   ============
-
    .. Link to main page for section. Follow this example to create a link with the text of the section name but it goes to specific page and heading 
    .. that you might consider the main starting page of the section. We aren't maintaining a homepage for each section as it creates circular toc issues
 
@@ -84,7 +78,8 @@ Title/Heading1
 ```
 
 Titles go with top level title pages that match the root folder structure.
-These are only listed in the main index.rst page. There may be times when using the top level title is needed to break out a section further but we don't have an example of that yet.
+These are only listed in the main index.rst page and at that to be the title at the very top of the documentation tree that everything else is under.
+This may need to be used for breaking out sections further but not yet known.
 
 ### SubTitle/Heading 2
 

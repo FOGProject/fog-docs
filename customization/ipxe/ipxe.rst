@@ -4,9 +4,9 @@
 Customizing FOG iPXE Settings
 =============================
 
-----
-test
-----
+-----------------
+Custom Background
+-----------------
 
 You can add a custom picture background
 
