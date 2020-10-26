@@ -1,15 +1,8 @@
 .. include:: /includes.rst
 
-{{ header }}
-
 =============================
 Customizing FOG iPXE Settings
 =============================
-
-.. .. toctree::
-..    :maxdepth: 6
-   
-..    index.rst
 
 ----
 test

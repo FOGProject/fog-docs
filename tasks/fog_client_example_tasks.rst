@@ -23,7 +23,7 @@ This is often used in combination with deploying an image; after deployment the 
 - Start a browser, go to the Fog Web UI and log in
 - Go to 'Host Management' -> 'List all Hosts' and click on the machine you have just installed the FOG client on.
 
-.. Image:: /_static/img/tasks/capture_host_management_1.png
+|capture_host_management_1|
 
 - On the tab 'General', Change the 'Host Name' field into the name you want the host to have. Remember that Windows host names are limited to 15 characters.
 - On the bottom, clik on 'Update'.
@@ -36,7 +36,8 @@ As changing the host name on Windows requires a reboot, you should see a popup t
 
 At the timeout, or when you click on 'Shutdown Now' the machine will reboot and the new host name will be set.
 
-===================================
+-----
+
 Install an application via a snapin
 ===================================
 

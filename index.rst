@@ -9,62 +9,232 @@ Welcome to the Fog Project documentation!
 | We are slowly moving from wiki.fogproject.org to here
 | Once all existing docs are moved over we'll start updating the docs
 
+..    This comment block is a guide on the syntax the title panels
+..    .. Section Name (put the name of the section in a title heading, this won't be visible)
+
+..    ============
+..    Installation
+..    ============
+
+..    .. Link to main page for section. Follow this example to create a link with the text of the section name but it goes to specific page and heading 
+..    .. that you might consider the main starting page of the section. We aren't maintaining a homepage for each section as it creates circular toc issues
+
+..    :ref:`Installation <installation/install_fog_server:Install FOG server>`
+   
+..    .. Create a bulleted list summary of what is found in the section
+
+..    - Documentation on the installation of fogserver
+      
+..    .. Hidden Table of contents for section (displayed in left sidebar under given caption)
+..    .. Using the glob makes it so we can use the wildcard. However this also makes it alphabetical, you have to manually put in each file path if you
+..    .. want to specify a specific display order. Make sure to set the 'Caption' to the name of the section then list the folder name appended with '/*'
+..    .. to get all the top level files into that toc
+
+..    .. toctree::
+..       :maxdepth: 6
+..       :hidden:
+..       :glob:
+..       :caption: Installation
+      
+..       installation/*
+
+..   .. The '---' signifies the end of a panel 
+
+..   ---
+
 .. panels::
 
-   :ref:`introduction/index:Introduction`
-   
-      - An introduction to what fog is
-   
-   ---
+   ..   ============
+   ..   Introduction
+   ..   ============
 
-   :ref:`installation/index:Installation`
-   
-      - Documentation on the installation of fogserver
+   :ref:`introduction/introduction:Introduction`
 
-   ---
+   - An introduction to what fog is
 
-   :ref:`tasks/index:Tasks And Concepts`
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Introduction
       
-      - Common tasks/how-tos and concepts of using fog
-      - Includes things like how to capture and deploy images
+      introduction/*
 
    ---
 
-   :ref:`management/index:Management`
+   ..   ============
+   ..   Installation
+   ..   ============
+
+   :ref:`Installation <installation/install_fog_server:Install FOG server>`
    
-      - Documentation related to using the management tools available in the fog web UI
-      - These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
+   - Documentation on the installation of fogserver
+      
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Installation
+      
+      installation/*
 
    ---
 
-   Customizing fogproject
+   ..   ================
+   ..   Tasks & Concepts
+   ..   ================
+
+   :ref:`Tasks & Concepts <tasks/capture_an_image:Capture an Image>`
+      
+   - Common tasks/how-tos and concepts of using fog
+   - Includes things like how to capture and deploy images
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Tasks & Concepts
+      
+      tasks/*
 
    ---
 
-   Supported hardware
+   ..   ==========
+   ..   Management
+   ..   ==========
+
+   :ref:`Management <management/dashboard:Dashboard>`
+   
+   - Documentation related to using the management tools available in the fog web UI
+   - These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Management
+
+      management/*
+      management/plugins/*
+
 
    ---
 
-   Integrating with fog
+   ..   =============
+   ..   Customization
+   ..   =============
+
+   :ref:`customization/customization:Customization`
+
+   - Docs related to customizing various parts of fog
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Customization
+      
+      customization/*
+      customization/ipxe/*
 
 
-.. toctree::
-   :maxdepth: 2
-   :titlesonly:
+   ---
 
-   /introduction/index
-   /installation/index
-   /tasks/index
-   /management/index
-   /customization/index
-   /hardware/index
-   /integrations/index
-   /troubleshooting/index
-   /FAQ/index
-   /reference/index
+   ..   ==================
+   ..   Supported Hardware
+   ..   ==================
+
+   :ref:`hardware/hardware:Supported Hardware`
+
+   - Docs relating to what hardware is known to work
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Supported Hardware
+      
+      hardware/*
+
+   ---
+
+   ..   ============
+   ..   Integrations
+   ..   ============
+
+   :ref:`integrations/integrations:integrations`
+
+   - Documentation related to fog plugins and other Integrations
+   - This includes articles on how to do common setup for some services fog can utilize from other windows or linux servers (or can be added to the same server) 
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Integrations
+      
+      integrations/*
 
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   ---
+
+   ..   ===============
+   ..   Troubleshooting
+   ..   ===============
+
+   :ref:`troubleshooting/troubleshooting:Troubleshooting`
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Troubleshooting
+      
+      troubleshooting/*
+
+   - Docs related to Troubleshooting common issues
+
+   ---
+
+   ..   =========
+   ..   Reference
+   ..   =========
+
+   :ref:`Reference <reference/install_fogsettings:The .fogsettings file>`
+
+   - Other reference material related to fog
+   - Includes things such as command line args or settings file definitions
+   - Also contains docs that don't fit anywhere else
+   
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: reference
+      
+      reference/*
+
+   ---
+
+   ..   ====
+   ..   FAQs
+   ..   ====
+
+   :ref:`FAQ/faq:FAQs`
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: FAQs
+      
+      FAQ/*
+
+   - Common questions with detailed answers
+
+
+
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
 

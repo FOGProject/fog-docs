@@ -20,7 +20,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 # import pydata_sphinx_theme
-# import sphinx_rtd_theme
+import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
 
@@ -37,7 +37,7 @@ extensions = [
 ]
 # autosummary_generate = True
 autosectionlabel_prefix_document = True
-panels_add_bootstrap_css = False
+# panels_add_bootstrap_css = False
 todo_include_todos = False
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -89,30 +89,44 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'pydata_sphinx_theme'
+html_theme = 'sphinx_rtd_theme'
+# html_theme = 'pydata_sphinx_theme'
 html_logo = "_static/img/logo/fog-logo.png"
 html_favicon = "_static/img/logo/fog-logo.ico"
 
 html_theme_options = {
-    "external_links": [
-      {"name": "Forums", "url": "https://forums.fogproject.org"},
-      {"name": "Fogproject", "url": "https://fogproject.org"},
-      {"name": "Github Repos", "url": "https://github.com/FOGProject"}
+    # Theme options for pydata_sphinx_theme
+#     "external_links": [
+#       {"name": "Forums", "url": "https://forums.fogproject.org"},
+#       {"name": "Fogproject", "url": "https://fogproject.org"},
+#       {"name": "Github Repos", "url": "https://github.com/FOGProject"}
 
-  ],
-    "github_url": "https://github.com/FOGProject/fog-docs",
-    "twitter_url": "https://twitter.com/FOGProject",
-    "use_edit_page_button": True,
-    "show_toc_level": 3,
-    "navigation_with_keys": True
+#   ],
+#     "github_url": "https://github.com/FOGProject/fog-docs",
+#     "twitter_url": "https://twitter.com/FOGProject",
+    # "use_edit_page_button": True,
+    # "show_toc_level": 3,
+    # "navigation_with_keys": True
+
+    #config options for sphinx_rtd_theme
+    'logo_only': False,
+    'display_version': True,
+    'style_external_links': True,
+    # Toc Options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 6,
+    'includehidden': True,
+    'titles_only': False
 }
 
-html_context = {
-    "github_user": "FOGProject",
-    "github_repo": "fog-focs",
-    "github_version": "master",
-    "doc_path": "/",
-}
+#used with pydata_sphinx_theme
+# html_context = {
+    # "github_user": "FOGProject",
+    # "github_repo": "fog-focs",
+    # "github_version": "master",
+    # "doc_path": "/",
+# }
 
 
 

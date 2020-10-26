@@ -1,8 +1,8 @@
 .. include defined images and roles
 
-.. include:: /_static/img/index.rst
-.. include:: /_static/css/index.rst
-.. include:: /_static/video/index.rst
+.. include:: /_static/img/images.rst
+.. include:: /_static/css/roles.rst
+.. include:: /_static/video/videos.rst
 
 .. raw html and other helpful substitution snippets
 

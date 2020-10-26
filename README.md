@@ -12,12 +12,57 @@ The documentation is written in restructured text and built with sphinx
 
 # Rst Styling rules for the project
 
+The goal of the below rules is to make it so adding a new page to a section is as simple as adding a new rst file, plopping in the proper headings and doing a git push. There are some special cases that we will try to document as we find them, but that is the general idea for adding docs.
+
+As is noted below, you should always put `.. include:: /includes.rst` at the top of your files so that you have access to all the _static resources and can easily add images, css, videos, etc.
+
+## Index and ToC
+
+In order for Table of contents to work properly it needs to only be made once per section and there needs to be only 1 master index.
+To create the caption headings for each section we make a panel in the root index following this format
+
+```:rst
+
+   .. Section Name (put the name of the section in a title heading, this won't be visible)
+
+   ============
+   Installation
+   ============
+
+   .. Link to main page for section. Follow this example to create a link with the text of the section name but it goes to specific page and heading 
+   .. that you might consider the main starting page of the section. We aren't maintaining a homepage for each section as it creates circular toc issues
+
+   :ref:`Installation <installation/install_fog_server:Install FOG server>`
+   
+   .. Create a bulleted list summary of what is found in the section
+
+   - Documentation on the installation of fogserver
+      
+   .. Hidden Table of contents for section (displayed in left sidebar under given caption)
+   .. Using the glob makes it so we can use the wildcard. However this also makes it alphabetical, you have to manually put in each file path if you
+   .. want to specify a specific display order. Make sure to set the 'Caption' to the name of the section then list the folder name appended with '/*'
+   .. to get all the top level files into that toc
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: Installation
+      
+      installation/*
+
+  .. The '---' signifies the end of a panel 
+
+   ---
+```
+
+
 ## Headings
 
 Below are examples of how to define the titles and headings and where they should be separated into new pages
 Anything defined as a heading or title can be linked to from anywhere else with the following syntax
 
-- If you want to reference a heading within the same section use this syntax
+- If you want to reference a heading within the same page use this syntax
 
 ```:rst
 `Heading Name`_
@@ -27,7 +72,7 @@ Anything defined as a heading or title can be linked to from anywhere else with 
   - See also [Cross-Referencing with Sphinx - Auto label sections](https://docs.readthedocs.io/en/stable/guides/cross-referencing-with-sphinx.html#automatically-label-sections)
 
 ```:rst
-:ref:`installation/index:CentOS 7 or RHEL 7`
+:ref:`installation/install_fog_server:CentOS 7 or RHEL 7`
 ```
 
 ### Title/heading 1
@@ -39,53 +84,7 @@ Title/Heading1
 ```
 
 Titles go with top level title pages that match the root folder structure.
-i.e. we have a `Management` folder. The index.rst in that folder contains the title for that section of pages.
-The index.rst file for each title should have the title and then `..include:: filename.rst` lines for each file included.
-
-Each of these titles should also be referenced in the root index page.
-
-So for every folder/section of the site there should be an index.rst page formatted like this to include all its child pages
-- The `-----` inserts a horizontal rule/line to separate each section when viewing as a single page.
-- 
-
-```:rst
-.. include:: /includes.rst
-
-==================
-Section/Page Title
-==================
-
-.. toctree::
-   :maxdepth: 4
-
-   index.rst
-
-.. include:: every.rst
------
-
-.. include:: child-page.rst
------
-
-.. include:: in-the.rst
------
-
-.. include:: folder.rst
------
-
-.. include:: in-the-order.rst
------
-
-.. include:: you-want.rst
------
-
-.. include:: them.rst
------
-
-.. include:: to-appear.rst
------
-
-
-```
+These are only listed in the main index.rst page. There may be times when using the top level title is needed to break out a section further but we don't have an example of that yet.
 
 ### SubTitle/Heading 2
 
@@ -95,8 +94,8 @@ SubTitle/Heading 2
 ------------------
 ```
 
-For every subtitle/heading 2 you should have a separte index.rst file.
-These get included in the index.rst file so they all look like one big page.
+For every subtitle/heading 2 you should have a rst file.
+The Subtitle doesn't need to match the file name exactly but they should be similar, avoiding spaces in filenames is always good practice.
 This makes editing the pages and finding specific sections much easier.
 This also helps to avoid merge conflicts as many will contribute to this documentation.
 
@@ -147,7 +146,7 @@ Below is outlined how to create and or view these label names.
 ### Images
 
 Images are stored and organized by relatable sections at `/_static/img`
-For every image you add you should add substitution label for it in the `_static/img/index.rst`
+For every image you add you should add substitution label for it in the `_static/img/images.rst`
 
 These should look like this referencing the full path
 
@@ -176,7 +175,7 @@ The static path defines the root folder name `_static` (which is the default/sta
 
 #### Using css roles
   
-in the `/_static/css/index.rst` file we can define roles like this
+in the `/_static/css/roles.rst` file we can define roles like this
 
 ```:rst
 `.. role:: red`
