@@ -41,7 +41,7 @@ In the screenshot above you see a successful network boot:
 
 Then you will be presented with the Fog boot menu:
 
-|capture_fog_menu.png|
+|capture_fog_menu|
 
 Use your arrow keys to move the selection up and down. The default, 'boot from hard disk' is chosen in 3 seconds, so be quick.
 

@@ -17,16 +17,47 @@ We're assuming that you have a running FOG server that was installed according t
 
 The machine that you're installing the FOG client on is a Windows 10 machine.
 
-Install the FOG client
-======================
+.. admonition:: info
+
+  - .NET Framework version 4.0+ (Note: .NET 4 client profile will NOT work)
+  - You can download the framework from here: `Microsoft .NET Framework 4.5.1 (Offline Installer) for Windows Vista SP2, Windows 7 SP1, Windows 8, Windows Server 2008 SP2 Windows Server 2008 R2 SP1 and Windows Server 2012 <https://www.microsoft.com/en-us/download/details.aspx?id=40779>`_
+  - Windows 10 comes with a version of .Net that will work.
+
+Fog Client Installation
+=======================
+
+The following are the steps to install the client on a host
+
+Download The Fog Client
+-----------------------
 
 - Log in on the client machine, open a browser and browse to the Fog Web UI.
 - On the bottom of the Web UI, click on the link 'FOG Client' (you don't have to log in).
-- Click on the link 'MSI -- Network Installer' and run the MSI package.
+- Select Your installer
+  
+MSI Installer
+#############
+  
+  - Click on the link 'MSI -- Network Installer' to run the MSI package (can also be used with gpo software deployment and other silent installs).
+  - The url to download this is http://fogserver/fog/client/download.php?newclient
 
-.. note:: You may get a 'Windows protected your PC' popup. In that case you have to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'.
+Smart Installer
+###############
 
-The installer starts.
+  - Click on the Smart Installer link to download and run the smart installer. This is a cross-platform installation that detects your operating system
+  - The url to download this is http://fogserver/fog/client/download.php?smartinstaller
+
+
+Run The Installer
+-----------------
+
+.. admonition:: info
+
+  The following steps follow the msi installer wizard. The Smart Installer wizard is similar
+
+.. note::
+  
+  You may get a 'Windows protected your PC' popup. In that case you have to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'.
 
 - At the Welcome screen, click on 'Next'
 - Accept the terms in the License Agreement (it's the GPL license, so why not) and click on 'Next'
@@ -48,7 +79,7 @@ Now the FOG client has been installed. In the Task bar there should be a new ico
 
 |fog_client_icon|
 
-This icon is not from the FOG Client itself, but handles the notifications to the end user.
+This icon tells you the version of the FOG Client and helps handle the notifications to the end user.
 
 The first time the FOG client service runs on a machine, it will create a set of encryption keys and then tries to register itself at the FOG server.
 
@@ -60,7 +91,7 @@ Approve the machine
 - Start a browser, go to the Fog Web UI and log in
 - Go to 'Host Management' -> 'List all Hosts' and click on the machine you have just installed the FOG client on.
 
-.. Image:: /_static/img/tasks/capture_host_management_1.png
+|capture_host_management_1|
 
 If the Windows OS was not deployed with FOG, then the FOG client is not yet registered at FOG and the client is not trusted by the FOG Server. We need to manually approve this machine:
 
@@ -75,3 +106,65 @@ An approved host looks like this:
 |fog_client_approved|
 
 The FOG client can now execute tasks we're assigning to it in the FOG Web UI.
+
+Fog Client Silent Installation
+==============================
+
+If you would like to create a silent installation to deploy the fog client here is an example of a powershell script that would do that for you
+
+.. note::
+
+  This script assumes that you can access your fogserver by the default name of `fogserver` which can be a hostname or a dns alias
+
+.. code-block:: powershell
+
+  #download the client installer to C:\fogtemp\fog.msi
+  Invoke-WebRequest -URI "http://fogserver/fog/client/download.php?newclient" -UseBasicParsing -OutFile 'C:\fogtemp\fog.msi'
+  #run the installer with msiexec and pass the command line args of /quiet /qn /norestart
+  Start-Process -FilePath msiexec -ArgumentList @('/i','C:\fogtemp\fog,msi','/quiet','/qn','/norestart') -NoNewWindow -Wait;
+
+MSI Switches
+------------
+
+|  USETRAY= defaults to "1", if "0" the tray will be hidden
+|  HTTPS= defaults to "0", if "1" the client will use HTTPS (not recommended)
+|  WEBADDRESS= defaults to "fogserver", this is the ip/dns name of your server
+|  WEBROOT= defaults to "/fog"
+|  ROOTLOG= defaults to "0", if "1" the fog.log will be at C:\fog.log, otherwise %PROGRAMFILES%\FOG\fog.log
+
+Reference: https://forums.fogproject.org/topic/6222/msi-silent-install-without-tray-icon/2
+
+
+Smart Installer Switches
+------------------------
+
+| All switches with --{OPTION} can also be used as /{OPTION}
+|
+| --server= Specify the server address. Default is fogserver
+| --webroot= Specify the webroot. Default is /fog
+| -h or -https Use https for server communication
+| -r or -rootlog Put fog.log in the root of the filesystem
+| -s or --start Automatically start the service after installation. Linux only
+| -t or --tray Enabled the FOG Tray and notifications
+| -u or --uninstall Uninstall the client
+| --upgrade Upgrade the client
+| -l= or --log= Specify where to put the SmartInstaller log
+
+
+See also https://news.fogproject.org/fog-client-v0-11-0-released-2/
+
+Additional info
+===============
+
+There are 2 services and 2 log files that run on windows.
+
+Windows Services
+----------------
+
+the FogService and the FogUserService. The user service is run in a user's context and helps with notification popups and user level tasks.
+Most operations are done by the FogService that runs as the system account.
+
+Logs
+----
+
+You can find the fog log at ``C:\Fog.log`` and the user service log at ``C:\users\username\.fog_user.log``

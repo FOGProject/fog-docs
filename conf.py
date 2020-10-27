@@ -33,7 +33,8 @@ import sphinx_rtd_theme
 # ones.
 extensions = [
     'sphinx.ext.autosectionlabel',
-    'sphinx_panels'
+    'sphinx_panels',
+    'sphinx_rtd_theme'
 ]
 # autosummary_generate = True
 autosectionlabel_prefix_document = True

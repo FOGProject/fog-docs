@@ -62,8 +62,7 @@ Creating Custom Reports
 
 Custom reports are simple php scripts in FOG.  Custom reports can be created based on the following php template:
 
-.. code-block::
-    :language:php
+.. code-block:: php
 
     <?php
     /*
