@@ -72,18 +72,18 @@ Welcome to the Fog Project documentation!
 
    ---
 
-   :ref:`Tasks & Concepts <tasks/capture_an_image:Capture an Image>`
+   :ref:`Getting Started <getting_started/capture_an_image:Capture an Image>`
       
-   - Common tasks/how-tos and concepts of using fog
+   - Get started with common tasks/how-tos and concepts of using fog
    - Includes things like how to capture and deploy images
 
    .. toctree::
       :maxdepth: 6
       :hidden:
       :glob:
-      :caption: Tasks & Concepts
+      :caption: Getting started
       
-      tasks/*
+      getting_started/*
 
    ---
 
