@@ -25,58 +25,53 @@ Set up
 To set up a host to use AD, do the following:
 
 - Navigate to the hosts section of the FOG management portal and select the host you want to join AD
-- In the top menu, select 'Active Directory' section. You'll get the following options:
+- In the top menu, select 'Active Directory' section.
+  
+You get the following options:
 
-Join Domain after deploy
-^^^^^^^^^^^^^^^^^^^^^^^^
+- **Join Domain after deploy**
 
-When this checkbox is set, FOG will apply the Active Directory global default to populate the fields of this section. 
+  When this checkbox is set, FOG will apply the Active Directory global default to populate the fields of this section. 
 
-Domain name
-^^^^^^^^^^^
+- **Domain name**
 
-The fully qualified domain name. Examples are:
+  The fully qualified domain name. Examples are:
 
-- company
-- company.ad
-- company.com
-- company.local
+  - company
+  - company.ad
+  - company.com
+  - company.local
 
-Organizational Unit
-^^^^^^^^^^^^^^^^^^^
+- **Organizational Unit**
 
-The Organizational Unit, in LDAP format, where the computer object shall be created. Examples are:
+  The Organizational Unit, in LDAP format, where the computer object shall be created. Examples are:
 
-- OU=PCs,DC=company,DC=com
-- OU=Lab Computers,OU=PCs,DC=company,DC=com
+  - OU=PCs,DC=company,DC=com
+  - OU=Lab Computers,OU=PCs,DC=company,DC=com
 
-If you leave this fiels blank, the computer object will be created in the default OU for new PC's, normally 'Computers'.
+  If you leave this fiels blank, the computer object will be created in the default OU for new PC's, normally 'Computers'.
 
-Domain Username
-^^^^^^^^^^^^^^^
+- **Domain Username**
 
-The user name that will create the computer object. This user needs to have sufficient credentials to create the computer object in the OU. Usually this will be an account that is member of the 'Domain Administrators' group.
+  The user name that will create the computer object. This user needs to have sufficient credentials to create the computer object in the OU. Usually this will be an account that is member of the 'Domain Administrators' group.
 
-Only enter the username in this field, for example: FOGServiceAccount. Do not add the domain name.
+  Only enter the username in this field, for example: FOGServiceAccount. Do not add the domain name.
 
-Domain Password
-^^^^^^^^^^^^^^^
+- **Domain Password**
 
-The password of the user name above. The password should be typed plain-text, and will auto-encrypt on it's own when saved.
+  The password of the user name above. The password should be typed plain-text, and will auto-encrypt on it's own when saved.
 
-Name Change/AD Join Forced Reboot?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- **Name Change/AD Join Forced Reboot?**
 
-Setting this check box will configure the client to enforce the hostname / AD setting regardless of if a user is logged in.
+  Setting this check box will configure the client to enforce the hostname / AD setting regardless of if a user is logged in.
 
-So if enabled, the client will restart the computer to update the hostname even when a user is logged in. If unchecked, the client will wait until no one is using the computer before restarting to apply the hostname / AD.
+  So if enabled, the client will restart the computer to update the hostname even when a user is logged in. If unchecked, the client will wait until no one is using the computer before restarting to apply the hostname / AD.
 
-Update
-^^^^^^
+- **Update**
 
-After changing fields of this section, click on 'Update'.
+  After changing fields of this section, click on 'Update'.
 
-The 'Hostname Changer', a module of the FOG client, checks with each poll if the client machine is part of Active Directory as configured. If not, it will do either of the following tasks:
+  The 'Hostname Changer', a module of the FOG client, checks with each poll if the client machine is part of Active Directory as configured. If not, it will do either of the following tasks:
 
-- If users are logged in and the 'Name Change/AD Join Forced Reboot' box is selected, then the client will join the domain and reboot immediately
-- If no users are logged, then the client will join the domain and reboot.
+  - If users are logged in and the 'Name Change/AD Join Forced Reboot' box is selected, then the client will join the domain and reboot immediately
+  - If no users are logged, then the client will join the domain and reboot.
