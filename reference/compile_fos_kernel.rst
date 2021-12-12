@@ -26,7 +26,7 @@ Within the fos repository a build script is provided:
 
     git clone https://github.com/FOGProject/fos
     cd fos
-    ./build.sh --kernel --arch x64
+    ./build.sh --kernel-only --arch x64
 
 
 Manual compilation
