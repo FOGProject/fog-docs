@@ -14,3 +14,6 @@ Procedural Steps
 - Update the IP address on a any master storage node that may reference this FOG server Web Interface -> Storage Management
 - (For master server) Update the FOG_WEB_HOST value Web Interface -> FOG Configuration -> FOG Settings -> Web Server -> FOG_WEB_HOST
 - (For master server) Update the FOG_TFTP_HOST value Web Interface -> FOG Configuration -> FOG Settings -> TFTP Server -> FOG_TFTP_HOST
+
+Optionnaly if you have configure a dhcpd:
+- Update IP addresses (fog and gateway) inside the /etc/dhcp/dhcpd.conf
