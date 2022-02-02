@@ -17,7 +17,7 @@ To begin, ensure you have the files ``bzImage`` and ``bzImage32`` located in ``/
 With root or sudo, perform a ls to look.
 ::
 
-ls -la /var/www/html/fog/service/ipxe
+    ls -la /var/www/html/fog/service/ipxe
 
 *A common mistake is looking under ``/var/www/fog...``, but the bzImage files only exist under ``/var/www/html/fog...``*
 
@@ -46,33 +46,34 @@ Next step is to move these files to the location specified in the beginning, you
 As a reminder the location is:
 :: 
 
-/var/www/html/fog/service/ipxe
+    /var/www/html/fog/service/ipxe
 
 Permissions
 ###########
 
-Next, with root or sudo, perform a:
+Next, with root or sudo, enter:
 ::
 
-  ls -la /var/www/html/fog/service/ipxe
+    ls -la /var/www/html/fog/service/ipxe
 
 Take note of the owner listed in the files located in this directly. In my case the owner is **root**, so I changed the owner and matched the permissions found in the other files. 
 
 changing owner of the new kernels:
 ::
 
-  chown root /var/www/html/fog/service/ipxe/bzImage
-  chown root /var/www/html/fog/service/ipxe/bzImage32
+    chown root /var/www/html/fog/service/ipxe/bzImage
+    chown root /var/www/html/fog/service/ipxe/bzImage32
 
 updating permissions of files:
 ::
 
-chmod -R 775 /var/www/html/fog/service/ipxe/bzImage
-chmod -R 775 /var/www/html/fog/service/ipxe/bzImage32
+    chmod -R 775 /var/www/html/fog/service/ipxe/bzImage
+    chmod -R 775 /var/www/html/fog/service/ipxe/bzImage32
 
 To confirm, rerun the list command with root/sudo and ensure all the permissions and owners looks the same:
 ::
-ls -la /var/www/html/fog/service/ipxe
+
+    ls -la /var/www/html/fog/service/ipxe
 
 Testing
 #######
