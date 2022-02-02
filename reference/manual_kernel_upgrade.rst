@@ -35,13 +35,13 @@ Rename Files
 ############
 
 After the downloads are complete, manually rename each file (the case is important, take note there is no .filetype after the name - if using Windows be sure to check extensions for file types): 
-- **Kernel.TomElliott.5.10.71.64** will be renamed to **bzImage** 
-- **Kernel.TomElliott.5.10.71.32** will be renamed to **bzImage32**
+* **Kernel.TomElliott.5.10.71.64** will be renamed to **bzImage** 
+* **Kernel.TomElliott.5.10.71.32** will be renamed to **bzImage32**
 
 Move Files
 ##########
 
-Next step is to move these files to the location specified in the beginning, you may need root or sudo acces to move them there. you can use either the mv command or FTP. 
+Next step is to move these files to the location specified in the beginning, you may need root or sudo acces to move them there. you can use either the ``mv`` command on the server or FTP it. 
 As a reminder the location is:
 :: 
 
