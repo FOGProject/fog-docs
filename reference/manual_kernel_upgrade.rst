@@ -19,7 +19,7 @@ With root or sudo, perform a ls to look.
 
     ls -la /var/www/html/fog/service/ipxe
 
-*A common mistake is looking under ``/var/www/fog...``, but the bzImage files only exist under ``/var/www/html/fog...``*
+*On some distros (mainly older ones) the root path is  ``/var/www/fog...``, this is also a symlink on some distros (sometimes created by the fog installer). Most distros use this root path for the fog httpd/apache site ``/var/www/html/fog...``*
 
 After confirming the files exist, create a folder called **Backup** in the same location, and move the current bzImage files there. This will be helpful in case you quickly need to revert any changes you made.
 
