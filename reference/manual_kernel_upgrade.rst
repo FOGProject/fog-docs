@@ -9,7 +9,7 @@ Manually Upgrade PXE Kernel
 The kernel that the fog server uses to image clients with can be quite out of date and cause issues for some computers with newer network cards. Ideally, you can use the built in kernel update tool, but if you are experiencing issues using the tool and have not yet found a solution, you can do a manual upgrade instead. Here is the method for manually updating the kernels. 
 
 Downloading the Kernels
------------------------
+#######################
 
 To begin, ensure you have the files ``bzImage`` and ``bzImage32`` located in ``/var/www/html/fog/service/ipxe/``
 
@@ -30,9 +30,16 @@ I used a web browser on another computer as it was easier to browse. You can als
 Be sure to choose the highest number Kernel you can find, alongside the latest date. For example at the time of writing, ``Kernel.TomElliott.5.10.71.64`` is the latest with a date of 09-Oct-2021. 
 Also, ensure you download **both** the .32 option and the .64 kernels. 
 
+Rename Files
+############
+
 After the downloads are complete, manually rename each file (the case is important, take note there is no .filetype after the name): 
 **Kernel.TomElliott.5.10.71.64** will be renamed to **bzImage** 
+
 **Kernel.TomElliott.5.10.71.32** will be renamed to **bzImage32**
+
+Move Files
+##########
 
 Next step is to move these files to the location specified in the beginning, you may need root or sudo acces to move them there.
 As a reminder the location is:
