@@ -15,6 +15,7 @@ To begin, ensure you have the files ``bzImage`` and ``bzImage32`` located in ``/
 
 With root or sudo, perform a ls to look.
 ::
+
 ls -la /var/www/html/fog/service/ipxe
 
 *A common mistake is looking under /var/www/fog..., but the bzImage files only exist under /var/www/html/fog...*
@@ -22,7 +23,6 @@ ls -la /var/www/html/fog/service/ipxe
 After confirming the files exist, create a folder called **Backup** in the same location, and move the current bzImage files there. This will be helpful in case you quickly need to revert any changes you made.
 
 Next, download the newer kernel files from
-::
 https://fogproject.org/kernels
 
 I used a web browser on another computer as it was easier to browse. You can also use wget on the server if you know what to do. 
@@ -31,13 +31,13 @@ Be sure to choose the highest number Kernel you can find, alongside the latest d
 Also, ensure you download **both** the .32 option and the .64 kernels. 
 
 After the downloads are complete, manually rename each file (the case is important, take note there is no .filetype after the name): 
-::
-Kernel.TomElliott.5.10.71.64 will be renamed to bzImage 
-Kernel.TomElliott.5.10.71.32 will be renamed to bzImage32
+**Kernel.TomElliott.5.10.71.64** will be renamed to **bzImage** 
+**Kernel.TomElliott.5.10.71.32** will be renamed to **bzImage32**
 
 Next step is to move these files to the location specified in the beginning, you may need root or sudo acces to move them there.
 As a reminder the location is:
-::
+:: 
+
 /var/www/html/fog/service/ipxe
 
 Permissions
@@ -45,22 +45,26 @@ Permissions
 
 Next, with root or sudo, perform a 
 ::
+
 ls -la /var/www/html/fog/service/ipxe
 
 Take note of the owner listed in the files located in this directly. In my case the owner is **root**, so I changed the owner and matched the permissions found in the other files. 
 
 changing owner of the new kernels:
 ::
+
 chown root /var/www/html/fog/service/ipxe/bzImage
 chown root /var/www/html/fog/service/ipxe/bzImage32
 
 updating permissions of files:
 ::
+
 chmod -R 775 /var/www/html/fog/service/ipxe/bzImage
 chmod -R 775 /var/www/html/fog/service/ipxe/bzImage32
 
 To confirm, rerun the list command with root/sudo and ensure all the permissions and owners looks the same.
 ::
+
 ls -la /var/www/html/fog/service/ipxe
 
 Testing
