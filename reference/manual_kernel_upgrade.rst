@@ -1,13 +1,15 @@
 .. include:: /includes.rst
 
-----------------------------
-Manually Upgrade PXE Kernel 
-----------------------------
-*This documentation was written in 2022 using Fog Server 1.5.9 on Ubuntu 20.04.*
-*The kernel included with this version of Fog is from 2019. I was having issues imaging some desktops with newer Intel ethernet NICs.*
+---------------------------
+Manually Upgrade FOS Kernel
+---------------------------
 
-The kernel that the fog server uses to image clients with can be quite out of date and cause issues for some computers with newer network cards. Ideally, you can use the built in kernel update tool, but if you are experiencing issues using the tool and have not yet found a solution, you can do a manual upgrade instead. Here is the method for manually updating the kernels. 
+The kernel that the fog server uses to image clients with can be out of date and cause issues for some computers with newer network cards. Ideally, you can use the built in kernel update tool, but if you are experiencing issues using the tool you can do a manual upgrade instead. Here is the method for manually updating the kernels.
 
+Testing
+#######
+
+Manually loading different kernel versions can be pretty handy to test with the different hardware you have. Going straight to a new kernel - while not very likely - can cause an issue with some devices. So instead you might assign a different kernel to one or maybe a few machines through the kernel parameter in the hosts' settings: :ref:`management/host-management:kernel`
 
 Downloading the Kernels
 #######################
@@ -24,20 +26,16 @@ With root or sudo, perform a ls to look.
 After confirming the files exist, create a folder called **Backup** in the same location, and move the current bzImage files there. This will be helpful in case you quickly need to revert any changes you made.
 
 Next, download the newer kernel files from
-**https://fogproject.org/kernels**
+**https://github.com/FOGProject/fos/releases**
 
-I used a web browser on another computer as it was easier to browse. You can also use wget on the server if you know what to do. 
+Use a web browser on another computer or wget/curl on the FOG server if you know what to do. 
 
-Be sure to choose the highest number Kernel you can find, alongside the latest date. For example at the time of writing, ``Kernel.TomElliott.5.10.71.64`` is the latest with a date of 09-Oct-2021. 
-Also, ensure you download **both** the .32 option and the .64 kernels. 
+Be sure to choose the highest number kernel you can find, alongside the latest date. Also, ensure you download **both** the 32 bit (``bzImage32``) and 64 bit (``bzImage``) kernel. 
 
 Rename Files
 ------------
 
-After the downloads are complete, manually rename each file (the case is important, take note there is no .filetype after the name - if using Windows be sure to check extensions for file types) 
-
-* **Kernel.TomElliott.5.10.71.64** will be renamed to **bzImage** 
-* **Kernel.TomElliott.5.10.71.32** will be renamed to **bzImage32**
+In case you don't want to overwrite your current kernel files you better rename the new ones to use a different filename. That way you can have several versions available. For example you might have some flacky hardware that doesn't properly run the latest kernel you want to use for all your other devices.
 
 Move Files
 ----------
@@ -61,24 +59,17 @@ Take note of the owner listed in the files located in this directly. In my case 
 changing owner of the new kernels:
 ::
 
-    chown root /var/www/html/fog/service/ipxe/bzImage
-    chown root /var/www/html/fog/service/ipxe/bzImage32
-
-updating permissions of files:
-::
-
-    chmod -R 775 /var/www/html/fog/service/ipxe/bzImage
-    chmod -R 775 /var/www/html/fog/service/ipxe/bzImage32
+    chown apache:apache /var/www/html/fog/service/ipxe/bzImage*
 
 To confirm, rerun the list command with root/sudo and ensure all the permissions and owners looks the same:
 ::
 
     ls -la /var/www/html/fog/service/ipxe
 
-Testing
-#######
+Version Check
+#############
 
-Now that you have downloaded and installed the new kernels, it is a good idea to restart your server to ensure you have a fresh start. 
-After the server has been restarted and is ready to go, attempt to deploy your image again with a PXE boot.
+To verify or check the version of your kernel binaries you ca simply use the ``file`` command on most modern Liux systems:
+::
 
-With any luck, your client should now be using the newer kernel and it should include the latest network card drivers.
+    file /var/www/html/fog/service/ipxe/bzImage*
