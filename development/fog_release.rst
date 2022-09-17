@@ -7,11 +7,12 @@ FOG Release
 tbd
 
 Updating dependencies
-#####################
+=====================
 
 The FOG project relies of several other open source projects (Linux kernel, Buildroot, iPXE) to provide the PXE boot environment including all the drivers to run on pretty much any hardware out there. **It's usually a good idea to update those components a week or two before doing a FOG release to get those current versions tested by people using FOG dev-branch.**
 
-Kernel:
+Kernel
+------
 
 Check current versions on https://kernel.org/ and use the latest marked "longterm" in most cases. When switching from one longterm branch to the next (e.g. 5.15.x to 5.19.x) some more time for testing should be allowed.
 
@@ -37,6 +38,6 @@ So when asked if you want to edit the kernel config you want to say no. It will 
 
 
 Testing
-#######
+=======
 
 Default installation test are done several times a week for many distributions and versions thanks to Wayne Workman! Current results are found on: https://fogtesting.fogproject.us/
