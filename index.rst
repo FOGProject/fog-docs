@@ -177,6 +177,21 @@ Welcome to the Fog Project documentation!
 
    ---
 
+   :ref:`Development <development/fog_release:FOG Release>`
+
+   - Guide to update and release a new version of FOG
+   - tbd
+
+   .. toctree::
+      :maxdepth: 6
+      :hidden:
+      :glob:
+      :caption: development
+
+      development/*
+
+   ---
+
    :ref:`FAQ/faq:FAQs`
 
    .. toctree::
