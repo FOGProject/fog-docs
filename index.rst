@@ -180,7 +180,7 @@ Welcome to the Fog Project documentation!
    :ref:`Development <development/fog_release:FOG Release>`
 
    - Guide to update and release a new version of FOG
-   - tbd
+   - API
 
    .. toctree::
       :maxdepth: 6
