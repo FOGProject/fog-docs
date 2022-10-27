@@ -13,6 +13,7 @@
 .. |ipodLogin| Image:: /_static/img/management/Ipod_login.JPG
 .. |ipodResults| Image:: /_static/img/management/Ipod_results.JPG
 .. |logoff| Image:: /_static/img/management/Logoff.png
+.. |main_menu_plugin_icon| Image:: /_static/img/management/main_menu_plugin_icon.jpg
 .. |Nfsgroup| Image:: /_static/img/management/Nfsgroup.jpg
 .. |plugins| Image:: /_static/img/management/Plugins.png
 .. |printer| Image:: /_static/img/management/Printers.png
