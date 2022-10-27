@@ -24,22 +24,24 @@ After reloading the FOG web UI you see a new icon (gear wheel) in the main menu:
 |main_menu_plugin_icon|
 
 Activate Plugins
-################
+================
 
 Lists all the available plugins to install
 
 Install Plugins
-###############
+===============
 
 Lists all your "downloaded" plugins that are not activated yet
 
 Installed Plugins
-#################
+=================
+
 Lists all your installed and active plugins
 
 -----------------
 Available Plugins
 -----------------
+
 
 Capone
 ======
