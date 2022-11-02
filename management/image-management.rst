@@ -84,7 +84,9 @@ tbd
 Image Manager
 -------------
 
-tbd
+FOG comes with two different tools (a.k.a "managers") to create an image of your disks/partitions: partclone and partimage. In early versions partimage was the only tool. For historical reasons partimage is still available but hardly anyone uses it anymore as partclone is the more active project, supporting newer filesystems like APFS.
+
+FOG 1.3.6 added the feature to compress (Gzip and Zstd) and split image files as well. This might be useful if images are stored on storage not able to handle huge files. Using compression will make the image files smaller but imaging takes longer. Compression is done on the client machine so depending on the CPU it is wise to use compression or not. Recent generations of CPUs handle compression more efficienly making it a great option to save image space and network transfer volume.
 
 Adding Existing Image objects
 =============================
