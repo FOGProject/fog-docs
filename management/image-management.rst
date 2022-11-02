@@ -6,10 +6,23 @@ Image Management
 
 - Image objects in FOG are the representation of the physical files that contain the disk or partition images that are saved on the FOG server.
 
-Creating Images objects
+Creating Image objects
 =======================
 
 - Image objects in FOG are created in the Images section of the FOG management portal.  To create a new image click on the "New Image" button on the left hand menu.  An image object requires a name and a image file path.  
+
+Image Name and Path
+-------------------
+
+tbd
+
+Operating System
+----------------
+
+tbd
+
+Image Type
+----------
 
 - When creating images you have a few choices in how you want that image to 'act'.  The possible partition types include:
 
@@ -21,7 +34,7 @@ Creating Images objects
   Raw Image (Sector By Sector, DD, Slow)
 
 Single Disk - Resizable
------------------------
+#######################
 
 - This is the detault choice used by FOG as it works in most cases and allows for deployment to smaller size disks as well. 
 - It takes a copy of every partition on the disk, and resizes partitions that has excessive free space to a smaller size where possible. 
@@ -32,7 +45,7 @@ Single Disk - Resizable
     - When the partitions are laid onto the destination drive, all resized partitions are intelligently expanded to utilize the entire drive.
 
 Multiple Partition Image - Single Disk (Not Resizable)
-------------------------------------------------------
+######################################################
 
 - If you don't need to deploy to a smaller size disk you might consider using this image type, as it's less likely to cause an issue and image size on the server is still as small as with resizable image type.
 - Single Disk will back up all the supported partitions on the first disk drive detected by FOG, but the partitions are NOT resized by FOG.
@@ -45,7 +58,7 @@ Multiple Partition Image - Single Disk (Not Resizable)
     - The swap partition should be moved out of the extended partition
 
 Multiple Partition Image - All Disks (Not Resizable)
-----------------------------------------------------
+####################################################
 
 - This is what you should pick when you want all partitions from multiple disks to be captured. 
 - The partitions are NOT resizable by FOG. 
@@ -53,7 +66,7 @@ Multiple Partition Image - All Disks (Not Resizable)
     - This is done through the host's "General" area, in the "Host Primary Disk" field.
 
 Raw Image (Sector By Sector, DD, Slow)
---------------------------------------
+######################################
 
 .. warning:: This should always be the last resort.
 
@@ -62,6 +75,16 @@ Raw Image (Sector By Sector, DD, Slow)
 - This image type also takes a **significant** amount of time to capture and deploy.
 
 .. note:: All of these image types can be deployed using multi-cast or unicast to clients
+
+Partition
+---------
+
+tbd
+
+Image Manager
+-------------
+
+tbd
 
 Adding Existing Image objects
 =============================
