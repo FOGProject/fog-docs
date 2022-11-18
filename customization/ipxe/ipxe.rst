@@ -10,25 +10,39 @@ Custom Background
 
 You can add a custom picture background
 
-Some
-====
+-----------------
+Prelude for adding IPXE boot entries
+-----------------
 
-you put it in a spot
+If you have a lot of files for customboot entries i highly reccomend you put those files on a different webserver.
+This because CPU usage will be very high due to PHP FPM.
 
-headings
---------
+-----------------
+Adding a WindowsPE based image
+-----------------
 
-be sure to back it up
+First of all you need to need WIMBOOT.
+This is a tool that allows you to boot WindowsPE over IPXE and load the files into ram.
+You can download it here:
+``https://github.com/ipxe/wimboot/releases/latest/download/wimboot``
 
-around
-######
+place those files on a webserver in a standalone folder.
 
-or you could lose it on upgrades
+After that you can add you unpacked iso the the webserver.
 
-here
-^^^^
+Now you need to create a customboot entry.
+::
+    #adding webserver as variable
+    set URL http://yourwebserver/
+    #importing wimboot
+    kernel ${URL}wimboot/wimboot
+    #importing your startup proccess executable
+    initrd ${URL}ISOfolder/Boot/BCD BCD
+    #importing boot.sdi
+    initrd ${URL}ISOfolder/Boot/boot.sdi boot.sdi
+    #importing boot.wim
+    initrd ${URL}ISOfolder/Boot/boot.wim boot.wim
+    #tell IPXE to boot files loaded in ram
+    boot
 
-these are words
-
-there
-^^^^^
+-----------------
