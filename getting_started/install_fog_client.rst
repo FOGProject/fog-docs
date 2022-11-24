@@ -85,6 +85,11 @@ The first time the FOG client service runs on a machine, it will create a set of
 
 This may take some time, as the startup type of the FOG client service is set to 'Automatic - Delayed'. You may want to force start the FOG client directly after installation or reboot the machine.
 
+Installer issue
+---------------
+
+When things go wrong and the setup is not able to install the fog-client software on your computer you want to check the log file in ``C:\Windows\Temp\FOGService.install.log`` for more details on why it failed.
+
 Approve the machine
 ===================
 
