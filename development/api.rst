@@ -50,6 +50,7 @@ Here are some core GET calls:
 #. ``/fog/task/active`` Returns a list of pending and active tasks
 #. ``/fog/multicastsession/current`` Returns a list of active multicast sessions
 #. ``/fog/host`` Returns a list of all the registerd hosts
+#. ``fog/host/search/*`` Returns images or hosts that match the search term (replace wildcard with search term)
 
 POST
 ----
@@ -76,7 +77,6 @@ Creating a Capture task:
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Put the ID of the host in the url of the api call
 ``/fog/host/id/task``
-
 
 Task types:
 ^^^^^^^^^^^

@@ -8,7 +8,12 @@ Customizing FOG iPXE Settings
 Custom Background
 -----------------
 
-You can add a custom picture background
+You can add a custom picture background.
+
+Place the file in the following directory:
+``/var/www/fog/service/ipxe``
+
+And use a resolution of 800x600.
 
 -----------------
 Prelude for adding IPXE boot entries
