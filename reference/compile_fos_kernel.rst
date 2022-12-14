@@ -14,7 +14,7 @@ To be able to build the kernel from source you need tools to checkout and compil
 ::
 
     debian/ubuntu# sudo apt install git build-essential flex bison libelf-dev
-    fedora/centos# sudo yum install git gcc gcc-c++ make flex bison libelf-dev
+    fedora/centos# sudo yum install git gcc gcc-c++ make flex bison elfutils-libelf-devel 
 
 
 Build script
