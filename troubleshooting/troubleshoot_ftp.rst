@@ -250,12 +250,11 @@ Explanation of settings:
 
 .. info:: Instructions for using VI: :ref:`vi`
 
----------------------------
 Disable and Verify Firewall
----------------------------
+===========================
 
 Fedora 20/21/22/23
-==================
+------------------
 
 **Disable/stop Firewall**
 ::
@@ -268,11 +267,11 @@ Can be undone with "start" and "enable".
 
     systemctl status firewalld.service
 Fedora 16
-=========
+---------
 Add /bin/bash to /etc/shells as the vsftpd yum install does not do it correctly causing tftp timeout message
 
 Debian/Ubuntu
-=============
+-------------
 Check the status of the firewall:
 ::
 
@@ -309,13 +308,21 @@ Other debian settings:
 
     /etc/hosts.deny
 This setting in the above file will deny traffic from any source except locally:
+::
 
-ALL:ALL EXCEPT 127.0.0.1:DENY
+    ALL_ALL EXCEPT 127.0.0.1:DENY
+    
 Comment out this line like so:
+::
 
-#ALL:ALL EXCEPT 127.0.0.1:DENY
+    #ALL\:ALL EXCEPT 127.0.0.1:DENY
+
 Windows 7
-Start -> Control Panel -> View by "Small icons" -> Windows Firewall -> Turn Windows Firewall On or Off -> Turn off all three.
+=========
 
-Configuring firewall on Linux
+Start -> Control Panel -> View by "Small icons" -> Windows Firewall -> Turn Windows Firewall On or Off (Turn off all three.)
+
+Configuring Firewall on Linux
+=============================
+
 To set the firewall for Linux to only allow what is necessary, please see the FOG security article.
