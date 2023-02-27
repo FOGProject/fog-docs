@@ -32,7 +32,9 @@ These commands are NOT done on your FOG server, they are done on another Linux m
 - Delete the file.
 - Exit ftp.
 
-`[administrator@D620 ~]$ echo 'some text here to send later' > test.txt
+::
+
+[administrator@D620 ~]$ echo 'some text here to send later' > test.txt
 [administrator@D620 ~]$ ftp
 ftp> open 10.0.0.3
 Connected to 10.0.0.3 (10.0.0.3).
