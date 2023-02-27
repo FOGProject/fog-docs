@@ -279,7 +279,7 @@ Explanation of settings:
 
     man vsftpd
   
-:ref:`Instructions for using VI <reference/vi:vi>`
+:ref:`Instructions for using vi text editor <reference/vi:vi>`
 
 Disable and Verify Firewall
 ===========================
@@ -371,7 +371,7 @@ Start -> Control Panel -> View by "Small icons" -> Windows Firewall -> Turn Wind
 Configuring Firewall on Linux
 -----------------------------
 
-To set the firewall for Linux to only allow what is necessary, please see the :ref:`Link Text <reference:fog_security:FOG Security article>`.
+To set the firewall for Linux to only allow what is necessary, please see the :ref:`FOG Security article  <reference/fog_security:FOG Security>`.
 
 -----------------------
 Credentials / Passwords
@@ -397,7 +397,7 @@ To edit /opt/fog/.fogsettings:
 
     vi /opt/fog/.fogsettings
 
-:ref:`Instructions for using VI <reference/vi:vi>`
+:ref:`Instructions for using vi text editor<reference/vi:vi>`
 
 .. note:: For FOG Trunk/FOG 1.3.0 users, if the password field inside of the /opt/fog/.fogsettings file is set incorrectly, every time you re-run the FOG installer, it will set the local fog user's password to this incorrect password. It's important to set the password correctly in all of the above listed areas.
 
