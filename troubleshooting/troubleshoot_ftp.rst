@@ -36,7 +36,6 @@ These commands are NOT done on your FOG server, they are done on another Linux m
 - Download the file.
 - Delete the file.
 - Exit ftp.
-
 ::
 
     [administrator@D620 ~]$ echo 'some text here to send later' > test.txt
@@ -87,7 +86,170 @@ These commands are NOT done on your FOG server, they are done on another Linux m
     421 Timeout.
     [administrator@D620 ~]$
 
+Try to get a file with Windows
+==============================
+
+*Explanation of the code below:*
+
+- Create a file with some data
+- Start FTP
+- Open connection to FOG server
+- Enter username (found in Web Interface -> Storage Management -> [NodeName] -> Management Username).
+- Enter password (found in Web Interface -> Storage Management -> [NodeName] -> Management Password).
+- Upload file
+- List directory to verify
+- Download file
+- Close connection
+- Close FTP.
 ::
 
-    Test new code block
-    Again.
+    c:\SomeFolder>echo This is a bit of text to throw into a file > text.txt
+    
+    c:\SomeFolder>ftp
+    ftp> open 10.0.0.3
+    Connected to 10.0.0.3.
+    220 (vsFTPd 3.0.2)
+    User (10.0.0.3:(none)): fog
+    331 Please specify the password.
+    Password:
+    230 Login successful.
+    ftp> put text.txt
+    200 PORT command successful. Consider using PASV.
+    150 Ok to send data.
+    226 Transfer complete.
+    ftp: 45 bytes sent in 0.00Seconds 22.50Kbytes/sec.
+    ftp> ls
+    200 PORT command successful. Consider using PASV.
+    150 Here comes the directory listing.
+    text.txt
+    226 Directory send OK.
+    ftp: 10 bytes received in 0.00Seconds 10.00Kbytes/sec.
+    ftp> get text.txt
+    200 PORT command successful. Consider using PASV.
+    150 Opening BINARY mode data connection for text.txt (45 bytes).
+    226 Transfer complete.
+    ftp: 45 bytes received in 0.00Seconds 45000.00Kbytes/sec.
+    ftp> close
+    221 Goodbye.
+    ftp> quit
+    
+    c:\SomeFolder>
+    
+-----------
+FTP Service
+-----------
+
+Fedora 20/21/22/23
+==================
+
+- Check the status of FTP with
+::
+
+    systemctl status vsftpd.service
+(Should be on and green, no errors, and enabled)
+
+- stop, start, disable and enable FTP service.
+::
+
+    systemctl stop vsftpd.service
+    systemctl start vsftpd.service
+    systemctl disable vsftpd.service
+    systemctl enable vsftpd.service
+- Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to
+::
+    ftp://x.x.x.x
+- Use fog / your-fog-account-Password for the credentials
+- You should see “Index of /”
+
+Ubuntu
+======
+
+- Restart FTP service.
+::
+
+    service vsftpd restart
+- Enable and disable are not available due to this service being in the Upstart scripts.
+- Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to
+::
+
+    ftp://x.x.x.x
+- Use fog / your-fog-account-Password for the credentials (Since v. 1.5.6, the default username is 'fogproject.')
+- You should see “Index of /”
+
+-----------------
+FTP Settings File
+-----------------
+
+Fedora 20/21/22/23
+==================
+
+Location:
+::
+
+    /etc/vsftpd/vsftpd.conf
+To display file:
+::
+
+    cat /etc/vsftpd/vsftpd.conf
+It should look a lot like this:
+::
+
+    anonymous_enable=NO
+    local_enable=YES
+    write_enable=YES
+    local_umask=022
+    dirmessage_enable=YES
+    xferlog_enable=YES
+    connect_from_port_20=YES
+    xferlog_std_format=YES
+    listen=YES
+    pam_service_name=vsftpd
+    userlist_enable=NO
+    tcp_wrappers=YES
+    seccomp_sandbox=NO
+To edit:
+
+::
+
+    vi /etc/vsftpd/vsftpd.conf
+Explanation of settings:
+::
+
+    man vsftpd.conf
+    
+Ubuntu
+======
+
+Location:
+::
+    /etc/vsftpd.conf
+To display file:
+::
+
+    cat /etc/vsftpd.conf
+It should look a lot like this:
+::
+
+    anonymous_enable=NO
+    local_enable=YES
+    write_enable=YES
+    local_umask=022
+    dirmessage_enable=YES
+    xferlog_enable=YES
+    connect_from_port_20=YES
+    xferlog_std_format=YES
+    listen=YES
+    pam_service_name=vsftpd
+    userlist_enable=NO
+    tcp_wrappers=YES
+    seccomp_sandbox=NO
+To edit:
+::
+
+    vi /etc/vsftpd.conf
+Explanation of settings:
+::
+
+    man vsftpd
+
+[Instructions on using Vi: Vi](https://wiki.fogproject.org/wiki/index.php?title=Vi)
