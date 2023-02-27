@@ -1,8 +1,6 @@
 .. include:: /includes.rst
 
-.. note::
-
-It seems that greater than 90% of FOG FTP problems are caused by bad/mismatched credentials. Because of this, we recommend skipping straight to the Credentials / Passwords section first.
+.. note:: It seems that greater than 90% of FOG FTP problems are caused by bad/mismatched credentials. Because of this, we recommend skipping straight to the Credentials / Passwords section first.
 
 ----------------------------------
 FTP's roles in FOG

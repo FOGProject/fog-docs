@@ -13,7 +13,8 @@ FOG Client to FOG Server communications
 
 An installed FOG Client on a machine regularly polls the FOG Server for outstanding tasks.
 
-|fog client to server communications|
+Fog client to server communications
+-----------------------------------
 
 This polling is done via HTTP or HTTPS. When there is a firewall in between the FOG Client and Server, make sure you open port 80/tcp (HTTP) or port 443/tcp (HTTPS), depending if you use HTTP or HTTPS for client/server communications. For more information see TODO: create link.
 

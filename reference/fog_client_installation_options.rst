@@ -152,8 +152,8 @@ There are various ways to uninstall the client:
 Linux client
 ============
 
-Prerequisites
--------------
+Linux Client Pre-requisites
+---------------------------
 
 - Mono: latest stable build
 - xprintidle: This dependency is optional. If not installed AutoLogOut will not run. xprintidle basically just returns the idle time of an x window, therefore on a system without a GUI it is not needed and should not be installed. It should be available in standard package managers. E.G. apt-get, yum, or dnf
@@ -248,14 +248,15 @@ Limitations
   - Active Directory joining
   - PrinterManager
 
-Logging
--------
+Linux Client Logging
+--------------------
 
 The log is located at /opt/fog-service/fog.log.
 
 
-Uninstall
----------
+Uninstall Linux Client
+----------------------
+
 To uninstall:
 
 ::
@@ -267,8 +268,8 @@ To uninstall:
 OS X Client
 ===========
 
-Prerequisites
--------------
+OS X Client Pre-requisites
+--------------------------
 
 - Mono: use the latest stable build.
 
@@ -301,19 +302,19 @@ The service is automatically configured to run on startup. To manually start and
   sudo launchctl load -w /Library/LaunchDaemons/org.freeghost.daemon.plist
   sudo launchctl unload -w /Library/LaunchDaemons/org.freeghost.daemon.plist
 
-Limitations
------------
+OS X Client Limitations
+------------------------
 
 The follow modules / features are not yet supported
 - PrinterManager
 
-Logging
--------
+OS X Logging
+------------
 
 You can find the client log file in /opt/fog-service/fog.log 
 
-Uninstall
----------
+Uninstall OS X Client
+----------------------
 To uninstall:
 
 ::

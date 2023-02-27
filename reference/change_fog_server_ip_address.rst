@@ -8,7 +8,7 @@ Procedural Steps
 ================
 
 - Follow appropriate steps for your Linux distribution to change the OS's IP address.
-- Update the ipaddress= field (and other fields if necessary) inside the /opt/fog/.fogsettings file. :ref:`More information about the fogsettings file <install_fogsettings>`.
+- Update the ipaddress= field (and other fields if necessary) inside the /opt/fog/.fogsettings file. :ref:`reference/install_fogsettings:The .fogsettings file`.
 - Rerun the installer, you'll need to use **--recreate-CA** and **--recreate-keys keys** as the installer provides a certificate with a Common Name based on the ip which will be shipped in the iPxe kernel and failed to load any https resources as the certificate isn't valid anymore.
 - Update the IP address inside ``/tftpboot/default.ipxe`` (look for the chain line i.e ``chain https://x.x.x.x/fog/service/ipxe/boot.php##params``)
 - Update the IP address for the storage node on the FOG system where you changed the IP address Web Interface -> Storage Management

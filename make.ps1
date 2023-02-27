@@ -27,8 +27,14 @@ try {
 } catch {
 	try {
 		# try default windows path
-		$sphinxBuild = "$ENV:USERPROFILE\AppData\Local\Programs\Python\Python37\Scripts\sphinx-build.exe"
-		& $sphinxBuild | Out-Null
+		# $sphinxBuild = "$ENV:USERPROFILE\AppData\Local\Programs\Python\Python*\Scripts\sphinx-build.exe"
+		$sphinxBuild = (gci -Filter "sphinx-build.exe" -Recurse -file -Path "$env:USERPROFILE\" -force).FullName;
+		if ( ($sphinxBuild).count -eq 1 ) {
+			$ENV:SPHINXBUILD = $sphinxBuild
+		} else {
+			Write-Warning "Multiple versions of sphinx-build.exe found in current user's folder, will try first one $($sphinxBuild | out-string). Set the correct one with $ENV:SPHINXBUILD = 'correct\path\to\sphinx-build.exe'"
+			& $sphinxBuild[0] | Out-Null
+		}
 	} catch {
 
 		"" | Out-Host
