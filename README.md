@@ -131,6 +131,19 @@ Heading 6
 
 This heading level should rarely be used, but it is provided so that you have at least 4 levels to traverse through when writing out a section of documentation.
 
+## Formatting
+
+### Code Block
+
+```
+::
+
+    Code line 1
+    Code line 2
+```
+
+Start with a double colon, then skip a line before starting your code block text. The text needs to be tabbed at 4 spaces.
+
 ## Including images, css, videos, javascript, etc
 
 At the top of every index.rst we have the line `.. include:: /includes.rst`
