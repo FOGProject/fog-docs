@@ -373,9 +373,8 @@ Configuring Firewall on Linux
 
 To set the firewall for Linux to only allow what is necessary, please see the :ref:`FOG Security article  <reference/fog_security:FOG Security>`.
 
------------------------
 Credentials / Passwords
------------------------
+=======================
 
 There are a few places where all the credentials (on a standard install) should match exactly.
 
