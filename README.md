@@ -69,6 +69,12 @@ Anything defined as a heading or title can be linked to from anywhere else with 
 :ref:`installation/install_fog_server:CentOS 7 or RHEL 7`
 ```
 
+- Same reference but renaming it
+
+```:rst
+:ref:`Whatever you want it to say <installation/install_fog_server:CentOS 7 or RHEL 7>`
+```
+
 ### Title/heading 1
 
 ```:rst
