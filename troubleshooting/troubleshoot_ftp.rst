@@ -315,7 +315,7 @@ This setting in the above file will deny traffic from any source except locally:
 Comment out this line like so:
 ::
 
-    #ALL:ALL EXCEPT 127.0.0.1:DENY
+    # ALL:ALL EXCEPT 127.0.0.1:DENY
 
 Windows 7
 ---------
@@ -325,17 +325,18 @@ Start -> Control Panel -> View by "Small icons" -> Windows Firewall -> Turn Wind
 Configuring Firewall on Linux
 -----------------------------
 
-To set the firewall for Linux to only allow what is necessary, please see the :ref:`FOG security article`.
+To set the firewall for Linux to only allow what is necessary, please see the :ref:`Link Text <reference:fog_security:FOG Security article>`.
 
 -----------------------
 Credentials / Passwords
 -----------------------
 
 There are a few places where all the credentials (on a standard install) should match exactly.
+
 - There are a few places where all the credentials (on a standard install) should match exactly.
 - Web Interface -> Storage Management -> [Your storage node] -> Management Username & Management Password
 - Web Interface -> FOG Configuration -> FOG Settings -> TFTP Server -> FOG_TFTP_FTP_USERNAME & FOG_TFTP_FTP_PASSWORD
-- The local 'fog' user's password on the Linux FOG server
+- The local 'fogproject' user's password on the Linux FOG server
 - Server file: /opt/fog/.fogsettings -> password (For FOG Trunk versions 1.3.0 and higher)
 - Server file: /opt/fog/.fogsettings -> username (For FOG Trunk versions 1.3.0 and higher)
 All of those should match (again, on a standard installation).
