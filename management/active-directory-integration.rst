@@ -11,9 +11,9 @@ Requirements
 
 In order for Active Directory integration to function, you need the following:
 
-- The image will need to have the FOG service installed.
-- Before capturing your image, the computer is NOT a member of any domain
-- In order to add a computer to a domain, FOG requires a username and password of an account that has rights to the OU where the computer objects are stored in the domain tree.  This user account should have rights to join computers to the Domain, as well as sufficient rights to create/manage computer objects.
+* The image will need to have the FOG service installed.
+* Before capturing your image, the computer is NOT a member of any domain
+* In order to add a computer to a domain, FOG requires a username and password of an account that has rights to the OU where the computer objects are stored in the domain tree.  This user account should have rights to join computers to the Domain, as well as sufficient rights to create/manage computer objects.
 
 .. note:: 
 
