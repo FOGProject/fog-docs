@@ -220,12 +220,15 @@ It should look a lot like this:
     userlist_enable=NO
     tcp_wrappers=YES
     seccomp_sandbox=NO
+
 To edit:
 
 ::
 
     vi /etc/vsftpd/vsftpd.conf
+
 Explanation of settings:
+
 ::
 
     man vsftpd.conf
@@ -234,13 +237,18 @@ Ubuntu
 ------
 
 Location:
+
 ::
     /etc/vsftpd.conf
+
 To display file:
+
 ::
 
     cat /etc/vsftpd.conf
+
 It should look a lot like this:
+
 ::
 
     anonymous_enable=NO
@@ -256,16 +264,22 @@ It should look a lot like this:
     userlist_enable=NO
     tcp_wrappers=YES
     seccomp_sandbox=NO
+
 To edit:
+
 ::
 
     vi /etc/vsftpd.conf
+
 Explanation of settings:
+
 ::
 
     man vsftpd
 
-.. info:: Instructions for using VI: :ref:`vi`
+.. admonition:: info
+    
+- Instructions for using VI: :ref:`vi`
 
 Disable and Verify Firewall
 ===========================
@@ -274,26 +288,35 @@ Fedora 20/21/22/23
 ------------------
 
 **Disable/stop Firewall**
+
 ::
 
     systemctl disable firewalld.service
     systemctl stop firewalld.service
+
 Can be undone with "start" and "enable".
 **Check Firewall in Fedora 20/21/22/23**
+
 ::
 
     systemctl status firewalld.service
+
 Fedora 16
 ---------
+
 Add /bin/bash to /etc/shells as the vsftpd yum install does not do it correctly causing tftp timeout message
 
 Debian/Ubuntu
 -------------
+
 Check the status of the firewall:
+
 ::
 
     sudo iptables -L
+
 If disabled, the output should look like this:
+
 ::
 
     Chain INPUT (policy ACCEPT)
@@ -304,11 +327,15 @@ If disabled, the output should look like this:
 
     Chain OUTPUT (policy ACCEPT)
     target prot opt source destination
+
 **Disable Ubuntu Firewall**
+
 ::
 
     sudo ufw disable
+
 **Disable Debian Firewall**
+
 ::
     
     iptables -F
@@ -320,7 +347,9 @@ If disabled, the output should look like this:
     iptables -P INPUT ACCEPT
     iptables -P OUTPUT ACCEPT
     iptables -P FORWARD ACCEPT
+
 Other debian settings:
+
 ::
 
     /etc/hosts.deny
