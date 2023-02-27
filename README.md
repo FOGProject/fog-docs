@@ -144,6 +144,18 @@ This heading level should rarely be used, but it is provided so that you have at
 
 Start with a double colon, then skip a line before starting your code block text. The text needs to be tabbed at 4 spaces.
 
+### Lists
+
+```
+This is an unordered list:
+
+- Item 1
+- Item 2
+   - Subitem 1
+   - Subitem 2
+   ```
+   
+   Note the blank line before the first list item.
 ## Including images, css, videos, javascript, etc
 
 At the top of every index.rst we have the line `.. include:: /includes.rst`
