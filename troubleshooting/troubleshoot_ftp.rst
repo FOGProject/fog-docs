@@ -161,6 +161,7 @@ Fedora 20/21/22/23
 - Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to
 
 ::
+
     ftp://x.x.x.x
 
 - Use fog / your-fog-account-Password for the credentials
@@ -233,12 +234,13 @@ Explanation of settings:
 
     man vsftpd.conf
     
-In /Ubuntu
+In Ubuntu
 ------
 
 Location:
 
 ::
+
     /etc/vsftpd.conf
 
 To display file:
@@ -276,10 +278,8 @@ Explanation of settings:
 ::
 
     man vsftpd
-
-.. admonition:: info
-    
-:ref: `Instructions for using VI <reference/vi:vi>`
+  
+:ref:`Instructions for using VI <reference/vi:vi>`
 
 Disable and Verify Firewall
 ===========================
@@ -397,7 +397,7 @@ To edit /opt/fog/.fogsettings:
 
     vi /opt/fog/.fogsettings
 
-:ref: `Instructions for using VI <reference/vi:vi>`
+:ref:`Instructions for using VI <reference/vi:vi>`
 
 .. note:: For FOG Trunk/FOG 1.3.0 users, if the password field inside of the /opt/fog/.fogsettings file is set incorrectly, every time you re-run the FOG installer, it will set the local fog user's password to this incorrect password. It's important to set the password correctly in all of the above listed areas.
 
