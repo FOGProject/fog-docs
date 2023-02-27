@@ -34,6 +34,7 @@ These commands are NOT done on your FOG server, they are done on another Linux m
 - Download the file.
 - Delete the file.
 - Exit ftp.
+
 ::
 
     [administrator@D620 ~]$ echo 'some text here to send later' > test.txt
@@ -99,6 +100,7 @@ Try to get a file with Windows
 - Download file
 - Close connection
 - Close FTP.
+
 ::
 
     c:\SomeFolder>echo This is a bit of text to throw into a file > text.txt
@@ -140,21 +142,27 @@ Fedora 20/21/22/23
 ------------------
 
 - Check the status of FTP with
+
 ::
 
     systemctl status vsftpd.service
+
 (Should be on and green, no errors, and enabled)
 
 - stop, start, disable and enable FTP service.
+
 ::
 
     systemctl stop vsftpd.service
     systemctl start vsftpd.service
     systemctl disable vsftpd.service
     systemctl enable vsftpd.service
+
 - Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to
+
 ::
     ftp://x.x.x.x
+
 - Use fog / your-fog-account-Password for the credentials
 - You should see “Index of /”
 
@@ -162,14 +170,18 @@ Ubuntu
 ------
 
 - Restart FTP service.
+
 ::
 
     service vsftpd restart
+
 - Enable and disable are not available due to this service being in the Upstart scripts.
 - Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to
+
 ::
 
     ftp://x.x.x.x
+
 - Use fog / your-fog-account-Password for the credentials (Since v. 1.5.6, the default username is 'fogproject.')
 - You should see “Index of /”
 
@@ -180,14 +192,19 @@ Fedora 20/21/22/23
 ------------------
 
 Location:
+
 ::
 
     /etc/vsftpd/vsftpd.conf
+
 To display file:
+
 ::
 
     cat /etc/vsftpd/vsftpd.conf
+
 It should look a lot like this:
+
 ::
 
     anonymous_enable=NO
