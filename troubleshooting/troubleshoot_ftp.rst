@@ -1,24 +1,22 @@
 .. include:: /includes.rst
-===================
+-------------------
 Troubleshooting FTP
-===================
+-------------------
 
 .. note:: It seems that greater than 90% of FOG FTP problems are caused by bad/mismatched credentials. Because of this, we recommend skipping straight to the Credentials / Passwords section first.
 
-------------------
 FTP's roles in FOG
-------------------
+==================
 
 The primary purpose is moving & renaming image files in the /images/dev folder to the /images folder at the end of an image capture. FTP is not used for image capture or deployment because NFS is faster. FTP is also used to download kernels and delete images. FTP is also used to report "Image Size: ON SERVER". FTP is also used to ensure the image you wish to deploy exists before starting an image deployment. FTP is also what's used for image replication in multi-server setups.
 
 FTP should be able to read, write, and delete in /images/dev and /images.
 
-------------
 Testing FTP
-------------
+===========
 
 Try to get a file with Linux
-=============================
+----------------------------
 
 These commands are NOT done on your FOG server, they are done on another Linux machine (this example uses Fedora).
 
@@ -87,7 +85,7 @@ These commands are NOT done on your FOG server, they are done on another Linux m
     [administrator@D620 ~]$
 
 Try to get a file with Windows
-==============================
+------------------------------
 
 *Explanation of the code below:*
 
@@ -135,12 +133,11 @@ Try to get a file with Windows
     
     c:\SomeFolder>
     
------------
 FTP Service
------------
+===========
 
 Fedora 20/21/22/23
-==================
+------------------
 
 - Check the status of FTP with
 ::
@@ -162,7 +159,7 @@ Fedora 20/21/22/23
 - You should see “Index of /”
 
 Ubuntu
-======
+------
 
 - Restart FTP service.
 ::
@@ -176,12 +173,11 @@ Ubuntu
 - Use fog / your-fog-account-Password for the credentials (Since v. 1.5.6, the default username is 'fogproject.')
 - You should see “Index of /”
 
------------------
 FTP Settings File
------------------
+=================
 
 Fedora 20/21/22/23
-==================
+------------------
 
 Location:
 ::
@@ -218,7 +214,7 @@ Explanation of settings:
     man vsftpd.conf
     
 Ubuntu
-======
+------
 
 Location:
 ::
@@ -252,4 +248,74 @@ Explanation of settings:
 
     man vsftpd
 
-[Instructions on using Vi: Vi](https://wiki.fogproject.org/wiki/index.php?title=Vi)
+.. info:: Instructions for using VI: :ref:`vi`
+
+---------------------------
+Disable and Verify Firewall
+---------------------------
+
+Fedora 20/21/22/23
+==================
+
+**Disable/stop Firewall**
+::
+
+    systemctl disable firewalld.service
+    systemctl stop firewalld.service
+Can be undone with "start" and "enable".
+**Check Firewall in Fedora 20/21/22/23**
+::
+
+    systemctl status firewalld.service
+Fedora 16
+=========
+Add /bin/bash to /etc/shells as the vsftpd yum install does not do it correctly causing tftp timeout message
+
+Debian/Ubuntu
+=============
+Check the status of the firewall:
+::
+
+    sudo iptables -L
+If disabled, the output should look like this:
+::
+
+    Chain INPUT (policy ACCEPT)
+    target prot opt source destination 
+
+    Chain FORWARD (policy ACCEPT)
+    target prot opt source destination 
+
+    Chain OUTPUT (policy ACCEPT)
+    target prot opt source destination
+**Disable Ubuntu Firewall**
+::
+
+    sudo ufw disable
+**Disable Debian Firewall**
+::
+    
+    iptables -F
+    iptables -X
+    iptables -t nat -F
+    iptables -t nat -X
+    iptables -t mangle -F
+    iptables -t mangle -X
+    iptables -P INPUT ACCEPT
+    iptables -P OUTPUT ACCEPT
+    iptables -P FORWARD ACCEPT
+Other debian settings:
+::
+
+    /etc/hosts.deny
+This setting in the above file will deny traffic from any source except locally:
+
+ALL:ALL EXCEPT 127.0.0.1:DENY
+Comment out this line like so:
+
+#ALL:ALL EXCEPT 127.0.0.1:DENY
+Windows 7
+Start -> Control Panel -> View by "Small icons" -> Windows Firewall -> Turn Windows Firewall On or Off -> Turn off all three.
+
+Configuring firewall on Linux
+To set the firewall for Linux to only allow what is necessary, please see the FOG security article.
