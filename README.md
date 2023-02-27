@@ -165,6 +165,19 @@ This is an unordered list:
    
    Note the blank line before and after the list.
    
+### References (Internal links)
+
+```
+:ref:`Instructions for using vi text editor <reference/vi:vi>`
+```
+
+NOTE: This must point to a heading within a file (page), not simply a file.
+- We start with :ref: to say it's a reference.
+- Without spaces, start a block quote/back tick quote for the whole thing
+- Put in the display text (Instructions for using vi text editor)
+- Then within a <> put in the contextual path to the file with a : followed by the heading to link to.
+- End with a closing back tick. 
+   
 ## Including images, css, videos, javascript, etc
 
 At the top of every index.rst we have the line `.. include:: /includes.rst`
