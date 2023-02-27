@@ -19,13 +19,14 @@ Testing FTP
 **Try to get a file with Linux**
 These commands are NOT done on your FOG server, they are done on another Linux machine (this example uses Fedora).
 *To explain what's happening below in the code box...*
-- Create a test file with some data in it to send later.
-- Start ftp (may need installed first).
-- Open connection to FOG server.
-- Provide username (found in Web Interface -> Storage Management -> [NodeName] -> Management Username).
-- Provide password (found in Web Interface -> Storage Management -> [NodeName] -> Management Password).
-- Change to /images directory.
-- List directory contents.
+
+* Create a test file with some data in it to send later.
+* Start ftp (may need installed first).
+* Open connection to FOG server.
+* Provide username (found in Web Interface -> Storage Management -> [NodeName] -> Management Username).
+* Provide password (found in Web Interface -> Storage Management -> [NodeName] -> Management Password).
+* Change to /images directory.
+* List directory contents.
 - Upload file.
 - List directory contents to verify.
 - Download the file.
@@ -33,7 +34,6 @@ These commands are NOT done on your FOG server, they are done on another Linux m
 - Exit ftp.
 
 ::
-
 [administrator@D620 ~]$ echo 'some text here to send later' > test.txt
 [administrator@D620 ~]$ ftp
 ftp> open 10.0.0.3
