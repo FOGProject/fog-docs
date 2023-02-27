@@ -188,7 +188,7 @@ Ubuntu
 FTP Settings File
 =================
 
-Fedora 20/21/22/23
+In Fedora 20/21/22/23
 ------------------
 
 Location:
@@ -233,7 +233,7 @@ Explanation of settings:
 
     man vsftpd.conf
     
-Ubuntu
+In /Ubuntu
 ------
 
 Location:
@@ -279,12 +279,12 @@ Explanation of settings:
 
 .. admonition:: info
     
-- Instructions for using VI: :ref:`vi`
+:ref: `Instructions for using VI <reference/vi:vi>`
 
 Disable and Verify Firewall
 ===========================
 
-Fedora 20/21/22/23
+For Fedora 20/21/22/23
 ------------------
 
 **Disable/stop Firewall**
@@ -396,7 +396,8 @@ To edit /opt/fog/.fogsettings:
 ::
 
     vi /opt/fog/.fogsettings
-.. info:: Instructions for using VI: :ref:`vi`
+
+:ref: `Instructions for using VI <reference/vi:vi>`
 
 .. note:: For FOG Trunk/FOG 1.3.0 users, if the password field inside of the /opt/fog/.fogsettings file is set incorrectly, every time you re-run the FOG installer, it will set the local fog user's password to this incorrect password. It's important to set the password correctly in all of the above listed areas.
 
