@@ -26,12 +26,11 @@ These commands are NOT done on your FOG server, they are done on another Linux m
 
     * Create a test file with some data in it to send later.
     * Start ftp (may need installed first).
-* Open connection to FOG server.
+   * Open connection to FOG server.
 * Provide username (found in Web Interface -> Storage Management -> [NodeName] -> Management Username).
 * Provide password (found in Web Interface -> Storage Management -> [NodeName] -> Management Password).
 * Change to /images directory.
 * List directory contents.
-
 - Upload file.
 - List directory contents to verify.
 - Download the file.
