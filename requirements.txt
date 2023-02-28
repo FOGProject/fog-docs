@@ -5,3 +5,4 @@ sphinx-panels==0.6.0
 pygments
 sphinx_rtd_theme==1.2.0
 docutils==0.17.1
+myst_parser

@@ -190,7 +190,7 @@ FTP Settings File
 =================
 
 In Fedora 20/21/22/23
-------------------
+---------------------
 
 Location:
 
@@ -235,7 +235,7 @@ Explanation of settings:
     man vsftpd.conf
     
 In Ubuntu
-------
+---------
 
 Location:
 
@@ -285,7 +285,7 @@ Disable and Verify Firewall
 ===========================
 
 For Fedora 20/21/22/23
-------------------
+----------------------
 
 **Disable/stop Firewall**
 
@@ -353,12 +353,15 @@ Other debian settings:
 ::
 
     /etc/hosts.deny
+
 This setting in the above file will deny traffic from any source except locally:
+
 ::
 
     ALL:ALL EXCEPT 127.0.0.1:DENY
     
 Comment out this line like so:
+
 ::
 
     # ALL:ALL EXCEPT 127.0.0.1:DENY
@@ -384,6 +387,7 @@ There are a few places where all the credentials (on a standard install) should 
 - The local 'fogproject' user's password on the Linux FOG server
 - Server file: /opt/fog/.fogsettings -> password (For FOG Trunk versions 1.3.0 and higher)
 - Server file: /opt/fog/.fogsettings -> username (For FOG Trunk versions 1.3.0 and higher)
+
 All of those should match (again, on a standard installation).
 
 To change the password of the local fog user:
