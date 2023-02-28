@@ -162,6 +162,11 @@ or forums!
 Xen/XenServer
 ~~~~~~~~~~~~~
 
+XCP-ng/Xen Orchestra
+~~~~~~~~~~~~~~~~~~~~
+
+No special treatment needed; just make sure that pxe boot is checked and that the correct network is selected. 
+
 See forums
 
 -  `FOG 0.30 VM -
