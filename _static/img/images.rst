@@ -1,3 +1,8 @@
+.. Installation
+
+.. |gitClone| Image:: /_static/img/installation/git-clone.png
+
+
 .. Management
 
 .. |AllHosts| Image:: /_static/img/management/All_Hosts.png

@@ -46,15 +46,45 @@ Generally we recommend to put the repository inside of /root but if you've done 
   git clone https://github.com/FOGProject/fogproject.git
   cd fogproject
 
+|gitClone|
+
+Installing Different Branch Versions
+------------------------------------
+
+Fog has various versions available at any given time that are developed within branches of our git repo.
+The dev-branch 'dev' version is typically a stable option as much testing still occurs before changes are committed, but not as much as testing as is done for the longer term "stable" version in the master branch.
+If you want the latest and greatest, want to contribute to testing new features, or were instructed to install the dev-branch version to troubleshoot an issue you simply need to `git checkout` the dev-branch like so
+
+::
+
+  cd /root/fogproject #cd into where you cloned the git repo
+  git fetch --all #fetch all branches
+  git checkout dev-branch #switch to dev-branch
+
+Then you can run the installer to perform an upgrade or new install as shown in the next section
+
+You can switch back to the master/stable branch with 
+
+::
+
+  cd /root/fogproject
+  git fetch --all
+  git checkout master
+
+You can see a list of current branches here https://github.com/FOGProject/fogproject/branches
+
 Run the installer
 =================
+
 To start the installation process, you would follow the below steps. Running the installer must be done as root.
 
 ::
 
   sudo -i
   cd /root/fogproject/bin
-    ./installfog.sh
+  ./installfog.sh
+
+
 
 SELinux
 -------
