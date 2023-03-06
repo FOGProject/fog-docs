@@ -1,7 +1,3 @@
-<b>A guide to deployment, management, And concept overview For FOG.</b>
-
-Based on a document by: Thomas J. Munn CISSP
-
 # Fog User Guide
 
 ## Introduction
@@ -34,7 +30,7 @@ an account, as spamming of the forum has gotten pretty bad recently.
 
   
 
-<LI>
+
 
 **How should FOG be implemented?**  
 FOG is best implemented on a dedicated server, any spare machine you
@@ -45,11 +41,11 @@ degradation. A **gigabit NIC** is recommended. For faster image
 compression and decompression, provide as much processor and RAM as you
 can make available.
 
-</li>
+
 
   
 
-<LI>
+
 
 **What features are included with FOG?**  
 FOG is more than just an imaging solution, FOG has grown into an
@@ -62,11 +58,11 @@ it remove the viruses. You can wipe your disks, destroying all
 information that was on them, restore deleted files, or scan the disk
 for bad blocks.
 
-</li>
+
 
   
 
-<LI>
+
 
 **How much does FOG cost?**  
 FOG is an Open Source project and licensed under the GPL which means
@@ -87,8 +83,7 @@ should be placed through the FOG's forum which is located at:
 
 Thanks for supporting open source software and enjoy!
 
-</li>
-</UL>
+
 
 ### Background on FOG
 
@@ -112,14 +107,13 @@ Thanks for supporting open source software and enjoy!
 
 This section provides some basic concepts that the FOG Project uses.
 
-<LI>
+
 
 **PXE Network Bootstrap loading**  
 What is iPXE and the difference between the files? Check out the
 [iPXE](/customization/iPXE) page.
 
-</li>
-</UL>
+
 
 ## Installing FOG
 
@@ -169,7 +163,7 @@ These sections describe only the most generic settings.
 
   
 
-<li>
+
 
 **Integrating FOG Server with Existing Network Systems**  
 Slightly more complicated is the task of integrating FOG into your
@@ -178,8 +172,7 @@ steps to link FOG with a fairly generic enterprise system.
 **See [Integrating FOG into an Existing
 Network](Integrating_FOG_into_an_Existing_Network "wikilink")**
 
-</li>
-</ul>
+
 
 ### Advanced Network Setup
 
