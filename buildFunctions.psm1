@@ -1,5 +1,142 @@
 #modular functions to help with building the site in powershell in windows
 
+
+function Get-EnvironmentVariable {
+    <#
+    .SYNOPSIS
+    Gets an Environment Variable.
+    
+    .DESCRIPTION
+    This will will get an environment variable based on the variable name
+    and scope while accounting whether to expand the variable or not
+    (e.g.: `%TEMP%`-> `C:\User\Username\AppData\Local\Temp`).
+    
+    .NOTES
+    This helper reduces the number of lines one would have to write to get
+    environment variables, mainly when not expanding the variables is a
+    must.
+    
+    .PARAMETER Name
+    The environment variable you want to get the value from.
+    
+    .PARAMETER Scope
+    The environment variable target scope. This is `Process`, `User`, or
+    `Machine`.
+    
+    .PARAMETER PreserveVariables
+    A switch parameter stating whether you want to expand the variables or
+    not. Defaults to false. Available in 0.9.10+.
+    
+    .PARAMETER IgnoredArguments
+    Allows splatting with arguments that do not apply. Do not use directly.
+    
+    .EXAMPLE
+    Get-EnvironmentVariable -Name 'TEMP' -Scope User -PreserveVariables
+    
+    .EXAMPLE
+    Get-EnvironmentVariable -Name 'PATH' -Scope Machine
+    
+    .LINK
+    Get-EnvironmentVariableNames
+    
+    .LINK
+    Set-EnvironmentVariable
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+      [Parameter(Mandatory=$true)][string] $Name,
+      [Parameter(Mandatory=$true)][System.EnvironmentVariableTarget] $Scope,
+      [Parameter(Mandatory=$false)][switch] $PreserveVariables = $false,
+      [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
+    )
+    
+      # Do not log function call, it may expose variable names
+      ## Called from chocolateysetup.psm1 - wrap any Write-Host in try/catch
+    
+      [string] $MACHINE_ENVIRONMENT_REGISTRY_KEY_NAME = "SYSTEM\CurrentControlSet\Control\Session Manager\Environment\";
+      [Microsoft.Win32.RegistryKey] $win32RegistryKey = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($MACHINE_ENVIRONMENT_REGISTRY_KEY_NAME)
+      if ($Scope -eq [System.EnvironmentVariableTarget]::User) {
+        [string] $USER_ENVIRONMENT_REGISTRY_KEY_NAME = "Environment";
+        [Microsoft.Win32.RegistryKey] $win32RegistryKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($USER_ENVIRONMENT_REGISTRY_KEY_NAME)
+      } elseif ($Scope -eq [System.EnvironmentVariableTarget]::Process) {
+        return [Environment]::GetEnvironmentVariable($Name, $Scope)
+      }
+    
+      [Microsoft.Win32.RegistryValueOptions] $registryValueOptions = [Microsoft.Win32.RegistryValueOptions]::None
+    
+      if ($PreserveVariables) {
+        Write-Verbose "Choosing not to expand environment names"
+        $registryValueOptions = [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames
+      }
+    
+      [string] $environmentVariableValue = [string]::Empty
+    
+      try {
+        #Write-Verbose "Getting environment variable $Name"
+        if ($win32RegistryKey -ne $null) {
+          # Some versions of Windows do not have HKCU:\Environment
+          $environmentVariableValue = $win32RegistryKey.GetValue($Name, [string]::Empty, $registryValueOptions)
+        }
+      } catch {
+        Write-Debug "Unable to retrieve the $Name environment variable. Details: $_"
+      } finally {
+        if ($win32RegistryKey -ne $null) {
+          $win32RegistryKey.Close()
+        }
+      }
+    
+      if ($environmentVariableValue -eq $null -or $environmentVariableValue -eq '') {
+        $environmentVariableValue = [Environment]::GetEnvironmentVariable($Name, $Scope)
+      }
+    
+      return $environmentVariableValue
+    }
+
+function Get-EnvironmentVariableNames([System.EnvironmentVariableTarget] $Scope) {
+    <#
+    .SYNOPSIS
+    Gets all environment variable names.
+    
+    .DESCRIPTION
+    Provides a list of environment variable names based on the scope. This
+    can be used to loop through the list and generate names.
+    
+    .NOTES
+    Process dumps the current environment variable names in memory /
+    session. The other scopes refer to the registry values.
+    
+    .INPUTS
+    None
+    
+    .OUTPUTS
+    A list of environment variables names.
+    
+    .PARAMETER Scope
+    The environment variable target scope. This is `Process`, `User`, or
+    `Machine`.
+    
+    .EXAMPLE
+    Get-EnvironmentVariableNames -Scope Machine
+    
+    .LINK
+    Get-EnvironmentVariable
+    
+    .LINK
+    Set-EnvironmentVariable
+    #>
+    
+      # Do not log function call
+    
+      # HKCU:\Environment may not exist in all Windows OSes (such as Server Core).
+      switch ($Scope) {
+        'User' { Get-Item 'HKCU:\Environment' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Property }
+        'Machine' { Get-Item 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' | Select-Object -ExpandProperty Property }
+        'Process' { Get-ChildItem Env:\ | Select-Object -ExpandProperty Key }
+        default { throw "Unsupported environment scope: $Scope" }
+      }
+    }    
+
 function Update-SessionEnvVariables {
     [CmdletBinding()]
 	param (
@@ -180,21 +317,21 @@ function Add-PagesToSiteMap {
     
     
     process {
-        $indexFile = "$docsPth\commands\index.md"
-	$mkdocsYml = "$PSScriptRoot\mkdocs.yml";
-	$mkdocs = @"
-site_name: FogApi
+        
+        $mkdocsYml = "$PSScriptRoot\mkdocs.yml";
+        $mkdocs = @"
 nav:
   - Home: index.md
-  - About: about_FogApi.md
-  - Release Notes: ReleaseNotes.md
-  - Commands: 
-    - 'Index': 'commands/index.md'
 "@
 	$mkdocs += "`n";
 	$index = "# FogAPI`n`n"
-	Get-ChildItem "$docsPth\commands" | Where-Object name -NotMatch 'index' | Foreach-Object {
-		#add online version
+	Get-ChildItem "$docsPth" -Recurse | Where-Object name -NotMatch 'index' | Foreach-Object {
+
+		# if is directory make category
+        if ($_.Attributes -contains "Directory") {
+            "- $($_.BaseName): "
+        }
+        #if is 
 		$name = $_.Name;
 		$baseName = $_.BaseName
 		$file = $_.FullName;
@@ -223,3 +360,4 @@ nav:
     
     
 }
+
