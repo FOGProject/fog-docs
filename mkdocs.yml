@@ -55,6 +55,10 @@ theme:
   icon:
     logo: logo
 
+plugins:
+  - search
+  - include_dir_to_nav
+
 # Extensions
 markdown_extensions:
   - abbr
@@ -66,3 +70,16 @@ markdown_extensions:
   - toc:
       permalink: true
 
+nav:
+  - Home: index.md
+  - customization
+  - development
+  - FAQ
+  - getting_started
+  - hardware
+  - installation
+  - integrations
+  - introduction
+  - management
+  - reference
+  - troubleshooting

@@ -16,5 +16,5 @@ Install-Requirements;
 # Add-pagesToSiteMap # not yet implemented
 Start-MkDocsBuild -sourceDir $SOURCEDIR -buildDir $BUILDDIR
 
-"Opening built index.html in default browser...." | Out-Host;
-& "$BUILDDIR\html\index.html"
+# "Opening built index.html in default browser...." | Out-Host;
+# & "$BUILDDIR\html\index.html"

@@ -289,7 +289,8 @@ function Start-MkDocsBuild {
                 return "mkdocs not found";
             }
         }
-        return "$buildDir\site\index.html"
+        & "$buildDir\site\index.html"
+        return "local version opened in default browser"
         
     }
 }
