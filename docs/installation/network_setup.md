@@ -1,20 +1,14 @@
-.. include:: /includes.rst
-
---------------------------
-Other DHCP Server than FOG
---------------------------
+# Other DHCP Server than FOG
 
 If you do not use FOG to provide DHCP services in your network, then you must change the existing DHCP server to allow clients to boot from the network.
 
 These two DHCP options must be set:
 
-Option 66
-=========
+## Option 66
 
-Set Option 66, also called 'Boot Server', 'Next server' or 'TFTP Server' to the IP address of the FOG server.
+Set Option 66, also called 'Boot Server', 'Next server' or 'TFTP Server' to the IP address or hostname of the FOG server.
 
-Option 67
-=========
+## Option 67
 
 Set option 67, also called 'Bootfile Name' to ipxe.efi
 
