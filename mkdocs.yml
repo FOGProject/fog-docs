@@ -72,14 +72,21 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - customization
-  - development
-  - FAQ
-  - getting_started
-  - hardware
-  - installation
-  - integrations
-  - introduction
-  - management
-  - reference
-  - troubleshooting
+  - getting_started: getting_started
+  - installation: installation
+  - management: management
+  - Knowledge-Base: Knowledge-Base
+  - development: development
+  # - customization
+  # - FAQ
+  # - hardware
+  # - integrations
+  # - introduction
+  # - reference
+  # - troubleshooting
+
+# getting started/intro section (quick intro to what fog is vs isn't, links to install instructions, image capture/deploy instructions, etc.)
+# install/update/migrate section
+# General Management Section (basic use/glossary of the UI once installed)
+# KB section (how to guides, troubleshooting guides, general reference docs)
+# Development/Contribution Section (stuff like what we've added for making new releases)
