@@ -1,7 +1,9 @@
-.. Installation
+<!-- .. Installation -->
 
-.. |gitClone| Image:: /_static/img/installation/git-clone.png
+<!-- [gitClone]: ![gitClone](../assets/img/installation/git-clone.png "git clone") -->
 
+
+<!-- 
 
 .. Management
 
@@ -57,4 +59,4 @@
 .. |snapin_7_zip| Image:: /_static/img/tasks/snapin_7_zip.png
 .. |snapin_host_task| Image:: /_static/img/tasks/snapin_host_task.png
 .. |snapin_task_settings| Image:: /_static/img/tasks/snapin_task_settings.png
-
+ -->

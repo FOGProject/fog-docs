@@ -1,9 +1,9 @@
-.. include defined images and roles
+<!-- .. include defined images and roles -->
 
-.. include:: /_static/img/images.rst
-.. include:: /_static/css/roles.rst
-.. include:: /_static/video/videos.rst
-
+<!-- #include "img/images.md" -->
+<!-- .. include:: /_static/css/roles.rst -->
+<!-- .. include:: /_static/video/videos.rst -->
+<!-- 
 .. raw html and other helpful substitution snippets
 
 
@@ -17,4 +17,4 @@
 .. |expandEnd| raw:: html
 
    </details></br>
-
+ -->

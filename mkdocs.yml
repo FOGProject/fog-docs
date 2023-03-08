@@ -11,7 +11,7 @@ repo_url: https://github.com/Fog-Project/fog-docs
 # Copyright
 copyright: Copyright &copy; 2020 - 2023 FOG Project
 
-
+#many of these options were taken from the material mkdocs home page so we can quickly use any options documented there
 theme:
   name: material
   features:
@@ -57,7 +57,7 @@ theme:
 
 plugins:
   - search
-  - include_dir_to_nav
+  - include_dir_to_nav # see also https://pypi.org/project/mkdocs-include-dir-to-nav/ this allows for an auto organized site map
 
 # Extensions
 markdown_extensions:
@@ -72,11 +72,11 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - getting_started: getting_started
-  - installation: installation
-  - management: management
-  - Knowledge-Base: Knowledge-Base
-  - development: development
+  - Getting Started: getting_started
+  - Installing/Updating: installation
+  - Management: management
+  - Knowledge Base: Knowledge-Base
+  - Development: development
   # - customization
   # - FAQ
   # - hardware

@@ -1,4 +1,5 @@
-.. include:: /includes.rst
+#include "/assets/includes.md"
+<!-- .. include:: /asseincludes.rst -->
 
 -------------------------
 Fog installation settings

@@ -1,52 +1,48 @@
-.. include:: /includes.rst
-
-------------------
-Install FOG server
-------------------
+#Install FOG server
 
 The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
 
-Install Git
-===========
+## Install Git
 
 The preferred method of getting FOG is via Git.
 
-Debian or Ubuntu
-----------------
-::
+### Debian or Ubuntu
 
+```
   sudo -i
   apt-get -y install git
+```
 
-CentOS 7 or RHEL 7
-------------------
-::
+### CentOS 7 or RHEL 7
 
+```
   sudo -i
   yum -y install git
+```
 
-CentOS 8 or RHEL 8
-------------------
-::
+### CentOS 8 or RHEL 8
 
+```
   sudo -i
   dnf -y install git
+```
 
-Getting FOG
-===========
+## Getting FOG
+
 
 Now that git is installed, you should be able to clone the FOG repository.
 
 Generally we recommend to put the repository inside of /root but if you've done this sort of thing before, put it wherever you want. Here's how we clone FOG:
 
-::
-
+```
   sudo -i
   cd /root
   git clone https://github.com/FOGProject/fogproject.git
   cd fogproject
+```
 
-|gitClone|
+![gitClone](../assets/img/installation/git-clone.png "git clone")
+
 
 Installing Different Branch Versions
 ------------------------------------
