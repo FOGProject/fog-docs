@@ -164,19 +164,11 @@ Installation
 ------------
 
   The installer install the necessary packages and configure services.
-
   If the installer detects a mysql database server without a 'root' password, you are required to enter one.
-
   At the end the installer will display the URL to the FOG Web UI.
-
   Open a browser and paste the URL. You will be prompted to install the database.
-
   when the database is installed, you will be redirected to the Fog Web UI Login page.
-
   Then get back to the installer and press ENTER.
-
   The last parts of the installation will then run.
-
   All tasks should end without errors.
-
   Now your FOG Server is ready to use!
