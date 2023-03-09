@@ -1,10 +1,25 @@
 # pydata-sphinx-theme
 # git+https://github.com/pandas-dev/pydata-sphinx-theme.git@master
-sphinx==5.2.3
-sphinx-panels
-pygments
-sphinx_rtd_theme==1.2.0
-docutils==0.17.1
-myst_parser
-myst
-sphinx_rtd_theme
+# sphinx==5.2.3
+# sphinx-panels==0.6.0
+# pygments
+# sphinx_rtd_theme==1.2.0
+# docutils==0.17.1
+# myst_parser
+# myst
+# sphinx_rtd_theme
+# Requirements for core
+jinja2>=3.0
+markdown>=3.2
+mkdocs>=1.4.2
+mkdocs-material
+mkdocs-material-extensions>=1.1
+pygments>=2.14
+pymdown-extensions>=9.9.1
+# Requirements for plugins
+colorama>=0.4
+regex>=2022.4.24
+requests>=2.26
+mkdocs-include-dir-to-nav
+mkdocs-roamlinks-plugin>=0.1.3
+# markdown-include

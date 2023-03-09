@@ -1,0 +1,99 @@
+# Project information
+site_name: Fog Project Documentation (FOG Docs)
+site_url: https://docs.fogproject.org
+site_author: FOG Project
+site_description: >-
+  Documentation for the FOG Project computer cloning and image deployment system
+# Repository
+repo_name: FOG-Project/fog-docs
+repo_url: https://github.com/Fog-Project/fog-docs
+
+# Copyright
+copyright: Copyright &copy; 2020 - 2023 FOG Project
+
+#many of these options were taken from the material mkdocs home page so we can quickly use any options documented there
+theme:
+  name: material
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    # - content.tabs.link
+    - content.tooltips
+    - navigation.footer
+    - navigation.instant
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: assets/favicon.png
+  logo: assets/favicon.png
+  icon:
+    logo: logo
+
+plugins:
+  - search
+  - include_dir_to_nav # see also https://pypi.org/project/mkdocs-include-dir-to-nav/ this allows for an auto organized site map
+  - roamlinks # added for support of obsidian see also https://about.gitlab.com/blog/2022/03/15/publishing-obsidian-notes-with-gitlab-pages/ and https://github.com/Jackiexiao/mkdocs-roamlinks-plugin
+
+# Extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.magiclink
+  - pymdownx.tasklist
+  - pymdownx.emoji
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting_started
+  - Installing/Updating: installation
+  - Management: management
+  - Knowledge Base: Knowledge-Base
+  - Development: development
+  # - customization
+  # - FAQ
+  # - hardware
+  # - integrations
+  # - introduction
+  # - reference
+  # - troubleshooting
+
+# getting started/intro section (quick intro to what fog is vs isn't, links to install instructions, image capture/deploy instructions, etc.)
+# install/update/migrate section
+# General Management Section (basic use/glossary of the UI once installed)
+# KB section (how to guides, troubleshooting guides, general reference docs)
+# Development/Contribution Section (stuff like what we've added for making new releases)

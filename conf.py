@@ -93,8 +93,8 @@ pygments_style = 'sphinx'
 #
 html_theme = 'sphinx_rtd_theme'
 # html_theme = 'pydata_sphinx_theme'
-html_logo = "_static/img/logo/fog-logo.png"
-html_favicon = "_static/img/logo/fog-logo.ico"
+html_logo = "assets/img/logo/fog-logo.png"
+html_favicon = "assets/img/logo/fog-logo.ico"
 
 html_theme_options = {
     # Theme options for pydata_sphinx_theme
