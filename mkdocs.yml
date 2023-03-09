@@ -58,6 +58,7 @@ theme:
 plugins:
   - search
   - include_dir_to_nav # see also https://pypi.org/project/mkdocs-include-dir-to-nav/ this allows for an auto organized site map
+  - roamlinks # added for support of obsidian see also https://about.gitlab.com/blog/2022/03/15/publishing-obsidian-notes-with-gitlab-pages/ and https://github.com/Jackiexiao/mkdocs-roamlinks-plugin
 
 # Extensions
 markdown_extensions:
@@ -67,6 +68,12 @@ markdown_extensions:
   - def_list
   - footnotes
   - md_in_html
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.magiclink
+  - pymdownx.tasklist
+  - pymdownx.emoji
   - toc:
       permalink: true
 
