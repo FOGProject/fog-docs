@@ -1,7 +1,7 @@
 .. include defined images and roles
 
-.. include:: C:\Users\jfullmer\git\fog-docs\fog-docs\docs\assets\img\images.rst
-.. include:: C:\Users\jfullmer\git\fog-docs\fog-docs\docs\assets\css\roles.rst
+.. include:: /assets/img/images.rst
+.. include:: /assets/css/roles.rst
 
 .. raw html and other helpful substitution snippets
 
