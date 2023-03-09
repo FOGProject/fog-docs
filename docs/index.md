@@ -5,14 +5,24 @@
 | We are slowly moving from wiki.fogproject.org to here
 | Once all existing docs are moved over we\'ll start updating the docs
 
+## Getting Started
 
+An introduction to what fog is and some common first questions
+
+- [[introduction]]
+- [[faq]]
+
+## Installation
+
+[[install_fog_server]]
+[[install_fog_client]]
 
 <!-- 
 ::: panels
 `Introduction <introduction/introduction:What is FOG>`{.interpreted-text
 role="ref"}
 
--   An introduction to what fog is
+
 
 ::: {.toctree maxdepth="6" hidden="" glob="" caption="Introduction"}
 introduction/\*

@@ -1,0 +1,162 @@
+{
+  "main": {
+    "id": "69f3c6f6b31e4003",
+    "type": "split",
+    "children": [
+      {
+        "id": "d7207d301ce73692",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "65f3832f9856cded",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "index.md",
+                "mode": "preview",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "93553b4f6a0d3724",
+    "type": "split",
+    "children": [
+      {
+        "id": "cbd0e741e6b71ab3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "878fd38b4bf19b7e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "c32a57f959596c19",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "63ecb912cefe3ae3",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "85bdf4e38937b33f",
+    "type": "split",
+    "children": [
+      {
+        "id": "3b6c7070c59cc901",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f8e7d133b1cf1fc3",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "index.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "3740e58cea188670",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "index.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "d1c1501e72b9c722",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "92c4978bbd86f8b8",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "index.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "65f3832f9856cded",
+  "lastOpenFiles": [
+    "getting_started/introduction/introduction.md",
+    "index.md",
+    "Untitled 1.canvas",
+    "installation/install_fog_server.md",
+    "installation/fog_installation_settings.md",
+    "management/image-management.md",
+    "Untitled.canvas",
+    "installation/virtualization.md",
+    "Knowledge-Base/reference/network_and_firewall_requirements.md",
+    "installation/requirements.md"
+  ]
+}

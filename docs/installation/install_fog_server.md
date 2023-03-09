@@ -1,6 +1,6 @@
 # Install FOG server
 
-Before rushing into installing FOG you want to make sure you check the [[requirements.md]].
+Before rushing into installing FOG you want to make sure you check the [[requirements]] 
 The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
 
 ## Prerequisite
@@ -48,7 +48,7 @@ otherwise is at your own risk!
 
 If you want the latest and greatest, would like to contribute to testing
 new features, or were instructed to install the dev-branch version to
-troubleshoot an issue you simply need to [git checkout]{.title-ref} the
+troubleshoot an issue you simply need to `git checkout` the
 dev-branch like so (just ignore the comment lines starting with \'#\'):
 
     #cd into where you cloned the git repo, e.g. /root/fogproject
@@ -117,7 +117,7 @@ Prompt  | Description
 **DHCP handle DNS** | If you\'re going to run a DHCP server on this FOG server, then type y(es) to advertise DNS server IPs to the clients and type in the IP address of the local DNS server. If you have an existing DHCP server on your network, choose n(o) here. (This question is also irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
 **Activate DHCP** | If you want to run a DHCP server on this FOG server, then choose y(es). Otherwise choose n(o).
 **Internationalization support** | If you want the FOG web UI to provide additional languages, choose y(es) here.
-**HTTPS Support** | You can choose to set up FOG with encrypted communication. With FOG providing several different services (e.g. web UI for configuration, web API, PXE booting, client management using the [[fog-client]] ) choosing HTTPS support has consequences: 1. A self-signed certificate is being generated for you. 2. The Apache webserver is also set up to host the web UI through HTTPS. 3. iPXE on-the-fly compilation happens to include that certificate into the PXE binaries provided by your new FOG server Usually this works out of the box and doesn\'t take manual intervention. But if you are unsure, you might still choose n(o) to reduce the risk of issues. Even without HTTPS support, the communication between fog-client and the FOG server uses a secured encrypted channel.
+**HTTPS Support** | You can choose to set up FOG with encrypted communication. With FOG providing several different services (e.g. web UI for configuration, web API, PXE booting, client management using the [[network_and_firewall_requirements#FOG Client to FOG Server communications]] ) choosing HTTPS support has consequences: 1. A self-signed certificate is being generated for you. 2. The Apache webserver is also set up to host the web UI through HTTPS. 3. iPXE on-the-fly compilation happens to include that certificate into the PXE binaries provided by your new FOG server Usually this works out of the box and doesn\'t take manual intervention. But if you are unsure, you might still choose n(o) to reduce the risk of issues. Even without HTTPS support, the communication between fog-client and the FOG server uses a secured encrypted channel.
 **Hostname** | This host name is used in the FOG web UI. Review the auto-detected hostname; choose n(o) to accept the suggested hostname, or y(es) to enter the correct hostname.
 **Summary** | The installer prints out all options as chosen. If you are sure everything is correct, choose y(es) to proceed installing. Choosing n(o) will terminate the installer, and you will need to restart the process, answering all the questions again.
 
