@@ -68,34 +68,24 @@
 
 ## Menu Bar
 
+![[MenuBar.png]]
+
 This menu appears at the top of every page on Fog\'s web UI. The icons
 are, from left to right:
 
--  **Home/Dashboard** - This is the home screen of the FOG management
-    portal.
-- **[User Management](user-management)** - Individual administrators of the FOG resources.
-- **[Host Management](host-management)** - This section houses the hosts, which are the pcs to be
-    imaged or to extract images from.
-- **[Group Management](group-management)** - This section houses groups, which are similar PCS'
-    that need tasks done en-masse.
-- **[Image Management](image-management)** - This section allows you to manage the image files
-    stored on the FOG server.
-- **[Storage Node Management](storage-node-management)** - This section allows you to add/remove storage nodes
-    from the FOG system.
-- **[Snapin Management](snapin-management)** - This section provides ways to automate various
-    post-imaging tasks, not covered in this refument
-- **[Printer Management](printer-management)** - This section allows for management of printers,
-    allowing you create printer objects that can later be assigned to
-    hosts or groups.
-- **[Service Management](service-management)** - This section allows you to control how the *client*
-    service functions.
-- **[Task Management](task-management)** - This section allow you to perform imaging tasks such
-    as acquiring or deploying images.
-- **[Report Management](report-management)** - Reports let you pull information from the FOG database
-    either as HTML, pdf, or csv.
-- **[Fog Configuration](other-settings)** - The section has the rest of the settings that don\'t
-    fit anywhere else like the kernel updater, client service updater,
-    iPXE edits, MAC address list, Log viewer
-- **[Plugin Management](plugin-management)** - Plugins add more functionality to FOG. Must be enabled
-    in *Fog Configuration*
--   **Logoff** - Click this to log off of the Fog web UI
+Menu Logo | Name | Description
+---       | --                   | ---
+![[dashboard-ico.png]] | **Home/Dashboard** | This is the home screen of the FOG management portal.
+ ![[users-ico.png]] | **[User Management](user-management)** |  Individual administrators of the FOG resources.
+![[hosts-ico.png]] | **[Host Management](host-management)** |  This section houses the hosts, which are the pcs to be imaged or to extract images from.
+![[groups.ico.png]] | **[Group Management](group-management)** | This section houses groups, which are similar PCS' that need tasks done en-masse.
+![[images-ico.png]] | **[Image Management](image-management)** | This section allows you to manage the image files stored on the FOG server.
+![[Storage-ico.png]] | **[Storage Node Management](storage-node-management)** | This section allows you to add/remove storage nodes from the FOG system.
+![[snapin-ico.png]] | **[Snapin Management](snapin-management)** | This section provides ways to automate various post-imaging tasks such as silently installing programs
+![[printer-ico.png]] | **[Printer Management](printer-management)** | This section allows for management of printers, allowing you create printer objects that can later be assigned to hosts or groups.
+![[service-ico.png]] | **[Service Management](service-management)** | This section allows you to control how the *client* service functions.
+![[tasks-ico.png]] | **[Task Management](task-management)** | This section allow you to perform imaging tasks such as acquiring or deploying images.
+![[reports-ico.png]] | **[Report Management](report-management)** | Reports let you pull information from the FOG database either as HTML, pdf, or csv.
+![[Config.png]] | **[Fog Configuration](other-settings)** | The section has the rest of the settings that don\'t fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
+![[plugins-ico.png]] | **[Plugin Management](plugin-management)** | Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
+![[logout-ico.png]] | **Logout** | Click this to log off/out of the Fog web UI
