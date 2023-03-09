@@ -1,7 +1,3 @@
-.. include:: /includes.rst
-
-------------------
-Supported Hardware
-------------------
+# Supported Hardware
 
 This is a Placeholder

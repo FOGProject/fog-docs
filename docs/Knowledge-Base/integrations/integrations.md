@@ -1,7 +1,3 @@
-.. include:: /includes.rst
-
-------------
-Integrations
-------------
+# Integrations
 
 Placeholder

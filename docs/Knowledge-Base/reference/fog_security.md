@@ -1,5 +1,3 @@
-------------
-Fog Security
-------------
+# Fog Security
 
 Placeholder

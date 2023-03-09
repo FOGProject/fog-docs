@@ -1,42 +1,55 @@
-.. include:: /includes.rst
--------------------
-Troubleshooting FTP
--------------------
+# Troubleshooting FTP
 
-.. note:: It seems that greater than 90% of FOG FTP problems are caused by bad/mismatched credentials. Because of this, we recommend skipping straight to the Credentials / Passwords section first.
+::: note
+::: title
+Note
+:::
 
-FTP's roles in FOG
-==================
+It seems that greater than 90% of FOG FTP problems are caused by
+bad/mismatched credentials. Because of this, we recommend skipping
+straight to the Credentials / Passwords section first.
+:::
 
-The primary purpose is moving & renaming image files in the /images/dev folder to the /images folder at the end of an image capture. FTP is not used for image capture or deployment because NFS is faster. FTP is also used to download kernels and delete images. FTP is also used to report "Image Size: ON SERVER". FTP is also used to ensure the image you wish to deploy exists before starting an image deployment. FTP is also what's used for image replication in multi-server setups.
+## FTP\'s roles in FOG
 
-FTP should be able to read, write, and delete in /images/dev and /images.
+The primary purpose is moving & renaming image files in the /images/dev
+folder to the /images folder at the end of an image capture. FTP is not
+used for image capture or deployment because NFS is faster. FTP is also
+used to download kernels and delete images. FTP is also used to report
+\"Image Size: ON SERVER\". FTP is also used to ensure the image you wish
+to deploy exists before starting an image deployment. FTP is also
+what\'s used for image replication in multi-server setups.
 
-Testing FTP
-===========
+FTP should be able to read, write, and delete in /images/dev and
+/images.
 
-Try to get a file with Linux
-----------------------------
+## Testing FTP
 
-These commands are NOT done on your FOG server, they are done on another Linux machine (this example uses Fedora).
+### Try to get a file with Linux
 
-*To explain what's happening below in the code box...*
+These commands are NOT done on your FOG server, they are done on another
+Linux machine (this example uses Fedora).
 
-- Create a test file with some data in it to send later.
-- Start ftp (may need installed first).
-- Open connection to FOG server.
-- Provide username (found in Web Interface -> Storage Management -> [NodeName] -> Management Username).
-- Provide password (found in Web Interface -> Storage Management -> [NodeName] -> Management Password).
-- Change to /images directory.
-- List directory contents.
-- Upload file.
-- List directory contents to verify.
-- Download the file.
-- Delete the file.
-- Exit ftp.
+*To explain what\'s happening below in the code box\...*
 
-::
+-   Create a test file with some data in it to send later.
+-   Start ftp (may need installed first).
+-   Open connection to FOG server.
+-   Provide username (found in Web Interface -\> Storage Management -\>
+    \[NodeName\] -\> Management Username).
+-   Provide password (found in Web Interface -\> Storage Management -\>
+    \[NodeName\] -\> Management Password).
+-   Change to /images directory.
+-   List directory contents.
+-   Upload file.
+-   List directory contents to verify.
+-   Download the file.
+-   Delete the file.
+-   Exit ftp.
 
+```{=html}
+<!-- -->
+```
     [administrator@D620 ~]$ echo 'some text here to send later' > test.txt
     [administrator@D620 ~]$ ftp
     ftp> open 10.0.0.3
@@ -85,26 +98,28 @@ These commands are NOT done on your FOG server, they are done on another Linux m
     421 Timeout.
     [administrator@D620 ~]$
 
-Try to get a file with Windows
-------------------------------
+### Try to get a file with Windows
 
 *Explanation of the code below:*
 
-- Create a file with some data
-- Start FTP
-- Open connection to FOG server
-- Enter username (found in Web Interface -> Storage Management -> [NodeName] -> Management Username).
-- Enter password (found in Web Interface -> Storage Management -> [NodeName] -> Management Password).
-- Upload file
-- List directory to verify
-- Download file
-- Close connection
-- Close FTP.
+-   Create a file with some data
+-   Start FTP
+-   Open connection to FOG server
+-   Enter username (found in Web Interface -\> Storage Management -\>
+    \[NodeName\] -\> Management Username).
+-   Enter password (found in Web Interface -\> Storage Management -\>
+    \[NodeName\] -\> Management Password).
+-   Upload file
+-   List directory to verify
+-   Download file
+-   Close connection
+-   Close FTP.
 
-::
-
+```{=html}
+<!-- -->
+```
     c:\SomeFolder>echo This is a bit of text to throw into a file > text.txt
-    
+
     c:\SomeFolder>ftp
     ftp> open 10.0.0.3
     Connected to 10.0.0.3.
@@ -132,81 +147,81 @@ Try to get a file with Windows
     ftp> close
     221 Goodbye.
     ftp> quit
-    
+
     c:\SomeFolder>
-    
-FTP Service
-===========
 
-Fedora 20/21/22/23
-------------------
+## FTP Service
 
-- Check the status of FTP with
+### Fedora 20/21/22/23
 
-::
+-   Check the status of FTP with
 
+```{=html}
+<!-- -->
+```
     systemctl status vsftpd.service
 
 (Should be on and green, no errors, and enabled)
 
-- stop, start, disable and enable FTP service.
+-   stop, start, disable and enable FTP service.
 
-::
-
+```{=html}
+<!-- -->
+```
     systemctl stop vsftpd.service
     systemctl start vsftpd.service
     systemctl disable vsftpd.service
     systemctl enable vsftpd.service
 
-- Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to
+-   Test that it's functioning by using the testing instructions at the
+    top of this article additionally, if you open a web browser and go
+    to
 
-::
-
+```{=html}
+<!-- -->
+```
     ftp://x.x.x.x
 
-- Use fog / your-fog-account-Password for the credentials
-- You should see “Index of /”
+-   Use fog / your-fog-account-Password for the credentials
+-   You should see "Index of /"
 
-Ubuntu
-------
+### Ubuntu
 
-- Restart FTP service.
+-   Restart FTP service.
 
-::
-
+```{=html}
+<!-- -->
+```
     service vsftpd restart
 
-- Enable and disable are not available due to this service being in the Upstart scripts.
-- Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to
+-   Enable and disable are not available due to this service being in
+    the Upstart scripts.
+-   Test that it's functioning by using the testing instructions at the
+    top of this article additionally, if you open a web browser and go
+    to
 
-::
-
+```{=html}
+<!-- -->
+```
     ftp://x.x.x.x
 
-- Use fog / your-fog-account-Password for the credentials (Since v. 1.5.6, the default username is 'fogproject.')
-- You should see “Index of /”
+-   Use fog / your-fog-account-Password for the credentials (Since v.
+    1.5.6, the default username is \'fogproject.\')
+-   You should see "Index of /"
 
-FTP Settings File
-=================
+## FTP Settings File
 
-In Fedora 20/21/22/23
----------------------
+### In Fedora 20/21/22/23
 
 Location:
-
-::
 
     /etc/vsftpd/vsftpd.conf
 
 To display file:
 
-::
-
     cat /etc/vsftpd/vsftpd.conf
 
 It should look a lot like this:
-
-::
 
     anonymous_enable=NO
     local_enable=YES
@@ -223,35 +238,24 @@ It should look a lot like this:
     seccomp_sandbox=NO
 
 To edit:
-
-::
 
     vi /etc/vsftpd/vsftpd.conf
 
 Explanation of settings:
 
-::
-
     man vsftpd.conf
-    
-In Ubuntu
----------
+
+### In Ubuntu
 
 Location:
-
-::
 
     /etc/vsftpd.conf
 
 To display file:
 
-::
-
     cat /etc/vsftpd.conf
 
 It should look a lot like this:
-
-::
 
     anonymous_enable=NO
     local_enable=YES
@@ -269,55 +273,41 @@ It should look a lot like this:
 
 To edit:
 
-::
-
     vi /etc/vsftpd.conf
 
 Explanation of settings:
 
-::
-
     man vsftpd
-  
-:ref:`Instructions for using vi text editor <reference/vi:vi>`
 
-Disable and Verify Firewall
-===========================
+`Instructions for using vi text editor <reference/vi:vi>`{.interpreted-text
+role="ref"}
 
-For Fedora 20/21/22/23
-----------------------
+## Disable and Verify Firewall
+
+### For Fedora 20/21/22/23
 
 **Disable/stop Firewall**
-
-::
 
     systemctl disable firewalld.service
     systemctl stop firewalld.service
 
-Can be undone with "start" and "enable".
-**Check Firewall in Fedora 20/21/22/23**
-
-::
+Can be undone with \"start\" and \"enable\". **Check Firewall in Fedora
+20/21/22/23**
 
     systemctl status firewalld.service
 
-Fedora 16
----------
+### Fedora 16
 
-Add /bin/bash to /etc/shells as the vsftpd yum install does not do it correctly causing tftp timeout message
+Add /bin/bash to /etc/shells as the vsftpd yum install does not do it
+correctly causing tftp timeout message
 
-Debian/Ubuntu
--------------
+### Debian/Ubuntu
 
 Check the status of the firewall:
-
-::
 
     sudo iptables -L
 
 If disabled, the output should look like this:
-
-::
 
     Chain INPUT (policy ACCEPT)
     target prot opt source destination 
@@ -330,14 +320,10 @@ If disabled, the output should look like this:
 
 **Disable Ubuntu Firewall**
 
-::
-
     sudo ufw disable
 
 **Disable Debian Firewall**
 
-::
-    
     iptables -F
     iptables -X
     iptables -t nat -F
@@ -350,58 +336,67 @@ If disabled, the output should look like this:
 
 Other debian settings:
 
-::
-
     /etc/hosts.deny
 
-This setting in the above file will deny traffic from any source except locally:
-
-::
+This setting in the above file will deny traffic from any source except
+locally:
 
     ALL:ALL EXCEPT 127.0.0.1:DENY
-    
-Comment out this line like so:
 
-::
+Comment out this line like so:
 
     # ALL:ALL EXCEPT 127.0.0.1:DENY
 
-Windows 7
----------
+### Windows 7
 
-Start -> Control Panel -> View by "Small icons" -> Windows Firewall -> Turn Windows Firewall On or Off (Turn off all three.)
+Start -\> Control Panel -\> View by \"Small icons\" -\> Windows Firewall
+-\> Turn Windows Firewall On or Off (Turn off all three.)
 
-Configuring Firewall on Linux
------------------------------
+### Configuring Firewall on Linux
 
-To set the firewall for Linux to only allow what is necessary, please see the :ref:`FOG Security article  <reference/fog_security:FOG Security>`.
+To set the firewall for Linux to only allow what is necessary, please
+see the
+`FOG Security article  <reference/fog_security:FOG Security>`{.interpreted-text
+role="ref"}.
 
-Credentials / Passwords
-=======================
+## Credentials / Passwords
 
-There are a few places where all the credentials (on a standard install) should match exactly.
+There are a few places where all the credentials (on a standard install)
+should match exactly.
 
-- There are a few places where all the credentials (on a standard install) should match exactly.
-- Web Interface -> Storage Management -> [Your storage node] -> Management Username & Management Password
-- Web Interface -> FOG Configuration -> FOG Settings -> TFTP Server -> FOG_TFTP_FTP_USERNAME & FOG_TFTP_FTP_PASSWORD
-- The local 'fogproject' user's password on the Linux FOG server
-- Server file: /opt/fog/.fogsettings -> password (For FOG Trunk versions 1.3.0 and higher)
-- Server file: /opt/fog/.fogsettings -> username (For FOG Trunk versions 1.3.0 and higher)
+-   There are a few places where all the credentials (on a standard
+    install) should match exactly.
+-   Web Interface -\> Storage Management -\> \[Your storage node\] -\>
+    Management Username & Management Password
+-   Web Interface -\> FOG Configuration -\> FOG Settings -\> TFTP Server
+    -\> FOG_TFTP_FTP_USERNAME & FOG_TFTP_FTP_PASSWORD
+-   The local \'fogproject\' user\'s password on the Linux FOG server
+-   Server file: /opt/fog/.fogsettings -\> password (For FOG Trunk
+    versions 1.3.0 and higher)
+-   Server file: /opt/fog/.fogsettings -\> username (For FOG Trunk
+    versions 1.3.0 and higher)
 
 All of those should match (again, on a standard installation).
 
-To change the password of the local fog user:
-::
+To change the password of the local fog user: :
 
     sudo passwd fog
 
-To edit /opt/fog/.fogsettings:
-::
+To edit /opt/fog/.fogsettings: :
 
     vi /opt/fog/.fogsettings
 
-:ref:`Instructions for using vi text editor<reference/vi:vi>`
+`Instructions for using vi text editor<reference/vi:vi>`{.interpreted-text
+role="ref"}
 
-.. note:: For FOG Trunk/FOG 1.3.0 users, if the password field inside of the /opt/fog/.fogsettings file is set incorrectly, every time you re-run the FOG installer, it will set the local fog user's password to this incorrect password. It's important to set the password correctly in all of the above listed areas.
+::: note
+::: title
+Note
+:::
 
-
+For FOG Trunk/FOG 1.3.0 users, if the password field inside of the
+/opt/fog/.fogsettings file is set incorrectly, every time you re-run the
+FOG installer, it will set the local fog user\'s password to this
+incorrect password. It\'s important to set the password correctly in all
+of the above listed areas.
+:::

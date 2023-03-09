@@ -8,13 +8,19 @@ The latest version will be available at [https://docs.fogproject.org/](https://d
 
 See also for more discussion - [https://forums.fogproject.org/topic/14794/improve-documentation?_=1602258264683](https://forums.fogproject.org/topic/14794/improve-documentation?_=1602258264683)
 
-The documentation is written in restructured text and built with sphinx
+The documentation is written in Markdown (put a link here) and built with mkdocs (put a link here) and hosted via readthedocs (put a link here). We use the mkDocs material theme (put a link here) and try to be compatible with viewing and editing via obsidian (links here)
+
+# Converting to Markdown
+
+Previously we were using RST for this documentation but we are migrating to markdown. An initial conversion was handled using pandoc on a local machine. The original rst files are still present. As markdown files are updated to have any links and image references fixed, as well as any other content updates, the relative rst of the markdown file can be deleted to signify it is fully converted and ready to move forward.
 
 # Rst Styling rules for the project
 
+**This needs to be updated as we now use markdown with mkdocs and the mkdocs-material theme. Leaving it here for reference as we convert the RST files to md**
+
 The goal of the below rules is to make it so adding a new page to a section is as simple as adding a new rst file, plopping in the proper headings and doing a git push. There are some special cases that we will try to document as we find them, but that is the general idea for adding docs.
 
-As is noted below, you should always put `.. include:: /includes.rst` at the top of your files so that you have access to all the _static resources and can easily add images, css, videos, etc.
+As is noted below, you should always put `.. include:: ../includes.rst` at the top of your files so that you have access to all the _static resources and can easily add images, css, videos, etc.
 
 ## Index and ToC
 
@@ -180,22 +186,22 @@ NOTE: This must point to a heading within a file (page), not simply a file.
    
 ## Including images, css, videos, javascript, etc
 
-At the top of every index.rst we have the line `.. include:: /includes.rst`
+At the top of every index.rst we have the line `.. include:: ../includes.rst`
 This is a file at the root of the project that includes all the indexes in the `_static` directory.
 This makes it so you have access to all the shared images, roles (aka css classes), and videos via simple `|labelNames|`
 Below is outlined how to create and or view these label names.
 
 ### Images
 
-Images are stored and organized by relatable sections at `/_static/img`
-For every image you add you should add substitution label for it in the `_static/img/images.rst`
+Images are stored and organized by relatable sections at `/assets/img`
+For every image you add you should add substitution label for it in the `assets/img/images.rst`
 
 These should look like this referencing the full path
 
 ```:rst
 .. Comment saying what image folder the file is in (keep things alphabetical)
 
-.. |AllHosts| Image:: /_static/img/management/All_Hosts.png
+.. |AllHosts| Image:: /assets/img/management/All_Hosts.png
 ```
 
 The label name and the image path are case sensitive.

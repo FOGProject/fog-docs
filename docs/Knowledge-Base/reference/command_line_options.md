@@ -1,12 +1,8 @@
-.. include:: /includes.rst
+# Fog installer command line options
 
-----------------------------------
-Fog installer command line options
-----------------------------------
-
-The FOG installer has quite a few command line options. See the output below. You might want force FOG to setup the web interface via HTTPS, change the default PXE boot file or web root directory.
-
-::
+The FOG installer has quite a few command line options. See the output
+below. You might want force FOG to setup the web interface via HTTPS,
+change the default PXE boot file or web root directory.
 
     ./installfog.sh --help
     Usage: ./installfog.sh [-h?dEUuHSCKYXTFA] [-f <filename>] [-N <databasename>]
@@ -41,4 +37,3 @@ The FOG installer has quite a few command line options. See the output below. Yo
         -T    --no-tftpbuild    Do not rebuild the tftpd config file
         -F    --no-vhost        Do not overwrite vhost file
         -A    --arm-support     Install kernel and initrd for ARM platforms
-

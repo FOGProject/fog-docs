@@ -1,5 +1,3 @@
---
-vi
---
+# vi
 
 Placeholder

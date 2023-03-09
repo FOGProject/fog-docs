@@ -1,7 +1,3 @@
-.. include:: /includes.rst
-
-----
-FAQs
-----
+# FAQs
 
 Frequently Asked questions with answers
