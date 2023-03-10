@@ -11,12 +11,8 @@
             "id": "cdbd2a61759a1fdd",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "getting_started/fog_user_guide.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "getting_started/fog_user_guide.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +97,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "getting_started/fog_user_guide.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -124,9 +118,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "getting_started/fog_user_guide.md"
-              }
+              "state": {}
             }
           }
         ]
@@ -148,27 +140,42 @@
   },
   "active": "cdbd2a61759a1fdd",
   "lastOpenFiles": [
-    "installation/install_fog_client.rst",
-    "installation/install_fog_client.md",
-    "Knowledge-Base/customization/ipxe.md",
-    "tags.md",
-    "getting_started/introduction/introduction.md",
-    "index.md",
-    "Knowledge-Base/troubleshooting/troubleshoot_ftp.md",
-    "management/other-settings.md",
-    "Knowledge-Base/reference/network_and_firewall_requirements.md",
-    "Knowledge-Base/reference/manual_kernel_upgrade.md",
-    "management/host-management.md",
-    "management/group-management.md",
+    "Knowledge-Base/integrations/api.md",
+    "getting_started/hardware/requirements.rst",
+    "getting_started/hardware/requirements.md",
+    "getting_started/requirements.md",
+    "getting_started/requirements.rst",
+    "getting_started/hardware/hardware.rst",
+    "getting_started/hardware/hardware.md",
+    "getting_started/hardware",
+    "getting_started/introduction/hardware/hardware.rst",
+    "getting_started/introduction/hardware/hardware.md",
+    "getting_started/introduction/hardware",
+    "Knowledge-Base/hardware/hardware.rst",
+    "Knowledge-Base/hardware/hardware.md",
+    "Knowledge-Base/hardware",
+    "Knowledge-Base/FAQ/fog_user_guide.md",
+    "Knowledge-Base/FAQ/fog_user_guide.rst",
+    "management/common_tasks/fog_client_example_tasks.rst",
+    "management/common_tasks/fog_client_example_tasks.md",
+    "management/common_tasks/deploy_an_image.md",
+    "management/common_tasks/capture_an_image.md",
+    "management/web_management/user-management.md",
+    "management/web_management/task-management.md",
+    "management/web_management/storage-node-management.md",
+    "management/web_management/snapin-management.md",
+    "management/web_management/service-management.md",
+    "management/web_management/report-management.md",
+    "management/web_management/printer-management.md",
+    "management/web_management/other-settings.md",
+    "management/web_management/image-management.md",
+    "management/web_management/host-management.md",
+    "management/web_management/group-management.md",
+    "management/web_management/dashboard.md",
+    "management/web_management/client-side-tasks.md",
+    "management/web_management/active-directory-integration.md",
+    "Knowledge-Base/FAQ/faq.md",
     "getting_started/fog_user_guide.md",
-    "development/fog_release.md",
-    "installation/fog_installation_settings.md",
-    "Knowledge-Base/reference/install_fogsettings.md",
-    "Knowledge-Base/reference/compile_fos_kernel.md",
-    "management/client-side-tasks.md",
-    "Knowledge-Base/reference/change_fog_server_ip_address.md",
-    "management/image-management.md",
-    "management/dashboard.md",
     "assets/img/management/logout-ico.png",
     "assets/img/management/plugins-ico.png",
     "assets/img/management/reports-ico.png",
@@ -179,11 +186,6 @@
     "assets/img/management/Storage-ico.png",
     "assets/img/management/images-ico.png",
     "assets/img/management/groups.ico.png",
-    "management/plugins/plugin-management.md",
-    "installation/install_fog_server.md",
-    "install.md",
-    "management/active-directory-integration.md",
-    "management/user-management.md",
     "Untitled 1.canvas",
     "Untitled.canvas"
   ]

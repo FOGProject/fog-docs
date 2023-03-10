@@ -21,179 +21,88 @@ Once all existing docs are moved over we'll start updating the docs
     
     ---
     
-    An introduction to what fog is and some common first questions
-    [[introduction]]
-    [[faq]]
+    !!! tip
+
+        An introduction to what fog is and some common first questions
+
+        - [[introduction]]
+        - [System Requirements](introduction/hardware/requirements)
+        
 -   ## Installation, Updating, and Migrating
     
     ---
 
-    Documentation on the installation, updating, and migrating of a Fog Server
-    [System Requirements](requirements)
-    [Install Fog Server](install_fog_server)
-    [Running in a Virtual Environment](virtualization)
+    !!! tip
+        
+        Documentation on the installation, updating, and migrating of a Fog Server
+
+        - [Install Fog Server](install_fog_server)
+        - [Install Fog Client](install_fog_client)
+        - [Running in a Virtual Environment](virtualization)
 
 -   ## Management
 
     ---
 
-    Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
-    [Management]
-    [Plugin Management](plugin-management)
+    !!! tip
+
+        Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
+        These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
+    
+        - [[management]]
+        - [Web UI Management](management#web_management)
+        - [Common Tasks][management#common_tasks]
+        - [Plugin Management](plugin-management)
 
 -   ## Knowledge Base
 
     ---
 
-    
+    !!! tip
+
+        Documentation on important references, integrations, customizations, FAQs, and troubleshooting
+
+        - [Customization](Knowledge-Base\customization)
+        - [FAQ](Knowledge-Base\FAQ)
+        - [integrations](Knowledge-Base\integrations)
+        - [reference](Knowledge-Base\reference)
+
+-   ## Development
+
+    ---
+
+    !!! tip
+
+        Resources and documentation related to contributing to the development of FOG
+
+        - [[development]]
+
+-   ## Release Notes
+
+    ---
+
+    This is a link to the fog project release notes for abbreviated information on what's improved in the stable revisions of Fog
+    [Github Release Notes](https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD)
+
+-   ## Fog Forums
+
+    ---
+
+    Search for solutions to your problems or ask the community for help
+    [Fog Forums](https://forums.fogproject.org)
+
+-   ## Fog On GitHUB
+
+    ---
+
+    Browse the opensource code for FOGProject
+    [Fog Project Github repos](https://github.com/FOGProject)
+
+-   ## Fog Home Page
+
+    ---
+
+    The homepage of the FOG Project
+    [Fog Home Page](https://fogproject.org)
 
 </div>
-
-
-<!-- 
-::: panels
-`Introduction <introduction/introduction:What is FOG>`{.interpreted-text
-role="ref"}
-
-
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="Introduction"}
-introduction/\*
-:::
-
-\-\--
-
-`Installation <installation/install_fog_server:Install FOG server>`{.interpreted-text
-role="ref"}
-
--   Documentation on the installation of fogserver
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="Installation"}
-installation/\*
-:::
-
-\-\--
-
-`Getting Started <getting_started/capture_an_image:Capture an Image>`{.interpreted-text
-role="ref"}
-
--   Get started with common tasks/how-tos and concepts of using fog
--   Includes things like how to capture and deploy images
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="Getting started"}
-getting_started/\*
-:::
-
-\-\--
-
-`Management <management/dashboard:Dashboard>`{.interpreted-text
-role="ref"}
-
--   Documentation related to using the management tools available in the
-    fog web UI
--   These sections explain what can be done in each of the fog ui menus
-    and some of the basic how-tos
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="Management"}
-management/\* management/plugins/\*
-:::
-
-\-\--
-
-`Customization <customization/ipxe/ipxe:Customizing FOG iPXE Settings>`{.interpreted-text
-role="ref"}
-
--   Docs related to customizing various parts of fog
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="Customization"}
-customization/ipxe/\*
-:::
-
-\-\--
-
-`hardware/hardware:Supported Hardware`{.interpreted-text role="ref"}
-
--   Docs relating to what hardware is known to work
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="Supported Hardware"}
-hardware/\*
-:::
-
-\-\--
-
-`integrations/integrations:integrations`{.interpreted-text role="ref"}
-
--   Documentation related to fog plugins and other Integrations
--   This includes articles on how to do common setup for some services
-    fog can utilize from other windows or linux servers (or can be added
-    to the same server)
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="Integrations"}
-integrations/\*
-:::
-
-\-\--
-
-`troubleshooting/troubleshooting:Troubleshooting`{.interpreted-text
-role="ref"}
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="Troubleshooting"}
-troubleshooting/\*
-:::
-
--   Docs related to Troubleshooting common issues
-
-\-\--
-
-`Reference <reference/install_fogsettings:The .fogsettings file>`{.interpreted-text
-role="ref"}
-
--   Other reference material related to fog
--   Includes things such as command line args or settings file
-    definitions
--   Also contains docs that don't fit anywhere else
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="reference"}
-reference/\*
-:::
-
-\-\--
-
-`Development <development/fog_release:FOG Release>`{.interpreted-text
-role="ref"}
-
--   Guide to update and release a new version of FOG
--   API
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="development"}
-development/\*
-:::
-
-\-\--
-
-`FAQ/faq:FAQs`{.interpreted-text role="ref"}
-
-::: {.toctree maxdepth="6" hidden="" glob="" caption="FAQs"}
-FAQ/\*
-:::
-
--   Common questions with detailed answers
-
-\-\--
-
-[Fog Forums](https://forums.fogproject.org)
-
--   Search for solutions to your problems or ask the community for help
-
-\-\--
-
-[Fog Project Github repos](https://github.com/FOGProject)
-
--   Browse the opensource code for FOGProject
-
-\-\--
-
-[Fog Home Page](https://fogproject.org)
-
--   The homepage of the FOG Project
-::: -->
