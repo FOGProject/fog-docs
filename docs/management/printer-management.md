@@ -41,7 +41,7 @@ Setting up Printers With Fog Printer Management
         -   public access NDS printers,
         -   Local printers,
         -   windows share based printers,
-        -   (and we think, but could use a confirmation as it hasn\'t
+        -   (and we think, but could use a confirmation as it hasn't
             been tested) AD based printers.
 
 !!! note
@@ -75,7 +75,7 @@ Setting up Printers With Fog Printer Management
     >     > printers to be added to the host. Any printer that is not
     >     > assigned will be removed including non-FOG managed printers.
     >     > i.e. If some users have usb printers you want this option so
-    >     > fog doesn\'t remove any printers that aren\'t controlled by
+    >     > fog doesn't remove any printers that aren't controlled by
     >     > fog
     >
     > -   **Fog Managed Printers**
@@ -87,7 +87,7 @@ Setting up Printers With Fog Printer Management
     >     > printer exists in printer management but is not assigned to
     >     > a host, it will remove the printer if it exists on the
     >     > unassigned host. It will add printers to the host that are
-    >     > assigned. i.e. if you don\'t want users connecting their own
+    >     > assigned. i.e. if you don't want users connecting their own
     >     > usb printers and only having access to the printers
 
 ## Adding New Printers
@@ -145,7 +145,7 @@ these printers.
 
     > This is ip address of an IP based printers only, this can take the
     > form of `1.2.3.4:9100` or `1.2.4.5` or `printer-dns-hostname` or
-    > `printerName.domain.com`. If the port doesn\'t exist already, it
+    > `printerName.domain.com`. If the port doesn't exist already, it
     > will create a printer TCP/IP port with the name given in the port
     > field to point to this address
 

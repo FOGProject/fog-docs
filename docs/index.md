@@ -9,22 +9,46 @@ tags:
 
 # Welcome to the Fog Project documentation!
 
-| Fog Project is really cool
-| This documentation is under construction
-| We are slowly moving from wiki.fogproject.org to here
-| Once all existing docs are moved over we\'ll start updating the docs
+Fog Project is really cool
+This documentation is under construction
+We are slowly moving from wiki.fogproject.org to here
+Once all existing docs are moved over we'll start updating the docs 
 
-## Getting Started
 
-An introduction to what fog is and some common first questions
+<div class="grid cards" markdown>
 
-- [[introduction]]
-- [[faq]]
+-   ## Getting Started
+    
+    ---
+    
+    An introduction to what fog is and some common first questions
+    [[introduction]]
+    [[faq]]
+-   ## Installation, Updating, and Migrating
+    
+    ---
 
-## Installation
+    Documentation on the installation, updating, and migrating of a Fog Server
+    [System Requirements](requirements)
+    [Install Fog Server](install_fog_server)
+    [Running in a Virtual Environment](virtualization)
 
-- [[install_fog_server]]
-- [[install_fog_client]]
+-   ## Management
+
+    ---
+
+    Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
+    [Management]
+    [Plugin Management](plugin-management)
+
+-   ## Knowledge Base
+
+    ---
+
+    
+
+</div>
+
 
 <!-- 
 ::: panels
@@ -127,7 +151,7 @@ role="ref"}
 -   Other reference material related to fog
 -   Includes things such as command line args or settings file
     definitions
--   Also contains docs that don\'t fit anywhere else
+-   Also contains docs that don't fit anywhere else
 
 ::: {.toctree maxdepth="6" hidden="" glob="" caption="reference"}
 reference/\*

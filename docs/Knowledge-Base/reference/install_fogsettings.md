@@ -70,7 +70,7 @@ just gives some information. :
 
 ### Footer
 
-Does no actions, just tells where FOG\'s default variables are setup Any
+Does no actions, just tells where FOG's default variables are setup Any
 new items will go below this, and you can add your own variables. You
 can add variables wherever you want. :
 
@@ -107,7 +107,7 @@ This is the linux fog user password. It is randomly generated if the
 value is not already defined. Every update will reset the password to
 what is in this field. You should, if you predefined a fog user and the
 installation is the first time, create the /opt/fog/.fogsettings file.
-Only add the password field to ensure your password doesn\'t get changed
+Only add the password field to ensure your password doesn't get changed
 accidentally. :
 
     password='Some!random_Password\here0918358'
@@ -123,7 +123,7 @@ Valid Values are: 1. Redhat based. 2. Debian based. 3. Arch :
 
 ### OS Name
 
-This is the name of the OS as it\'s being installed. :
+This is the name of the OS as it's being installed. :
 
     osname='Debian'
 
@@ -135,7 +135,7 @@ Used for DHCP setup. :
 
 ### dnsbootimage
 
-No longer used. It\'s purpose was originally because the FOS (Fog
+No longer used. It's purpose was originally because the FOS (Fog
 Operating System \-- init.xz/init_32.xz/init.gz) did not dynamically get
 the dns address from DHCP as dhcp was not called. :
 
@@ -163,7 +163,7 @@ using dnsmasq or another dhcp server. :
 
 Very similar to the Router Address elements above, but can be used to
 redirect to maybe another router/switch other than the main. ::
-plainrouter=\'192.168.1.1\'
+plainrouter='192.168.1.1'
 
 ### dodhcp
 
@@ -187,7 +187,7 @@ Defines what package to install for dhcp server. :
 
 ::
 
-:   startrange=\'\'
+:   startrange=''
 
 ### endrange
 
@@ -208,7 +208,7 @@ to 1 will update the exports file. :
 ### Type of installation
 
 Just tells the installer if this is going to be a full server, or a
-node. If it\'s a node, the value will be S. If it\'s a full server, the
+node. If it's a node, the value will be S. If it's a full server, the
 value will be N. :
 
     installtype='N'
@@ -241,7 +241,7 @@ appropriate translations of information. :
 ### Donate
 
 Donate seems a bit strange a name for this. What it does, however, is
-not pass money. It\'s a different method that tells the server if it\'s
+not pass money. It's a different method that tells the server if it's
 going to allow mining of bitcoins during the imaging phases. Donation
 can be disabled later and this value will have no more effect during
 updates. It only operates to define setting during fresh installs. :
@@ -259,9 +259,9 @@ to the path of your images location. :
 
 This defines if the update file is loaded. 1 is the set value after
 fresh install. When the .fogsettings file is loaded this value is
-checked and tells the system to perform an update. If this isn\'t 1 or
-the variable is not found, it requests \"input\" from the user (unless
-you\'re running with the -y argument). :
+checked and tells the system to perform an update. If this isn't 1 or
+the variable is not found, it requests "input" from the user (unless
+you're running with the -y argument). :
 
     fogupdateloaded=1
 
@@ -277,9 +277,9 @@ on the server at the docroot location for files to present to the user.
 ### webroot
 
 This value tells FOG where the webroot is. Webroot is the link to
-actually get to the FOG GUI. If the value is just \'/\' you would be
-accessing the FOG GUI with the link <http://127.0.0.1/>. If it\'s
-\'fog/\' you are accessing the GUI as <http://127.0.0.1/fog/>. :
+actually get to the FOG GUI. If the value is just '/' you would be
+accessing the FOG GUI with the link <http://127.0.0.1/>. If it's
+'fog/' you are accessing the GUI as <http://127.0.0.1/fog/>. :
 
     webroot='fog/'
 

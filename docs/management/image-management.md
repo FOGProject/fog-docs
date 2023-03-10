@@ -7,7 +7,7 @@
 ## Creating Image objects
 
 -   Image objects in FOG are created in the Images section of the FOG
-    management portal. To create a new image click on the \"New Image\"
+    management portal. To create a new image click on the "New Image"
     button on the left hand menu. An image object requires a name and a
     image file path.
 
@@ -22,7 +22,7 @@ tbd
 ### Image Type
 
 -   When creating images you have a few choices in how you want that
-    image to \'act\'. The possible partition types include:
+    image to 'act'. The possible partition types include:
 
 ```{=html}
 <!-- -->
@@ -43,7 +43,7 @@ tbd
 
 -   
 
-    Each resizable partition will go through a \"Resizing filesystem\" process for each partition that is to be resized.
+    Each resizable partition will go through a "Resizing filesystem" process for each partition that is to be resized.
 
     :   -   This process can take some time depending on how severe disk
             fragmentation is.
@@ -58,8 +58,8 @@ tbd
 
 #### Multiple Partition Image - Single Disk (Not Resizable)
 
--   If you don\'t need to deploy to a smaller size disk you might
-    consider using this image type, as it\'s less likely to cause an
+-   If you don't need to deploy to a smaller size disk you might
+    consider using this image type, as it's less likely to cause an
     issue and image size on the server is still as small as with
     resizable image type.
 
@@ -71,7 +71,7 @@ tbd
     larger capacity.
 
 -   It is possible to backup NTFS drives with vendor specific
-    \'restore\' partitions with this type of image.
+    'restore' partitions with this type of image.
 
 -   
 
@@ -93,10 +93,10 @@ tbd
 
 -   
 
-    If you only wanted a particular partition captured or drive captured in a multi-drive system, you can define the disk or partition you want within a \"Single Disk - Resizable\" or \"Multiple Partition Image - Single Disk (Not Resizable)\" type image.
+    If you only wanted a particular partition captured or drive captured in a multi-drive system, you can define the disk or partition you want within a "Single Disk - Resizable" or "Multiple Partition Image - Single Disk (Not Resizable)" type image.
 
-    :   -   This is done through the host\'s \"General\" area, in the
-            \"Host Primary Disk\" field.
+    :   -   This is done through the host's "General" area, in the
+            "Host Primary Disk" field.
 
 #### Raw Image (Sector By Sector, DD, Slow)
 
@@ -127,7 +127,7 @@ tbd
 
 ### Image Manager
 
-FOG comes with two different tools (a.k.a \"managers\") to create an
+FOG comes with two different tools (a.k.a "managers") to create an
 image of your disks/partitions: partclone and partimage. In early
 versions partimage was the only tool. For historical reasons partimage
 is still available but hardly anyone uses it anymore as partclone is the
@@ -157,5 +157,5 @@ a great option to save image space and network transfer volume.
         -   Create hierarchy if necessary. FOG, by default, puts images
             in /images/, so for the above example, you would need to
             create a folder structure like so: /images/SampleXPImage
-        -   Drop your image file into the folder (be sure it\'s named
+        -   Drop your image file into the folder (be sure it's named
             the same as image name above)

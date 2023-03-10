@@ -5,7 +5,7 @@
 It is possible to change the keymap or keyboard layout of the linux boot
 image. In order to change the key map, go to:
 
-> Other Settings -\> FOG Settings -\> General Settings -\> FOG_KEYMAP
+> Other Settings :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: General Settings :octicons-arrow-right-24: FOG_KEYMAP
 
 You can expand the possible values for keymaps below, if left blank it
 will default to **us**.
@@ -142,19 +142,19 @@ slovene
 
 ### Overview
 
-In FOG, there aren\'t really drivers you need to find and download for
+In FOG, there aren't really drivers you need to find and download for
 your clients to work, this is because we ship a Linux kernel that has
 the majority of hardware device built into it. What this means is if you
-have a device that doesn\'t work with FOG you need to either build a new
+have a device that doesn't work with FOG you need to either build a new
 kernel yourself or try a newer kernel that has been released via our
 kernel updater.
 
 ### Kernel Types
 
-We currently build two \"lines\" of kernels, one called KS or
+We currently build two "lines" of kernels, one called KS or
 KitchenSink. This kernel tries to include drivers for as many devices as
 possible, sometimes as the cost of performance, and this is the kernel
-that we ship with FOG by default. The other \"line\" is the PS kernel or
+that we ship with FOG by default. The other "line" is the PS kernel or
 the Peter Sykes kernel, which is a based on a config submitted by a
 user. This kernel line tries to be faster, but may not include as many
 drivers as the KS kernel.

@@ -69,7 +69,7 @@
 
 #### Image ID
 
-> -   As of version 0.17, you can enter \'\'?\'\' at the Image ID prompt
+> -   As of version 0.17, you can enter ''?'' at the Image ID prompt
 >     to get a listing of all your images and their ID numbers.
 >
 > -   The image ID you specify will be deployed to the computer after a

@@ -19,13 +19,13 @@ an account, as spamming of the forum has gotten pretty bad recently.
 -   **What is FOG?** FOG is a Linux-based, free and open source computer
     imaging solution for Windows XP, Windows Vista, Windows 7, Windows
     8, and Linux (limited) that ties together a few open-source tools
-    with a php-based web interface. FOG doesn\'t use any boot disks, or
+    with a php-based web interface. FOG doesn't use any boot disks, or
     CDs; everything is done via TFTP and PXE. Your PC boots via PXE and
     automatically downloads a small Linux client. From there you can
     select many activities on the PC, including imaging the hard drive.
     Also with FOG many network drivers are built into the Linux
-    client\'s kernel, so you don\'t really need to worry about nic
-    drivers (unless there isn\'t kernel support for it yet). FOG also
+    client's kernel, so you don't really need to worry about nic
+    drivers (unless there isn't kernel support for it yet). FOG also
     supports putting an image that came from a computer with a 80GB
     partition onto a machine with a 40GB hard drive as long as the data
     is less than 40GB. FOG supports multi-casting, meaning that you can
@@ -63,7 +63,7 @@ FOG!** Please see the license file included with the FOG release for
 more information. With that being said we attempt to do a very good job
 of supporting our users, in fact it is one of the goals of FOG to have
 better support than most commercial products. All support requests
-should be placed through the FOG\'s forum which is located at:
+should be placed through the FOG's forum which is located at:
 
 \<<http://fogproject.org/forum/>\>
 
@@ -72,9 +72,9 @@ Thanks for supporting open source software and enjoy!
 ### Background on FOG
 
 -   **Why FOG?** Working in an educational environment our
-    organization\'s techs very often re-imaged computers in their day to
+    organization's techs very often re-imaged computers in their day to
     day activities. For a long time we used a commercial product that in
-    many ways didn\'t meet our needs. It wasn\'t web based, and you
+    many ways didn't meet our needs. It wasn't web based, and you
     needed to create driver disks, floppys or USB drives. Other things
     were very difficult, such as searching for a host by MAC address and
     the product was expensive, even with an educational discount. So we
@@ -119,8 +119,7 @@ packages to use and how to integrate with the FOG system.
 ### Installation on different distributions of Linux
 
 -   Find here step-by-step guides written for your favorite flavor of
-    Linux: \[Installation manuals\](Installation#Installation_manuals
-    \"wikilink\")
+    Linux: [Installation manuals](Installation#Installation_manuals)
 
 ------------------------------------------------------------------------
 
@@ -174,7 +173,7 @@ ProxyDHCP\](Setting_up_ProxyDHCP \"wikilink\").
 
 -   \[Cisco Multicast - Layer 3\](Cisco_Multi_Cast \"wikilink\")
 
-\<!\-- \--\>
+\<!\-- \-:octicons-arrow-right-24:
 
 -   \[HP Multicast - Layer 2&3\](HPMulticast \"wikilink\")
 
@@ -234,7 +233,7 @@ are a few common \"Getting Started\" items.
     and imaged(capture/deploy). Client usually refers to the Client
     service later described in this guide.
 
-FOG\'s strength can be better harnessed if some time and work is put
+FOG's strength can be better harnessed if some time and work is put
 into preparing a master image that fits the needs of your environment.
 This section covers Host preparation steps that will save you time and
 headaches like:
@@ -424,7 +423,7 @@ FOG Client
 
 Logs are usually located at \<font color=\"red\"\>C:fog.log\</font\>. If
 the log is not here, this generally means the log path was changed
-during installation, and is probably in fog\'s program directory.
+during installation, and is probably in fog's program directory.
 
 ## Snap-ins
 
@@ -443,7 +442,7 @@ during installation, and is probably in fog\'s program directory.
 
 ## FOG Plugins
 
-Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
+Plugins enhance FOG's functionality. See \[Plugins\](Plugins
 \"wikilink\") to activate and manage plugins.
 
 ### LDAP Plugin
@@ -461,9 +460,9 @@ Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
     a centralized server
 -   Hosts will be imaged from their location setup, rather than trying
     to pull from a random node/server across, potentially, WAN links
--   Same works for \"Tftp\" in that it will direct the host to get it\'s
-    kernel and init from it\'s related location
--   Can also be used to direct the host to download it\'s snapins from
+-   Same works for \"Tftp\" in that it will direct the host to get it's
+    kernel and init from it's related location
+-   Can also be used to direct the host to download it's snapins from
     the relevant location
 
 ### Access Control Plugin
@@ -494,7 +493,7 @@ Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
 -   WOL will use those set values to send the WOL Packets to the
     broadcast addresses, rather than staying only on layer 2
 -   WOL packets operate at the layer 2 of a network meaning that it can
-    only reach it\'s \"Subnet\"
+    only reach it's \"Subnet\"
 -   WOL Broadcast directly tells a packet to send to other broadcast
     addresses so that it network passes on the traffic
 

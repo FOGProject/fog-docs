@@ -12,7 +12,7 @@ first thing we will need to do.
 3.  Go to **FOG Settings**
 4.  Scroll down and locate the section **Plugin System**
 5.  Tick on **FOG_PLUGINSYS_ENABLED**
-6.  Click \"Save Changes\"
+6.  Click "Save Changes"
 
 After reloading the FOG web UI you see a new icon (gear wheel) in the
 main menu:
@@ -23,7 +23,7 @@ Lists all the available plugins to install
 
 ### Install Plugins
 
-Lists all your \"downloaded\" plugins that are not activated yet
+Lists all your "downloaded" plugins that are not activated yet
 
 ### Installed Plugins
 

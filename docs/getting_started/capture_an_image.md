@@ -1,9 +1,9 @@
 # Capture an image
 
-After installing a FOG server, one of the first tasks you\'ll do is to
+After installing a FOG server, one of the first tasks you'll do is to
 capture an image.
 
-With \'capturing an image\' we mean that you will make a copy of the
+With 'capturing an image' we mean that you will make a copy of the
 contents on a hard disk of a machine that you want to duplicate on other
 machines.
 
@@ -16,7 +16,7 @@ UEFI machine is almost similar.
 ## Prerequisites
 
 Before capturing the image, you need to make sure that the machine is
-\'ready to image\'. For a Windows machine this typically means that you
+'ready to image'. For a Windows machine this typically means that you
 have done the following:
 
 -   Downloaded a Windows installer ISO that you copied onto DVD or USB
@@ -31,7 +31,7 @@ have done the following:
     additional applications, install printers, etc..
 -   Sysprep the machine and shut it down
 
-We\'re assuming here that you have a running FOG server, that you are
+We're assuming here that you have a running FOG server, that you are
 able to log in on the FOG Web UI.
 
 ## Registering the machine at FOG
@@ -47,8 +47,8 @@ In the screenshot above you see a successful network boot:
 1.  The PXE client on the machine brings up the network link and via
     DHCP an IP address is requested. The DHCP server (in the screenshot,
     the DHCP server is at 192.168.178.1) hands out together an IP
-    address (192.168.178.16/255.255.255.0), also the \'next server\'
-    (192.168.178.14) and \'file name\' (ipxe.kpxe) options are handed
+    address (192.168.178.16/255.255.255.0), also the 'next server'
+    (192.168.178.14) and 'file name' (ipxe.kpxe) options are handed
     over.
 2.  The PXE client on the machine then gets the ipxe.pxe image via TFTP
 3.  iPXE is executed and configures itself
@@ -56,15 +56,15 @@ In the screenshot above you see a successful network boot:
 Then you will be presented with the Fog boot menu:
 
 Use your arrow keys to move the selection up and down. The default,
-\'boot from hard disk\' is chosen in 3 seconds, so be quick.
+'boot from hard disk' is chosen in 3 seconds, so be quick.
 
 In red you see the the statement that the host is NOT registered. It
 means that the host is not known by Fog.
 
 For capturing an image, you need the host to be registered, so choose
-\'Quick registration and inventory\'.
+'Quick registration and inventory'.
 
-You\'ll see some text scrolling on the screen as Fog registeres the
+You'll see some text scrolling on the screen as Fog registeres the
 host:
 
 ![image](/assets/img/tasks/capture_fog_registration.png)
@@ -73,13 +73,13 @@ Then the client is rebooted. Shut down the computer.
 
 ## Register the image at FOG
 
-Log in on the Fog Web UI and go to \'Image Management\' -\> \'Create New
-Image\':
+Log in on the Fog Web UI and go to 'Image Management' :octicons-arrow-right-24: 'Create New
+Image':
 
 ![image](/assets/img/tasks/capture_image_management.png)
 
 Give the new image a name and leave the chosen options as they are, and
-clik on \'Add\'.
+clik on 'Add'.
 
 The goal of this step is that you are registering a new image in Fog
 (you can use manage multiple images). The image will be a copy of the
@@ -88,36 +88,36 @@ and deployed.
 
 ## Associate the image with the machine
 
-Now to go \'Host Management\' -\> \'List All Hosts\' and click on the
+Now to go 'Host Management' :octicons-arrow-right-24: 'List All Hosts' and click on the
 machine you just have registered:
 
 ![image](/assets/img/tasks/capture_host_management_1.png)
 
-For now, the machine name is it\'s MAC address. Don\'t worry about that
+For now, the machine name is it's MAC address. Don't worry about that
 now as we will only use this host for capturing an image.
 
 ![image](/assets/img/tasks/capture_host_management_2.png)
 
-For the \'Host Image\' drop-down box, choose the image you\'ve just
-created. Then click on \'Update\' in on the bottom of the screen.
+For the 'Host Image' drop-down box, choose the image you've just
+created. Then click on 'Update' in on the bottom of the screen.
 
 You have now associated the Windows 10 image with this host.
 
 ## Create a capture task
 
-We are now going to make a \'capture taks\' for this host. This task
+We are now going to make a 'capture taks' for this host. This task
 instructs FOG that when this machine boots from the network, the
-contents of the harddisk must be captured and stored as the \'Windows
-10\' image on the FOG server.
+contents of the harddisk must be captured and stored as the 'Windows
+10' image on the FOG server.
 
-While still in the Host Management of this machine, go to \'Basic
-Tasks\' and choose \'Capture\':
+While still in the Host Management of this machine, go to 'Basic
+Tasks' and choose 'Capture':
 
 ![image](/assets/img/tasks/capture_host_capture_1.png)
 
 Here you can change settings of the imaging task.
 
-Leave the options as they are and clik on \'Task\':
+Leave the options as they are and clik on 'Task':
 
 ![image](/assets/img/tasks/capture_host_capture_2.png)
 

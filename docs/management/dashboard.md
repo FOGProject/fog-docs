@@ -42,10 +42,10 @@
 -   This section updates in real time.
 -   It will display all the queued, running, etc\... tasks and updates
     at the same interval as the Bandwidth graph.
--   You can also edit which type of tasks get counted towards the \"queue\".
+-   You can also edit which type of tasks get counted towards the "queue".
       -   This edit can be performed by going to 
-        **FOGConfiguration** ![[Config.png]]\--\> **FOG Settings**\--\> **General Settings** \--\>**FOG_USED_TASKS**.
-        -   The text field is numeric values (so you\'ll need to know which task id\'s are which type.
+        **FOGConfiguration** ![[Config.png]]\-:octicons-arrow-right-24: **FOG Settings**\-:octicons-arrow-right-24: **General Settings** \-:octicons-arrow-right-24:**FOG_USED_TASKS**.
+        -   The text field is numeric values (so you'll need to know which task id's are which type.
         -   This text field is a CSV setup. If you type (1,2,3,4,5) it will display all tasks of Deploy, Capture, Debug, Memtest, and Testdisk as queued/active depending on their current state.
         -   The exception to this rule, is Task Type ID 8 (multicast) in
             which case it takes the Jobs, not each individual host task,
@@ -60,7 +60,7 @@
 -   There is also a drop-down box that can be changed to your storage
     nodes to monitor their Disk Information.
 -   If you get an error in this box, please see \[\[Dashboard Error:
-    Permission denied\...\]\] #page doesn\'t exist in rst yet
+    Permission denied\...\]\] #page doesn't exist in rst yet
 
 ## 30 Day Imaging History
 
@@ -70,7 +70,7 @@
 
 ![[MenuBar.png]]
 
-This menu appears at the top of every page on Fog\'s web UI. The icons
+This menu appears at the top of every page on Fog's web UI. The icons
 are, from left to right:
 
 Menu Logo | Name | Description
@@ -86,6 +86,6 @@ Menu Logo | Name | Description
 ![[service-ico.png]] | **[Service Management](service-management)** | This section allows you to control how the *client* service functions.
 ![[tasks-ico.png]] | **[Task Management](task-management)** | This section allow you to perform imaging tasks such as acquiring or deploying images.
 ![[reports-ico.png]] | **[Report Management](report-management)** | Reports let you pull information from the FOG database either as HTML, pdf, or csv.
-![[Config.png]] | **[Fog Configuration](other-settings)** | The section has the rest of the settings that don\'t fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
+![[Config.png]] | **[Fog Configuration](other-settings)** | The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
 ![[plugins-ico.png]] | **[Plugin Management](plugin-management)** | Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
 ![[logout-ico.png]] | **Logout** | Click this to log off/out of the Fog web UI

@@ -1,7 +1,7 @@
 # Network and firewall requirements
 
 FOG depends on quite some network protocols, like FTP, NFS, DHCP and
-HTTPS. In a \'flat\' network where all clients and servers are in the
+HTTPS. In a 'flat' network where all clients and servers are in the
 same IP subnet, this usually does not give much problems, but when
 components of FOG are in different networks and when firewalls are in
 between them, you have to plan and configure carefully.
@@ -51,14 +51,14 @@ possibilities:
     sure you configure this DHCP Server to also pass the extra options
     66 (next-server) and 67 (bootfile name) mentioned in [[network_setup#Other DHCP Server than FOG]]
 
-If the DCHP server is in another network, make sure you have a \'DHCP
-helper\' running in the network. This DHCP helper \'catches\' the
+If the DCHP server is in another network, make sure you have a 'DHCP
+helper' running in the network. This DHCP helper 'catches' the
 DHCPDISCOVER broadcast packets and forwards them via unicast to the DHCP
 server in another network.
 
 ### 2. TFTP boot
 
-Once the client has gotten it\'s IP address, it will download the kernel
+Once the client has gotten it's IP address, it will download the kernel
 image from the Fog Storage server. In small setups the FOG Storage and
 FOG Server reside on the same server.
 
@@ -70,9 +70,9 @@ For TFTP open the following ports:
 
 Some notes:
 
--   Some firewalls have a \'TFTP helper\'. If there is such a firewall
+-   Some firewalls have a 'TFTP helper'. If there is such a firewall
     between the clients and the FOG Storage, then this TFTP helper
-    \'looks\' into the TFT chat between clients and storage and sees
+    'looks' into the TFT chat between clients and storage and sees
     which random port is requested. The firewall then allows this
     connection until the transfer is complete. With an TFT helper, it is
     not necessary to open up port 1024-65535 to the storage server.

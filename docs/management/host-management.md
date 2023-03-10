@@ -59,7 +59,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
 5.  Set **FOG_QUICKREG_IMG_ID** to the image ID you would like to use
     for all newly created hosts.
 
-6.  **FOG_QUICKREG_OS_ID** will be auto populated when \"Save Changes\"
+6.  **FOG_QUICKREG_OS_ID** will be auto populated when "Save Changes"
     is selected. (OS is now associated within the image so no need to
     select an OS)
 
@@ -85,7 +85,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
 Tutorial](http://freeghost.sourceforge.net/videotutorials/addimghost.html)
 
 -   Adding a new host can be done in the hosts section of FOG.
--   Then by clicking on the \"Add New Host\" button on the left hand
+-   Then by clicking on the "Add New Host" button on the left hand
     menu.
 -   At least a hostname and a MAC address must be entered in order to
     add the host to the FOG database.
@@ -150,7 +150,7 @@ Hosts can also include, but are not required:
     but this topic will be covered later.
 
 
-**When all settings are added, click on the \"Add\" button.**
+**When all settings are added, click on the "Add" button.**
 
 ### Method 4: Importing Host Information
 
@@ -164,20 +164,20 @@ Hosts can also include, but are not required:
 
 `MAC Address,Host name,Description,OSID,ImageID`
 
--   The **MAC Address** [required]{.red} is the NIC\'s MAC address
+-   The **MAC Address** [required]{.red} is the NIC's MAC address
     seperated by `:` (colon).
--   The **Host name** [required]{.red} is the computer\'s Host name
+-   The **Host name** [required]{.red} is the computer's Host name
     (must be less than 15 characters, should not include underscores,
     according to \[<http://tools.ietf.org/html/rfc952> \| Network
     Working Group \]).
--   The **\'Description** [Can be Left as Blank]{.orange} is any text
+-   The **'Description** [Can be Left as Blank]{.orange} is any text
     description you would like associated with the computer.
 -   The **OSID** [required]{.red} is the number representing the
-    operating system. It can be found in the table \"supportedOS\" in
+    operating system. It can be found in the table "supportedOS" in
     the field osID.
 -   The **ImageID**[required]{.red} is the number representing the
     images file linked to this image. The image definition must already
-    exist and this number can be found in the table \"images\" in the
+    exist and this number can be found in the table "images" in the
     field imageID.
 
 !!! warning
@@ -197,7 +197,7 @@ Sample:
     FOG Management Portal.
 2.  Then click on the Hosts icon .
 3.  On the left-hand menu, click on **Import Hosts**.
-4.  Browse for your file, then click \"**Upload CSV**\".
+4.  Browse for your file, then click "**Upload CSV**".
 
 #### Create CSV From Network Scan
 
@@ -232,11 +232,11 @@ $subnets | ForEach-Object { # loop through each subnet
 -   Once hosts have been added to the FOG database you can modify or
     delete them. Finding a host which you wish to edit can be done in
     two ways, the first is by listing all the hosts that exist. This is
-    done by clicking on the \"List All Hosts\" button. The second way to
+    done by clicking on the "List All Hosts" button. The second way to
     locate a host is to use the search function. To search for hosts
-    click on the \"New Search\" button, if you would like to search for
-    all hosts you can enter a \"\*\" or \"%\". The search function will
-    search in the host\'s name, description, IP and MAC address.
+    click on the "New Search" button, if you would like to search for
+    all hosts you can enter a "\*" or "%". The search function will
+    search in the host's name, description, IP and MAC address.
 -   Once a host is located, it can be edited by clicking on the edit
     button or on the Host Name itself. Clicking on the edit button will
     display all the properties that were shown during host creation with
@@ -258,13 +258,13 @@ $subnets | ForEach-Object { # loop through each subnet
 
     These new MAC Addresses will need to be approved before FOG will take advantage of them.
 
-    :   1.  **Host Management** \--\> **\[Selected Host\]**
-            \--\>*Additional MAC*
-        2.  **Fog Configuration** \--\> **MAC Address List**
-            \--\>*Approve Pending Addresses*
+    :   1.  **Host Management** \-:octicons-arrow-right-24: **\[Selected Host\]**
+            \-:octicons-arrow-right-24:*Additional MAC*
+        2.  **Fog Configuration** \-:octicons-arrow-right-24: **MAC Address List**
+            \-:octicons-arrow-right-24:*Approve Pending Addresses*
 
--   **Fog Configuration** \--\> **MAC Address List** At this location
-    you can also *\"Update Current Listings\"* giving updated
+-   **Fog Configuration** \-:octicons-arrow-right-24: **MAC Address List** At this location
+    you can also *"Update Current Listings"* giving updated
     information on the MAC Addresses and their manufactures, listing it
     under the Host.
 
@@ -272,7 +272,7 @@ $subnets | ForEach-Object { # loop through each subnet
 
 -   Host Status displays an indicator icon next to the host within the
     FOG UI showing the status of the machine. This function executes a
-    ping based on the host\'s name. So in order for this to work you
+    ping based on the host's name. So in order for this to work you
     must have an internal DNS server that is tied in with your DHCP
     server, so that when a DHCP address is given out, the DNS server is
     notified with the new IP. If that is setup correctly, you must make
@@ -281,7 +281,7 @@ $subnets | ForEach-Object { # loop through each subnet
 
         ping somehostname
 
--   If the server isn\'t able to ping the client, then the status of the
+-   If the server isn't able to ping the client, then the status of the
     host in the UI with always show as unreachable. If you can ping the
     client using the FQDN, like:
 
@@ -292,26 +292,26 @@ $subnets | ForEach-Object { # loop through each subnet
     your sever. After making this change you will need to restart the
     apache server for it to take affect.
 
--   If after this, you still can\'t ping your clients, the problem may
+-   If after this, you still can't ping your clients, the problem may
     be due to a firewall issue with the clients. In this case, client
     specific configuration changes might be needed.
 
 -   
 
-    With an increase in Hosts(250+) this \"ping\" will delay the loading of the List *All Hosts* page. Disabling this feature will help in loading this page.
+    With an increase in Hosts(250+) this "ping" will delay the loading of the List *All Hosts* page. Disabling this feature will help in loading this page.
 
-    :   1.  **Fog Configuration** \--\> **Fog Settings** \--\> **General
-            Settings** \--\> Untick *FOG_HOST_LOOKUP*
+    :   1.  **Fog Configuration** \-:octicons-arrow-right-24: **Fog Settings** \-:octicons-arrow-right-24: **General
+            Settings** \-:octicons-arrow-right-24: Untick *FOG_HOST_LOOKUP*
 
 ### Creating Host Groups
 
 -   FOG allows you to create groups of hosts which then allows you to
     take action on a whole grouping of hosts.
--   Hosts can be created either on the \"List All Hosts\" section or by
+-   Hosts can be created either on the "List All Hosts" section or by
     doing a search for hosts.
 -   To create a group select the computer you would like to be member of
     the group by placing a check in the box next to the hostname, or by
     clicking the check all button in the title row. After the hosts are
     selected scroll to the bottom of the screen and then enter a name in
     the create to group box or select a group to add the hosts to. Then
-    click on the \"Process Group Changes\" button.
+    click on the "Process Group Changes" button.

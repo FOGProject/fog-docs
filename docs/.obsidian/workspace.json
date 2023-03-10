@@ -148,6 +148,9 @@
   },
   "active": "cdbd2a61759a1fdd",
   "lastOpenFiles": [
+    "installation/install_fog_client.rst",
+    "installation/install_fog_client.md",
+    "Knowledge-Base/customization/ipxe.md",
     "tags.md",
     "getting_started/introduction/introduction.md",
     "index.md",
@@ -181,10 +184,7 @@
     "install.md",
     "management/active-directory-integration.md",
     "management/user-management.md",
-    "management/task-management.md",
-    "management/storage-node-management.md",
     "Untitled 1.canvas",
-    "Untitled.canvas",
-    "installation/virtualization.md"
+    "Untitled.canvas"
   ]
 }

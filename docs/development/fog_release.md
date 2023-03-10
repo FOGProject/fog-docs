@@ -7,14 +7,14 @@ tbd
 The FOG project relies of several other open source projects (Linux
 kernel, Buildroot, iPXE) to provide the PXE boot environment (a.k.a FOS)
 including all the drivers to run on pretty much any hardware out there.
-**It\'s usually a good idea to update those components a week or two
+**It's usually a good idea to update those components a week or two
 before doing a FOG release to get those current versions tested by
 people using FOG dev-branch.**
 
 ### FOS kernel
 
 Check current versions on <https://kernel.org/> and use the latest
-marked \"longterm\" in most cases. When switching from one longterm
+marked "longterm" in most cases. When switching from one longterm
 branch to the next (e.g. 5.15.x to 5.19.x) some more time for testing
 should be allowed.
 
@@ -37,14 +37,14 @@ sure the new kernel version compiles correctly.
     Ok, running make oldconfig instead to ensure the config is clean.
     ....
 
-So when asked if you want to edit the kernel config you say \'no\'. It
+So when asked if you want to edit the kernel config you say 'no'. It
 will make use of the existing last kernel config
 (`fos/configs/kernelx64.config`) as a base and ask questions about new
 features that were added between that last kernel version and the new
 one. When the version gap is small none or only a few questions will be
 asked but surely more questions will come up if you switch to the next
 loneterm kernel branch. In most cases the default answer is fine and so
-hitting ENTER to confirm is ok. Though it\'s still important to read
+hitting ENTER to confirm is ok. Though it's still important to read
 every question and try to understand if adding/leaving out a new feature
 can cause trouble.
 
@@ -109,7 +109,7 @@ tbd
     $ armsupport=1 ./buildipxe.sh
     ...
 
-Compilation will take a few minutes. When it\'s done it\'s wise to check
+Compilation will take a few minutes. When it's done it's wise to check
 if surely all iPXE binaries have been updated. If not something
 obviously went wrong. Compare the number of iPXE files with the output
 of `git status`:
@@ -122,7 +122,7 @@ of `git status`:
     $ diff -Nur <(find packages/tftp -type f | grep -v memdisk | sort) <(git status | grep "modified" | awk '{print $2}' | sort)
 
 Numbers must be equal and the output of diff ought to be empty. If
-that\'s the case system.class.php needs to be updated and then changes
+that's the case system.class.php needs to be updated and then changes
 can be commited and pushed to the official repo on github.com.
 
     $ sed -i "s/define('FOG_VERSION'.*);/define('FOG_VERSION', '$(git describe --tags $(git rev-list --tags --no-walk --max-count=1)).$(git rev-list master..HEAD --count)');/g" packages/web/lib/fog/system.class.php

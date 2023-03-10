@@ -15,18 +15,18 @@ version 4.0+
 >     SP1 and Windows Server
 >     2012](https://www.microsoft.com/en-us/download/details.aspx?id=40779)
 
-Each FOG server version comes with it\'s own FOG client. You can
+Each FOG server version comes with it's own FOG client. You can
 download the client from the FOG Web UI:
 
 -   Log in on the client machine, open a browser and browse to the Fog
     Web UI.
--   On the bottom of the Web UI, click on the link \'FOG Client\' (you
-    don\'t have to log in).
+-   On the bottom of the Web UI, click on the link 'FOG Client' (you
+    don't have to log in).
 -   Select Your installer
 
 ### MSI Installer
 
-> -   Click on the link \'MSI \-- Network Installer\' to run the MSI
+> -   Click on the link 'MSI \-- Network Installer' to run the MSI
 >     package (can also be used with gpo software deployment and other
 >     silent installs).
 > -   The url to download this is
@@ -50,24 +50,24 @@ download the client from the FOG Web UI:
 
 !!! note
 
-    You may get a \'Windows protected your PC\' popup. In that case you have
-    to convince windows that this installer is safe to run. Click on \'More
-    info\' and \'Run anyway\'.
+    You may get a 'Windows protected your PC' popup. In that case you have
+    to convince windows that this installer is safe to run. Click on 'More
+    info' and 'Run anyway'.
 
 
--   At the Welcome screen, click on \'Next\'
--   Accept the terms in the License Agreement (it\'s the GPL license, so
-    why not) and click on \'Next\'
+-   At the Welcome screen, click on 'Next'
+-   Accept the terms in the License Agreement (it's the GPL license, so
+    why not) and click on 'Next'
 
 -   Fill in required fields:
     -   Server Address: type in the hostname or IP address of the FOG
         Server.
     -   Web Root: leave this to /fog
     -   Leave the other options as they are
-    -   Click \'Next\'
-    -   Leave the destination folder as it is and click \'Next\'
--   Click on \'Install\' and say \'Yes\' at the UAC prompt.
--   Once the wizard has been installed, click on \'Finish\'.
+    -   Click 'Next'
+    -   Leave the destination folder as it is and click 'Next'
+-   Click on 'Install' and say 'Yes' at the UAC prompt.
+-   Once the wizard has been installed, click on 'Finish'.
 
 Now the FOG client has been installed. In the Task bar there should be a
 new icon:
@@ -95,13 +95,13 @@ Start-Process -FilePath msiexec -ArgumentList @('/i','C:\fogtemp\fog.msi','/quie
 
 ### MSI Switches
 
--   USETRAY= defaults to \"1\", if \"0\" the tray will be hidden
--   HTTPS= defaults to \"0\", if \"1\" the client will use HTTPS (not
+-   USETRAY= defaults to "1", if "0" the tray will be hidden
+-   HTTPS= defaults to "0", if "1" the client will use HTTPS (not
     recommended)
--   WEBADDRESS= defaults to \"fogserver\", this is the ip/dns name of
+-   WEBADDRESS= defaults to "fogserver", this is the ip/dns name of
     your server
--   WEBROOT= defaults to \"/fog\"
--   ROOTLOG= defaults to \"0\", if \"1\" the fog.log will be at
+-   WEBROOT= defaults to "/fog"
+-   ROOTLOG= defaults to "0", if "1" the fog.log will be at
     C:fog.log, otherwise %PROGRAMFILES%FOGfog.log
 
 Example of a silent MSI installation:
@@ -133,7 +133,7 @@ FogUserService.
 
 -   FOGService: Runs under the LocalSystem account and performs all
     tasks like running snapins, change hostname, etc..
--   FogUserService. The user service is run in a user\'s context and
+-   FogUserService. The user service is run in a user's context and
     helps with notification popups and user level tasks.
 
 ### Logging
@@ -145,7 +145,7 @@ You can find the fog log at `C:\Fog.log` and the user service log at
 
 There are various ways to uninstall the client:
 
--   Uninstall via \'Programs and Features\' or \'Apps & Features\'
+-   Uninstall via 'Programs and Features' or 'Apps & Features'
 -   Uninstall via MSI. Example:
 
 ```{=html}
@@ -229,13 +229,13 @@ To manually start and stop the service:
 
 ### Installing fog-client SmartInstaller
 
-Each FOG server version comes with it\'s own FOG client. You can
+Each FOG server version comes with it's own FOG client. You can
 download the client from the FOG Web UI:
 
 -   Log in on the client machine, open a browser and browse to the Fog
     Web UI.
--   On the bottom of the Web UI, click on the link \'FOG Client\' (you
-    don\'t have to log in).
+-   On the bottom of the Web UI, click on the link 'FOG Client' (you
+    don't have to log in).
 -   Select the SmartInstaller and download it
 -   Run the installer with mono:
 
@@ -288,13 +288,13 @@ To uninstall:
 
 ### Installation
 
-Each FOG server version comes with it\'s own FOG client. You can
+Each FOG server version comes with it's own FOG client. You can
 download the client from the FOG Web UI:
 
 -   Log in on the client machine, open a browser and browse to the Fog
     Web UI.
--   On the bottom of the Web UI, click on the link \'FOG Client\' (you
-    don\'t have to log in).
+-   On the bottom of the Web UI, click on the link 'FOG Client' (you
+    don't have to log in).
 -   Select the SmartInstaller.
 -   Install the SmartInstaller with mono:
 

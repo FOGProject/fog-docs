@@ -44,10 +44,10 @@ and 64 bit (`bzImage`) kernel.
 
 ### Rename Files
 
-In case you don\'t want to overwrite your current kernel files you
+In case you don't want to overwrite your current kernel files you
 better rename the new ones to use a different filename. That way you can
 have several versions available. For example you might have some flacky
-hardware that doesn\'t properly run the latest kernel you want to use
+hardware that doesn't properly run the latest kernel you want to use
 for all your other devices.
 
 ### Move Files

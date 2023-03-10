@@ -3,8 +3,8 @@
 FOG can be used on bare metal as well as in most virtual server and
 client setups. Some of the virtualization techniques are really great
 when used with FOG, e.g. snapshots. Some people use virtualization to
-prepare and capture their \"golden (master / reference) images\" all on
-one central location/server. Again like with the server OS we don\'t
+prepare and capture their "golden (master / reference) images" all on
+one central location/server. Again like with the server OS we don't
 prefer any of the following or others that are out there. This is only a
 collection of hints and tricks plus maybe issues we know about.
 
@@ -14,22 +14,22 @@ collection of hints and tricks plus maybe issues we know about.
 
 Ensure the virtual switch your VM is connected to has a route to FOG!
 
-Create VM Wizard \> Installation Options: Select \"Install an operating
-system from network-based installation server\"
+Create VM Wizard :octicons-arrow-right-24: Installation Options: Select "Install an operating
+system from network-based installation server"
 
 **Existing VM:**
 
 Ensure the virtual switch your VM is connected to has a route to FOG!
 
-Right click VM \> Settings \> BIOS
+Right click VM :octicons-arrow-right-24: Settings :octicons-arrow-right-24: BIOS
 
-Move \"Network Adapter\" (sometimes labeled \"Legacy Network Adapter\")
+Move "Network Adapter" (sometimes labeled "Legacy Network Adapter")
 to the top of the boot order.
 
 **UEFI:**
 
 UEFI/Secure Boot is an option with Hyper-V on Server 2012 on Generation
-2 VMs. It is enabled by default, and can be disabled in VM Settings -\>
+2 VMs. It is enabled by default, and can be disabled in VM Settings :octicons-arrow-right-24:
 Firmware: Uncheck secure boot.
 
 Thanks to [moses](https://forums.fogproject.org/user/moses)
@@ -69,7 +69,7 @@ well:
 | `$ grep nfsd /proc/filesystems`
 | `nodev   nfsd`
 
-If you don\'t see the kernel module *nfsd* loaded you might need to
+If you don't see the kernel module *nfsd* loaded you might need to
 install the nfs-kernel-server package and load the module (usually done
 by the nfs-kernel-server init script). As mentioned before you need to
 enable access to *nfsd* from within the container you want to install
@@ -142,7 +142,7 @@ Thanks to [moses](https://forums.fogproject.org/user/moses)
 
 ## VMWare Player {#vmware_player}
 
-Is this still in use?? Don\'t care if there is nothing about it in wiki
+Is this still in use?? Don't care if there is nothing about it in wiki
 or forums!
 
 ## Xen/XenServer

@@ -4,7 +4,7 @@ FOG is using the most current iPXE source code to build many different
 PXE binaries, some being undionly and others specific for NICs made by
 intel or realtek - BIOS and UEFI compatible. But still you might want to
 build your own binary to suit your needs (be it a custom script or
-debugging enabled). Here you\'ll find some hints on how to build your
+debugging enabled). Here you'll find some hints on how to build your
 own iPXE binaries.
 
 ## Prerequisites

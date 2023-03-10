@@ -7,15 +7,15 @@
     straight to the Credentials / Passwords section first.
 
 
-## FTP\'s roles in FOG
+## FTP's roles in FOG
 
 The primary purpose is moving & renaming image files in the /images/dev
 folder to the /images folder at the end of an image capture. FTP is not
 used for image capture or deployment because NFS is faster. FTP is also
 used to download kernels and delete images. FTP is also used to report
-\"Image Size: ON SERVER\". FTP is also used to ensure the image you wish
+"Image Size: ON SERVER". FTP is also used to ensure the image you wish
 to deploy exists before starting an image deployment. FTP is also
-what\'s used for image replication in multi-server setups.
+what's used for image replication in multi-server setups.
 
 FTP should be able to read, write, and delete in /images/dev and
 /images.
@@ -27,15 +27,15 @@ FTP should be able to read, write, and delete in /images/dev and
 These commands are NOT done on your FOG server, they are done on another
 Linux machine (this example uses Fedora).
 
-*To explain what\'s happening below in the code box\...*
+*To explain what's happening below in the code box\...*
 
 -   Create a test file with some data in it to send later.
 -   Start ftp (may need installed first).
 -   Open connection to FOG server.
--   Provide username (found in Web Interface -\> Storage Management -\>
-    \[NodeName\] -\> Management Username).
--   Provide password (found in Web Interface -\> Storage Management -\>
-    \[NodeName\] -\> Management Password).
+-   Provide username (found in Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24:
+    \[NodeName\] :octicons-arrow-right-24: Management Username).
+-   Provide password (found in Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24:
+    \[NodeName\] :octicons-arrow-right-24: Management Password).
 -   Change to /images directory.
 -   List directory contents.
 -   Upload file.
@@ -102,10 +102,10 @@ Linux machine (this example uses Fedora).
 -   Create a file with some data
 -   Start FTP
 -   Open connection to FOG server
--   Enter username (found in Web Interface -\> Storage Management -\>
-    \[NodeName\] -\> Management Username).
--   Enter password (found in Web Interface -\> Storage Management -\>
-    \[NodeName\] -\> Management Password).
+-   Enter username (found in Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24:
+    \[NodeName\] :octicons-arrow-right-24: Management Username).
+-   Enter password (found in Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24:
+    \[NodeName\] :octicons-arrow-right-24: Management Password).
 -   Upload file
 -   List directory to verify
 -   Download file
@@ -203,7 +203,7 @@ Linux machine (this example uses Fedora).
     ftp://x.x.x.x
 
 -   Use fog / your-fog-account-Password for the credentials (Since v.
-    1.5.6, the default username is \'fogproject.\')
+    1.5.6, the default username is 'fogproject.')
 -   You should see "Index of /"
 
 ## FTP Settings File
@@ -287,7 +287,7 @@ Explanation of settings:
     systemctl disable firewalld.service
     systemctl stop firewalld.service
 
-Can be undone with \"start\" and \"enable\". **Check Firewall in Fedora
+Can be undone with "start" and "enable". **Check Firewall in Fedora
 20/21/22/23**
 
     systemctl status firewalld.service
@@ -345,8 +345,8 @@ Comment out this line like so:
 
 ### Windows 7
 
-Start -\> Control Panel -\> View by \"Small icons\" -\> Windows Firewall
--\> Turn Windows Firewall On or Off (Turn off all three.)
+Start :octicons-arrow-right-24: Control Panel :octicons-arrow-right-24: View by "Small icons" :octicons-arrow-right-24: Windows Firewall
+:octicons-arrow-right-24: Turn Windows Firewall On or Off (Turn off all three.)
 
 ### Configuring Firewall on Linux
 
@@ -360,14 +360,14 @@ should match exactly.
 
 -   There are a few places where all the credentials (on a standard
     install) should match exactly.
--   Web Interface -\> Storage Management -\> \[Your storage node\] -\>
+-   Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24: \[Your storage node\] :octicons-arrow-right-24:
     Management Username & Management Password
--   Web Interface -\> FOG Configuration -\> FOG Settings -\> TFTP Server
-    -\> FOG_TFTP_FTP_USERNAME & FOG_TFTP_FTP_PASSWORD
--   The local \'fogproject\' user\'s password on the Linux FOG server
--   Server file: /opt/fog/.fogsettings -\> password (For FOG Trunk
+-   Web Interface :octicons-arrow-right-24: FOG Configuration :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: TFTP Server
+    :octicons-arrow-right-24: FOG_TFTP_FTP_USERNAME & FOG_TFTP_FTP_PASSWORD
+-   The local 'fogproject' user's password on the Linux FOG server
+-   Server file: /opt/fog/.fogsettings :octicons-arrow-right-24: password (For FOG Trunk
     versions 1.3.0 and higher)
--   Server file: /opt/fog/.fogsettings -\> username (For FOG Trunk
+-   Server file: /opt/fog/.fogsettings :octicons-arrow-right-24: username (For FOG Trunk
     versions 1.3.0 and higher)
 
 All of those should match (again, on a standard installation).
@@ -386,6 +386,6 @@ To edit /opt/fog/.fogsettings: :
 
     For FOG Trunk/FOG 1.3.0 users, if the password field inside of the
     /opt/fog/.fogsettings file is set incorrectly, every time you re-run the
-    FOG installer, it will set the local fog user\'s password to this
-    incorrect password. It\'s important to set the password correctly in all
+    FOG installer, it will set the local fog user's password to this
+    incorrect password. It's important to set the password correctly in all
     of the above listed areas.

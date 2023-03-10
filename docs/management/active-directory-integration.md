@@ -21,10 +21,10 @@ following:
 
     FOG attempts to keep your password secure by encrypting it, but since
     FOG is open source, it is possible for someone to decrypt your password
-    if you don\'t change the FOG \"Passkey.\" It is highly recommended that
+    if you don't change the FOG "Passkey." It is highly recommended that
     you change this Passkey before implementing the AD integration in a
     production environment. Changing the Passkey requires you to recompile
-    the FOG Service\'s Hostname change module, but don\'t panic this isn\'t
+    the FOG Service's Hostname change module, but don't panic this isn't
     hard and only need to be done one time. Please see the documentation
     below.
 
@@ -35,7 +35,7 @@ To set up a host to use AD, do the following:
 
 -   Navigate to the hosts section of the FOG management portal and
     select the host you want to join AD
--   In the top menu, select \'Active Directory\' section.
+-   In the top menu, select 'Active Directory' section.
 
 You get the following options:
 
@@ -62,14 +62,14 @@ You get the following options:
     -   OU=Lab Computers,OU=PCs,DC=company,DC=com
 
     If you leave this fiels blank, the computer object will be created
-    in the default OU for new PC\'s, normally \'Computers\'.
+    in the default OU for new PC's, normally 'Computers'.
 
 -   **Domain Username**
 
     The user name that will create the computer object. This user needs
     to have sufficient credentials to create the computer object in the
-    OU. Usually this will be an account that is member of the \'Domain
-    Administrators\' group.
+    OU. Usually this will be an account that is member of the 'Domain
+    Administrators' group.
 
     Only enter the username in this field, for example:
     FOGServiceAccount. Do not add the domain name.
@@ -77,7 +77,7 @@ You get the following options:
 -   **Domain Password**
 
     The password of the user name above. The password should be typed
-    plain-text, and will auto-encrypt on it\'s own when saved.
+    plain-text, and will auto-encrypt on it's own when saved.
 
 -   **Name Change/AD Join Forced Reboot?**
 
@@ -91,14 +91,14 @@ You get the following options:
 
 -   **Update**
 
-    After changing fields of this section, click on \'Update\'.
+    After changing fields of this section, click on 'Update'.
 
-    The \'Hostname Changer\', a module of the FOG client, checks with
+    The 'Hostname Changer', a module of the FOG client, checks with
     each poll if the client machine is part of Active Directory as
     configured. If not, it will do either of the following tasks:
 
-    -   If users are logged in and the \'Name Change/AD Join Forced
-        Reboot\' box is selected, then the client will join the domain
+    -   If users are logged in and the 'Name Change/AD Join Forced
+        Reboot' box is selected, then the client will join the domain
         and reboot immediately
     -   If no users are logged, then the client will join the domain and
         reboot.

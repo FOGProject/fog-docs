@@ -55,10 +55,14 @@ theme:
   icon:
     logo: logo
 
+extra_css:
+  - "assets/css/custom.css"
+
 plugins:
   - search
   - include_dir_to_nav # see also https://pypi.org/project/mkdocs-include-dir-to-nav/ this allows for an auto organized site map
   - roamlinks # added for support of obsidian see also https://about.gitlab.com/blog/2022/03/15/publishing-obsidian-notes-with-gitlab-pages/ and https://github.com/Jackiexiao/mkdocs-roamlinks-plugin
+  - table-reader # see also https://squidfunk.github.io/mkdocs-material/reference/data-tables/#import-table-from-file
   - tags: # https://squidfunk.github.io/mkdocs-material/setup/setting-up-tags/
       tags_file: tags.md
 
@@ -75,7 +79,10 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.magiclink
   - pymdownx.tasklist
-  - pymdownx.emoji
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - tables # see also https://squidfunk.github.io/mkdocs-material/reference/data-tables/
   - toc:
       permalink: true
 

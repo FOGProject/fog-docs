@@ -21,8 +21,8 @@ installation script:
 -   FTP
 -   NFS
 
-The LAMP setup can also be easily adjusted for a \"WAMP (Windows Apache
-MySQL PHP) system\" though will require a bit more knowledge of what
+The LAMP setup can also be easily adjusted for a "WAMP (Windows Apache
+MySQL PHP) system" though will require a bit more knowledge of what
 packages to use and how to integrate with the FOG system.
 
 Please choose the distribution you have the most knowledge about. This

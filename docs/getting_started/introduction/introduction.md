@@ -5,13 +5,13 @@ various versions of Windows (XP, Vista, 7, 8/8.1, 10), Linux and Mac OS
 X. It ties together a few open source tools with a PHP-based web
 interface.
 
-FOG doesn\'t use any boot disks, or CDs; everything is done via TFTP and
+FOG doesn't use any boot disks, or CDs; everything is done via TFTP and
 PXE. Your PCs boot via PXE and automatically downloads a small linux
 client doing all the hard work of imaging your machine.
 
-Also with FOG many network drivers are built into the client\'s kernel
-(vanilla linux), so you don\'t really need to worry about network
-drivers (unless there isn\'t kernel support for it yet).
+Also with FOG many network drivers are built into the client's kernel
+(vanilla linux), so you don't really need to worry about network
+drivers (unless there isn't kernel support for it yet).
 
 FOG also supports putting an image that came from a computer with a 80GB
 partition onto a machine with a 40GB hard drive as long as the data is
@@ -65,17 +65,17 @@ Please see the license file included with the FOG release for more
 information. With that being said we attempt to do a very good job of
 supporting our users, in fact it is one of the goals of FOG to have
 better support than most commercial products. All support requests
-should be placed through the FOG\'s forum which is located at:
+should be placed through the FOG's forum which is located at:
 <https://forums.fogproject.org/>
 
 Thanks for supporting open source software and enjoy!
 
 ## Background
 
-Working in an educational environment our organization\'s techs very
+Working in an educational environment our organization's techs very
 often re-imaged computers in their day to day activities. For a long
-time we used a commercial product that in many ways didn\'t meet our
-needs. It wasn\'t web based, and you needed to create driver disks,
+time we used a commercial product that in many ways didn't meet our
+needs. It wasn't web based, and you needed to create driver disks,
 floppys or USB drives. Other things were very difficult, such as
 searching for a host by MAC address; and the product was expensive, even
 with an educational discount.

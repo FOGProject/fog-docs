@@ -19,8 +19,8 @@ The preferred method of getting FOG is via Git.
 
 Now that git is installed, you should be able to clone the FOG
 repository. Generally we recommend to put the repository inside of /root
-but if you\'ve done this sort of thing before, put it wherever you want.
-Here\'s how you clone the FOG repository/code to your local machine:
+but if you've done this sort of thing before, put it wherever you want.
+Here's how you clone the FOG repository/code to your local machine:
 
     sudo -i
     cd /root
@@ -32,10 +32,10 @@ Here\'s how you clone the FOG repository/code to your local machine:
 ### Choosing a FOG version
 
 FOG has different versions available at any given time that are
-developed within branches of our git repository. The dev-branch \'dev\'
+developed within branches of our git repository. The dev-branch 'dev'
 version is typically a stable option since much testing still occurs
 before changes are committed, but not as much testing as is done for the
-longer-term \"stable\" version in the master branch.
+longer-term "stable" version in the master branch.
 
 !!! warning Be aware that you should **not** consider switching back to
 the master branch without thorough consideration. This is due to the
@@ -49,7 +49,7 @@ otherwise is at your own risk!
 If you want the latest and greatest, would like to contribute to testing
 new features, or were instructed to install the dev-branch version to
 troubleshoot an issue you simply need to `git checkout` the
-dev-branch like so (just ignore the comment lines starting with \'#\'):
+dev-branch like so (just ignore the comment lines starting with '#'):
 
     #cd into where you cloned the git repo, e.g. /root/fogproject
     cd /root/fogproject
@@ -108,24 +108,24 @@ after the installer finishes:
 Prompt  | Description
 --      |   --
 **SELinux** | *this only applies to RedHat based installs* If SELinux is enabled on your system, then the installer asks you to disable SELinux. The current version of FOG will give problems when SELinux is enabled. Everyone is encouraged to come up with a properly tested SELinux policy we can add to the project and apply for everyone.
-**Local Firewall** | If a local firewall (iptables or firewalld) is enabled, then the installer asks you to disable it. You can leave it  enabled, but then you need to know how to manage the firewall and let all services pass. Currently, the best practice is to disable the firewall if you don\'t know how to set up rules yourself. As with SELinux, everyone is encouraged to develop a proper set of firewall rules.
-**OS Selection** | The installer tries to guess the distribution you\'re running. Just confirm the selection if it\'s correct, otherwise choose the apropriate option.
-**Installation mode** | With the same installer you can install a normal FOG server (called master node) or a FOG storage node. For the explanation of a storage node and how to install a storage node see *todo: install storage node*. As we\'re installing a FOG server here, choose N here.
+**Local Firewall** | If a local firewall (iptables or firewalld) is enabled, then the installer asks you to disable it. You can leave it  enabled, but then you need to know how to manage the firewall and let all services pass. Currently, the best practice is to disable the firewall if you don't know how to set up rules yourself. As with SELinux, everyone is encouraged to develop a proper set of firewall rules.
+**OS Selection** | The installer tries to guess the distribution you're running. Just confirm the selection if it's correct, otherwise choose the apropriate option.
+**Installation mode** | With the same installer you can install a normal FOG server (called master node) or a FOG storage node. For the explanation of a storage node and how to install a storage node see *todo: install storage node*. As we're installing a FOG server here, choose N here.
 **Default Network interface** | The installer needs to know which network interface will be used for hosting PXE booting as well as sending images via unicast and multicast. If the installer guessed the right interface, then choose n(o) to proceed, using the pre-selected network interface. Otherwise, choose y(es) and type in the name of the network interface (like eth0, ens192).
 **DHCP Service** | You have the option to run a DHCP service on the FOG server itself or, if you already have a DHCP server in your network, then you can answer n(o) to the following three questions. For more information on configuring an existing DHCP server to work with FOG, see [Other DHCP Server](../installation/network_setup.md). The questions on DHCP are in reverse order; the settings first, and finally if you really want to enable DHCP on your FOG server. This order might be changed in future versions of the installer.
-**DHCP Router address** | If you\'re going to run a DHCP server on this FOG server, then type y(es) and type in the router (or default gateway) address that the DHCP server will advertise. If you have an existing DHCP server on your network, choose N here. (This question is irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
-**DHCP handle DNS** | If you\'re going to run a DHCP server on this FOG server, then type y(es) to advertise DNS server IPs to the clients and type in the IP address of the local DNS server. If you have an existing DHCP server on your network, choose n(o) here. (This question is also irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
+**DHCP Router address** | If you're going to run a DHCP server on this FOG server, then type y(es) and type in the router (or default gateway) address that the DHCP server will advertise. If you have an existing DHCP server on your network, choose N here. (This question is irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
+**DHCP handle DNS** | If you're going to run a DHCP server on this FOG server, then type y(es) to advertise DNS server IPs to the clients and type in the IP address of the local DNS server. If you have an existing DHCP server on your network, choose n(o) here. (This question is also irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
 **Activate DHCP** | If you want to run a DHCP server on this FOG server, then choose y(es). Otherwise choose n(o).
 **Internationalization support** | If you want the FOG web UI to provide additional languages, choose y(es) here.
-**HTTPS Support** | You can choose to set up FOG with encrypted communication. With FOG providing several different services (e.g. web UI for configuration, web API, PXE booting, client management using the [[network_and_firewall_requirements#FOG Client to FOG Server communications]] ) choosing HTTPS support has consequences: 1. A self-signed certificate is being generated for you. 2. The Apache webserver is also set up to host the web UI through HTTPS. 3. iPXE on-the-fly compilation happens to include that certificate into the PXE binaries provided by your new FOG server Usually this works out of the box and doesn\'t take manual intervention. But if you are unsure, you might still choose n(o) to reduce the risk of issues. Even without HTTPS support, the communication between fog-client and the FOG server uses a secured encrypted channel.
+**HTTPS Support** | You can choose to set up FOG with encrypted communication. With FOG providing several different services (e.g. web UI for configuration, web API, PXE booting, client management using the [[network_and_firewall_requirements#FOG Client to FOG Server communications]] ) choosing HTTPS support has consequences: 1. A self-signed certificate is being generated for you. 2. The Apache webserver is also set up to host the web UI through HTTPS. 3. iPXE on-the-fly compilation happens to include that certificate into the PXE binaries provided by your new FOG server Usually this works out of the box and doesn't take manual intervention. But if you are unsure, you might still choose n(o) to reduce the risk of issues. Even without HTTPS support, the communication between fog-client and the FOG server uses a secured encrypted channel.
 **Hostname** | This host name is used in the FOG web UI. Review the auto-detected hostname; choose n(o) to accept the suggested hostname, or y(es) to enter the correct hostname.
 **Summary** | The installer prints out all options as chosen. If you are sure everything is correct, choose y(es) to proceed installing. Choosing n(o) will terminate the installer, and you will need to restart the process, answering all the questions again.
 
 ### Installation questions
 
-If the installer detects a mysql database server with an empty \'root\'
+If the installer detects a mysql database server with an empty 'root'
 password, you are required to enter one to be set. In case the Linux
-account \'fogproject\' has been used on this server, the installer will
+account 'fogproject' has been used on this server, the installer will
 complain and provide information and instructions on how to mitigate the
 situation.
 

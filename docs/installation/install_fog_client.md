@@ -3,10 +3,10 @@
 The FOG client is an agent running on the machines you are managing with
 Fog. With the FOG client you can perform various tasks such as managing
 printers, change the host name and join Active Directory (for Windows
-machines) and install software via \'snapins\'.
+machines) and install software via 'snapins'.
 
 All these tasks are managed centrally from the FOG Web UI. The FOG
-Client \'polls\' the FOG server to see if tasks need to be done and if
+Client 'polls' the FOG server to see if tasks need to be done and if
 so, executes them.
 
 The purpose of this guide is to show you the process of installing the
@@ -16,10 +16,10 @@ FOG Web UI.
 
 ## Prerequisites
 
-We\'re assuming that you have a running FOG server that was installed
+We're assuming that you have a running FOG server that was installed
 according to the instruction above in this manual
 
-The machine that you\'re installing the FOG client on is a Windows 10
+The machine that you're installing the FOG client on is a Windows 10
 machine.
 
 !!! info
@@ -42,13 +42,13 @@ The following are the steps to install the client on a host
 
 -   Log in on the client machine, open a browser and browse to the Fog
     Web UI.
--   On the bottom of the Web UI, click on the link \'FOG Client\' (you
-    don\'t have to log in).
+-   On the bottom of the Web UI, click on the link 'FOG Client' (you
+    don't have to log in).
 -   Select Your installer
 
 #### MSI Installer
 
-> -   Click on the link \'MSI \-- Network Installer\' to run the MSI
+> -   Click on the link 'MSI \-- Network Installer' to run the MSI
 >     package (can also be used with gpo software deployment and other
 >     silent installs).
 > -   The url to download this is
@@ -74,19 +74,19 @@ The following are the steps to install the client on a host
 
     You may get a 'Windows protected your PC' popup. In that case you have to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'. 
 
--   At the Welcome screen, click on \'Next\'
--   Accept the terms in the License Agreement (it\'s the GPL license, so
-    why not) and click on \'Next\'
+-   At the Welcome screen, click on 'Next'
+-   Accept the terms in the License Agreement (it's the GPL license, so
+    why not) and click on 'Next'
 
 -   Fill in required fields:
     -   Server Address: type in the hostname or IP address of the FOG
         Server.
     -   Web Root: leave this to /fog
     -   Leave the other options as they are
-    -   Click \'Next\'
-    -   Leave the destination folder as it is and click \'Next\'
--   Click on \'Install\' and say \'Yes\' at the UAC prompt.
--   Once the wizard has been installed, click on \'Finish\'.
+    -   Click 'Next'
+    -   Leave the destination folder as it is and click 'Next'
+-   Click on 'Install' and say 'Yes' at the UAC prompt.
+-   Once the wizard has been installed, click on 'Finish'.
 
 Now the FOG client has been installed. In the Task bar there should be a
 new icon:
@@ -99,7 +99,7 @@ a set of encryption keys and then tries to register itself at the FOG
 server.
 
 This may take some time, as the startup type of the FOG client service
-is set to \'Automatic - Delayed\'. You may want to force start the FOG
+is set to 'Automatic - Delayed'. You may want to force start the FOG
 client directly after installation or reboot the machine.
 
 ### Installer issue
@@ -112,23 +112,23 @@ failed.
 ## Approve the machine
 
 -   Start a browser, go to the Fog Web UI and log in
--   Go to \'Host Management\' -\> \'List all Hosts\' and click on the
+-   Go to 'Host Management' :octicons-arrow-right-24: 'List all Hosts' and click on the
     machine you have just installed the FOG client on.
 
 If the Windows OS was not deployed with FOG, then the FOG client is not
 yet registered at FOG and the client is not trusted by the FOG Server.
 We need to manually approve this machine:
 
--   Click on \'Approve this host ?\'
+-   Click on 'Approve this host ?'
 
 If the Windows OS was deployed with FOG, then the machine will already
 be in FOG as we registered it during image deployment. The FOG client is
-considered as \'trusted\' by the FOG server and will be already
+considered as 'trusted' by the FOG server and will be already
 approved.
 
 An approved host looks like this:
 
-The FOG client can now execute tasks we\'re assigning to it in the FOG
+The FOG client can now execute tasks we're assigning to it in the FOG
 Web UI.
 
 ## Fog Client Silent Installation
@@ -152,13 +152,13 @@ Start-Process -FilePath msiexec -ArgumentList @('/i','C:\fogtemp\fog,msi','/quie
 
 ### MSI Switches
 
-|  USETRAY= defaults to \"1\", if \"0\" the tray will be hidden
-|  HTTPS= defaults to \"0\", if \"1\" the client will use HTTPS (not
+|  USETRAY= defaults to "1", if "0" the tray will be hidden
+|  HTTPS= defaults to "0", if "1" the client will use HTTPS (not
   recommended)
-|  WEBADDRESS= defaults to \"fogserver\", this is the ip/dns name of
+|  WEBADDRESS= defaults to "fogserver", this is the ip/dns name of
   your server
-|  WEBROOT= defaults to \"/fog\"
-|  ROOTLOG= defaults to \"0\", if \"1\" the fog.log will be at
+|  WEBROOT= defaults to "/fog"
+|  ROOTLOG= defaults to "0", if "1" the fog.log will be at
   C:fog.log, otherwise %PROGRAMFILES%FOGfog.log
 
 Reference:
@@ -188,7 +188,7 @@ There are 2 services and 2 log files that run on windows.
 ### Windows Services
 
 the FogService and the FogUserService. The user service is run in a
-user\'s context and helps with notification popups and user level tasks.
+user's context and helps with notification popups and user level tasks.
 Most operations are done by the FogService that runs as the system
 account.
 

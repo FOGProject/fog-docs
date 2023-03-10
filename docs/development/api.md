@@ -1,23 +1,23 @@
 # API
 
-In here you\'ll find some practical api examples. But first lets explain
+In here you'll find some practical api examples. But first lets explain
 how to get autheticated
 
 ## Basics
 
 To be able to use the API via external calls it needs to be enabled in
-the FOG web UI (FOG Configuration -\> FOG Settings -\> API System)
+the FOG web UI (FOG Configuration :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: API System)
 first.
 
 ### Authentication
 
 #### Tokens
 
-#\. API global token is a header required with the name `fog-api-token`
-You can find yours via FOG-Configuration-\>FOG Settings-\>API System #.
+API global token is a header required with the name `fog-api-token`
+You can find yours via FOG-Configuration:octicons-arrow-right-24:FOG Settings:octicons-arrow-right-24:API System #.
 API user token is a header that can be used (*highly recommended*) being
 passed as a header in the form `fog-user-token` You can find yours via
-Users-\>List All Users-\>Your Username-\>API Settings
+Users:octicons-arrow-right-24:List All Users:octicons-arrow-right-24:Your Username:octicons-arrow-right-24:API Settings
 
 #### HTTP Basic Auth
 
@@ -99,7 +99,7 @@ Example body for deploying a image:
 NOTE: You need to assign the image to the host before you can deploy it.
 You can assing the host with a PUT request
 
-If the api call is correct you\'ll get the following response: `""`\`
+If the api call is correct you'll get the following response: `""`\`
 
 ### PUT
 
