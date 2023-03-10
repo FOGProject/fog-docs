@@ -14,10 +14,13 @@ This documentation is under construction
 We are slowly moving from wiki.fogproject.org to here
 Once all existing docs are moved over we'll start updating the docs 
 
+## Fog Documentation Sections
+
+Below you'll find basic descriptions of each section
 
 <div class="grid cards" markdown>
 
--   ## Getting Started
+-   #### Getting Started
     
     ---
     
@@ -28,7 +31,7 @@ Once all existing docs are moved over we'll start updating the docs
         - [[introduction]]
         - [System Requirements](introduction/hardware/requirements)
         
--   ## Installation, Updating, and Migrating
+-   #### Installation, Updating, and Migrating
     
     ---
 
@@ -40,7 +43,7 @@ Once all existing docs are moved over we'll start updating the docs
         - [Install Fog Client](install_fog_client)
         - [Running in a Virtual Environment](virtualization)
 
--   ## Management
+-   #### Management
 
     ---
 
@@ -49,12 +52,11 @@ Once all existing docs are moved over we'll start updating the docs
         Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
         These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
     
-        - [[management]]
-        - [Web UI Management](management#web_management)
-        - [Common Tasks][management#common_tasks]
-        - [Plugin Management](plugin-management)
+        - [Web UI Management](management/web_management/dashboard)
+        - [Common Tasks][management/common_tasks/capture_an_image]
+        - [Plugin Management](management/plugins/plugin-management)
 
--   ## Knowledge Base
+-   #### Knowledge Base
 
     ---
 
@@ -67,7 +69,7 @@ Once all existing docs are moved over we'll start updating the docs
         - [integrations](Knowledge-Base\integrations)
         - [reference](Knowledge-Base\reference)
 
--   ## Development
+-   #### Development
 
     ---
 
@@ -75,34 +77,46 @@ Once all existing docs are moved over we'll start updating the docs
 
         Resources and documentation related to contributing to the development of FOG
 
-        - [[development]]
+        - [Development](development\fog_release)
 
--   ## Release Notes
-
-    ---
-
-    This is a link to the fog project release notes for abbreviated information on what's improved in the stable revisions of Fog
-    [Github Release Notes](https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD)
-
--   ## Fog Forums
+-   #### Release Notes
 
     ---
 
-    Search for solutions to your problems or ask the community for help
-    [Fog Forums](https://forums.fogproject.org)
+    !!! tip
+    
+        This is a link to the fog project release notes for abbreviated information on what's improved in the stable revisions of Fog
+        
+        - [Github Release Notes](https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD)
 
--   ## Fog On GitHUB
-
-    ---
-
-    Browse the opensource code for FOGProject
-    [Fog Project Github repos](https://github.com/FOGProject)
-
--   ## Fog Home Page
+-   #### Fog Forums
 
     ---
 
-    The homepage of the FOG Project
-    [Fog Home Page](https://fogproject.org)
+    !!! tip
+
+        Search for solutions to your problems or ask the community for help
+        
+        - [Fog Forums](https://forums.fogproject.org)
+
+-   #### Fog On GitHUB
+
+    ---
+
+    !!! tip
+
+        Browse the opensource code for FOGProject
+
+        - [Fog Project Github repos](https://github.com/FOGProject)
+
+-   #### Fog Home Page
+
+    ---
+
+    !!! tip
+
+        The homepage of the FOG Project
+        
+        - [Fog Home Page](https://fogproject.org)
 
 </div>
