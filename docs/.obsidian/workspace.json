@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "50b1f8fd9c39dd70",
+        "id": "44818f6c005ab2aa",
         "type": "tabs",
         "children": [
           {
-            "id": "338e90390dd11eb7",
+            "id": "cdbd2a61759a1fdd",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "management/dashboard.md",
+                "file": "management/image-management.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "management/dashboard.md",
+                "file": "management/image-management.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "management/dashboard.md",
+                "file": "management/image-management.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "management/dashboard.md"
+                "file": "management/image-management.md"
               }
             }
           }
@@ -146,8 +146,9 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "338e90390dd11eb7",
+  "active": "cdbd2a61759a1fdd",
   "lastOpenFiles": [
+    "management/dashboard.md",
     "assets/img/management/logout-ico.png",
     "assets/img/management/plugins-ico.png",
     "assets/img/management/reports-ico.png",
@@ -158,9 +159,7 @@
     "assets/img/management/Storage-ico.png",
     "assets/img/management/images-ico.png",
     "assets/img/management/groups.ico.png",
-    "assets/img/management/hosts-ico.png",
     "management/plugins/plugin-management.md",
-    "management/dashboard.md",
     "installation/install_fog_server.md",
     "install.md",
     "management/client-side-tasks.md",

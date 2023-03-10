@@ -14,8 +14,8 @@ An introduction to what fog is and some common first questions
 
 ## Installation
 
-[[install_fog_server]]
-[[install_fog_client]]
+- [[install_fog_server]]
+- [[install_fog_client]]
 
 <!-- 
 ::: panels

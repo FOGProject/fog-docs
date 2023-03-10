@@ -50,15 +50,12 @@ picking a report from the left-hand menu.
         -   select the report then click on the upload button.
         -   The report will then show up on the left-hand menu.
 
-::: warning
-::: title
-Warning
-:::
+!!! warning
 
-Please be cautious when uploading reports from an unknown source as the
-writer of the report has full access to the FOG system and database!
-Make sure your sources are trustworthy before importing a report!
-:::
+    Please be cautious when uploading reports from an unknown source as the
+    writer of the report has full access to the FOG system and database!
+    Make sure your sources are trustworthy before importing a report!
+
 
 ## Creating Custom Reports
 

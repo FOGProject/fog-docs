@@ -1,14 +1,11 @@
 # Troubleshooting FTP
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-It seems that greater than 90% of FOG FTP problems are caused by
-bad/mismatched credentials. Because of this, we recommend skipping
-straight to the Credentials / Passwords section first.
-:::
+    It seems that greater than 90% of FOG FTP problems are caused by
+    bad/mismatched credentials. Because of this, we recommend skipping
+    straight to the Credentials / Passwords section first.
+
 
 ## FTP\'s roles in FOG
 
@@ -389,14 +386,10 @@ To edit /opt/fog/.fogsettings: :
 `Instructions for using vi text editor<reference/vi:vi>`{.interpreted-text
 role="ref"}
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-For FOG Trunk/FOG 1.3.0 users, if the password field inside of the
-/opt/fog/.fogsettings file is set incorrectly, every time you re-run the
-FOG installer, it will set the local fog user\'s password to this
-incorrect password. It\'s important to set the password correctly in all
-of the above listed areas.
-:::
+    For FOG Trunk/FOG 1.3.0 users, if the password field inside of the
+    /opt/fog/.fogsettings file is set incorrectly, every time you re-run the
+    FOG installer, it will set the local fog user\'s password to this
+    incorrect password. It\'s important to set the password correctly in all
+    of the above listed areas.

@@ -2,14 +2,10 @@
 
 Setting up Printers With Fog Printer Management
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-**Known Issues** - Setting of the default printer will only work if the
-fog tray icon is running.
-:::
+    **Known Issues** - Setting of the default printer will only work if the
+    fog tray icon is running.
 
 ## Overview
 
@@ -48,19 +44,15 @@ fog tray icon is running.
         -   (and we think, but could use a confirmation as it hasn\'t
             been tested) AD based printers.
 
-::: note
-::: title
-Note
-:::
+!!! note
 
--   If you wish to see what printers are included with Windows, open
-    `c:\windows\inf\ntprint.inf` in a text editor.
--   You can also find what driver is being used by a printer in the
-    advanced printer properties
--   `printManagement.msc` is also a helpful built-in windows tool that
-    can show you all your installed printers, printer drivers, and
-    printer ports
-:::
+    -   If you wish to see what printers are included with Windows, open
+        `c:\windows\inf\ntprint.inf` in a text editor.
+    -   You can also find what driver is being used by a printer in the
+        advanced printer properties
+    -   `printManagement.msc` is also a helpful built-in windows tool that
+        can show you all your installed printers, printer drivers, and
+        printer ports
 
 ### Printer Management Modes
 
@@ -163,19 +155,16 @@ these printers.
     > imported to set the printers configurations (i.e. tray count,
     > add-on modules, model specific settings, etc.).
 
-::: tip
-::: title
-Tip
-:::
+!!! tip
 
-You can create the printer config file by manually by configuring an
-exising printer via the printer properties gui and then running this
-command on the same computer
-`RUNDLL32 PRINTUI.DLL,PrintUIEntry /Ss /n"Printer Name" /a "C:\Path\To\Save\ConfigFile.dat m f g p`
-You then just need to make sure the file is accessible to the client in
-a share or locally on the computer and put that path in this field just
-like the inf file.
-:::
+    You can create the printer config file by manually by configuring an
+    exising printer via the printer properties gui and then running this
+    command on the same computer
+    `RUNDLL32 PRINTUI.DLL,PrintUIEntry /Ss /n"Printer Name" /a "C:\Path\To\Save\ConfigFile.dat m f g p`
+    You then just need to make sure the file is accessible to the client in
+    a share or locally on the computer and put that path in this field just
+    like the inf file.
+
 
 ### iPrint Printer
 

@@ -22,18 +22,17 @@ according to the instruction above in this manual
 The machine that you\'re installing the FOG client on is a Windows 10
 machine.
 
-::: admonition
-info
+!!! info
 
--   .NET Framework version 4.0+ (Note: .NET 4 client profile will NOT
-    work)
--   You can download the framework from here: [Microsoft .NET Framework
-    4.5.1 (Offline Installer) for Windows Vista SP2, Windows 7 SP1,
-    Windows 8, Windows Server 2008 SP2 Windows Server 2008 R2 SP1 and
-    Windows Server
-    2012](https://www.microsoft.com/en-us/download/details.aspx?id=40779)
--   Windows 10 comes with a version of .Net that will work.
-:::
+  -   .NET Framework version 4.0+ (Note: .NET 4 client profile will NOT
+      work)
+  -   You can download the framework from here: [Microsoft .NET Framework
+      4.5.1 (Offline Installer) for Windows Vista SP2, Windows 7 SP1,
+      Windows 8, Windows Server 2008 SP2 Windows Server 2008 R2 SP1 and
+      Windows Server
+      2012](https://www.microsoft.com/en-us/download/details.aspx?id=40779)
+  -   Windows 10 comes with a version of .Net that will work.
+
 
 ## Fog Client Installation
 
@@ -65,22 +64,15 @@ The following are the steps to install the client on a host
 
 ### Run The Installer
 
-::: admonition
-info
+!!! info
 
-The following steps follow the msi installer wizard. The Smart Installer
-wizard is similar
-:::
+    The following steps follow the msi installer wizard. The Smart Installer
+    wizard is similar
 
-::: note
-::: title
-Note
-:::
 
-You may get a \'Windows protected your PC\' popup. In that case you have
-to convince windows that this installer is safe to run. Click on \'More
-info\' and \'Run anyway\'.
-:::
+!!! note
+
+    You may get a 'Windows protected your PC' popup. In that case you have to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'. 
 
 -   At the Welcome screen, click on \'Next\'
 -   Accept the terms in the License Agreement (it\'s the GPL license, so
@@ -145,14 +137,11 @@ If you would like to create a silent installation to deploy the fog
 client here is an example of a powershell script that would do that for
 you
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-This script assumes that you can access your fogserver by the default
-name of [fogserver]{.title-ref} which can be a hostname or a dns alias
-:::
+    This script assumes that you can access your fogserver by the default
+    name of [fogserver]{.title-ref} which can be a hostname or a dns alias
+
 
 ``` powershell
 #download the client installer to C:\fogtemp\fog.msi

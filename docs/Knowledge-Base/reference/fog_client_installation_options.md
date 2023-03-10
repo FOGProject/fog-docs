@@ -42,22 +42,18 @@ download the client from the FOG Web UI:
 
 ### Run The Installer
 
-::: admonition
-info
+!!! info
 
-The following steps follow the msi installer wizard. The Smart Installer
-wizard is similar
-:::
+    The following steps follow the msi installer wizard. The Smart Installer
+    wizard is similar
 
-::: note
-::: title
-Note
-:::
 
-You may get a \'Windows protected your PC\' popup. In that case you have
-to convince windows that this installer is safe to run. Click on \'More
-info\' and \'Run anyway\'.
-:::
+!!! note
+
+    You may get a \'Windows protected your PC\' popup. In that case you have
+    to convince windows that this installer is safe to run. Click on \'More
+    info\' and \'Run anyway\'.
+
 
 -   At the Welcome screen, click on \'Next\'
 -   Accept the terms in the License Agreement (it\'s the GPL license, so
@@ -85,14 +81,10 @@ If you would like to create a silent installation to deploy the fog
 client here is an example of a powershell script that would do that for
 you
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-This script assumes that you can access your fogserver by the default
-name of [fogserver]{.title-ref} which can be a hostname or a dns alias
-:::
+    This script assumes that you can access your fogserver by the default name of fogserver which can be a hostname or a dns alias
+
 
 ``` powershell
 #download the client installer to C:\fogtemp\fog.msi
@@ -118,13 +110,10 @@ Example of a silent MSI installation:
 
 ### Smart Installer Switches
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-All switches with \--{OPTION} can also be used as /{OPTION}
-:::
+    All switches with \--{OPTION} can also be used as /{OPTION}
+
 
 -   \--server= Specify the server address. Default is fogserver
 -   \--webroot= Specify the webroot. Default is /fog

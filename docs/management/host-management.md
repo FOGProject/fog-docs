@@ -146,14 +146,11 @@ Hosts can also include, but are not required:
 
 ------------------------------------------------------------------------
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-This page also allows for configuration of Active Directory integration,
-but this topic will be covered later.
-:::
+    This page also allows for configuration of Active Directory integration,
+    but this topic will be covered later.
+
 
 **When all settings are added, click on the \"Add\" button.**
 
@@ -185,13 +182,10 @@ but this topic will be covered later.
     exist and this number can be found in the table \"images\" in the
     field imageID.
 
-::: warning
-::: title
-Warning
-:::
+!!! warning
 
-The file must be saved as a CSV **without** a header row.
-:::
+    The file must be saved as a CSV **without** a header row.
+
 
 Sample:
 

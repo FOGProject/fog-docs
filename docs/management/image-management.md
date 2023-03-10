@@ -100,13 +100,10 @@ tbd
 
 #### Raw Image (Sector By Sector, DD, Slow)
 
-::: warning
-::: title
-Warning
-:::
+!!! warning WARNING
 
-This should always be the last resort.
-:::
+	This should always be the last resort.
+
 
 -   
 
@@ -118,14 +115,11 @@ This should always be the last resort.
 -   This image type also takes a **significant** amount of time to
     capture and deploy.
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-All of these image types can be deployed using multi-cast or unicast to
-clients
-:::
+    All of these image types can be deployed using multi-cast or unicast to
+    clients
+
 
 ### Partition
 

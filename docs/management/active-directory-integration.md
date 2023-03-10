@@ -17,20 +17,17 @@ following:
     rights to join computers to the Domain, as well as sufficient rights
     to create/manage computer objects.
 
-::: note
-::: title
-Note
-:::
+!!! note
 
-FOG attempts to keep your password secure by encrypting it, but since
-FOG is open source, it is possible for someone to decrypt your password
-if you don\'t change the FOG \"Passkey.\" It is highly recommended that
-you change this Passkey before implementing the AD integration in a
-production environment. Changing the Passkey requires you to recompile
-the FOG Service\'s Hostname change module, but don\'t panic this isn\'t
-hard and only need to be done one time. Please see the documentation
-below.
-:::
+    FOG attempts to keep your password secure by encrypting it, but since
+    FOG is open source, it is possible for someone to decrypt your password
+    if you don\'t change the FOG \"Passkey.\" It is highly recommended that
+    you change this Passkey before implementing the AD integration in a
+    production environment. Changing the Passkey requires you to recompile
+    the FOG Service\'s Hostname change module, but don\'t panic this isn\'t
+    hard and only need to be done one time. Please see the documentation
+    below.
+
 
 ## Set up
 
