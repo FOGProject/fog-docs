@@ -14,6 +14,24 @@ The documentation is written in Markdown (put a link here) and built with mkdocs
 
 Previously we were using RST for this documentation but we are migrating to markdown. An initial conversion was handled using pandoc on a local machine. The original rst files are still present. As markdown files are updated to have any links and image references fixed, as well as any other content updates, the relative rst of the markdown file can be deleted to signify it is fully converted and ready to move forward.
 
+## Markdown front matter
+
+We can put various things in our front matter, here's a basic example that should be at the top of each md page
+
+```
+--- 
+title: Can match first heading
+description: brief description of the page
+tags:
+    - labels
+    - for
+    - category
+    - searching
+    - and
+    - linking
+---
+```
+
 # Rst Styling rules for the project
 
 **This needs to be updated as we now use markdown with mkdocs and the mkdocs-material theme. Leaving it here for reference as we convert the RST files to md**
