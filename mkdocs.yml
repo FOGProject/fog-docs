@@ -5,8 +5,8 @@ site_author: FOG Project
 site_description: >-
   Documentation for the FOG Project computer cloning and image deployment system
 # Repository
-repo_name: FOG-Project/fog-docs
-repo_url: https://github.com/Fog-Project/fog-docs
+repo_name: FOGProject/fog-docs
+repo_url: https://github.com/FOGProject/fog-docs
 
 # Copyright
 copyright: Copyright &copy; 2020 - 2023 FOG Project
