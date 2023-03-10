@@ -1,5 +1,6 @@
 ---
-title: Fog User
+title: Fog User Guide
+description: An overview of what fog is and how to use it 
 ---
 
 # Fog User Guide
@@ -68,7 +69,7 @@ should be placed through the FOG\'s forum which is located at:
 
 Thanks for supporting open source software and enjoy!
 
-\### Background on FOG
+### Background on FOG
 
 -   **Why FOG?** Working in an educational environment our
     organization\'s techs very often re-imaged computers in their day to
@@ -85,14 +86,14 @@ Thanks for supporting open source software and enjoy!
     source since we use many other open source products, and figured we
     should give back to the community.
 
-\### Fundamental Concepts
+### Fundamental Concepts
 
 This section provides some basic concepts that the FOG Project uses.
 
 **PXE Network Bootstrap loading** What is iPXE and the difference
 between the files? Check out the \[iPXE\](/customization/iPXE) page.
 
-\## Installing FOG
+## Installing FOG
 
 FOG is a typical
 *\[LAMP\](http://en.wikipedia.org/wiki/LAMP\_%28software_bundle%29)*
@@ -101,7 +102,7 @@ components: **A**pache, **M**ySQL, **P**HP, and several other services,
 are automatically downloaded and installed by the FOG installation
 script.
 
-\### Requirements
+### Requirements
 
 This listing is for informational purposes only, as the required
 components will be automatically downloaded and installed by the FOG
@@ -115,7 +116,7 @@ The LAMP setup can also be easily adjusted for a \"WAMP (Windows Apache
 MySQL PHP) system\" though will require a bit more knowledge of what
 packages to use and how to integrate with the FOG system.
 
-\### Installation on different distributions of Linux
+### Installation on different distributions of Linux
 
 -   Find here step-by-step guides written for your favorite flavor of
     Linux: \[Installation manuals\](Installation#Installation_manuals
@@ -123,9 +124,9 @@ packages to use and how to integrate with the FOG system.
 
 ------------------------------------------------------------------------
 
-\## Network Integration
+## Network Integration
 
-\### Basic Network Setup
+### Basic Network Setup
 
 The FOG setup script asks several questions which might not be obvious.
 These sections describe only the most generic settings.
@@ -144,9 +145,9 @@ with a fairly generic enterprise system. **See \[Integrating FOG into an
 Existing Network\](Integrating_FOG_into_an_Existing_Network
 \"wikilink\")**
 
-\### Advanced Network Setup
+### Advanced Network Setup
 
-\#### Integrating FOG Server with Existing Network Systems in non
+#### Integrating FOG Server with Existing Network Systems in non
 intrusive mode using MAC filtration
 
 This methods allows to use Fog in existing network without the need of
@@ -156,7 +157,7 @@ intrusive
 mode\](Integrating_FOG_into_an_Existing_Network_in_non_intrusive_mode
 \"wikilink\")
 
-\#### Integrating FOG server into an existing network in non intrusive
+#### Integrating FOG server into an existing network in non intrusive
 mode using ProxyDHCP
 
 This methods allows to use Fog in existing network without the need of
@@ -164,12 +165,12 @@ controlling existing DHCP server. Does NOT required you to input the MAC
 addresses of FOG clients. See \[Setting up
 ProxyDHCP\](Setting_up_ProxyDHCP \"wikilink\").
 
-\#### Wake On Lan (WOL)
+#### Wake On Lan (WOL)
 
 -   \[Cisco WOL - Layer 3\](Cisco_Wake_on_lan \"wikilink\")
 -   \[ProCurve WOL\](ProCurve_Wake_on_lan \"wikilink\")
 
-\#### Multicast/UDPCast
+#### Multicast/UDPCast
 
 -   \[Cisco Multicast - Layer 3\](Cisco_Multi_Cast \"wikilink\")
 
@@ -177,16 +178,16 @@ ProxyDHCP\](Setting_up_ProxyDHCP \"wikilink\").
 
 -   \[HP Multicast - Layer 2&3\](HPMulticast \"wikilink\")
 
-\#### Full Listing of Ports used by FOG server and client
+#### Full Listing of Ports used by FOG server and client
 
 MySQL - 3306 FTP -- tcp 20,21 SSH -- tcp 22 TFTP -- udp 69 HTTP(s) --
 tcp 80,443 Portmap -- tcp/udp 111 NFS -- tcp/udp 2049 Transfer ports --
 tcp/udp 1024 -- 65535 As found at:
 \<<http://fogproject.org/forum/threads/firewall-config.27/>\>
 
-\## Getting Started
+## Getting Started
 
-\### Quick Start - Basic Tasks
+### Quick Start - Basic Tasks
 
 So you have a FOG server installed and setup, now what do you do? Below
 are a few common \"Getting Started\" items.
@@ -199,7 +200,7 @@ are a few common \"Getting Started\" items.
 3.  \[Deploying your Image a group of
     clients\](Deploying_your_Image_a_group_of_clients \"wikilink\")
 
-\### Tips
+### Tips
 
 1.  FOG requires that all hosts be entered in the FOG Database for
     imaging. The most important part is getting the MAC address of the
@@ -227,7 +228,7 @@ are a few common \"Getting Started\" items.
     easier, if hardware is different, etc. See Microsoft.com for more
     details on using sysprep.
 
-\## Preparing a HOST for Cloning
+## Preparing a HOST for Cloning
 
 -   Key Term: Host \--&gt; The computer that will be registered to FOG
     and imaged(capture/deploy). Client usually refers to the Client
@@ -252,11 +253,11 @@ Sysprep, \[Hardware-Independent Images
 
 Read more about *\[Host Setup\](Client_Setup \"wikilink\")*
 
-\## FOG Benchmarks
+## FOG Benchmarks
 
-\### \[Internal Benchmarks\](Internal_Benchmarks \"wikilink\")
+### \[Internal Benchmarks\](Internal_Benchmarks \"wikilink\")
 
-\## Managing FOG
+## Managing FOG
 
 The FOG web interface is your primary management console. It is very
 well-documented in the pages linked below: ===The Main \[Managing
@@ -309,7 +310,7 @@ sections:
     \[Modifying\](Managing_FOG#Modifying_Users \"wikilink\") FOG user
     accounts
 
-\## FOG \[Tasks\](Managing_FOG#Tasks \"wikilink\")
+## FOG \[Tasks\](Managing_FOG#Tasks \"wikilink\")
 
 This is a major section of FOG Management because all day-to-day client
 management is initiated within the FOG Tasks section. The \[Overview
@@ -328,7 +329,7 @@ Debug Capture - Unicast (Debug) Send - Unicast (Debug) Send - Unicast
 Wake Up Fast Wipe Normal Wipe Full Wipe Disk Surface Test File Recovery
 Virus Scan Hardware Inventory Donate Torrent-Cast
 
-\### Delayed Tasks, or \[Scheduling Tasks\](Managing_FOG#Scheduling
+### Delayed Tasks, or \[Scheduling Tasks\](Managing_FOG#Scheduling
 \"wikilink\") in the future
 
 Describes advanced settings available for scheduling tasks including
@@ -337,15 +338,15 @@ Task\](Managing_FOG#Single_Execution_Scheduling \"wikilink\")
 scheduling, and \[setting a CRON-Style
 Task\](Managing_FOG#Cron_Style_Task_Scheduling \"wikilink\").
 
-\### \[Adding Printers\](Managing_FOG#Printers \"wikilink\") to FOG
+### \[Adding Printers\](Managing_FOG#Printers \"wikilink\") to FOG
 
 How to add printers to FOG. This allows the \[FOG Service to manage
 printers\](Managing_FOG#Printer_Manager \"wikilink\") on FOG Clients
 
-\## The \[FOG Client Service\](Managing_FOG#The_FOG_Client_Service
+## The \[FOG Client Service\](Managing_FOG#The_FOG_Client_Service
 \"wikilink\")
 
-\### Legacy Client
+### Legacy Client
 
 -   A service that runs on client computers allowing FOG to better
     manage them. Provides Active Directory integration, the ability to
@@ -359,7 +360,7 @@ Management\](Power_Management \"wikilink\").
     ini file.\](Managing_FOG#Module_specific_configuration_settings
     \"wikilink\")
 
-\#### \[Installing\](Managing_FOG#Installation \"wikilink\") the FOG
+#### \[Installing\](Managing_FOG#Installation \"wikilink\") the FOG
 Client
 
 -   **\[Client install location\](Managing_FOG#Installation
@@ -375,7 +376,7 @@ Client
 -   A typical client installation, Silent installation, and a video
     tutorial.
 
-\#### Advanced Description of \[FOG
+#### Advanced Description of \[FOG
 Services\](Managing_FOG#Functions_and_Operation \"wikilink\")
 
 More detail on: ::Auto Log Out Hostname Changer Host Register Task
@@ -383,7 +384,7 @@ Reboot Directory Cleaner Display Manager \[Green FOG\](Green_FOG
 \"wikilink\") Snapin Client User Tracker User Cleanup Printer Manager
 Client Updater
 
-\#### Firewall Exceptions
+#### Firewall Exceptions
 
 -   Run these in Administrative Command Prompt (cmd) on the host to
     allow communication between the FOG Client Service installed on the
@@ -391,7 +392,7 @@ Client Updater
 -   Past setups suggested disabling the firewall, but this is less
     secure
 
-\##### x86 (32bit)
+##### x86 (32bit)
 
 > netsh advfirewall firewall add rule name=\"Fog Client\" dir=in
 > action=allow program=\"%ProgramFiles%FOGFOGService.exe\" netsh
@@ -400,7 +401,7 @@ Client Updater
 > firewall add rule name=\"Fog Tray\" dir=in action=allow
 > program=\"%ProgramFiles%FOGFOGTray.exe\"
 
-\##### x64 (64bit)
+##### x64 (64bit)
 
 > netsh advfirewall firewall add rule name=\"Fog Client\" dir=in
 > action=allow program=\"%ProgramFiles(x86)%FOGFOGService.exe\" netsh
@@ -409,23 +410,23 @@ Client Updater
 > advfirewall firewall add rule name=\"Fog Tray\" dir=in action=allow
 > program=\"%ProgramFiles(x86)%FOGFOGTray.exe\"
 
-\#### \[Updating\](Managing_FOG#Keeping_Clients_up_to_date \"wikilink\")
+#### \[Updating\](Managing_FOG#Keeping_Clients_up_to_date \"wikilink\")
 the FOG Client
 
 How to update the FOG client.
 
-\#### The \[FOG Tray\](Managing_FOG#FOG_Tray \"wikilink\")
+#### The \[FOG Tray\](Managing_FOG#FOG_Tray \"wikilink\")
 
 Describes the Windows application that runs in the taskbar
 
-\#### \[Troubleshooting\](Managing_FOG#Troubleshooting \"wikilink\") the
+#### \[Troubleshooting\](Managing_FOG#Troubleshooting \"wikilink\") the
 FOG Client
 
 Logs are usually located at \<font color=\"red\"\>C:fog.log\</font\>. If
 the log is not here, this generally means the log path was changed
 during installation, and is probably in fog\'s program directory.
 
-\## Snap-ins
+## Snap-ins
 
 -   A FOG \[Snap-in\](Managing_FOG#Snap-ins \"wikilink\") is anything
     that can be run on a Windows client. This can be *just about
@@ -440,12 +441,12 @@ during installation, and is probably in fog\'s program directory.
     \[Linking\](Managing_FOG#Linking_the_Snapin_to_Hosts \"wikilink\")
     the Snap-in to hosts.
 
-\## FOG Plugins
+## FOG Plugins
 
 Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
 \"wikilink\") to activate and manage plugins.
 
-\### LDAP Plugin
+### LDAP Plugin
 
 -   Allows you to link with a LDAP server to add an user validation
 -   You can add mulitple LDAP servers
@@ -454,7 +455,7 @@ Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
     validation
 -   If the user does not exist, FOG create one with the mobile profile
 
-\### Location Plugin
+### Location Plugin
 
 -   Allows you to direct hosts at separate locations and manage through
     a centralized server
@@ -465,7 +466,7 @@ Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
 -   Can also be used to direct the host to download it\'s snapins from
     the relevant location
 
-\### Access Control Plugin
+### Access Control Plugin
 
 -   \<span style=\"background-color:RED; padding: 1px\"\> **Removed in
     1.3.0** \</span\>
@@ -474,7 +475,7 @@ Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
     controls
 -   For Example: IT vs. Regular User
 
-\### Capone Plugin
+### Capone Plugin
 
 -   Ideally for retail markets and computer shops
 -   The Capone plugin allows FOG to recognize similar hardware platforms
@@ -486,7 +487,7 @@ Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
     without having to do any registration. BUT intervention is still
     required to start imaging.
 
-\### WOL Broadcast Plugin
+### WOL Broadcast Plugin
 
 -   Allowing the Fog user to specify different broadcast address on your
     network
@@ -497,21 +498,21 @@ Plugins enhance FOG\'s functionality. See \[Plugins\](Plugins
 -   WOL Broadcast directly tells a packet to send to other broadcast
     addresses so that it network passes on the traffic
 
-\### Example Plugin
+### Example Plugin
 
 -   If you would like to create your own plugins here is a template to
     follow.
 
-\## FOG Server Maintenance
+## FOG Server Maintenance
 
 -   \[Backing up FOG\](Backing_up_FOG \"wikilink\")
 -   \[Restoring FOG from Backup\](Restoring_FOG_from_Backup
     \"wikilink\")
 -   \[Upgrading the FOG Server\](Upgrading_the_FOG_Server \"wikilink\")
 
-\## Advanced Installations
+## Advanced Installations
 
-\### Separate TFTP and DHCP Server
+### Separate TFTP and DHCP Server
 
 In this setup, the TFTP server and the DHCP server are hosted on a
 separate server. The TFTP server holds the PXE boot files including the
@@ -522,7 +523,7 @@ network connection information.
 Click here for detailed steps: \[Separate TFTP and DHCP
 Server\](Separate_TFTP_and_DHCP_Server \"wikilink\")
 
-\### Additional TFTP / DHCP Server on separate subnet
+### Additional TFTP / DHCP Server on separate subnet
 
 This setup allows FOG to manage systems at a remote network location by
 installing the necessary services to allow clients to PXE boot to a
@@ -535,7 +536,7 @@ a bit to allow for FOG nodes to be used in various locations that pull
 from a central server. \[ Using remote FOG nodes for distributed
 deployment\](Fog_deployment_nodes \"wikilink\")
 
-\### Separate NFS Server
+### Separate NFS Server
 
 Edit the storage node definition with the IP address of your NFS server
 and set the image location to the path on the nfs server. Make sure it
@@ -583,14 +584,14 @@ so line 133 of /var/www/fog/service/Post_Stage2.php would look like this
 > if (@ftp_rename ( \$ftp, \$src, \$dest ) \|\| \@ftp_rename ( \$ftp,
 > \$srcdd, \$dest ))
 
-\### Change NFS location
+### Change NFS location
 
 This is **not about a seperate NFS server** in general, but about how to
 **change the local storage directory** and export it correctly.
 
 See \[Change NFS location\](Change_NFS_location \"wikilink\") for more.
 
-\## Upgrading to Trunk
+## Upgrading to Trunk
 
 -   \<span style=\"background-color:Yellow;\"\>Trunk installs are almost
     always buggy.\</span\> This is bleeding edge and if you wish to
@@ -599,7 +600,7 @@ See \[Change NFS location\](Change_NFS_location \"wikilink\") for more.
     problems
 -   \[Upgrade_to_trunk\](Upgrade_to_trunk \"wikilink\")
 
-\## Other Advanced Topics
+## Other Advanced Topics
 
 -   \[Building a Custom Kernel\](Building_a_Custom_Kernel \"wikilink\")
 -   \[Creating Custom FOG Service
@@ -613,12 +614,12 @@ See \[Change NFS location\](Change_NFS_location \"wikilink\") for more.
     pxelinux.0\](Chainloading_PXE_to_iPXE_using_pxelinux.0 \"wikilink\")
 -   \[Auto driver Install\](Auto_driver_Install \"wikilink\")
 
-\## Troubleshooting
+## Troubleshooting
 
 This section is intended to bring together the most common issues from
 the \[forums\](<http://www.fogproject.org/forum>).
 
-\### Troubleshooting Installation and Configuration Issues
+### Troubleshooting Installation and Configuration Issues
 
 -   \[Knowledge Base\](Knowledge_Base \"wikilink\")
 -   \[Password Central\](Password_Central \"wikilink\")
@@ -639,7 +640,7 @@ the \[forums\](<http://www.fogproject.org/forum>).
     \"wikilink\")
 -   \[Troubleshoot_TFTP\](Troubleshoot_TFTP \"wikilink\")
 
-\## Appendix C: Alternative Resources
+## Appendix C: Alternative Resources
 
 For Microsoft sysprep information, see this page:
 \<<http://vernalex.com/guides/sysprep/video.shtml>\>
