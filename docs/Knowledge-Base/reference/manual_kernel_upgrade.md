@@ -12,8 +12,7 @@ Manually loading different kernel versions can be pretty handy to test
 with the different hardware you have. Going straight to a new kernel -
 while not very likely - can cause an issue with some devices. So instead
 you might assign a different kernel to one or maybe a few machines
-through the kernel parameter in the hosts\' settings:
-`management/host-management:kernel`{.interpreted-text role="ref"}
+through the kernel parameter in the hosts' settings: [[host-management#Kernel]]
 
 ## Downloading the Kernels
 

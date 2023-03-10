@@ -36,9 +36,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
     wired only), serial number(if available in BIOS), Make/Model, and
     other Hardware information with the FOG server.
 
--   For more information on these commands please see:
-    `management/client-side-tasks:Client Side Tasks`{.interpreted-text
-    role="ref"}
+-   For more information on these commands please see: [[client-side-tasks#Client Side Tasks]]
 
 ### Method 2: Adding a new host via Quick Registration
 

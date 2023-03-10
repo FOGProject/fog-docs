@@ -1,8 +1,12 @@
-\# Fog User Guide
+---
+title: Fog User
+---
 
-\## Introduction
+# Fog User Guide
 
-\### Preface
+## Introduction
+
+### Preface
 
 This document is intended to be modified by FOG users, in fact it is
 based on a document created by a FOG user. If you feel something could

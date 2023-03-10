@@ -165,23 +165,12 @@ It is possible to update your client kernel from within the UI of FOG.
 To do this perform the following steps:
 
 -   Log into the FOG Management UI.
-
 -   Go to **Other Information**
-
 -   Select **Kernel Updates**
-
 -   Select the Kernel you would like to download, typically the newest
     kernels are on the top of the list.
-
 -   Click the download icon
-
--   
-
-    Select a file name for your kernel, to make it the default kernel leave the name as **bzImage**
-
-    :   -   If you set it to a different name, you can set a host to use
-            it in the
-            `management/host-management:Kernel`{.interpreted-text
-            role="ref"} hosts field
-
+-   Select a file name for your kernel, to make it the default kernel leave the name as **bzImage**
+       * *!!! tip
+	    If you set it to a different name, you can set a host to use t in the [[host-management#Kernel]]
 -   Click the **Next** Button

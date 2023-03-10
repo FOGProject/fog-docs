@@ -1,3 +1,12 @@
+---
+title: Fog Docs Home Page
+description: The home page for fog docs with navigation to the various sections
+tags:
+    - home
+    - index
+    - start-page
+---
+
 # Welcome to the Fog Project documentation!
 
 | Fog Project is really cool

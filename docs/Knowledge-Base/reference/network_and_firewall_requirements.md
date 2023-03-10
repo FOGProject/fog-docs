@@ -49,9 +49,7 @@ possibilities:
     running and in enterprise networks dhcp services are commonly
     managed by network equipment, such as firewalls. In this case, make
     sure you configure this DHCP Server to also pass the extra options
-    66 (next-server) and 67 (bootfile name) mentioned in
-    ` Other DHCP Server than FOG<installation/install_fog_server:Other DHCP Server than FOG>`{.interpreted-text
-    role="ref"}.
+    66 (next-server) and 67 (bootfile name) mentioned in [[network_setup#Other DHCP Server than FOG]]
 
 If the DCHP server is in another network, make sure you have a \'DHCP
 helper\' running in the network. This DHCP helper \'catches\' the

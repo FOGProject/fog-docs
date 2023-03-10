@@ -6,7 +6,7 @@ param (
 
 
 "Importing build/make helper functions..." | out-host;
-import-module .\buildFunctions.psm1 
+import-module .\buildFunctions.psm1 -force
 
 Get-Python;
 

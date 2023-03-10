@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "management/image-management.md",
+                "file": "getting_started/fog_user_guide.md",
                 "mode": "source",
                 "source": false
               }
@@ -48,7 +48,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "role=\"ref\"",
                 "matchingCase": true,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "management/image-management.md",
+                "file": "getting_started/fog_user_guide.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "management/image-management.md",
+                "file": "getting_started/fog_user_guide.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "management/image-management.md"
+                "file": "getting_started/fog_user_guide.md"
               }
             }
           }
@@ -148,6 +148,23 @@
   },
   "active": "cdbd2a61759a1fdd",
   "lastOpenFiles": [
+    "tags.md",
+    "getting_started/introduction/introduction.md",
+    "index.md",
+    "Knowledge-Base/troubleshooting/troubleshoot_ftp.md",
+    "management/other-settings.md",
+    "Knowledge-Base/reference/network_and_firewall_requirements.md",
+    "Knowledge-Base/reference/manual_kernel_upgrade.md",
+    "management/host-management.md",
+    "management/group-management.md",
+    "getting_started/fog_user_guide.md",
+    "development/fog_release.md",
+    "installation/fog_installation_settings.md",
+    "Knowledge-Base/reference/install_fogsettings.md",
+    "Knowledge-Base/reference/compile_fos_kernel.md",
+    "management/client-side-tasks.md",
+    "Knowledge-Base/reference/change_fog_server_ip_address.md",
+    "management/image-management.md",
     "management/dashboard.md",
     "assets/img/management/logout-ico.png",
     "assets/img/management/plugins-ico.png",
@@ -162,20 +179,12 @@
     "management/plugins/plugin-management.md",
     "installation/install_fog_server.md",
     "install.md",
-    "management/client-side-tasks.md",
     "management/active-directory-integration.md",
     "management/user-management.md",
     "management/task-management.md",
     "management/storage-node-management.md",
-    "management/host-management.md",
-    "index.md",
-    "getting_started/introduction/introduction.md",
     "Untitled 1.canvas",
-    "installation/fog_installation_settings.md",
-    "management/image-management.md",
     "Untitled.canvas",
-    "installation/virtualization.md",
-    "Knowledge-Base/reference/network_and_firewall_requirements.md",
-    "installation/requirements.md"
+    "installation/virtualization.md"
   ]
 }

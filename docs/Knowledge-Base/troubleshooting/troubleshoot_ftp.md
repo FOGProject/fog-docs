@@ -276,8 +276,7 @@ Explanation of settings:
 
     man vsftpd
 
-`Instructions for using vi text editor <reference/vi:vi>`{.interpreted-text
-role="ref"}
+[Instructions for using vi text editor](vi)
 
 ## Disable and Verify Firewall
 
@@ -352,9 +351,7 @@ Start -\> Control Panel -\> View by \"Small icons\" -\> Windows Firewall
 ### Configuring Firewall on Linux
 
 To set the firewall for Linux to only allow what is necessary, please
-see the
-`FOG Security article  <reference/fog_security:FOG Security>`{.interpreted-text
-role="ref"}.
+see the [FOG Security article](fog_security#FOG Security)
 
 ## Credentials / Passwords
 
@@ -383,8 +380,7 @@ To edit /opt/fog/.fogsettings: :
 
     vi /opt/fog/.fogsettings
 
-`Instructions for using vi text editor<reference/vi:vi>`{.interpreted-text
-role="ref"}
+[Instructions for using vi text editor](vi)
 
 !!! note
 

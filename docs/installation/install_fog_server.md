@@ -161,6 +161,20 @@ following information:
 Now your FOG Server is ready to use! Go ahead, login to the web UI and
 start using FOG (*todo: link to docs with first steps*) and have fun.
 
+
+## Fog installation settings
+
+All your choices during the installation are saved in the file
+`/opt/fog/.fogsettings`.
+
+The next time you start the installer, it will skip all questions (except for a prompt to check for schema updates in the web ui, unless you specify -Y) and continue at the 'Summary' step.
+
+In this way you can easily re-install or update a Fog server.
+
+For an overview of all settings in the .fogsettings file, see
+[[Knowledge-Base/reference/install_fogsettings]]
+
+
 ## Install errors
 
 Whenever the installer *TBD*\...

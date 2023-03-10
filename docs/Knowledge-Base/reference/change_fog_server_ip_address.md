@@ -6,8 +6,7 @@
     OS\'s IP address.
 -   Update the ipaddress= field (and other fields if necessary) inside
     the /opt/fog/.fogsettings file.
-    `reference/install_fogsettings:The .fogsettings file`{.interpreted-text
-    role="ref"}.
+    [.fogSettings](install_fogsettings)
 -   Rerun the installer, you\'ll need to use **\--recreate-CA** and
     **\--recreate-keys keys** as the installer provides a certificate
     with a Common Name based on the ip which will be shipped in the iPxe

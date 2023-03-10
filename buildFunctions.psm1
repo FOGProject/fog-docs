@@ -248,10 +248,33 @@ function Install-Requirements {
     
     
     process {
-        & python.exe -m pip install --upgrade pip
-        Get-Content $requirements | Where-Object { $_ -notmatch "#"} | ForEach-Object {
-            pip install $_;
-        }    
+        "Installing Pre-requisites if needed..." | out-host;
+        $log = ".\.lastprereqrun"
+        $requirementsLastUpdate = (Get-item $requirements).LastWriteTime;
+        
+        if (Test-Path $log) {
+            if ((Get-item $log).LastWriteTime -lt $requirementsLastUpdate) {
+                $shouldUpdate = $true;
+            } else {
+                $shouldUpdate = $false;
+            }
+        } else {
+            $shouldUpdate = $true;
+        }
+
+        if ($shouldUpdate) {
+            $results = New-Object -TypeName 'System.collections.generic.List[System.Object]';
+            $result = & python.exe -m pip install --upgrade pip
+            $results.add(($result))
+            Get-Content $requirements | Where-Object { $_ -notmatch "#"} | ForEach-Object {
+                $result = pip install $_;
+                $results.add(($result))
+            }
+            New-Item $log -ItemType File -force -Value "requirements last installed with pip on $(Get-date)`n`n$($results | out-string)";
+        } else {
+            "Requirements already up to date" | out-host;
+        }
+        return (Get-Content $log)
     }
     
 }

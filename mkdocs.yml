@@ -59,6 +59,8 @@ plugins:
   - search
   - include_dir_to_nav # see also https://pypi.org/project/mkdocs-include-dir-to-nav/ this allows for an auto organized site map
   - roamlinks # added for support of obsidian see also https://about.gitlab.com/blog/2022/03/15/publishing-obsidian-notes-with-gitlab-pages/ and https://github.com/Jackiexiao/mkdocs-roamlinks-plugin
+  - tags: # https://squidfunk.github.io/mkdocs-material/setup/setting-up-tags/
+      tags_file: tags.md
 
 # Extensions
 markdown_extensions:
@@ -78,12 +80,15 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - Home: index.md
+  - Home: 
+    - index.md
+    - tags.md
   - Getting Started: getting_started
   - Installing/Updating: installation
   - Management: management
   - Knowledge Base: Knowledge-Base
   - Development: development
+  - Release Notes: https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD
   # - customization
   # - FAQ
   # - hardware
