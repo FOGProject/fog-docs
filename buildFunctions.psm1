@@ -130,8 +130,10 @@ function Start-MkDocsBuild {
                 return "mkdocs not found";
             }
         }
-        & "$buildDir\index.html"
-        return "local version opened in default browser"
+        start "http:\\localhost:8000"
+        & mkdocs.exe serve 
+        # "$buildDir\index.html"
+        return "local dev server version opened in default browser"
         
     }
 }

@@ -1,3 +1,15 @@
+---
+title: Storage Node Management
+description: The home page for fog docs with navigation to the various sections
+tags:
+    - storage
+    - storage-node
+    - management
+    - scalability
+    - networking
+    - locations
+---
+
 # Storage Node Management
 
 - The Storage Manager introduces the concept of **Storage Groups.** Basically, a storage group is a group of NFS servers that share images and share the load of computers being imaged. Any member of a storage group is referred to as a **Storage Node.** You may have as many storage groups as you wish and as many storage nodes within those groups as you wish. In each storage group, there is one storage node which is designated as the **Master** of that group. Basically, this **Master** node is the node where all image captures go, this node handles multicasting tasks for the group, and is the image replicator the for the group. This means that whatever images are stored on this node are what gets distributed to the entire group.
@@ -55,8 +67,9 @@
  - The **Master Node** (could be the server or a particular node) in a storage group is the node that distributes images files to all other nodes in the storage group. 
  - If you have all your images distributed across 3 nodes in a storage group, **if you add a new storage node that has no images stored on it, making that node master will cause it to take over and push it's image store of nothing to all other nodes, wiping out all of your images**. So it is important to be very careful and backup your images when you change a node's master status. 
    
-> [!NOTE] 
- You **can** have many storage nodes in a storage group. You **can** have one master storage node in a storage group. You **can not** have more than one master storage node in a storage group. You **must have** one master storage node for replication to take place to other nodes in the group. **If** a master storage node is set, all captures **first** go to the master storage node of the storage group the image is assigned to; and are **then** replicated to other storage nodes.
+!!! note 
+
+	You **can** have many storage nodes in a storage group. You **can** have one master storage node in a storage group. You **can not** have more than one master storage node in a storage group. You **must have** one master storage node for replication to take place to other nodes in the group. **If** a master storage node is set, all captures **first** go to the master storage node of the storage group the image is assigned to; and are **then** replicated to other storage nodes.
 
 
 
