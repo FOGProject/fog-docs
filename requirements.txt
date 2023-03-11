@@ -23,4 +23,7 @@ requests>=2.26
 mkdocs-include-dir-to-nav
 mkdocs-roamlinks-plugin>=0.1.3
 mkdocs-table-reader-plugin
+mkdocs-mermaid2-plugin
+obs2mk
+mkdocs-awesome-pages-plugin
 # markdown-include
