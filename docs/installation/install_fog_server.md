@@ -76,17 +76,17 @@ If you have issues or good reasons for not using Git, you can just
 download the FOG installer bundle as ZIP or tar.gz archive.
 
 -   latest stable:
-    \[ZIP\](<https://github.com/FOGProject/fogproject/archive/master.zip>)
+    [ZIP](<https://github.com/FOGProject/fogproject/archive/master.zip>)
     or
-    \[tar.gz\](<https://github.com/FOGProject/fogproject/archive/master.tar.gz>)
+    [tar.gz](<https://github.com/FOGProject/fogproject/archive/master.tar.gz>)
 -   latest dev:
-    \[ZIP\](<https://github.com/FOGProject/fogproject/archive/dev-branch.zip>)
+    [ZIP](<https://github.com/FOGProject/fogproject/archive/dev-branch.zip>)
     or
-    \[tar.gz\](<https://github.com/FOGProject/fogproject/archive/dev-branch.tar.gz>)
+    [tar.gz](<https://github.com/FOGProject/fogproject/archive/dev-branch.tar.gz>)
 -   specific version:
-    \[ZIP\](<https://github.com/FOGProject/fogproject/archive/1.5.10.zip>)
+    [ZIP](<https://github.com/FOGProject/fogproject/archive/1.5.10.zip>)
     or
-    \[tar.gz\](<https://github.com/FOGProject/fogproject/archive/1.5.10.tar.gz>)
+    [tar.gz](<https://github.com/FOGProject/fogproject/archive/1.5.10.tar.gz>)
 
 Simply extract the archive and start the installer as described below.
 
