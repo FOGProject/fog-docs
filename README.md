@@ -16,6 +16,11 @@ The documentation is written in Markdown (put a link here) and built with mkdocs
 
 To open in obsidian, simply clone the repo or download and extract the zip. Then open the `docs` folder as a vault in obsidian.
 
+You can then utilize graph view to see how all the documentation connects. This is a screenshot of the work in progress obsidian graph view
+
+![Graph-example.png](docs/assets/img/Graph-example.png)
+
+
 ## Quirks
 
 There are some quirks with creating this compatibility.
