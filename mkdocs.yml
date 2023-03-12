@@ -97,7 +97,12 @@ nav:
     - Web Management: management/web-management
     - Plugin Management: management/plugins
     - Common Tasks: management/common-tasks
-  - Knowledge Base: knowledge-base
+  - Knowledge Base:
+    - FAQ: knowledge-base/FAQ
+    - Customization: knowledge-base/customization
+    - Integrations: knowledge-base/integrations
+    - Troubleshooting: knowledge-base/troubleshooting
+    - Reference: knowledge-base/reference
   - Development: development
   - Release Notes: https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD
   
