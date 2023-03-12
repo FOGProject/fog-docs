@@ -2,7 +2,5 @@ _build
 .vscode
 site
 .lastprereqrun
+docs/.obsidian
 docs/.obsidian/*
-docs/.obsidian/appearance.json
-docs/.obsidian/graph.json
-docs/.obsidian/workspace.json
