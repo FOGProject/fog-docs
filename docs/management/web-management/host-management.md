@@ -12,6 +12,8 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
 
 ## Adding a new host
 
+[[storage-node-management#Adding a Storage Node]]
+
 ### Method 1: Adding a new host via Full registration
 
 -   

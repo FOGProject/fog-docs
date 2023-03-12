@@ -77,7 +77,7 @@
 >     form.
 >
 > -   Image IDs can be found in the management console, in the
->     [Images](Image%20Management) section.
+>     [Images](image-management.md) section.
 >
 > -   
 >

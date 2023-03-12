@@ -4,6 +4,7 @@
     that contain the disk or partition images that are saved on the FOG
     server.
 
+
 ## Creating Image objects
 
 -   Image objects in FOG are created in the Images section of the FOG
@@ -24,13 +25,12 @@ tbd
 -   When creating images you have a few choices in how you want that
     image to 'act'. The possible partition types include:
 
-```{=html}
-<!-- -->
-```
-    Single Disk - Resizable
-    Multiple Partition Image - Single Disk (Not Resizable)
-    Multiple Partition Image - All Disks (Not Resizable)
-    Raw Image (Sector By Sector, DD, Slow)
+>[!info]
+>
+>- Single Disk - Resizable
+  >  - Multiple Partition Image - Single Disk (Not Resizable)
+  >  - Multiple Partition Image - All Disks (Not Resizable)
+   > - Raw Image (Sector By Sector, DD, Slow)
 
 #### Single Disk - Resizable
 

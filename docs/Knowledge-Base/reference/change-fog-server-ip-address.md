@@ -5,8 +5,7 @@
 -   Follow appropriate steps for your Linux distribution to change the
     OS's IP address.
 -   Update the ipaddress= field (and other fields if necessary) inside
-    the /opt/fog/.fogsettings file. 
-    [.fogSettings](install_fogsettings)
+    the /opt/fog/.fogsettings file [[install-fogsettings|.fogsettings]]
 -   Rerun the installer, you'll need to use **\--recreate-CA** and
     **\--recreate-keys keys** as the installer provides a certificate
     with a Common Name based on the ip which will be shipped in the iPxe

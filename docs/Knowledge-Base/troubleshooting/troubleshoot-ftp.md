@@ -1,10 +1,9 @@
 # Troubleshooting FTP
 
-!!! note
-
-    It seems that greater than 90% of FOG FTP problems are caused by
-    bad/mismatched credentials. Because of this, we recommend skipping
-    straight to the Credentials / Passwords section first.
+>[!note]
+>It seems that greater than 90% of FOG FTP problems are caused by
+>bad/mismatched credentials. Because of this, we recommend skipping
+>straight to the Credentials / Passwords section first.
 
 
 ## FTP's roles in FOG
@@ -276,7 +275,7 @@ Explanation of settings:
 
     man vsftpd
 
-[Instructions for using vi text editor](vi)
+[[vi|Instructions for using vi text editor]]
 
 ## Disable and Verify Firewall
 
@@ -380,7 +379,7 @@ To edit /opt/fog/.fogsettings: :
 
     vi /opt/fog/.fogsettings
 
-[Instructions for using vi text editor](vi)
+[[vi|Instructions for using vi text editor]]
 
 !!! note
 

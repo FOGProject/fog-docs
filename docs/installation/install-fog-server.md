@@ -3,6 +3,8 @@
 Before rushing into installing FOG you want to make sure you check the [[requirements]] 
 The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
 
+
+
 ## Prerequisite
 
 The preferred method of getting FOG is via Git.
@@ -101,9 +103,14 @@ installer **must be done as root**.
   ./installfog.sh
 ```
 
+>[!tip]
+>The installer also has various switches for running silently and more, see  [[command-line-options#Fog installer command line options|Fog installer command line options]]
+
 Before all the components are installed, you are asked several questions
 to make sure the setup suits your situation and is ready to use right
 after the installer finishes:
+
+### Installer Prompts
 
 Prompt  | Description
 --      |   --
@@ -112,12 +119,12 @@ Prompt  | Description
 **OS Selection** | The installer tries to guess the distribution you're running. Just confirm the selection if it's correct, otherwise choose the apropriate option.
 **Installation mode** | With the same installer you can install a normal FOG server (called master node) or a FOG storage node. For the explanation of a storage node and how to install a storage node see *todo: install storage node*. As we're installing a FOG server here, choose N here.
 **Default Network interface** | The installer needs to know which network interface will be used for hosting PXE booting as well as sending images via unicast and multicast. If the installer guessed the right interface, then choose n(o) to proceed, using the pre-selected network interface. Otherwise, choose y(es) and type in the name of the network interface (like eth0, ens192).
-**DHCP Service** | You have the option to run a DHCP service on the FOG server itself or, if you already have a DHCP server in your network, then you can answer n(o) to the following three questions. For more information on configuring an existing DHCP server to work with FOG, see [Other DHCP Server](../installation/network_setup.md). The questions on DHCP are in reverse order; the settings first, and finally if you really want to enable DHCP on your FOG server. This order might be changed in future versions of the installer.
+**DHCP Service** | You have the option to run a DHCP service on the FOG server itself or, if you already have a DHCP server in your network, then you can answer n(o) to the following three questions. For more information on configuring an existing DHCP server to work with FOG, see [Other DHCP Server](network-setup.md). The questions on DHCP are in reverse order; the settings first, and finally if you really want to enable DHCP on your FOG server. This order might be changed in future versions of the installer.
 **DHCP Router address** | If you're going to run a DHCP server on this FOG server, then type y(es) and type in the router (or default gateway) address that the DHCP server will advertise. If you have an existing DHCP server on your network, choose N here. (This question is irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
 **DHCP handle DNS** | If you're going to run a DHCP server on this FOG server, then type y(es) to advertise DNS server IPs to the clients and type in the IP address of the local DNS server. If you have an existing DHCP server on your network, choose n(o) here. (This question is also irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
 **Activate DHCP** | If you want to run a DHCP server on this FOG server, then choose y(es). Otherwise choose n(o).
 **Internationalization support** | If you want the FOG web UI to provide additional languages, choose y(es) here.
-**HTTPS Support** | You can choose to set up FOG with encrypted communication. With FOG providing several different services (e.g. web UI for configuration, web API, PXE booting, client management using the [[network_and_firewall_requirements#FOG Client to FOG Server communications]] ) choosing HTTPS support has consequences: 1. A self-signed certificate is being generated for you. 2. The Apache webserver is also set up to host the web UI through HTTPS. 3. iPXE on-the-fly compilation happens to include that certificate into the PXE binaries provided by your new FOG server Usually this works out of the box and doesn't take manual intervention. But if you are unsure, you might still choose n(o) to reduce the risk of issues. Even without HTTPS support, the communication between fog-client and the FOG server uses a secured encrypted channel.
+**HTTPS Support** | You can choose to set up FOG with encrypted communication. With FOG providing several different services (e.g. web UI for configuration, web API, PXE booting, client management using the [[network-and-firewall-requirements#FOG Client to FOG Server communications]] ) choosing HTTPS support has consequences: 1. A self-signed certificate is being generated for you. 2. The Apache webserver is also set up to host the web UI through HTTPS. 3. iPXE on-the-fly compilation happens to include that certificate into the PXE binaries provided by your new FOG server Usually this works out of the box and doesn't take manual intervention. But if you are unsure, you might still choose n(o) to reduce the risk of issues. Even without HTTPS support, the communication between fog-client and the FOG server uses a secured encrypted channel.
 **Hostname** | This host name is used in the FOG web UI. Review the auto-detected hostname; choose n(o) to accept the suggested hostname, or y(es) to enter the correct hostname.
 **Summary** | The installer prints out all options as chosen. If you are sure everything is correct, choose y(es) to proceed installing. Choosing n(o) will terminate the installer, and you will need to restart the process, answering all the questions again.
 
@@ -172,7 +179,7 @@ The next time you start the installer, it will skip all questions (except for a 
 In this way you can easily re-install or update a Fog server.
 
 For an overview of all settings in the .fogsettings file, see
-[[Knowledge-Base/reference/install_fogsettings]]
+[[install-fogsettings]]
 
 
 ## Install errors

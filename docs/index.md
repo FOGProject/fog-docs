@@ -18,27 +18,24 @@ Once all existing docs are moved over we'll start updating the docs
 
 Below you'll find basic descriptions of each section
 
-
 > [!tip] 
 > #### Getting Started
 > An introduction to what fog is and some common first questions
 > - [[introduction]]
 > - [System Requirements](introduction/hardware/requirements)
 
-
-
 > [!tip]
 > #### Installation, Updating, and Migrating
 >Documentation on the installation, updating, and migrating of a Fog Server
-> - [Install Fog Server](install_fog_server)
-> - [Install Fog Client](install_fog_client)
+> - [Install Fog Server](install-fog-server.md)
+> - [Install Fog Client](install-fog-client.md)
 > - [Running in a Virtual Environment](virtualization)	
 
 >[!tip]
 >#### Management
 >Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
 >These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
->- [Web UI Management](management/web_management/dashboard)
+>- [Web UI Management](dashboard.md)
 >- [Common Tasks](management/common_tasks/capture_an_image)
 >- [Plugin Management](management/plugins/plugin-management)
 

@@ -1,14 +1,10 @@
-<!-- --- Uncomment this and fill it out accordingly for each page
-title: Can match first heading
-description: brief description of the page
+---
+title: Fog Release
+description: How to create a new release of fog
 tags:
-    - labels
-    - for
-    - category
-    - searching
-    - and
-    - linking
---- -->
+    - development
+    - release
+---
 # FOG Release
 
 tbd

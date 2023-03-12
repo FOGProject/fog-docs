@@ -40,7 +40,7 @@ tags:
 	7. Then you will be prompted for a username (typically fogstorage) 
 	8. and a password that is located on the FOG server, that will allow the storage node to access the main FOG server's database. This information is located in the FOG management portal for convenience (on the main for server). It can be accessed via **Other Information** -> **FOG settings** -> section **FOG Storage Nodes**. 
 	9. You will then be prompted to confirm your installation settings, if they are correct press **Y** end hit **Enter**. 
-	10. When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings (see also [[install_fogsettings]] )
+	10. When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings (see also [[install-fogsettings]] )
 
 ## Adding the Node to the Management Portal
 
@@ -60,9 +60,9 @@ tags:
 	13. Then click **Add** to have the node join the storage group. #### Monitoring The Master Node 	
  - On all storage nodes there is a new service (as of version 0.24) called FOGImageReplicator which is a very basic script which, if the node is the master, copies all of its images to all other nodes in the storage group. The coping is done every ten minutes by default, which means your images are NOT instantly duplicated to all nodes. 
  - If you would like to view the status of the image replication, you can do so on the storage node by switching to tty3, by typing ctl + alt + f3. Output is also logged to a file in the **/opt/fog/log** directory. 
- - FOGImageReplicator logs are also located in ![](Config.png "Config.png") **Fog Configuration** --\> **Log Viewer** --\> **FILE: \[Select Image Replicator\]** 
+ - FOGImageReplicator logs are also located in ![[Config.png]] **Fog Configuration** -> **Log Viewer** -> **FILE: \[Select Image Replicator\]** 
  
-# Master Node Status 
+## Master Node Status 
  
  - The **Master Node** (could be the server or a particular node) in a storage group is the node that distributes images files to all other nodes in the storage group. 
  - If you have all your images distributed across 3 nodes in a storage group, **if you add a new storage node that has no images stored on it, making that node master will cause it to take over and push it's image store of nothing to all other nodes, wiping out all of your images**. So it is important to be very careful and backup your images when you change a node's master status. 
@@ -70,6 +70,15 @@ tags:
 >[!note]
 >You **can** have many storage nodes in a storage group. You **can** have one master storage node in a storage group. You **can not** have more than one master storage node in a storage group. You **must have** one master storage node for replication to take place to other nodes in the group. **If** a master storage node is set, all captures **first** go to the master storage node of the storage group the image is assigned to; and are **then** replicated to other storage nodes.
 
+## Including multiple PXE / TFTP servers
 
+-   A traditional Master Storage Node, [as described above](https://wiki.fogproject.org/wiki/index.php?title=Managing_FOG#Adding_a_Storage_Node) only provides File Storage redundancy. While this can help increase multicast throughput on a single network, all the machines under FOG management must be within the same subnet/VLAN so that DHCP broadcast requests can be directed to the Main server. (see note below)
+
+>[!note]
+>depending on the network, it may be possible to configure [http://en.wikipedia.org/wiki/UDP_Helper_Address iphelper] to forward packets to the Main FOG server
+
+-   The following instructions are intended to help configure additional Storage Nodes to operate independently on separate networks, while still syncing with and taking commands from a single Main FOG server.
+
+-   Click here for instructions on setting up [multiple PXE / TFTP servers](https://wiki.fogproject.org/wiki/index.php?title=Multiple_TFTP_servers "Multiple TFTP servers")
 
 
