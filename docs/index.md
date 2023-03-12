@@ -42,10 +42,12 @@ Below you'll find basic descriptions of each section
 >[!tip]
 >### Knowledge Base
 >Documentation on important references, integrations, customizations, FAQs, and troubleshooting
-> - [Customization](Knowledge-Base\customization)
-> -  [FAQ](Knowledge-Base\FAQ)
-> - [integrations](Knowledge-Base\integrations)
-> - [reference](Knowledge-Base\reference)
+> - [Customization](knowledge-base\customization)
+> -  [FAQ](knowledge-base\FAQ)
+> - [integrations](knowledge-base\integrations)
+> - [reference](knowledge-base\reference)
+> - [troubleshooting](knowledge-base\troubleshooting)
+
 
 >[!tip]
 >### Development
