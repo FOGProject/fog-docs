@@ -1,3 +1,8 @@
+# converted-from-wiki branch
+
+This branch is meant to contain the content as it existed in the wiki.
+Once it's moved into this branch the master branch version can be updated as needed.
+
 # fog-documentation
 
 Documentation for FOG 1.X
