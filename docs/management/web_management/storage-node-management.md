@@ -14,8 +14,8 @@ tags:
 
 - The Storage Manager introduces the concept of **Storage Groups.** Basically, a storage group is a group of NFS servers that share images and share the load of computers being imaged. Any member of a storage group is referred to as a **Storage Node.** You may have as many storage groups as you wish and as many storage nodes within those groups as you wish. In each storage group, there is one storage node which is designated as the **Master** of that group. Basically, this **Master** node is the node where all image captures go, this node handles multicasting tasks for the group, and is the image replicator the for the group. This means that whatever images are stored on this node are what gets distributed to the entire group.
 - What this new system of storage management gives us is a distributed model for FOG which allows for more unicast transfers at a single time. We also gain data redundancy. We also take stress off of the main FOG server.
-- Below is a brief overview of Storage Groups ![`Nfsgroup.jpg`](Nfsgroup.jpg "Nfsgroup.jpg") 
-- This image shows a single Storage Group and the flow of data within the group. The queue size of the system is the sum of the queue size of all the storage nodes within the system. So if you have 4 nodes each with a queue size of 10, then the queue size of the system is 40, which means 40 clients can be imaged (unicast) at one time. ![`StorageGroups.jpg`](StorageGroups.jpg "StorageGroups.jpg")
+- Below is a brief overview of Storage Groups ![[Nfsgroup.jpg]]
+- This image shows a single Storage Group and the flow of data within the group. The queue size of the system is the sum of the queue size of all the storage nodes within the system. So if you have 4 nodes each with a queue size of 10, then the queue size of the system is 40, which means 40 clients can be imaged (unicast) at one time. ![[StorageGroups.jpg]]
 - This image shows that it is possible to have multiple storage groups on your network, which are isolated from each other. This image also demonstrates, that captures always go to the master node and multicast session always send data from the master node. Images are pushed out from the master node of the group to all other members of the group. 
 - **Key Benefits** 
 	1. Increased throughput 
@@ -52,7 +52,7 @@ tags:
 	5. Enter any description you wish 
 	6. Enter the IP address of the storage node you are adding. This must be the IP address of the node, DO NOT use a hostname here or the node will not function correctly.
 	7. Enter the maximum number of unicast clients you would like this node to handle at one time. The value that we recommend is 10. 
-	8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [#Master Node Status](#Master_Node_Status "wikilink"). 
+	8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[storage-node-management#Master Node Status]] 
 	9. Next, select the storage group you would like this member to be a part of, in our example we will pick **Default**
 	10. Next, specify the image location on the storage node, typically **/images/**, your image location should always end with a **/**. 
 	11. Next, you will want to check the box, to enable the node.
@@ -62,14 +62,13 @@ tags:
  - If you would like to view the status of the image replication, you can do so on the storage node by switching to tty3, by typing ctl + alt + f3. Output is also logged to a file in the **/opt/fog/log** directory. 
  - FOGImageReplicator logs are also located in ![](Config.png "Config.png") **Fog Configuration** --\> **Log Viewer** --\> **FILE: \[Select Image Replicator\]** 
  
- # Master Node Status 
+# Master Node Status 
  
  - The **Master Node** (could be the server or a particular node) in a storage group is the node that distributes images files to all other nodes in the storage group. 
  - If you have all your images distributed across 3 nodes in a storage group, **if you add a new storage node that has no images stored on it, making that node master will cause it to take over and push it's image store of nothing to all other nodes, wiping out all of your images**. So it is important to be very careful and backup your images when you change a node's master status. 
    
-!!! note 
-
-	You **can** have many storage nodes in a storage group. You **can** have one master storage node in a storage group. You **can not** have more than one master storage node in a storage group. You **must have** one master storage node for replication to take place to other nodes in the group. **If** a master storage node is set, all captures **first** go to the master storage node of the storage group the image is assigned to; and are **then** replicated to other storage nodes.
+>[!note]
+>You **can** have many storage nodes in a storage group. You **can** have one master storage node in a storage group. You **can not** have more than one master storage node in a storage group. You **must have** one master storage node for replication to take place to other nodes in the group. **If** a master storage node is set, all captures **first** go to the master storage node of the storage group the image is assigned to; and are **then** replicated to other storage nodes.
 
 
 

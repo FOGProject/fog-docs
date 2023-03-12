@@ -1,3 +1,14 @@
+---
+title: .fogsettings
+description: Details on the special .fogsettings file that configures future installs
+tags:
+    - install
+    - settings
+    - security
+    - automation
+    - updates
+    - network-settings
+---
 # The .fogsettings file
 
 The low-level settings that are used during installation and some

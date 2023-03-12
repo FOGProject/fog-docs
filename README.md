@@ -16,9 +16,8 @@ Previously we were using RST for this documentation but we are migrating to mark
 
 ## Markdown front matter
 
-NOTE: This isn't compatible with obsidian, an alternate may be used
-
 We can put various things in our front matter, here's a basic example that should be at the top of each md page
+This adds tags and titles that work in both obsidian and mkdocs. In obsidian, be sure to switch to view mode to hide the front matter
 
 ```
 --- 
