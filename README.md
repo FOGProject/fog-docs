@@ -10,9 +10,33 @@ See also for more discussion - [https://forums.fogproject.org/topic/14794/improv
 
 The documentation is written in Markdown (put a link here) and built with mkdocs (put a link here) and hosted via readthedocs (put a link here). We use the mkDocs material theme (put a link here) and try to be compatible with viewing and editing via obsidian (links here)
 
+# Editing in Obsidian
+
+[Obsidian](https://obsidian.md) is a markdown note taking app that makes linking pages and images super simple. We've designed this repo to be able to be edited and viewed in obsidian or the mkdocs based website hosted on read the docs.
+
+To open in obsidian, simply clone the repo or download and extract the zip. Then open the `docs` folder as a vault in obsidian.
+
+## Quirks
+
+There are some quirks with creating this compatibility.
+
+* Links in obsidian will default to filename format, which needs to be lower-case-with-dashes.md and that's not the friendliest look. So you need to add a friendly name for each link `[[file-name#Heading name|Friendly Name For Link]]`
+* Admonitions like these https://squidfunk.github.io/mkdocs-material/reference/admonitions/ should be created as obsidian callouts https://help.obsidian.md/How+to/Format+your+notes#Callouts 
+
+```
+>[!note]
+>Contents
+```
+
+That's pretty much it
+
 # Converting to Markdown
 
 Previously we were using RST for this documentation but we are migrating to markdown. An initial conversion was handled using pandoc on a local machine. The original rst files are still present. As markdown files are updated to have any links and image references fixed, as well as any other content updates, the relative rst of the markdown file can be deleted to signify it is fully converted and ready to move forward.
+
+## Converting from mediawiki
+
+The easiest way is to simply copy and paste the normal view of the wiki into an obsidian page
 
 ## Markdown front matter
 

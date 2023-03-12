@@ -19,20 +19,20 @@ Once all existing docs are moved over we'll start updating the docs
 Below you'll find basic descriptions of each section
 
 > [!tip] 
-> #### Getting Started
+> ### Getting Started
 > An introduction to what fog is and some common first questions
 > - [[introduction]]
 > - [System Requirements](introduction/hardware/requirements)
 
 > [!tip]
-> #### Installation, Updating, and Migrating
+> ### Installation, Updating, and Migrating
 >Documentation on the installation, updating, and migrating of a Fog Server
 > - [Install Fog Server](install-fog-server.md)
 > - [Install Fog Client](install-fog-client.md)
 > - [Running in a Virtual Environment](virtualization)	
 
 >[!tip]
->#### Management
+>### Management
 >Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
 >These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
 >- [Web UI Management](dashboard.md)
@@ -40,7 +40,7 @@ Below you'll find basic descriptions of each section
 >- [Plugin Management](management/plugins/plugin-management)
 
 >[!tip]
->#### Knowledge Base
+>### Knowledge Base
 >Documentation on important references, integrations, customizations, FAQs, and troubleshooting
 > - [Customization](Knowledge-Base\customization)
 > -  [FAQ](Knowledge-Base\FAQ)
@@ -48,26 +48,26 @@ Below you'll find basic descriptions of each section
 > - [reference](Knowledge-Base\reference)
 
 >[!tip]
->#### Development
+>### Development
 >Resources and documentation related to contributing to the development of FOG
 >- [Development](development\fog_release)
 
 >[!tip]
->#### Release Notes
+>### Release Notes
 >This is a link to the fog project release notes for abbreviated information on what's improved in the stable revisions of Fog
 >- [Github Release Notes](https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD)
 
 >[!tip]
->#### Fog Forums
+>### Fog Forums
 >Search for solutions to your problems or ask the community for help
 >- [Fog Forums](https://forums.fogproject.org)
 
 >[!tip]
->#### Fog On GitHUB
+>### Fog On GitHUB
 >Browse the opensource code for FOGProject
 >- [Fog Project Github repos](https://github.com/FOGProject)
 
 >[!tip]
->#### Fog Home Page
+>### Fog Home Page
 >The homepage of the FOG Project
 >- [Fog Home Page](https://fogproject.org)
