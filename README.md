@@ -108,6 +108,8 @@ Title/Heading1
 ==============
 ```
 
+**These should be converted to `# Title/Heading1`**
+
 Titles go with top level title pages that match the root folder structure.
 These are only listed in the main index.rst page and at that to be the title at the very top of the documentation tree that everything else is under.
 This may need to be used for breaking out sections further but not yet known.
@@ -119,6 +121,9 @@ This may need to be used for breaking out sections further but not yet known.
 SubTitle/Heading 2
 ------------------
 ```
+
+**These should be converted to `## SubTitle/Heading2`**
+
 
 For every subtitle/heading 2 you should have a rst file.
 The Subtitle doesn't need to match the file name exactly but they should be similar, avoiding spaces in filenames is always good practice.
@@ -132,6 +137,9 @@ Heading 3
 =========
 ```
 
+**These should be converted to `### Heading3`**
+
+
 Heading 3 is where you break up your sub-section into scannable headings.
 There are typically a good number of these in your single rst files as they make up the bulk of the layout once you're in a subsection.
 
@@ -142,6 +150,9 @@ Heading 4
 ---------
 ```
 
+**These should be converted to `#### Heading4`**
+
+
 These are for when you need another linkable level under a heading 3.
 
 #### Heading 5
@@ -151,6 +162,9 @@ Heading 5
 #########
 ```
 
+**These should be converted to `##### Heading5`**
+
+
 This level of heading is less common, but can be handy when outlining a list with sections that may need to be linked to.
 
 #### Heading 6
@@ -159,6 +173,9 @@ This level of heading is less common, but can be handy when outlining a list wit
 Heading 6
 ^^^^^^^^^
 ```
+
+**These should be converted to `###### Heading6`**
+
 
 This heading level should rarely be used, but it is provided so that you have at least 4 levels to traverse through when writing out a section of documentation.
 
@@ -172,6 +189,14 @@ This heading level should rarely be used, but it is provided so that you have at
     Code line 1
     Code line 2
     
+```
+
+Shoud be converted to, or just indented without the preceeding :: should also work
+
+```
+    ```
+    code
+    ```
 ```
 
 The text needs a blank line before and after. Each line needs to be tabbed at 4 spaces.
@@ -194,6 +219,32 @@ This is an unordered list:
 
 ```
 :ref:`Instructions for using vi text editor <reference/vi:vi>`
+```
+
+**These should be changed to obsidian wikilinks**
+
+Easiest method is 
+
+```
+[[pageFilename]]
+```
+
+or 
+
+```
+[[pageFileName#HeadingName]] 
+```
+
+Same thing for images anywhere in the assets folder 
+
+```
+![[imageName]]
+```
+
+You can change the display of links like so 
+
+```
+[display name](path\to\file#headingName)
 ```
 
 NOTE: This must point to a heading within a file (page), not simply a file.
@@ -312,6 +363,16 @@ Below are resources for writing in rst and building locally
 ```:rst
 .. note:: note contents
 ```
+
+**This should be converted to obsidian callouts**
+
+```
+>[!note] optional-note-title
+>contents
+>and more contents
+```
+
+You can also create warnings, tips, etc by replacing 'note' from above example
 
 - You can create a warning with
 
