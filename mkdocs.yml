@@ -98,9 +98,9 @@ nav:
     - Plugin Management: management/plugins
     - Common Tasks: management/common-tasks
   - Knowledge Base:
-    - FAQ: knowledge-base\faqs
-    - Customization: knowledge-base\customization
-    - Integrations: knowledge-base\integrations
+    - FAQ: knowledge-base/faqs
+    - Customization: knowledge-base/customization
+    - Integrations: knowledge-base/integrations
     - Troubleshooting: knowledge-base/troubleshooting
     - Reference: knowledge-base/reference
   - Development: development
