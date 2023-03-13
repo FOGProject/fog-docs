@@ -21,8 +21,8 @@ Below you'll find basic descriptions of each section
 > [!tip] 
 > ### Getting Started
 > An introduction to what fog is and some common first questions
-> - [[introduction]]
-> - [System Requirements](introduction/hardware/requirements)
+> - [[introduction| What is FOG?]]
+> - [[requirements|System Requirements]]
 
 > [!tip]
 > ### Installation, Updating, and Migrating
@@ -34,19 +34,19 @@ Below you'll find basic descriptions of each section
 >[!tip]
 >### Management
 >Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
->These sections explain what can be done in each of the fog ui menus and some of the basic how-tos
->- [Web UI Management](dashboard.md)
->- [Common Tasks](management/common_tasks/capture_an_image)
+>These sections explain what can be done in each of the fog ui menus
+>- [[web-management|Web UI Management]]
 >- [Plugin Management](management/plugins/plugin-management)
 
 >[!tip]
 >### Knowledge Base
 >Documentation on important references, integrations, customizations, FAQs, and troubleshooting
 > - [Customization](knowledge-base\customization)
-> -  [FAQ](knowledge-base\FAQ)
-> - [integrations](knowledge-base\integrations)
-> - [reference](knowledge-base\reference)
-> - [troubleshooting](knowledge-base\troubleshooting)
+> - [[faq|FAQs]]
+> - [[integrations|Integrations]]
+> - [[knowledge-base/how-tos/README|How To Guides]]
+> - [[knowledge-base/reference/README| Reference]]
+> - [[knowledge-base/troubleshooting/README|Troubleshooting]]
 
 
 >[!tip]

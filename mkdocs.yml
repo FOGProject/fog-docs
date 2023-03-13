@@ -29,6 +29,7 @@ theme:
     - navigation.tabs.sticky
     - navigation.top
     - navigation.tracking
+    - navigation.indexes
     - search.highlight
     - search.share
     - search.suggest
@@ -91,16 +92,31 @@ nav:
   - Home: 
     - index.md
     - tags.md
-  - Getting Started: getting_started
+  - Getting Started: getting-started
   - Installing/Updating: installation
   - Management: 
-    - Web Management: management/web-management
+    - Web Management: 
+      - management/web-management/README.md
+      - Dashboard: management/web-management/dashboard.md
+      - User Management: management/web-management/user-management.md
+      - Host Management: management/web-management/host-management.md
+      - Group Management: management/web-management/group-management.md
+      - Image Management: management/web-management/image-management.md
+      - Storage Node Management: management/web-management/storage-node-management.md
+      - Snapin Management: management/web-management/snapin-management.md
+      - Printer Management: management/web-management/printer-management.md
+      - Service Management: management/web-management/service-management.md
+      - Task Management: management/web-management/task-management.md
+      - Report Management: management/web-management/report-management.md
+      - Fog Configuration: management/web-management/other-settings.md
     - Plugin Management: management/plugins
     - Common Tasks: management/common-tasks
-  - Knowledge Base:
+  - Knowledge Base: 
+    - knowledge-base/README.md
     - FAQ: knowledge-base/faqs
     - Customization: knowledge-base/customization
     - Integrations: knowledge-base/integrations
+    - How-To Guides: knowledge-base/how-tos
     - Troubleshooting: knowledge-base/troubleshooting
     - Reference: knowledge-base/reference
   - Development: development
