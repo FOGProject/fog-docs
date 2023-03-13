@@ -95,6 +95,7 @@ nav:
   - Getting Started: getting-started
   - Installing/Updating: installation
   - Management: 
+    - management/README.md
     - Web Management: 
       - management/web-management/README.md
       - Dashboard: management/web-management/dashboard.md
@@ -110,7 +111,6 @@ nav:
       - Report Management: management/web-management/report-management.md
       - Fog Configuration: management/web-management/other-settings.md
     - Plugin Management: management/plugins
-    - Common Tasks: management/common-tasks
   - Knowledge Base: 
     - knowledge-base/README.md
     - FAQ: knowledge-base/faqs
