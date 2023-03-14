@@ -1,4 +1,8 @@
-# Other Settings
+# Fog Configuration
+
+much more content is needed here
+
+## Other Settings
 
 ## Boot Image Key Map
 
@@ -172,5 +176,5 @@ To do this perform the following steps:
 -   Click the download icon
 -   Select a file name for your kernel, to make it the default kernel leave the name as **bzImage**
        * *!!! tip
-	    If you set it to a different name, you can set a host to use t in the [[host-management#Kernel]]
+	    If you set it to a different name, you can set a host to use t in the [[hosts#Kernel]]
 -   Click the **Next** Button

@@ -76,16 +76,16 @@ are, from left to right:
 Menu Logo | Name | Description
 ---       | --                   | ---
 ![[dashboard-ico.png]] | **Home/Dashboard** | This is the home screen of the FOG management portal.
- ![[users-ico.png]] | **[User Management](user-management.md)** |  Individual administrators of the FOG resources.
-![[hosts-ico.png]] | **[host-management](host-management.md)** |  This section houses the hosts, which are the pcs to be imaged or to extract images from.
-![[groups.ico.png]] | **[group-management](group-management.md)** | This section houses groups, which are similar PCS' that need tasks done en-masse.
-![[images-ico.png]] | **[image-management](image-management.md)** | This section allows you to manage the image files stored on the FOG server.
-![[Storage-ico.png]] | **[storage-node-management](storage-node-management.md)** | This section allows you to add/remove storage nodes from the FOG system.
-![[snapin-ico.png]] | **[Snapin Management](snapin-management.md)** | This section provides ways to automate various post-imaging tasks such as silently installing programs
-![[printer-ico.png]] | **[printer-management](printer-management.md)** | This section allows for management of printers, allowing you create printer objects that can later be assigned to hosts or groups.
-![[service-ico.png]] | **[Service Management](service-management.md)** | This section allows you to control how the *client* service functions.
-![[tasks-ico.png]] | **[Task Management](task-management.md)** | This section allow you to perform imaging tasks such as acquiring or deploying images.
-![[reports-ico.png]] | **[Report Management](report-management.md)** | Reports let you pull information from the FOG database either as HTML, pdf, or csv.
-![[Config.png]] | **[Fog Configuration](other-settings.md)** | The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
-![[plugins-ico.png]] | **[Plugin Management](plugin-management)** | Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
+ ![[users-ico.png]] | **[User Management](users.md)** |  Individual administrators of the FOG resources.
+![[hosts-ico.png]] | **[hosts](hosts.md)** |  This section houses the hosts, which are the pcs to be imaged or to extract images from.
+![[groups.ico.png]] | **[groups](groups.md)** | This section houses groups, which are similar PCS' that need tasks done en-masse.
+![[images-ico.png]] | **[images](management/web/images.md)** | This section allows you to manage the image files stored on the FOG server.
+![[Storage-ico.png]] | **[storage-node](storage-node.md)** | This section allows you to add/remove storage nodes from the FOG system.
+![[snapin-ico.png]] | **[Snapin Management](snapins.md)** | This section provides ways to automate various post-imaging tasks such as silently installing programs
+![[printer-ico.png]] | **[printers](printers.md)** | This section allows for management of printers, allowing you create printer objects that can later be assigned to hosts or groups.
+![[service-ico.png]] | **[Service Management](service.md)** | This section allows you to control how the *client* service functions.
+![[tasks-ico.png]] | **[Task Management](tasks.md)** | This section allow you to perform imaging tasks such as acquiring or deploying images.
+![[reports-ico.png]] | **[Report Management](reports.md)** | Reports let you pull information from the FOG database either as HTML, pdf, or csv.
+![[Config.png]] | **[Fog Configuration](config.md)** | The section has the rest of the settings that don't fit anywhere else like the kernel updater, client service updater, iPXE edits, MAC address list, Log viewer
+![[plugins-ico.png]] | **[Plugin Management](plugins.md)** | Plugins add more functionality to FOG. Must be enabled in *Fog Configuration*
 ![[logout-ico.png]] | **Logout** | Click this to log off/out of the Fog web UI

@@ -52,7 +52,7 @@ tags:
 	5. Enter any description you wish 
 	6. Enter the IP address of the storage node you are adding. This must be the IP address of the node, DO NOT use a hostname here or the node will not function correctly.
 	7. Enter the maximum number of unicast clients you would like this node to handle at one time. The value that we recommend is 10. 
-	8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[storage-node-management#Master Node Status]] 
+	8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[storage-node#Master Node Status]] 
 	9. Next, select the storage group you would like this member to be a part of, in our example we will pick **Default**
 	10. Next, specify the image location on the storage node, typically **/images/**, your image location should always end with a **/**. 
 	11. Next, you will want to check the box, to enable the node.

@@ -89,37 +89,38 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - Home: 
-    - index.md
-    - tags.md
-  - Getting Started: getting-started
+  - Home/Getting Started: 
+    - Home: index.md
+    - What is Fog?: introduction.md
+    - System Requirements: installation/requirements.md
   - Installing/Updating: installation
   - Management: 
     - management/README.md
     - Web Management: 
-      - management/web-management/README.md
-      - Dashboard: management/web-management/dashboard.md
-      - User Management: management/web-management/user-management.md
-      - Host Management: management/web-management/host-management.md
-      - Group Management: management/web-management/group-management.md
-      - Image Management: management/web-management/image-management.md
-      - Storage Node Management: management/web-management/storage-node-management.md
-      - Snapin Management: management/web-management/snapin-management.md
-      - Printer Management: management/web-management/printer-management.md
-      - Service Management: management/web-management/service-management.md
-      - Task Management: management/web-management/task-management.md
-      - Report Management: management/web-management/report-management.md
-      - Fog Configuration: management/web-management/other-settings.md
-    - Plugin Management: management/plugins
+      - management/web/README.md
+      - Dashboard: management/web/dashboard.md
+      - User Management: management/web/users.md
+      - Host Management: management/web/hosts.md
+      - Group Management: management/web/groups.md
+      - Image Management: management/web/images.md
+      - Storage Node Management: management/web/storage-node.md
+      - Snapin Management: management/web/snapins.md
+      - Printer Management: management/web/printers.md
+      - Service Management: management/web/services.md
+      - Task Management: management/web/tasks.md
+      - Report Management: management/web/reports.md
+      - Fog Configuration: management/web/others.md
+      - Plugin Management: management/web/plugins
   - Knowledge Base: 
-    - knowledge-base/README.md
-    - FAQ: knowledge-base/faqs
-    - Customization: knowledge-base/customization
-    - Integrations: knowledge-base/integrations
-    - How-To Guides: knowledge-base/how-tos
-    - Troubleshooting: knowledge-base/troubleshooting
-    - Reference: knowledge-base/reference
+    - kb/README.md
+    - FAQ: kb/faqs
+    - Customization: kb/customization
+    - Integrations: kb/integrations
+    - How-To Guides: kb/how-tos
+    - Troubleshooting: kb/troubleshooting
+    - Reference: kb/reference
   - Development: development
+  - Tags: tags.md
   - Release Notes: https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD
   
 # getting started/intro section (quick intro to what fog is vs isn't, links to install instructions, image capture/deploy instructions, etc.)

@@ -35,8 +35,8 @@ Below you'll find basic descriptions of each section
 >### Management
 >Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
 >These sections explain what can be done in each of the fog ui menus
->- [[web-management|Web UI Management]]
->- [Plugin Management](management/plugins/plugin-management)
+>- [[management/web/README|Web UI Management]]
+>- [Plugin Management](plugins.md)
 
 >[!tip]
 >### Knowledge Base
@@ -44,9 +44,9 @@ Below you'll find basic descriptions of each section
 > - [Customization](knowledge-base\customization)
 > - [[faq|FAQs]]
 > - [[integrations|Integrations]]
-> - [[knowledge-base/how-tos/README|How To Guides]]
-> - [[knowledge-base/reference/README| Reference]]
-> - [[knowledge-base/troubleshooting/README|Troubleshooting]]
+> - [[kb/how-tos/README|How To Guides]]
+> - [[kb/reference/README| Reference]]
+> - [[kb/troubleshooting/README|Troubleshooting]]
 
 
 >[!tip]

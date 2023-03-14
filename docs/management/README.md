@@ -3,6 +3,5 @@
 >[!tip]
 >Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
 >These sections explain what can be done in each of the fog ui menus
->- [[web-management|Web UI Management]]
->- [Plugin Management](management/plugins/plugin-management)
+>- [[management/web/README| Web Management]]
 
