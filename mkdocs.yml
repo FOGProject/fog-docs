@@ -109,11 +109,11 @@ nav:
       - Storage Node Management: management/web/storage-node.md
       - Snapin Management: management/web/snapins.md
       - Printer Management: management/web/printers.md
-      - Service Management: management/web/services.md
+      - Service Management: management/web/service.md
       - Task Management: management/web/tasks.md
       - Report Management: management/web/reports.md
-      - Fog Configuration: management/web/others.md
-      - Plugin Management: management/web/plugins
+      - Fog Configuration: management/web/config.md
+      - Plugin Management: management/web/plugins.md
   - Knowledge Base: 
     - kb/README.md
     - FAQ: kb/faqs

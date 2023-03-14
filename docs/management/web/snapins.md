@@ -110,7 +110,9 @@ If the snapin file is a .vb script you must perform these additional steps:
 
   
 
-**Documentation on list of support snapin's and command line arguments** [[[1]](http://www.fogproject.org/wiki/index.php?title=Supported_Snapin%27s_and_Command_Line_Switches)] There are MANY more supported applications that can be installed via command line arguments. You might have better luck installing them directly via .EXE / .MSI / or scripting them via .VBS . For more info on this consult the forums --[Ssx4life](https://wiki.fogproject.org/wiki/index.php?title=User:Ssx4life&action=edit&redlink=1 "User:Ssx4life (page does not exist)") 09:04, 8 October 2009 (MST)
+**Documentation on list of support snapin's and command line arguments** 
+<!-- (http://www.fogproject.org/wiki/index.php?title=Supported_Snapin%27s_and_Command_Line_Switches)]  -->
+There are MANY more supported applications that can be installed via command line arguments. You might have better luck installing them directly via .EXE / .MSI / or scripting them via .VBS . For more info on this consult the forums --[Ssx4life](https://wiki.fogproject.org/wiki/index.php?title=User:Ssx4life&action=edit&redlink=1 "User:Ssx4life (page does not exist)") 09:04, 8 October 2009 (MST)
 
 ## Linking the Snapin to Hosts
 

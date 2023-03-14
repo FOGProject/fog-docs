@@ -154,6 +154,4 @@ that the correct network is selected.
 
 See forums
 
--   [FOG 0.30 VM
-    -Virtualbox](Running_pre-built_virtual_machines_in_Virtualbox)
--   [FOG 0.27 VM - VMWare](Installation_on_VMWare_0.27)
+-   [FOG 0.30 VM-Virtualbox](Running_pre-built_virtual_machines_in_Virtualbox)   

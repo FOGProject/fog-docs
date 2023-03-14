@@ -79,7 +79,7 @@ Menu Logo | Name | Description
  ![[users-ico.png]] | **[User Management](users.md)** |  Individual administrators of the FOG resources.
 ![[hosts-ico.png]] | **[hosts](hosts.md)** |  This section houses the hosts, which are the pcs to be imaged or to extract images from.
 ![[groups.ico.png]] | **[groups](groups.md)** | This section houses groups, which are similar PCS' that need tasks done en-masse.
-![[images-ico.png]] | **[images](management/web/images.md)** | This section allows you to manage the image files stored on the FOG server.
+![[images-ico.png]] | **[[management/web/images| Image Management]]** | This section allows you to manage the image files stored on the FOG server.
 ![[Storage-ico.png]] | **[storage-node](storage-node.md)** | This section allows you to add/remove storage nodes from the FOG system.
 ![[snapin-ico.png]] | **[Snapin Management](snapins.md)** | This section provides ways to automate various post-imaging tasks such as silently installing programs
 ![[printer-ico.png]] | **[printers](printers.md)** | This section allows for management of printers, allowing you create printer objects that can later be assigned to hosts or groups.
