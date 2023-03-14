@@ -1,4 +1,15 @@
-# Deploying a Dual-Boot Multi-Disk Linux Image
+---
+title: Deploying a Dual-Boot Multi-Disk Image
+description: describe how to deploy a dual-boot multi-disk image to other devices
+tags:
+	- dual-boot
+	- multi-disk
+	- linux
+	- postinstall
+	- efibootmgr
+---
+# Deploying a Dual-Boot Multi-Disk Image
+
 
 If you create a Multi-Disk image with a dual boot configuration, the efi
 boot entries will not be maintained automatically when deployed to
