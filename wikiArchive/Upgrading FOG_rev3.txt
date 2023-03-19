@@ -1,1 +1,0 @@
-You can upgrade FOG by simply running the new install script.  It will keep all the information in the database intact like your users and passwords, host, images, tasks, etc.  It WILL overwrite DHCP settings, TFTP setttings, NFS Settings, etc.  So any customizations done to these files will have to be duplicated.

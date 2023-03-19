@@ -1,5 +1,0 @@
-You may access the data base on FOG locally by using: 
-<pre>mysql -u root fog</pre>
-
-Or you may allow remote access by issuing this command locally:
-<pre>MariaDB [fog]> GRANT ALL ON fog.* TO 'fog'@'%' IDENTIFIED BY 'mastiff002';</pre>

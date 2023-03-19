@@ -1,3 +1,0 @@
-Here is a link from Novell's website on how to setup their DHCP server:  http://www.novell.com/coolsolutions/feature/17719.html
-
-Thanks Don from http://www.roe13.k12.il.us/index.html for the link.

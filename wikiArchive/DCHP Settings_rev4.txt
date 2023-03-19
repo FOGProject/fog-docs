@@ -1,7 +1,0 @@
-=Settings=
-
-==Windows==
-*Option 66
-**[[File:Windows 66.png]]
-*Option 67 
-**[[File:Windows 67.png]]

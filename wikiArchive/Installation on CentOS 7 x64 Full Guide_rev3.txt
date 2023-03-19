@@ -1,6 +1,0 @@
-
-== In Progress ==
-Reserved for new version release
-
-Due to the new version changing a little, the manual is not quite a-z unless
-we know every option that comes up. We don't know this until release.

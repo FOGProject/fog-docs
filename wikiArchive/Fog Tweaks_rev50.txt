@@ -1,6 +1,0 @@
-= DB changes=
-
-*Use a Persistent DB Connection. This uses the already established connection to get the data, rather than reopening the socket or TCP link
-#Open this file /var/www/fog/lib/fog/Config.class.php
-#Go to line <pre>define('DATABASE_HOST',         'localhost');</pre>
-#Change to: <pre>define('DATABASE_HOST',         'p:127.0.0.1');></pre>

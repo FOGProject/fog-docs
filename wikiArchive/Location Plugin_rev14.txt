@@ -1,6 +1,0 @@
-
-== Location Plugin ==
-
-
-
-This page is intended to better document the location plugin. It's a work in progress.

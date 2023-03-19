@@ -1,6 +1,0 @@
-TBD
-
-* What does this exactly do? -> enables URL https://fogserver/fog/ and forces redirect from http://fogserver/fog/ to https://fogserver/fog/
-* Implications: PXE boot and fog-client also need to use HTTPS! Details...
-* How to get rid of the warning in my browser? -> Download https://fogserver/fog/management/other/ca.cert.pem and import to your browser (FF, Chrome, Opera) or Windows certificate management (for IE, Edge)
-* ...

@@ -1,3 +1,0 @@
-This article moved to the new documentation platform.
-
-https://docs.fogproject.org/en/latest/reference/install_fogsettings.html

@@ -1,9 +1,0 @@
-This article is under construction.   Below, you might find gibberish / notes that I'm collecting to help build this article.
-
-<table bgcolor="rgb(0,0,0)">
-<tr>
-<td>
-<font color="rgb(255,255,255)">This text will appear white on black background.</font>
-</td>
-</tr>
-</table>
