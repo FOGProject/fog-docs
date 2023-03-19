@@ -1,0 +1,54 @@
+
+
+
+For those that make additions to this article, please include relevant Versions/Revisions, dates, and ample details (and hopefully fixes / workarounds).
+
+Please Do-Not post things in here that haven't been discussed in the forums prior.
+
+
+
+
+== The Image Resize Bug ==
+
+=== Description ===
+
+This bug became present sometime around r2920 to 3277. It is unrelated to boot-files and kernels.
+
+When an image is uploaded as "resizable", the resize does not occur during the upload. Any images created between 2920 - 3277 could be affected.
+
+When downloading an image to hosts that have the same size HDD as the source machine, or a larger size HDD as the source machine, imaging completes as normal.
+
+When downloading an image to hosts that have a '''smaller size HDD than the source machine''', errors are encountered and imaging does not complete.
+
+Some hosts will never get to the partclone process, some hosts do but fail during the imaging process.
+
+
+=== Verifying your image is affected ===
+
+Start a download task with debugging.
+
+Run this command:
+
+<p>fdisk -l</p>
+
+Examine the output.
+
+If the partition data is larger than the size of the installed HDD, your image is affected.
+
+
+=== Fixing your image ===
+
+
+To fix the image, first update to FOG revision 3451 or later, and install an HDD of equal or greater size than the source machine had.
+
+Deploy your image to this host with the larger HDD.
+
+Boot the host and verify all is well.
+
+Shutdown the host.
+
+Create a new image, be sure to mark it as "resizeable" along with any other necessary settings, and assign this new image to the host using the FOG Web UI.
+
+Create a new upload task, and upload the new image.
+
+The new image should now be able to deploy to hosts with smaller HDDs than the source machine.

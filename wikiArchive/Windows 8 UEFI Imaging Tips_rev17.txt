@@ -1,0 +1,93 @@
+= Steps for imaging Windows 8 with UEFI install. =
+
+== Important ==
+# Disable Secure Boot '''NOT ALL BIOSES "TRULY" ALLOW THIS CURRENTLY.  Motherboard ASUS H81M-A, from personal experience falsely tells you it's disabled, but it doesn't ever actually happen.'''
+# Enable the Legacy Boot Option (You may have an option in Advanced Boot Options to Enable Legacy ROMS. You want to check this, as well to allow the legacy PXE to appear)
+# Restart and register the machine in Fog. '''Registration can happen anytime before if you can do it.''''
+# Create the upload task in the Web GUI.
+# Restart and upload your image.
+# On the machines to be imaged, repeat steps 1-3.
+# Create the download task in the Web GUI, if you aren't using Capone.
+# Restart the machines and download the image.
+# Re-enable Secure Boot. (You will probably have to disable legacy boot option and legacy ROMS in order to do this.)
+# Reboot
+
+= Windows 8 and 8.1 Imaging Problems =
+
+== The "Dirty Bit" ==
+
+If you received this message from Partclone, it means that the Windows "Dirty Bit" is turned ON:
+
+<pre>ntfsclone-ng.c: NTFS Volume '/dev/sda4' is scheduled for a check or it was shutdown uncleanly. Please boot Windows or fix it by fsck.</pre>
+
+[[File:Partclone Windows Dirty Bit.jpg]]
+
+The Windows "dirty bit" is set '''ON''' when:
+
+*There are pending Windows updates
+
+*Fast Startup is enabled
+
+*Windows is improperly shutdown
+
+*There is a chkdsk scheduled
+
+*Data corruption is detected
+
+There are a number of ways to clear the dirty bit, but the best and easiest ways are to simply not have updates pending, disabling fast startup, shutting down windows properly, not having chkdsk scheduled, and having non-damaged HDDs and non-damaged partitions.
+
+== Hibernation file ==
+
+Windows 8.0 and 8.1 use hibernation by default when shutting down. This enables Windows to startup much faster than in past Windows versions. Because this feature is on by default, the windows OS partition has a hibernation file which prevents mounting and imaging via FOG. Even when hibernation and fast startup is disabled, the hibernation file remains and this causes problems. There are a few ways to fix this.
+
+=== Way 1 (cleaner method) ===
+
+Turn off: '''Turn on fast startup''', located here:
+
+Control Panel -> Power Options -> Change Settings that are currently unavailable -> Turn On Fast Startup & Hibernate.
+
+Both of those settings should be turned off for use with FOG. They may be turned on at a later time via GPO or snapins.
+
+Then  run this command from an elevated command prompt to disable hibernation and remove the hibernation file:
+
+<pre>powercfg.exe -h off</pre>
+
+Now you can shut down and upload your image via FOG.
+
+=== Way 2 (not so clean method) ===
+
+This method is just as viable but not as clean or easy and requires timing in most cases.
+
+You would open an elevated command prompt and then run: 
+
+<pre>chkdsk /F</pre>
+
+Answer yes to schedule the checkdisk at the next reboot.
+
+Now you would reboot and allow the checkdisk to run. At some point during the check disk (which may not be at 100%), check disk will tell the sytem to reboot.
+
+'''At this moment, you need to boot to the network''' and upload your image to fog. If you miss this moment and windows boots, you will have to re-run chkdsk.
+
+=== Resources used === 
+
+Major resources:
+
+http://www.eightforums.com/tutorials/6320-fast-startup-turn-off-windows-8-a.html
+
+http://www.pclinuxos.com/forum/index.php?topic=126158.0
+
+http://www.sevenforums.com/tutorials/819-hibernate-enable-disable.html
+
+Minor resources:
+
+http://www.techsupportalert.com/freeware-forum/system/12944-method-of-shutdown-in-windows-8-1-makes-difference.html
+
+http://www.sevenforums.com/performance-maintenance/304428-windows-7-always-running-chkdsk-particular-partition.html
+
+http://www.techrepublic.com/blog/tr-dojo/delete-hiberfilsys-by-disabling-windows-hibernate-function/
+
+== UEFI and BIOS coexistence / together ==
+
+See this article:
+
+[[BIOS_and_UEFI_Co-Existence]]

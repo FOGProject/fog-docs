@@ -1,0 +1,19 @@
+== Installing tftp on Windows ==
+*If you have reached this page you have received the following error in a windows command prompt:
+<pre>
+'tftp' is not recognized as an internal or external command,
+operable program or batch file.
+</pre>
+
+To correct this problem you will need to install tftp services on your windows computer.
+
+#Go to Start --> Control Panel --> Programs and Features --> Turn Windows features on or off
+#Scroll down and look for TFTP Client and select it
+#Click OK
+#" Please wait while Windows makes changes..."
+#Go back to a command prompt and type:
+<pre>
+tftp
+</pre>
+
+*Congratulations your have now installed tftp client services.

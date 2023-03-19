@@ -1,0 +1,24 @@
+in this example i will use the partedmagic ISO, but Clonezilla, Linux ditros, Hirens, and other bootable ISO's can be used
+
+create a folder in  /tftpboot/fog/  called partedmagic,  copy the partedmagic.iso file into this folder and also copy and paste the memdisk file found in /tftpboot/fog/ 
+
+browse to /tftpboot/pxelinux.cfg/ and edit the 'default' file in there and add 
+
+
+
+<pre>
+LABEL PartedMagic
+        kernel fog/partedmagic/memdisk 
+        append iso initrd=fog/partedmagic/partedmagic.iso raw
+        MENU PartedMagic
+        TEXT HELP
+        Gparted + Clonezilla + Firefox
+        ENDTEXT</pre>
+
+
+
+----
+
+You can also see this recent forum post for more instruction - [https://sourceforge.net/projects/freeghost/forums/forum/716419/topic/4751159]
+
+Please remember that if you create a new folder on the tftp folder you will also need to include memdisk in the same folder!  The link above also inlcudes a TFTP folder you can use to try on your own.  It includes dban and dell diagnostics's .iso's.

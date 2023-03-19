@@ -1,0 +1,78 @@
+= Windows Storage Node =
+*This has been put together from the forum and should be useful to many. [http://fogproject.org/forum/threads/fatal-error-failed-to-mount-nfs-volume.10457/#post-26912 Windows Server NFS]
+
+==Requirements==
+#Windows Server 2008 (R2)/Windows Server 2012 (R2)
+#NFS Role Installed (NFS)
+#Filezilla Installed (FTP)
+
+==Windows Step-by-Step==
+<ul><li>'''Create folder C:\images'''
+
+<li>'''Create folder C:\images\dev'''
+
+<li>'''Set Sharing'''
+[[File:NFS Sharing1.png|center|]]
+
+
+<li>'''Set Permissions''': Set proper permissions for All Machines
+[[File:NFS Permissions.png|center]]
+
+
+<li>'''Set Security''': Make sure you do this for C:\, C:\images, and C:\images\dev
+{|style="margin: 0 auto;"
+|[[File:Security 1.png]]
+|[[File:Security 2.png]]
+|[[File:Security 3.png]]
+|}
+
+
+<li>'''Setup Filezilla Account''': Create fog account and make sure this is the same password for your ''Management password''
+[[File:Filezilla1.png|center|frame|Create fog account and make sure this is the same password for your ''Management password'']]
+
+
+<li>'''Setup Filezilla Folders''': Make sure these files $ Directories all have Read, write, delete, append rights
+[[File:Filezilla folders.png|center|frame|Make sure these files $ Directories all have Read, write, delete, append rights]]
+
+<li>'''Set Local Policies''': Set this policy to Enabled
+[[File:Local policy settings.jpg|center|frame|Set this policy to enabled]]
+
+<li>'''Configure NFS Server''': Stop NFS Server Service, Edit Transport Protocol to TCP+UDP, and Start NFS Server Service
+{|style="margin: 0 auto;"
+|[[File:Properties of nfs server.png]]
+|[[File:Nfs tcp+udp.jpg]]
+|}
+</ul> 
+
+
+==Fog Server==
+*Here is the tricky part.....You need to copy the hidden files on your Linux server to your windows server. These files are located @:
+
+*/images/.mntcheck --> c:\images\
+*/images/dev/.mntcheck --> c:\images\dev\
+
+*xxx.xxx.xxx.xxx ==> ip address of the windows server
+
+*I mounted the NFS drive and just did a cp command.
+
+'''Using terminal or ssh remote:'''
+<pre>
+cd /
+sudo mkdir images2
+sudo chmod 777 images2
+sudo mount xxx.xxx.xxx.xxx:/images /images2
+sudo cp /images/.mntcheck /images2
+sudo cp /images/dev/.mntcheck /images2/dev/
+sudo umount /images2
+</pre>
+
+==Fog Web GUI==
+*Then continue by adding a storage node just as you would in the wiki.
+
+*I Simply added a Storage Node Definition in its own Storage Group independent to the default storage Group, added it's IP 172.19.102.6 and the path /images/ because it's the path 172.19.102.6 exports also /images/dev/ like an original FOG node does.
+
+[[File:Web gui.png|center]]
+[[File:Storage manage.png|center]]
+
+==Glitches==
+*At times NFS does not want to replicate (minimally after restarts) so need of restarting the NFS service is required.

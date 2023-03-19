@@ -1,0 +1,38 @@
+=== Troubleshooting an image upload ===
+
+To make this process easier, we are going to use an Windows XP image. '''Note that this process has not been tested on Windows 7.''' Please also note that this process will change your partitions on the client computer. This tutorial assumes that your disk is /dev/sda1.
+
+<ol>
+<li>In the management portal, start a debug task for the client computer in question.   Allow the client to boot and at the bash prompt type the following commands.</li>
+<li>mkdir /images</li>
+<li>mount -o nolock x.x.x.x:/images/dev /images (where x.x.x.x is the server ip)</li>
+<li>cd /images</li>
+<li>dd if=/dev/sda of=/mbr.backup count=1 bs=512</li>
+<li>/usr/local/sbin/ntfsresize -f -i -P /dev/sda1<br />Look for ''You might resize'' you will need this number, so write it down.  We will call this number ''NTFSSize''.</li>
+<li>Take NTFSSize and divide it by 1000</li>
+<li>Now add 300000 to that number and write down as '''N'''</li>
+<li>Now take NTFSSize again and multiply it by 1.1 and then round that to the nearest whole number and write it down as '''F'''</li>
+<li>/usr/local/sbin/ntfsresize -f -n -s '''N'''k /dev/sda1<br />(where N is the value calculated above with a k after it.</li>
+<li>If the test above ends successfully then run: <br />/usr/local/sbin/ntfsresize -f -s '''N'''k /dev/sda1</li>
+<li>fdisk /dev/sda</li>
+<li>Press "d", then Enter</li>
+<li>Press "w", then Enter</li>
+<li>fdisk /dev/sda</li>
+<li>Press "n", then Enter</li>
+<li>Press "p", then Enter</li>
+<li>Press "1", then Enter</li>
+<li>Press "1", then Enter</li>
+<li>Press "+'''F'''K", then Enter (where F is the value calculated above; K must be capital)</li>
+<li>Press "t", then Enter</li>
+<li>Press "7", then Enter</li>
+<li>Press "a", then Enter</li>
+<li>Press "1", then Enter</li>
+<li>Press "w", then Enter</li>
+<li>partprobe</li>
+<li>/usr/local/sbin/partimage save /dev/sda1 /images/dev/[somefile] --volume=9900000000 -z1 -o -d -f3 -b</li>
+<li>dd if=/mbr.backup of=/dev/sda</li>
+<li>Press "w", then Enter</li>
+<li>partprobe</li>
+<li>/usr/local/sbin/ntfsresize /dev/sda1 -f -b -P</li>
+<li>mv /images/dev/[somefile] /images/[somefile]
+</ol>

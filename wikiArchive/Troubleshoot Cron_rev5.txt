@@ -1,0 +1,3 @@
+This article is under construction.   Below, you might find gibberish / notes that I'm collecting to help build this article.
+
+<font color="green" bgcolor="0,12,0">12 httpd instances running.</font>

@@ -1,0 +1,10 @@
+FOG's User Interface runs on your main FOG server, which is likely a well-built machine. The interface experiences some delays responding to user input because of some of the overhead it has to handle, but also because it attempts to provide real-time updates about the status of your hosts.<br>
+<UL>There are two settings that can be modified to increase FOGs responsiveness:
+<LI>'''Disable animations''':<BR>
+About > FOG Settings > General Settings > <tt>FOG_USE_ANIMATION_EFFECTS</tt>: Set to <tt>0</tt><br>
+This will make FOG messages appear instantly rather than slowly decending from the top of the page.<br>
+:Note: It is usually not necessary to actually click <TT>Ok</TT> on the message. Just continue to the next task.</LI>
+<LI>'''Disable Host Lookup''':<br>
+About > FOG Settings > General Settings > <tt>FOG_HOST_LOOKUP</tt>: Set to <tt>0</tt><br>
+:'''Caution''': As noted in [http://www.edugeek.net/forums/o-s-deployment/63902-slow-gui.html this thread], this also has the negative impact of breaking the search-for-hosts-as-you-type feature.</LI></UL>
+Changing the value of FOG_VIEW_DEFAULT_SCREEN in FOG View Settings to 1 saves having to press 'list all' in the hosts and image screens.

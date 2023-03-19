@@ -1,0 +1,3 @@
+=== Bottleneck ===
+
+To determine why a server is not performing as well as expected a program called atop if very useful. On Ubuntu apt-get install atop, this program will give you CPU, net card and disk information. Generally FOG does not require much CPU but requires great amount of disk and net card resources whilst imaging machines.

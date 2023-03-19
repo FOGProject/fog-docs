@@ -1,0 +1,22 @@
+This guide can be used to utilize the FOG Bypass Host Registration. For those who don't know what this does, this will allow you to image any machine, with any image currently on your server without the need to register it with FOG first. Note that this is being done on Ubuntu 12.04 LTS
+
+First, you will need to download the following files:<br>
+
+[http://filezilla-project.org/download.php?type=client FileZilla]<br>
+[https://www.box.com/s/rxkg68ipmz79ebvp4p1s bypass.gz]<br>
+
+Filezilla is a cross platform FTP client that can be used to easily transfer files to your FOG server. Also, the bypass.gz is built on FOG.32. the noreg.gz is based on .29. This guide, although based around the .32 version, will work on the .29 (noreg.gz) if you choose to use it.<br>
+
+First, log onto your FOG server and make sure that you modify permissions to /tftpboot/fog/images ('''sudo chmod 770 tftpboot/fog/images/'''). This will allow you to add/remove/rename files in the folder. <br>
+
+Now install and load FileZilla. You can do the quick connect right on the first screen of FileZilla. Enter your FOG server IP address, your username and password for an admin on your server. This should connect you to your home folder on the server. Your PC is on the left, your server on the right. Locate the bypass.gz file you downloaded earlier and drag it to the /tftpboot/fog/images folder on the FOG side of the program. If you did the chmod command correctly, you should successfully load the bypass.gz file on the FOG server. If the transfer failed recheck that the chmod command worked correctly, and if need be, chmod 777 the file.<br>
+
+Once you load the bypass.gz file onto the /tftpboot/fog/images folder, it's now time to modify the default file to point it to the bypass.gz file. You should be able to load the file by typing the command: '''sudo gedit /tftpboot/pxelinux.cfg/default'''. If you can't update the file, chmod the file like you did with /tftpboot/fog/images folder above/ Now you need to add your existing images to the pxe menu. Below is an example of my XP image in the file:<br>
+
+LABEL XP Domain Image <br>
+menu passwd xxx (if you want to password protect your menu item where xxx is your password. Recommended so that random users can't reimage machines!)<br>
+kernel fog/kernel/bzImage<br>
+append initrd=fog/images/bypass.gz root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp dns=YOURDNSSERVER type=down img=YOURIMAGE ftp=FOGSERVERIP storage=FOGSERVERIP:/images/ web=FOGSERVERIP/fog/ osid=1 imgType=n loglevel=4 sessionPwd= consoleblank=0<br>
+*Note: The osid is based on your version of Windows you're using, but it's the same as the host registration 1=XP 5=Windows 7 etc. Also, everything from append initrd to console blank is all on 1 line.<br>
+
+Now when you pxeboot the machine, your image should show up in the PXE menu. Once selected, you should see the kernel load, and the imaging should begin moments later. The plus side to this is that you won't change any functionality of FOG that you already have, this will only add the ability to image from the PXE menu. Enjoy!

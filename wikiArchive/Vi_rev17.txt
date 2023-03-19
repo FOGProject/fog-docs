@@ -1,0 +1,25 @@
+Quick reference for basic editing in vi
+
+
+<pre>i</pre> = go into insert mode, here you may use arrows to navigate text, and edit it with the keyboard as normal.
+
+Esc (the escape key) = exit insert mode
+
+WHEN NOT in insert mode you may use:
+<pre:w</pre> (then enter) = write changes.
+<pre>:q</pre> (then enter) = exit vi
+<pre>:q!</pre> (then enter) = exit vi without saving changes.
+
+
+Examples of usage...
+
+<pre>[root@localhost ~]# vi /README.txt</pre>
+
+<pre>i
+This is my first readme file, wrote with vi!
+Esc
+:w
+:q</pre>
+
+<pre>[root@localhost ~]# cat /README.txt
+this is my first readme file, wrote with vi!</pre>

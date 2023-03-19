@@ -1,0 +1,66 @@
+==Modifying the Boot Image==
+If you wish to modify the way that the pxe/tftp works init files can be edited - run '''as root''' to be able to loop mount:
+
+<pre>
+cd ~
+cp /var/www/html/fog/service/ipxe/init.xz .
+xz -d init.xz
+mkdir -p initmountdir
+mount -o loop init initmountdir
+</pre>
+
+Now you find the uncompressed content of the initrd in <tt>~/initmountdir</tt> and can make adjustments as needed. After you're done making changes, you have to unmount, re-compress and copy back the init image:
+
+<pre>
+cd ~
+umount initmountdir
+xz -C crc32 -9 init
+cp init.xz /var/www/html/fog/service/ipxe/
+</pre>
+
+You want to apply the same changes to the 32-bit init file as well! Follow the same steps outlined above but using the filename <tt>init_32.xz</tt> instead.
+
+==Examples==
+===Adding sfdisk to the /sbin directory===
+This will add the <tt>sfdisk</tt> program into the boot environment:
+<pre>cd /tftpboot/fog/images
+gunzip init.gz
+mkdir initmountdir
+mount -o loop init initmountdir</pre>
+init is now ready for modification. Make your changes:<pre>
+cp /sbin/sfdisk /tftpboot/fog/images/initmountdir/sbin</pre>
+Modifications Complete. Unmount and re-gzip it:<pre>
+umount initmountdir
+rmdir initmountdir
+gzip init</pre>Now you can use the sfdisk program from the PXE environment.
+===Remove Authentication from Quick Image===
+This example will show how to automatically authenticate users when they select Quick Image. If you are happy to allow anybody to deploy an image to a hardrive this is for you.
+<pre>cd /tftpboot/fog/images
+gunzip init.gz
+mkdir initmountdir
+mount -o loop init initmountdir
+cd /tftpboot/fog/images/initmountdir/bin/</pre>
+Edit fog.quickimage<br>
+Comment out the followig lines by putting a # in front
+<pre> #echo "  Enter a valid FOG username and password.";
+ #echo "";
+ #echo -n "      Username: ";
+ #read username;
+ #echo ""
+ #echo -n "      Password: ";
+ #stty -echo
+ #read password;
+ #stty echo;
+ #echo "";
+ #echo ""</pre>
+
+Replace with:
+<pre> username="a valid username"
+ password="a valid password";</pre>
+Save the modification<pre>
+cd ../..
+umount initmountdir/
+rmdir initmountdir
+gzip init</pre>
+
+You are done and now users can image without the need for a username and a password.

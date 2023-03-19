@@ -1,0 +1,13 @@
+=== Booting/Imaging a computer without PXE capable Network Card  ===
+
+Not all Computers can Networkboot. So the guys from http://www.etherboot.org compiled a tool called gPXE for that reason.
+
+Its very handy to use: 
+*Just download the actual version. 
+*Run the Make program and use 'dd' to copy it to a floppy. 
+For our Workgroup here in University it works with every old PC. 
+You find a HowTo for creating disks and usb-sticks at http://etherboot.org/wiki/removable
+
+If you plan on making a boot CD, on fedora you will need to install the following:  syslinux mtools
+
+ yum install syslinux mtools

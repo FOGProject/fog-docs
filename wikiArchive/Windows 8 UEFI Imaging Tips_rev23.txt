@@ -1,0 +1,13 @@
+= Steps for imaging Windows 8 with UEFI install. =
+
+== Important ==
+# Disable Secure Boot '''NOT ALL BIOSES "TRULY" ALLOW THIS CURRENTLY.  Motherboard ASUS H81M-A, from personal experience falsely tells you it's disabled, but it doesn't ever actually happen.'''
+# Enable the Legacy Boot Option (You may have an option in Advanced Boot Options to Enable Legacy ROMS. You want to check this, as well to allow the legacy PXE to appear)
+# Restart and register the machine in Fog. '''Registration can happen anytime before if you can do it.''''
+# Create the upload task in the Web GUI.
+# Restart and upload your image.
+# On the machines to be imaged, repeat steps 1-3.
+# Create the download task in the Web GUI, if you aren't using Capone.
+# Restart the machines and download the image.
+# Re-enable Secure Boot. (You will probably have to disable legacy boot option and legacy ROMS in order to do this.)
+# Reboot, BAM! It's been FOGGED!

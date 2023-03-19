@@ -1,0 +1,44 @@
+ 
+== Fedora ==
+
+=== Install Subversion ===
+ 
+ yum install subversion 
+
+=== Download the package ===
+
+ cd ~ 
+ mkdir svn 
+ cd svn 
+ svn checkout https://svn.code.sf.net/p/freeghost/code/trunk
+
+=== Install It! ===
+ 
+ cd ~/svn/trunk/bin 
+ ./installfog.sh
+
+== Ubuntu ==
+
+=== Install Subversion ===
+
+ sudo apt-get update 
+ sudo apt-get install subversion
+
+== Download the package ==
+
+ cd ~ 
+ mkdir svn 
+ cd svn 
+ svn checkout https://svn.code.sf.net/p/freeghost/code/trunk
+
+=== Install It! ===
+ 
+ cd ~/svn/trunk/bin 
+ sudo ./installfog.sh
+
+
+=== GUI Subversion clients ===
+
+Coming from a Windows background, some people may prefer using a GUI Subversion client, rather than the standard, basic command-line client. If you feel comfortable with a file system browser/explorer integrated Subversion client, then [http://tortoisesvn.tigris.org/ TortoiseSVN] is the best choice - it is extremely popular. <br />
+
+Another tool that is simple to configure and easy to understand, but is a traditional one-window application like Microsoft &trade; Visual Source Safe &trade; is [http://rapidsvn.tigris.org/ RapidSVN]. [http://en.wikipedia.org/wiki/RapidSVN It is cross-platform] and has a simple interface, in one place unlike TortoiseSVN.

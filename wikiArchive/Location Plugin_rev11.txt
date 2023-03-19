@@ -1,0 +1,31 @@
+
+== Location Plugin ==
+
+
+
+This page is intended to better document the location plugin. It's a work in progress.  Below, you'll only find notes / gibberish that I'm collecting at the moment.
+
+
+------------------------------------------
+
+
+Why not use the Location Plugin to do the transfers for you?
+
+Heck, if you update to the Development versions, you don’t even have to setup rsync tunnels.
+
+You can install the Nodes how you see fit. I’d recommend, for your case, to install all the servers as “Full Servers”, and then once the installation is complete edit the /opt/fog/.fogsettings file to use:
+snmysqluser=‘fogstorage’
+snmysqlpass=‘fogstoragepasswordfromfogsettings’
+snmysqlhost=‘IP.OF.Main.Server’
+
+This way, all the fog servers at all of the buildings communicate to a single server.
+
+THen you create your storage nodes based on the information of the other fog servers.
+
+Create the appropriate groups as necessary.
+
+Assign the images to the groups you want the images to “cross” between.
+
+That way you have a centrally managed server, with pxe boot setup locally at each building.
+
+The location plugin will attach to the hosts that belong at that particular building.

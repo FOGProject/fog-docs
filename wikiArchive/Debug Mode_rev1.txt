@@ -1,0 +1,12 @@
+= Debug Tasks =
+
+== Common Commands ==
+
+
+== Debug Task ==
+
+== Deploy Debug ==
+{{:Troubleshooting an image push to a client}}
+
+== capture Debug ==
+{{:Troubleshooting a capture}}

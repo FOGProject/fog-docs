@@ -1,0 +1,1 @@
+{{delete| consilidated to dnsmasq page instead of re-pasting setup information }}

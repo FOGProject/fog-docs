@@ -1,0 +1,46 @@
+= Devices that are known to have problems with FOG Imaging solution. =
+
+==Computers==
+
+===Desktops===
+*[[Dell Dimension 2400 with Broadcom 4401 Onboard NIC/Cisco Catalyst 2950 Switch]]
+*[[Dell Dimension 2400 with Broadcom Onboard NIC - TFTP filename issue]]
+*[[Dell Optiplex 740]] (don't use Kernel 2.6.27, try 2.6.27 RC9 or the one by Peter Sykes, also make sure you fully format the drive to remove the Dell Utility partition or it will cause issues, if you didn't try using a Multiple Partition image type) - Use Peter Sykes Kernel plus Dell BIOS version 1.1.8 and image using Multiple Partition.
+*[[Dell Optiplex 980]] Does not work with the .30 kernel.  Must extract the .28 kernel from the tar, rename it, and set these hosts to use it and they will work when running the .30 release of fog. 
+*[[Dell Vostro 1510]] <span style="background-color:RED; padding: 1px"> '''NOT WORKING''' </span> - Does not work with Latest A15 Dell BIOS, or A13. A14 unknown but presumably not working.
+** actually, with A13, if you set "irqpoll" into the Host Kernel Arguments field for the host, it works!!!
+*[[HP Compaq DC7900]] Update the BIOS to lastest version and change the exit type to GRUB <span style="background-color:Yellow; padding: 1px"> '''Checking In to this''' </span> ~2014-10-29
+*[[HP Compaq DX7500]] unable to create image (SATA emulation set to AHCI mode or IDE mode) FOG ver 0.27\Works fine set to IDE on FOG ver 0.26
+*[[Dell Vostro 230]] Boots up, but cannot even perform host registration since can't find Hard Drive.
+*[[Fujitsu Siemens Esprimo P2550]] works, but you probably have to edit your default file (tftpd) because the graphical modus causes trouble.
+*[[Fujitsu Siemens Scenic Pentium 4 (model name unknown)]] <span style="background-color:RED; padding: 1px"> '''NOT WORKING''' </span> Tried several kernels FOG 0.27, 0.28, 2.6.35-KS 2.6.37-core with or without acpi=off hpet=disable irqpoll arguments.  computer freezes right after downloading init.gz
+*[[Fujitsu P2510]] (Fog 1.x.x) Freezes at loading before Fog menu
+*[[Fujitsu P2520]] (Fog 1.x.x) Loads Fog menu but cannot run quick registration
+*[[Dell Optiplex 980]] Does not work with (FOG 0.32) Kernel 3.8.8.  Use kernel 3.13.1 (1/2014)
+
+===Laptops===
+*[[ACER aspire one P531h]]  FOG will not find HD with SATA drive set to IDE mode, and will throw errors with native SATA mode. Confirmed, 0.29 will not find hard drive even with the latest firmware from acer installed.
+*[[Compaq 6910p]] <span style="background-color:Red; padding: 1px"> '''NOT WORKING''' </span> FOG boot only with a Kitchen Sink kernel but locks up laptop after 2 seconds when trying to deploy image. Finally made it work by changing MTU to 500 (1000 did NOT work). 
+*[[Compaq Presario CQ60]] Will register and pull images fine, and pushing an image seems to work, but once it's done, Windows will not boot due to missing/corrupt files.
+*[[Dell Latitude E4310]] intel 825xx network card [Major Corruption Bug in e1000e Driver in Linux Kernel 2.6.27]. fail to load kernel. newer kernels dont seem to work. Kernel 2.6.32.4 PS works but without gigabit network support. 
+*[[Dell Inspiron 1721 laptop w/ Vista32Ult]] <span style="background-color:RED; padding: 1px"> '''NOT WORKING''' </span>
+*[[Dell Vostro 5470]] (FOG 0.32) Will not work properly with kernel 2.6.39 (default for FOG 0.32), returns error: "nvidiafb: unable to setup MTRR".  After some tests, I got it to work fine with kernel 2.6.35.7 PS (1/2014)
+*[[Fujitsu LifeBook T731/T732:]] (FOG 0.32) T731 requires BIOS update so it doesn't hang on pxe boot to hd0,0.  T732 have to disable pxe boot after imaging because it hangs on boot to hd0,0 and there is no BIOS update yet (1/2014)
+*[[Fujitsu-Siemens Esprimo Mobile V5535]] Needs kernel arguments vga=788 nomodeset. Additionally, refer to article [[SiS-191 based NIC]] to get it working.
+*[[HiGrade VA250D/VA250P]] Errors out stating "BIOS Bug #81" and "no disks detected"
+*[[HP Mini 110]] <span style="background-color:RED; padding: 1px"> '''NOT WORKING''' </span> FOG boots fine off NIC but looses NIC location when attempting to register with server. No options in Mini Bios to edit for a possible work around.
+*[[Lenove ThinkPad E325]] <span style="background-color:RED; padding: 1px"> '''NOT WORKING''' </span> Tried several different kernels up to and including Kernel-3.1-rc8.core, tried FOG versions 0.29 and 0.32, with and without kernel args acpi=off hpet=disable irqpoll.  Doesn't like the LAN card or BIOS, and then fills the screen with an image similar to static on a TV.
+
+===Servers===
+*[[Dell PowerEdge R200]] Don't use the latest kernel (2.6.29), roll back to 2.6.28 and the NIC (uses module tg3) works beautifully
+*[[Dell PowerEdge R515]] <span style="background-color:RED; padding: 1px"> '''NOT WORKING''' </span> 3.8.8 Boots, fails to recognize most hardware.  3.13.1 Begins to boot, hangs during kernel loading, reports no hard disk found, then crashes and reboots.
+
+===Tablets===
+*[[Acer Iconia Tab w500]] - Requires custom kernel which disables agpgart and includes newer Asix AX88772B drivers... Also requires adding a tftpd map file and configuration option in order to get PXE to boot properly when using a separate DHCP server from FOG.
+
+==Hardware==
+*[[SiS-191 based NIC]] Issue only with deploying an image, driver MTU size must be set to 1000 
+*[[SiS-900 based NIC]] Issue with pxelinux menu
+*[[tg3]] module NICs (Broadcom?) - Issue with loading firmware in kernel 2.6.29 (roll back to 2.6.28)
+
+__NOTOC__

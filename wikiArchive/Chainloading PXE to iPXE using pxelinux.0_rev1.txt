@@ -1,0 +1,46 @@
+= Background =
+As a few people have had issues with iPXE booting correctly a, seemingly decent work around seems to work for most people.
+
+= Configure system =
+Obtain root access through terminal to your FOG Server.  There are multiple means to do so.
+
+The most common methods are:
+# Open a terminal or console window.
+# Login as your self and sudo up to root, su to root, or login straight as root.
+
+If you logged in as your regular user try the command:
+<pre>sudo su -</pre>
+Enter your local user password.
+
+If you don't have sudo permissions but know the root password, try:
+<pre>su -</pre>
+Enter the root users password.
+
+Of course logging in straight as root you don't have to do any more work.
+
+= Make things work =
+* If you are trying undionly.kpxe and this is already configured as your boot file (option 67):
+<pre>cd /tftpboot
+mv undionly.kpxe undionly.kpxeREAL
+ln -s pxelinux.0.old undionly.kpxe</pre>
+* If you want to keep troubleshooting for "other" users a little easier, change the boot file pointer back to pxelinux.0 (option 67)
+<pre>cd /tftpboot
+mv undionly.kpxe undionly.kpxeSOMERANDOMNAME
+ln -s pxelinux.0.old pxelinux.0</pre>
+* Create the pxelinux.cfg folder as it was removed.
+<pre>mkdir /tftpboot/pxelinux.cfg</pre>
+* Create the /tftpboot/pxelinux.cfg/default using whatever editor you desire.
+<pre>vi /tftpboot/pxelinux.cfg/default</pre>
+* Code is below, change x.x.x.x to the FOG IP Address.
+<pre>DEFAULT vesamenu.c32
+MENU TITLE Fog Reimage Menu
+MENU COLOR TITLE        1;36;44    #ffffffff #00000000 std
+LABEL iPXE Boot
+MENU DEFAULT
+KERNEL ipxe.krn
+APPEND dhcp && chain http://x.x.x.x/fog/service/ipxe/boot.php?mac=${net0/mac}
+PROMPT 0
+TIMEOUT 1</pre>
+
+= Complete =
+Try testing this and see if all works.

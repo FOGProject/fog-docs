@@ -1,0 +1,41 @@
+Article under construction - below you'll find notes/gibberish on the topic. Expect an article soon.
+
+
+
+[[File:Fedora 23 partitioning.png]]
+
+
+Create boot, root, images, home, and swap partitions - keep things seperate, prevent OS from crashing if images fill it's partition, likewise with home.
+
+
+Fedora 23 minimal.
+
+
+setup firewall
+
+
+set SELinux to permissive
+
+
+Reboot.
+
+
+
+<pre>#Install subversion, a utility used to retrieve versions of fog.
+dnf install -y subversion
+
+#Move to the current user's home directory.
+cd ~
+
+#Make a directory called svn, into which we will download Fog's installation files.
+mkdir svn
+
+#Go into the svn directory.
+cd svn
+
+#Retrieve the latest developmental version of FOG from SourceForge.
+svn checkout https://svn.code.sf.net/p/freeghost/code/trunk</pre>
+
+
+
+yum install -y selinux-policy-devel gcc make

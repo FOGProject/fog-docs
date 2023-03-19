@@ -1,0 +1,79 @@
+The GParted application enables you to change the partition organization on a disk device while preserving the contents of the partitions.
+(taken from [http://gparted.sourceforge.net/ GParted's Homepage]) 
+
+With GParted you can accomplish the following tasks:
+*Create a partition table on a disk device.
+*Enable and disable partition flags such as boot and hidden.
+*Perform actions with partitions such as:
+**create or delete
+**resize or move
+**check
+**label
+**copy and paste
+
+==Steps to integrate GParted into FOG as a PXE boot option==
+1.) Be sure you are logged in to your server as root. Switch to the tmp directory:
+<pre>
+cd /tmp
+</pre>
+
+2.) Get the latest version of GParted from [http://sourceforge.net/projects/gparted/files/ here] (make sure you download "gparted-live-<version>.zip" - substitute <version> with the latest version of GParted)
+
+3.) After that we unzip the parts of GParted we need:
+<pre>
+mkdir -p /tmp/gparted; unzip gparted-live-*.zip -d /tmp/gparted/
+</pre>
+(Replace gparted-live-*.zip with the file name you just downloaded).
+
+4.) Create the directories in the appropriate places:
+<pre>
+mkdir /tftpboot/fog/gparted
+</pre>
+
+Now copy the relevant PXE boot files to the directory just created:
+<pre>
+cp /tmp/gparted/live/{vmlinuz1,initrd1.img} /tftpboot/fog/gparted/
+</pre>
+
+5.) Copy /tmp/gparted/live/filesystem.squashfs to your http server's DocumentRoot (usually located at /var/www):
+<pre>
+cp /tmp/gparted/live/filesystem.squashfs /var/www/fog/
+</pre>
+
+6.) Open FOG's PXE menu config file:
+<pre>
+nano /tftpboot/pxelinux.cfg/default
+</pre>
+
+7.) Copy these lines to the end of that file:
+
+<pre>
+ LABEL GParted
+        kernel fog/gparted/vmlinuz1
+        append initrd=fog/gparted/initrd1.img boot=live union=aufs noswap noprompt vga=788 fetch=http://<My HTTP server IP>/fog/filesystem.squashfs
+        MENU LABEL GParted Live
+        TEXT HELP
+        The GParted application is the GNOME partition editor for creating, reorganizing, and deleting disk partitions.
+        ENDTEXT
+</pre>
+
+
+'''NOTE:''' Replace <My HTTP server IP> with the IP address of your http server (usually your FOG server), e.g. your "append" line might look like this when you've inserted your server's IP address if your server's IP is 192.168.1.1:
+<pre>
+append initrd=fog/gparted/initrd1.img boot=live union=aufs noswap noprompt vga=788 fetch=http://192.168.1.1/fog/filesystem.squashfs
+</pre>
+'''NOTE:''' In FOG's PXE menu config file, (/tftpboot/pxelinux.cfg/default) the word '''config''' may be required on the append line. [[Dukeokanabec]] reported that '''config''' was required for him while installing GParted version 0.7.0-4. [[Spellerr]] also reported that '''config''' was required for him while installing GParted version 0.8.0-1, and excluding '''config''' resulted in GParted prompting for a password. Per GParted instructions linked below they added the word config to the PXE menu entry and it worked fine, like this:
+
+       LABEL GParted
+        kernel fog/gparted/vmlinuz1
+        append initrd=fog/gparted/initrd1.img boot=live '''config''' union=aufs noswap noprompt vga=788 fetch=<fog I.P>/fog/filesystem.squashfs
+       MENU LABEL GParted Live
+        TEXT HELP
+        The GParted application is the GNOME partition editor for creating,...
+        ENDTEXT
+
+For more information (GParted's PXE instructions) see [http://gparted.sourceforge.net/livepxe.php here]
+
+= Additional warning =
+If you manually edit the default file under pxelinux.cfg as mentioned above all your changes will be lost when you rebuild the PXE Boot Menu from the Web-Gui.
+To avoid this, the changes from above also need to be added to the generatePXEMenu() function in commons/functions.include.php file in the $strMenu variable.

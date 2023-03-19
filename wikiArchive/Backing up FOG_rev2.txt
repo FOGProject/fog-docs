@@ -1,0 +1,35 @@
+=== Overview ===
+
+Backing up FOG is pretty simple, there are a few directories that need to be backed up, plus the mysql database.  The following sections give you an overview of how to backup your FOG system.  The following should include everything you should backup/save in order to be able to restore FOG.   When backing up the directories below it is recommended that you use '''cp -a''' to ensure that all the rights are maintained.  
+
+As of version 0.14 a script is provided with FOG to make backups easier (not present in 0.32).  The script is located at:
+
+ utils/FOGBackup/FOGBackup.sh
+
+To use this script run:
+
+ ./FOGBackup.sh [directory]
+
+With this script you must pass an directory that exists to the script as an argument.  This directory is where your backups will be stored.  This script can be run as a cron job to make daily backups of your FOG data.
+
+=== Original Installation Tar File ===
+
+You should save a copy of the original tar.gz file that was downloaded from FOG/sourceforge.  
+
+=== Web Directory ===
+
+The web directory is the directory that contains all the php pages for the FOG management portal.  The only reason this directory really should be backed up is because it contains the '''reports''' directory which may contain custom reports.  We recommend that you save the entire web directory because in the future we may add new sections that may have custom, or user data.  
+
+=== OPT Directory ===
+
+The /opt/fog directory contains the directory that holds snapins, The /opt/fog directory should be backed up along with all its sub directories.  
+
+=== Images Directory ===
+
+This is the tough one, the images directory located at '''/images'''.  This holds the partition images and it could be '''VERY''' large.
+
+=== MySQL Database ===
+
+MySql holds all the data for FOG, like all your host, image, printer, snapin and inventory information.  You can backup your mysql data with the following command:
+
+ mysqldump --allow-keywords -x -v fog > fogbackup.sql

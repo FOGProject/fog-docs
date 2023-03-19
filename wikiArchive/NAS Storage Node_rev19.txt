@@ -1,0 +1,16 @@
+* Information taken from
+**http://fogproject.org/forum/threads/create-nas-and-fog-1-1-2.12597/#post-44080
+
+== Basic Idea ==
+
+*Install FOG storage node script on NAS and use it as a Storage node for your FOG server.
+*A few basic things will need to be installed by the install script ssh, ftp, nfs, and mysql. 
+*This is an option that has been successfully done on a few occasions and <u>'''NOT ALL'''</u> NAS devices work as a Storage node.
+**This is a generic setup for NAS devices
+
+== Installation ==
+
+*First you must obtain (enable) ssh on your NAS to be able to even work with it.
+**On some devices such as a "My Booklive" you will need to login to the web portal and enable it from there. See your device user manual for this.
+
+*Download FOG from our downloads page or use a [[Upgrade_to_trunk | trunk version]].

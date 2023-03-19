@@ -1,0 +1,14 @@
+Article under construction. Below, you will find notes / jibberish that I'm collecting to make into an article.
+
+------------------------------------------------------------------
+
+
+Inside the FOG DB, there are two multicast association tables. You can delete all the rows in those tables, re-install FOG, and try again.
+
+
+<pre>mysql
+use fog
+DELETE FROM `multicastSessions` WHERE 1;
+DELETE FROM `multicastSessionsAssoc` WHERE 1
+DELETE FROM `tasks` WHERE `taskTypeID` = 8;
+quit</pre>

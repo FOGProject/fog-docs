@@ -1,0 +1,147 @@
+== Modifying existing DHCP server to work with FOG ==
+
+If you already have a DHCP server setup on your network you don't want two.  So if you chose to not install DHCP during FOG installation you will need to set some options in your current DHCP server to point PXE services to the FOG server.
+
+== Windows ==
+=== 0.32 and below ===
+To set options 066 and 067 on Windows Server:
+#Open DHCP configuration '''Start''' > '''Administrative Tools''' > '''DHCP'''.  
+#Then expand your server, expand the applicable scope (often only one is there)
+#right click on '''Scope Options''' 
+#click '''Configure Options'''
+#tick '''066''' and enter the IP Address of the FOG server 
+#tick '''067''' and enter '''pxelinux.0''' (thats a zero).  
+#Make sure that 060 is unticked.
+For a video walk through jump to 6:44, on: http://www.youtube.com/user/hotfortech#p/a/u/1/Ak6kfvGM0Dk
+*For more, see: [[Windows DHCP Server|Can I use my existing Windows DHCP Server?]]
+=== 0.33 and up ===
+To set options 066 and 067 on Windows Server:
+#Open DHCP configuration '''Start''' > '''Administrative Tools''' > '''DHCP'''.  
+#Then expand your server, expand the applicable scope (often only one is there)
+#right click on '''Scope Options''' 
+#click '''Configure Options'''
+#tick '''066''' and enter the IP Address of the FOG server 
+#tick '''067''' and enter '''undionly.kpxe''' (thats a zero).  
+#Make sure that 060 is unticked.
+For a video walk through jump to 6:44, on: http://www.youtube.com/user/hotfortech#p/a/u/1/Ak6kfvGM0Dk
+*For more, see: [[Windows DHCP Server|Can I use my existing Windows DHCP Server?]]
+== Linux ==
+If you would like to use an existing Linux based DHCPD server you will need to perform the following steps:
+#Edit your dhcpd.conf file (ie: vim /etc/dhcpd.conf)
+#In the global section or in a subnet declaration add '''next-server X.X.X.X;''' and '''filename "undionly.kpxe"'''; where X.X.X.X is the IP of your FOG server.
+#Restart your dhcpd server (ie: service dhcpd restart)
+*For more, see: [[Linux DHCP Server|Can I use my existing linux DHCP Server?]]
+= Cisco =
+If you would like to use a DHCP-enabled Cisco router you will need to perform the following steps:
+== 0.32 and below ==
+#Enter priveleged mode ('''enable''').
+#If you don't know your DHCP pool name, enter '''show running-config''' and look for ''ip dhcp pool'' in the output.
+#Enter global configuration mode ('''configure terminal''').
+#Enter DHCP scope configuration mode ('''ip dhcp pool ''<pool name>''''').
+#Configure the following options:
+##'''next-server ''<ip address to fog server>'''''
+##'''bootfile pxelinux.0'''
+#Exit configuration mode by entering '''exit''' twice.
+#Save your configuration ('''copy running-config startup-config''').
+== 0.33 and up ==
+#Enter priveleged mode ('''enable''').
+#If you don't know your DHCP pool name, enter '''show running-config''' and look for ''ip dhcp pool'' in the output.
+#Enter global configuration mode ('''configure terminal''').
+#Enter DHCP scope configuration mode ('''ip dhcp pool ''<pool name>''''').
+#Configure the following options:
+##'''next-server ''<ip address to fog server>'''''
+##'''bootfile undionly.kpxe'''
+#Exit configuration mode by entering '''exit''' twice.
+#Save your configuration ('''copy running-config startup-config''').
+== DD-WRT & Tomato ==
+=== 0.32 and below ==
+If you would like to use a DD-WRT or Tomato router for DHCP you will need to perform the following steps:
+#Go to the Services tab
+#Enable DNSMasq, and Local DNS
+#Under Additional DNSMasq Options add the following '''dhcp-boot=pxelinux.0,,X.X.X.X'''  where X.X.X.X is the IP of your FOG server
+#Save/Apply settings
+Please see our knowledge base article [[FOG with DD-WRT firmware|Can I use my existing DD-WRT enabled routers DHCP Server?]] for more information on this.
+=== 0.33 and up ===
+If you would like to use a DD-WRT or Tomato router for DHCP you will need to perform the following steps:
+#Go to the Services tab
+#Enable DNSMasq, and Local DNS
+#Under Additional DNSMasq Options add the following '''dhcp-boot=undionly.kpxe,,X.X.X.X'''  where X.X.X.X is the IP of your FOG server
+#Save/Apply settings
+Please see our knowledge base article [[FOG with DD-WRT firmware|Can I use my existing DD-WRT enabled routers DHCP Server?]] for more information on this.
+
+==== Extra Information ====
+The dhcp-boot information from Tomato and DD-WRT is exactly the same information dnsmasq uses.  This is because dnsmasq is the default dhcp server for these routers.
+
+== OpenWRT ==
+=== 0.32 and below ===
+If you would like to use an OpenWRT router for DHCP you will need to perform the following steps:
+#Edit '''etc/config/dhcp'''
+#In chapter '''config 'dnsmasq' ''' add this line: '''option 'dhcp_boot' 'pxelinux.0,fog,X.X.X.X' ''' where X.X.X.X is the IP of your FOG server
+#Save the dhcp file
+#Restart dnsmasq: '''/etc/init.d/dnsmasq restart'''
+
+This config has been tested on OpenWRT Attitude Adjustment (r28247).
+=== 0.33 and up ===
+If you would like to use an OpenWRT router for DHCP you will need to perform the following steps:
+#Edit '''etc/config/dhcp'''
+#In chapter '''config 'dnsmasq' ''' add this line: '''option 'dhcp_boot' 'undionly.kpxe,fog,X.X.X.X' ''' where X.X.X.X is the IP of your FOG server
+#Save the dhcp file
+#Restart dnsmasq: '''/etc/init.d/dnsmasq restart'''
+
+This config has been tested on OpenWRT Attitude Adjustment (r28247).
+
+== Sonicwall ==
+=== 0.32 and below ===
+If your Sonicwall device is acting as the DHCP server, you will need to perform the following steps:
+
+#Login to your Sonicwall web admin interface
+#Go to '''Network''' > '''DHCP Server'''
+#Edit the DHCP Range where your client(s) reside
+#Click the tab labeled '''Advanced'''
+#Under "Network Boot Settings," configure the following options:
+##Next Server: '''X.X.X.X'''  where X.X.X.X is the IP of your FOG server
+##Boot File: '''pxelinux.0'''
+#Click '''OK''' to save
+=== 0.33 and UP ===
+If your Sonicwall device is acting as the DHCP server, you will need to perform the following steps:
+
+#Login to your Sonicwall web admin interface
+#Go to '''Network''' > '''DHCP Server'''
+#Edit the DHCP Range where your client(s) reside
+#Click the tab labeled '''Advanced'''
+#Under "Network Boot Settings," configure the following options:
+##Next Server: '''X.X.X.X'''  where X.X.X.X is the IP of your FOG server
+##Boot File: '''undionly.kpxe'''
+#Click '''OK''' to save
+
+Note that the "Windows" DHCP Options 66 and 67 do not work in Sonicwall DHCP Server. You must use the fields provided by Sonicwall - Next Server and Boot File.[http://www.arizona-breast-cancer-specialists.com/brachytherapy/all-about-what-is-brachytherapy.html     Brachytherapy]
+
+== pfSense v1.23 ==
+=== 0.32 and below ===
+If your pfSense device is acting as the DHCP server, you will need to perform the following steps:
+
+#Login to your pfSense web admin interface
+#Go to '''Services''' > '''DHCP Server'''
+#Scroll Down to "Enable Network booting" Click the button labeled '''Advanced''' to "Show Network booting" options
+##Check the box to "Enables network booting"
+##Enter the IP address from the network boot server: '''X.X.X.X'''  where X.X.X.X is the IP of your FOG server
+##Enter the filename used for network booting: '''pxelinux.0'''
+#Click the '''Save''' button
+=== 0.33 and up ===
+If your pfSense device is acting as the DHCP server, you will need to perform the following steps:
+
+#Login to your pfSense web admin interface
+#Go to '''Services''' > '''DHCP Server'''
+#Scroll Down to "Enable Network booting" Click the button labeled '''Advanced''' to "Show Network booting" options
+##Check the box to "Enables network booting"
+##Enter the IP address from the network boot server: '''X.X.X.X'''  where X.X.X.X is the IP of your FOG server
+##Enter the filename used for network booting: '''undionly.kpxe'''
+#Click the '''Save''' button
+
+Note: You need both a filename and a boot server configured for this to work!
+
+===Other DHCP Servers===
+*[[Novell DHCP Server|Can I use my existing Novell DHCP Server?]]
+*[[FOG with M0n0wall|Can I use my existing m0n0wall DHCP Server?]]
+*[[Smoothwall School Guardian|Can I use my existing Smoothwall School Guardian DHCP Server?]]
+*[[FOG with ipcop|Can I use my existing ipcop DHCP Server?]]

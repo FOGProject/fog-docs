@@ -1,0 +1,44 @@
+This describes how to manually migrate an image or all images to another server.
+
+= Image files =
+
+Below, are many options for migrating an individual image. If you wanted to migrate all images, just change the source/destination paths in the below commands to <font color="red">/images</font> Where you see x.x.x.x, this is the old storage node's IP address. These commands are written to be run on the new storage node.
+
+== using lftp ==
+
+<pre>lftp -c 'open x.x.x.x; user UserGoesHere PasswordHere; mirror -e /images/TheImagePath /images/TheImagePath; quit'</pre>
+
+== using NFS ==
+
+<pre>
+mount x.x.x.x:/<remote directory> <local directory>
+cp -R /mbimages/Optiplex9020UEFI /images/Optiplex9020UEFI
+umount <local directory>
+</pre>
+
+== Using Samba ==
+
+<pre>
+mkdir /tempMount
+mount -t cifs //x.x.x.x/ShareNameGoesHere /tempMount -o username=YourUsernameGoesHere -o password=YourPasswordGoesHere,noexec
+cp -r /tempMount/ImageNameHere /images/ImageNameHere
+umount /tempMount
+</pre>
+
+== Using SCP ==
+
+<pre>scp -r /images/ImageNameHere root@x.x.x.x:/images/ImageNameHere</pre>
+
+== Using rsync ==
+
+<pre>
+rsync -a /images/ImageNameHere root@x.x.x.x:/images/ImageNameHere
+</pre>
+
+= Image Definitions =
+
+Image definitions are what's stored in the database, and what is displayed in the web interface. There are DB entries for each image. Image definitions do not automatically appear just because the image files are present on the storage node, this is a common misconception.
+
+You may recreate these manually, but you '''must''' recreate them exactly as they were on the old server. The image path '''must''' be exact and is '''case sensitive''', the image OS and image type '''must''' be set exactly as in the old server as well. 
+
+The easiest option is to use FOG's export/import feature inside of Image Management.

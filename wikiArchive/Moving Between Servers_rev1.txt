@@ -1,0 +1,17 @@
+
+<font color="red">Note:</font> The below content is from year 2011. I've left it intact for historical purposes, but a new article is available here: [[Migrate FOG]]
+
+== Migrating FOG Server: Case Studies == 
+Since there are many variables to consider when migrating any server from one platform to another, this page may serve as a repository for the experience of others.  If none of the cases below match yours exactly, perhaps you can interpolate the details and add your own experience as a separate study.
+
+=== Migrating Ubuntu 9.04 64-bit on VMWare to Physical Ubuntu 9.04 64-bit ===
+
+What if you need to move FOG from one server to another?  In my situation, I was virtualizing my FOG server to sit on a VMWare Server instance.  I couldn't just convert the entire machine because the origional platform was a 64-bit Ubuntu 9.04.  VMWare doesn't convert that (at least not easily), so I just built a clean Ubuntu 9.04 install.
+
+My first step in moving my installation was to install FOG on the new server.  I took all the defaults as mentioned in the [[FOGUserGuide]] so that the install would mimic the first one I did.  I made sure both were running the same version (I had to update my old install to 0.27) so that I wouldn't have any SQL schema issues.  I then used MySQL Navigator to export the old FOG database, copied the .sql file to the new server and used Navigator again to import the data to the new FOG database.  I then copied the files in the /images directory making sure to chown and chmod so that the local fog user had permissions.
+
+After this and a reboot for good luck (my old windows habits die hard) I went into the web interface.  It took me a bit to figure out what changes needed to be made there but I found them.  Under Other Information -> FOG Settings I made sure that it reflected any IP/DNS changes.  Specifically I had to change: FOG_WOL_HOST, FOG_TFTP_HOST, and FOG_WEB_HOST.  I also reset the TFTP password as documented at [[Unable to connect to TFTP]].  The final kicker (and it took me a minute to figure it out) is under Storage Management -> All Storage Nodes -> DefaultMember.  You need to change the IP address here or when the client goes to pull the image, it will look at the wrong address.
+
+Of course if you keep the same IP address most of this is not an issue.  If that's the case it's as simple as moving the database and the image files.
+
+I didn't have any snapins to move (still can't get it to work right in my setup), so perhaps someone else can add that in later.

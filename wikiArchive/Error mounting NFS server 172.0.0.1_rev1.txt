@@ -1,0 +1,6 @@
+{{Merge|target=Error mounting NFS server 127.0.0.1|discuss=Talk:Error mounting NFS server 127.0.0.1}}
+
+== error monting nfs share 127.0.0.1 ==
+This seems to be an error related to the FOG settings configuration. 
+
+ Under FOG Settings > make sure NFS server settings points to <your static ipaddadress>

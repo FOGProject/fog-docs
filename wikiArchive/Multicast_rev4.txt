@@ -1,0 +1,17 @@
+<pre>
+To test Multicasting
+
+ Environment:
+ FOG server
+ two or more identical PC
+ Ethernet hub or FastEthernet switch in same VLAN.
+
+ to view Multicat status on server use tty2 or /opt/fog/log/muliticat.log
+
+ overall image time will be slower then unicast on same hardware and same image because unicast is gunzip(unzip) at client level, multicast in gunzip at server level. 
+
+ If error persistent in test environment post log in forum.
+</pre>
+
+More Info on Multicasting 
+[[Multicasting]]

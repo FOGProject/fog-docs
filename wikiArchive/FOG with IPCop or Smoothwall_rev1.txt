@@ -1,0 +1,19 @@
+To use your existing IPCop DHCP-server with FOG, disable the DHCP-server while installing FOG or stop it. Then add the following parameters to your IPCop DHCP-server configuration via the Web-GUI:
+
+{| class="wikitable" border="1"
+|-
+! Parameter || Value || Description
+|-
+| filename || "/pxelinux.0"
+|-
+| next-server || 192.168.5.2 || The IP-address of your FOG-server
+|}
+
+
+'''Services -> DHCP server'''
+
+[[Image:Fog_ipcop.jpg]]
+
+To use smoothwall the changes are similar:-
+
+[[Image:smoothwall_fog_dhcp.PNG]]

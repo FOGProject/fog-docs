@@ -1,0 +1,73 @@
+ 
+== Fedora ==
+
+=== Install Subversion ===
+ 
+ sudo yum install subversion 
+
+=== Download the package ===
+
+ cd ~ 
+ mkdir svn 
+ cd svn 
+ svn checkout https://svn.code.sf.net/p/freeghost/code/trunk
+
+=== Install It! ===
+ 
+ cd ~/svn/trunk/bin 
+ sudo ./installfog.sh
+
+== Ubuntu ==
+
+=== Install Subversion ===
+
+ sudo apt-get update 
+ sudo apt-get install subversion
+
+=== Download the package ===
+
+ cd ~ 
+ mkdir svn 
+ cd svn 
+ svn checkout https://svn.code.sf.net/p/freeghost/code/trunk
+
+=== Install It! ===
+ 
+ cd ~/svn/trunk/bin 
+ sudo ./installfog.sh
+
+
+=== GUI Subversion clients ===
+
+Coming from a Windows background, some people may prefer using a GUI Subversion client, rather than the standard, basic command-line client. If you feel comfortable with a file system browser/explorer integrated Subversion client, then [http://tortoisesvn.tigris.org/ TortoiseSVN] is the best choice - it is extremely popular. <br />
+
+Another tool that is simple to configure and easy to understand, but is a traditional one-window application like Microsoft &trade; Visual Source Safe &trade; is [http://rapidsvn.tigris.org/ RapidSVN]. [http://en.wikipedia.org/wiki/RapidSVN It is cross-platform] and has a simple interface, in one place unlike TortoiseSVN.
+
+
+
+
+
+
+
+
+
+== Additional information on Subversion & FOG Revisions ==
+
+
+Subversion (often abbreviated SVN, after the command name svn) is a software package that allows you to 'check out' software. SVN in and of itself is not FOG, but a lot of FOG users use it. FOG developmental versions are called "revisions" (at least in MY head).
+
+
+Revisions are normally stable for the PRIMARY functions of FOG: 
+'''IMAGE > NAME > JOIN TO DOMAIN using UNICAST and MULTICAST'''
+
+Other features in FOG revisions (not directly related to the imaging process) '''are sometimes broken'''. The developers are pretty good about getting to them when someone asks about them. These other features usually do not impact imaging. Additionally, if you encounter an issue, let us know about it in the forums and someone is likely to help and/or fix it quickly, making a new "Revision" that you can download and install very quickly. 
+
+
+However, with the current revisions, you'll benefit from a '''plethora of bug fixes''', a much '''wider range of supported host hardware''', and '''new features'''!
+
+Updating FOG from one revision to a newer one usually takes less than a minute or two. Fog uses your settings from previous installations so you don't have to answer questions about the installation or set additional configurations.
+
+
+On your FOG's web GUI login page, you can check what version you're running:
+
+[[File:Fog_version.png]]

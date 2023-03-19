@@ -1,0 +1,33 @@
+=== Troubleshooting an image push to a client ===
+
+This process will '''wipe out''' whatever is currently present on the client computer.<br>
+This tutorial is for FOG .30 pushing Windows XP and assumes that your primary disk is /dev/sda. '''Note that this process has not been tested on Windows 7.'''
+
+<ol>
+<li>In the management portal, start a debug task for the client computer in question.   Allow the client to boot and at the bash prompt.</li>(Everything below is done within the bash prompt '''on the client's console'''.)
+<li>From your client, mount the remote /images folder on your FOG server onto a local /images folder using nfs:<ul><li><tt>mkdir /images</tt>  (type this on the client's keyboard, as explained above)</li>
+<li><tt>mount -o nolock x.x.x.x:/images /images</tt> (where x.x.x.x is the server ip)<br>you may try also <tt>mount -t nfs -o nolock x.x.x.x:/images /images</tt></li></ul>
+<li>Copy the master boot record to the first 512 bytes of the local disk. Take a look into <tt>/usr/local/fog/mbr/</tt> to determine the correct MBR for your system. This example uses XP:
+<ul><li><tt>cd /images</tt></li>
+<li><tt>dd if=/usr/share/fog/mbr/xp.mbr of=/dev/sda1 bs=512 count=1</tt></li>(For previous versions, find the <tt>fog</tt> directory under:/usr/local/)</ul>
+<li>Start fdisk and remove all previous partitions:<ul><li><tt>fdisk /dev/sda</tt> (Note there is no <tt>1</tt> at the end of the device name)</li>
+<li>Press "d", then "Enter" - select a partition if prompted and repeat pressing "d"</li>
+<li>Press "w", then "Enter" to save and exit fdisk</li></ul>
+<li>Create a new partition:<ul><li>fdisk /dev/sda</li>
+<li>Press "n", then "Enter"</li>
+<li>Press "p", then "Enter"</li>
+<li>Press "1", then "Enter"</li>
+<li>Press "1", then "Enter" or just "Enter" to accept the default starting sector</li>
+Note: Windows 7 users may want to create a 100M partition, then repeat these steps to create the system partition and assign the rest of the disk to the OS.
+<li>Press "Enter" to accept the default ending sector</li>
+<li>Press "t", then "Enter" to change the partition type</li>
+<li>Press "7", then "Enter" for NTFS</li>
+<li>Press "a", then "Enter" to toggle the bootable flag</li>
+<li>Press "1", then "Enter"</li>
+<li>Press "w", then "Enter" to save and exit fdisk</li></ul>
+<li>Update the partition info:<ul><li><tt>partprobe</tt></li></ul>
+<li>Use partimage to copy image from FOG server to local partition:<ul><li><tt>/usr/sbin/partimage restore /dev/sda1 /images/[imagename] '''-f3 -b'''</tt></li></ul>
+<li>Use ntfsresize to expand partition:<ul><li><tt>/usr/sbin/ntfsresize /dev/sda1 '''-f -b -P'''</tt></li>(For previous versions, find sbin under: /usr/local/)</ul>
+</ol>
+
+An alternate way to do partimage (which gives more feedback) is to load the gui version of partimage with:<br><tt>/usr/sbin/partimage</tt>, then manually fill in the fields/choose options.

@@ -1,0 +1,365 @@
+
+= Installing Fedora 21 server =
+
+== Configuring partitions for FOG ==
+
+The one thing with using Fedora (or any red-hat based distro) is that the default partitioning isn't optimal for FOG. The default is that "root" only gets 50 GiB and the rest goes to /home. This is not optimal.
+
+You should delete any existing partitions, and then select "create partitions automatically". This is the easiest. Then you can manipulate and delete unneeded partitions. The most simple partitioning setup for FOG is below:
+
+*Give the <font color="red">swap</font> partition the same amount as the amount of RAM the system has. 
+
+*Optionally delete the <font color="red">/home</font> partition or limit it's size to something very small (like 10GB).
+
+*Limit <font color="red">/</font> (root) to 20GB instead of 50 (optional but recommended).
+
+*Finally, create a <font color="red">/images</font> partition with all remaining space.
+
+Fedora (and most Red-Hat based distributions) auto-adjust partition sizes for you if you go over what is available... meaning.. if you are unsure about how much space is left on the drive to assign to <font color="red">/images</font>, you can leave the size field blank and hit "update" and the installer will auto adjust to what is available.
+
+
+<embedvideo service="youtube">https://www.youtube.com/watch?v=uS5JSQiIgTU</embedvideo>
+
+== Continue installation ==
+
+*Under network settings, set a static IP with Subnet & router info and a name. DNS entries are comma delimited (no spaces).
+
+*Set the timezone.
+
+*Start installing.
+
+*Set a root password.
+
+= Fedora 21 server pre-config =
+
+
+== Update Fedora 21 server ==
+
+Update everything installed with this line:
+
+<pre>yum update -y</pre>
+
+
+
+== Continue pre-config ==
+
+After installation is complete and reboot is done, you can work through putty from this point forward. You can get a copy [http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html here].
+
+*Log in as root with the password you set earlier.
+
+*Disable firewalld:
+
+<pre>systemctl stop firewalld;systemctl disable firewalld</pre>
+
+*Set SELinux to permissive on boot by editing /etc/selinux/config
+
+<pre>vi /etc/selinux/config</pre>
+
+Instructions on using Vi: [[Vi]]
+
+Change the line <pre>SELINUX=enforcing</pre>
+
+to 
+
+<pre>SELINUX=permissive</pre>
+
+*Set SELinux to permissive on the fly (this is not persistent, the above config must be set to be persistent):
+
+<pre>setenforce 0</pre>
+
+= Setup FOG Trunk =
+
+This will install the latest developmental version of FOG using the Subversion method found here: [[Upgrade to trunk]]
+
+We need to use FOG Trunk with Fedora 21 and later because the latest stable release of FOG (currently 1.2.0) does not support any recent versions of Fedora.
+
+
+<pre>yum install -y subversion
+cd ~
+mkdir svn
+cd svn
+svn checkout https://svn.code.sf.net/p/freeghost/code/trunk
+cd trunk/bin
+./installfog.sh</pre>
+
+*Follow the on-screen instructions to setup fog for your environment. If you are unsure about anything, choose the default option.
+
+= Post Config =
+
+
+== Set the FOG services to start 30 seconds after boot ==
+
+Necessary with Fedora 21 & r2922 and up. There's an issue with the FOGMulticastManager after a reboot; it's timing related.
+
+There are also steps included to delay NFS and RPC for 30 seconds as well, this is needed for very fast servers - doing it on all servers won't hurt.
+
+
+*Disable FOG services with:
+
+<pre>systemctl disable FOG{MulticastManager,Scheduler,SnapinReplicator,ImageReplicator}
+systemctl disable nfs-server
+systemctl disable rpcbind</pre>
+
+Create a startup script with:
+
+<pre>vi /etc/rc.d/rc.local</pre>
+
+Instructions on using Vi: [[Vi]]
+
+*Make that file look like below, exactly. This creates a 30 second delay for starting these services at boot.
+
+<pre>#!/bin/bash
+sleep 30
+systemctl start nfs-server
+systemctl start rpcbind
+systemctl start FOGMulticastManager
+systemctl start FOGScheduler
+systemctl start FOGSnapinReplicator
+systemctl start FOGImageReplicator
+exit 0</pre>
+
+*save the file
+
+*Then Run this command to make that file executable: 
+
+<pre>chmod +x /etc/rc.d/rc.local</pre>
+
+= Other Post-Configurations for Fedora 21 Server and this setup (Optional) =
+
+== Verify Fedora DHCP config (if using DHCP) ==
+
+You may restart and check status of the DHCP service with these commands:
+
+<pre>systemctl restart dhcpd.service
+systemctl status dhcpd.service</pre>
+
+The configuration file is located here:  /etc/dhcp/dhcpd.conf
+
+You can edit it using this command:
+
+<pre>vi /etc/dhcp/dhcpd.conf</pre>
+
+Instructions on using Vi: [[Vi]]
+
+
+Here is an ''EXAMPLE'' config file that uses a 255.255.240.0 subnet mask:
+
+<pre>
+option space PXE;
+option PXE.mtftp-ip    code 1 = ip-address;
+option PXE.mtftp-cport code 2 = unsigned integer 16;
+option PXE.mtftp-sport code 3 = unsigned integer 16;
+option PXE.mtftp-tmout code 4 = unsigned integer 8;
+option PXE.mtftp-delay code 5 = unsigned integer 8;
+option arch code 93 = unsigned integer 16; # RFC4578
+
+use-host-decl-names on;
+ddns-update-style interim;
+ignore client-updates;
+next-server 10.12.1.11;
+
+
+subnet 10.12.0.0 netmask 255.255.240.0 {
+        option subnet-mask              255.255.240.0;
+        range dynamic-bootp 10.12.5.1 10.12.7.254;
+        default-lease-time 21600;
+        max-lease-time 43200;
+        option domain-name-servers      10.51.1.6;
+                option routers      10.12.15.254;
+        filename "undionly.kkpxe";
+}</pre>
+
+
+Things you might want to verify in this file is:
+
+*The range of IPs you want to give out.
+
+*The subnet address.
+
+*The subnet mask.
+
+*The bootfile you want to use. The default is set to undionly.kpxe and this works with most newer computers. Older computers (and especially Lenovos) should use undionly.kkpxe 
+
+To find your network address and subnet mask, at the CLI, you'd type:
+
+<pre>route -n</pre>
+
+== Configuring existing Windows DHCP server (If using Windows DHCP) ==
+
+Inside your DHCP server, we have to set some options.
+*IPv4 -> Scope -> Scope Options. 
+*Right click Scope Options.
+*Enable 066 Boot Server Host Name, enter the FOG server’s IP.
+*Enable 067 Bootfile Name, set it as <pre>undionly.kpxe</pre>
+
+Note: 
+You may use any of the boot files listed in /tftpboot on the FOG server. the most common is undionly.kpxe and undionly.kkpxe
+
+See also: [[BIOS_and_UEFI_Co-Existence]]
+
+== dnsmasq (if using ProxyDHCP) setup ==
+
+Install dnsmasq:
+
+<pre>yum install -y dnsmasq</pre>
+
+edit the ltsp.conf file:
+<pre>vi /etc/dnsmasq.d/ltsp.conf</pre>
+
+Instructions on using Vi: [[Vi]]
+
+<pre>port=0
+log-dhcp
+tftp-root=/tftpboot
+dhcp-boot=undionly.0,x.x.x.x,x.x.x.x
+dhcp-option=17,/images
+dhcp-option=vendor:PXEClient,6,2b
+dhcp-no-override
+pxe-prompt="Press F8 for boot menu", 3
+pxe-service=X86PC, “Boot from network”, undionly
+pxe-service=X86PC, "Boot from local hard disk", 0
+dhcp-range=x.x.x.x,proxy</pre>
+
+Where you see "x.x.x.x", replace this with your FOG server's IP address.
+You may change the timeout for the menu or remove it totally.
+
+Copy your desired undionly.xxx file to undionly.0 
+In this example, we will use undionly.kkpxe
+
+<pre>cp /tftpboot/undionly.kkpxe /tftpboot/undionly.0</pre>
+
+I do not advise using symbolic links, I have seen them fail. Copies will work 100% of the time.
+
+Restart dnsmasq:
+<pre>systemctl restart dnsmasq.service</pre>
+
+Enable dnsmasq to start on boot:
+<pre>systemctl enable dnsmasq.service</pre>
+
+== Updating FOG to Latest ==
+
+<pre>cd ~
+cd svn/trunk
+svn up
+cd bin
+./installfog.sh -y</pre>
+
+
+
+== Working from the comforts of your desk (using SSH - Optional but highly recommended) ==
+
+Connect using SSH from another Linux machine
+<pre>ssh -l root x.x.x.x</pre>
+restart server
+<pre>shutdown -r</pre>
+or
+<pre>reboot</pre>
+
+== Formatting & mounting a 2nd SATA drive ==
+<pre>ls -l /dev/sd*</pre> (lists all scsi/sata device files to find the new extra disk device file)
+
+The output will look ''something'' like this.
+<pre>
+brw-rw---- 1 root disk 8,  0 Apr  6 17:49 /dev/sda
+brw-rw---- 1 root disk 8,  1 Apr  6 17:49 /dev/sda1
+brw-rw---- 1 root disk 8,  2 Apr  6 17:49 /dev/sda2
+brw-rw---- 1 root disk 8, 16 Apr  6 20:49 /dev/sdb
+</pre>
+
+Normally sda is drive 1. sdb is drive 2. Note that SATA drives begin with sd, IDE drives begin with HD. If you had additional drives or even flash drives, they'd be listed as sdc, sdd, sde, sdf, etc.
+After identifying the right drive, you'll want to create a partition on it. For this, we use fdisk.
+
+<pre>[root@localhost ~]# fdisk /dev/sdb
+
+Welcome to fdisk (util-linux 2.25.2).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): 
+</pre>
+
+hit the "m" key to get the menu, to show you what you can do in there.
+"g" creates a new GPT partition, so tap "g"
+After creating the partition, you can verify it with "p"
+You must write your changes with "w", otherwise nothing will be done.
+
+We need to format that partition next (we're going to do it the ultra-simple but probably "will upset old-time Linux users" way). if you'd like an ext4 filesystem, you'd use:
+<pre>mkfs.ext4 /dev/sdb</pre>
+
+Next, we want that partition to mount to the /images2 directory at boot. We'll need to edit /etc/fstab for this, and you'll need to use Vi to do it (it's easy).
+
+<pre>vi /etc/fstab</pre>
+
+Instructions on using Vi: [[Vi]]
+
+You need to add this line to the end of the file. Make sure to use the right partition name, and the right file system type.
+<pre>/dev/sdb    /images2    ext4    defaults    0    0</pre>
+
+
+When you're done, you need to stop "inserting", to do that, hit the escape key.
+Now, you need to write your changes. do that by typing :w    and then hit enter.
+It should tell you it wrote the changes.
+Next, to quit, type :q   and hit enter.
+
+
+You may reboot to mount, or you can mount now using this:
+<pre>
+cd /
+mkdir images2
+mount /images2</pre>
+
+All done with HDD installation. You may add this new directory as a secondary storage node inside of "Storage Management".
+
+== Mounting a CIFS share at boot (for NAS, Windows, Samba) ==
+
+This is how you would mount a windows share to Fedora 21 server for backups or other numerous reasons.
+
+<pre>cd /
+mkdir backups
+sudo chmod -R 777 backups
+vi /etc/fstab</pre>
+
+Instructions on using Vi: [[Vi]]
+
+Add this line to the bottom of /etc/fstab to permanently mount //x.x.x.x/RemoteSharedFolder to the folder called backups: 
+
+<pre>//x.x.x.x/RemoteSharedFolder /backups cifs username=UserNameHere,password=PasswordHere,noperm,iocharset=utf8,file_mode=0777,dir_mode=0777 0 0</pre>
+
+Where x.x.x.x is the remote share's IP. Replace the username and password.
+Please note that your password will be stored in plain-text. There are other methods of mounting without storing your passwords in such an obvious place, but this is not within the scope of this document. We're doing it the quick and dirty way to get you going with minimal difficulty.
+
+After adding this line and before the next reboot, you may mount the share immediately. For this example, you'd simply tell the local folder to mount.
+<pre>mount /backups</pre>
+
+To unmount the folder from the share, you'd add a u to mount.
+
+<pre>umount /backups</pre>
+
+But of course, due to the entry in /etc/fstab, this will mount on every boot automatically.
+
+Here is another good resource on the topic:
+[http://www.cyberciti.biz/faq/linux-mount-cifs-windows-share/ linux-mount-cifs-windows-share]
+
+== Mount SMB share on the fly - not permanently ==
+
+To mount:
+
+<pre>mkdir /tempMount
+mount -t cifs //x.x.x.x/ShareNameGoesHere /tempMount -o username=YourUsernameGoesHere -o password=YourPasswordGoesHere,noexec</pre>
+
+To unmount:
+
+<pre>umount /tempMount</pre>
+
+= Fedora 22 Server notes =
+
+Fedora 22 Server depreciates "yum"  :-(
+
+and replaces it with "dnf" :-)
+
+All above "yum" commands will work with "dnf" instead. Just trade "yum" for "dnf"
+
+There are different Remi repos for the different versions of Fedora. instructions for all these can be found on the [http://rpms.famillecollet.com/ Remi repo website]. They have a wizard that allows you to pick the options you need [http://rpms.remirepo.net/wizard/ here].
+
+Everything else is the same, really.

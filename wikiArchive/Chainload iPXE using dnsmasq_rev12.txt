@@ -1,0 +1,26 @@
+This information pertains to FOG 0.33 and the new iPXE boot method.
+
+In order to continue to use dnsmasq to dole out ip addresses and to help find the boot file, some changes need to be made to force the boot file to load the iPXE boot file.
+
+The old pxelinux.0 file is still included in the fog installation.  We need to rename it to meet the naming scheme set forth by dnsmasq, but the file still exists.
+
+Open a command line and navigate to the tftpboot folder:
+
+cd /tftpboot
+sudo mv /pxelinux.0.old pxelinux.0
+
+
+Now create a default file for pxelinux.0 to load:
+
+sudo mkdir pxelinux.cfg
+cd pxelinux.cfg
+sudo gedit default
+
+Now insert the following lines and edit the server ip address to reflect your own fog server:
+
+DEFAULT vesamenu.c32
+LABEL fog
+    MENU DEFAULT
+    kernel ipxe.krn dhcp && chain http://(fog-server-ip-address)/fog/service/ipxe/boot.php?mac=${net0/mac}
+PROMPT 0
+TIMEOUT 01

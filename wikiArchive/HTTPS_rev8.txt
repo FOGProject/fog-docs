@@ -1,0 +1,44 @@
+Secure connections like HTTPS have become state of the art all over the web over the years. While FOG did use secure encryption (not HTTPS but a custom secure channel) for the fog-client communication since 2016 already the FOG web UI was still using plain HTTP. Using HTTPS is not as easy as generating a certificate and setting Apache to use it because PXE boot also relies on HTTP(S) communication with the FOG server.
+
+== Installation ==
+We try to make setting up a fully HTTPS-enabled FOG server more convenient and encourage people to use it but still don't consider it wise to make it the default yet because it's a complex topic (FOG server, PXE boot, fog-client). Up until now you had to use the command line switch "--force-https" to enable HTTPS but with FOG 1.5.8 the installer will ask you if it should be enabled or not. Both ways you will end up with FOG run in HTTPS mode.
+
+The installer will generate a different Apache configuration to enable HTTPS and redirect all requests from HTTP to HTTPS (minor exceptions exist). While this might sound simple there is really a lot more to it in the FOG world. Read on to learn about this in detail.
+
+== FOG web UI ==
+The Web UI will be accessible through the new URL https://fogserver/fog/ but will also redirect requests going to the old URL to HTTPS.
+
+All fine but now I get warnings in my web browser saying this connection is not secure. Yes, this is because we can't offer certificates signed by an official certificate authority (which your web browser would trust). We use self generated CA and certificates which are not known to your browser. You can either ignore the warning or grab <code>/opt/fog/snapins/ssl/CA/.fogCA.pem</code> from your FOG server (e.g. using WinSCP or scp) and import that to your (browser) certificate store.
+
+* Firefox: Preferences -> Privacy & Security -> Certificates -> View Certificates -> Your Certificates -> Import...
+* Chrome: Settings -> Show advanced settings -> HTTPS/SSL -> Manage certificates -> Your Certificates -> Import...
+* Opera: Browser settings -> Advanced -> Privacy & security -> Manage certificates -> Your Certificates -> Import
+* IE/Edge: cmd: <code>certutil -addstore -f -user "Root" path\to\.fogCA.pem</code>
+
+== PXE boot ==
+When enabling HTTPS the installer compiles custom iPXE binaries for you including your personal FOG server CA certificate to be able to communicate with your secure FOG webserver. Manual adjustments should not be needed for this to work but it's quite likely this is causing trouble for some of you. If you see the error message <code>https://x.x.x.x/fog/service/ipxe/boot.php... Permission denied ...</code> on PXE booting you will be dropped to the iPXE command shell. Running the command <code>certstat</code> will show you the certificates known to iPXE at this stage:
+<blockquote>iPXE> certstat
+FOG Server CA: ... [PERMANENT]
+x.x.x.x: ...</blockquote>
+The output might differ from what you see. In this example we see that the FOG Server CA cert is embedded into the binary (permanent) and the following line shows the certificate iPXE received when contacting the webserver ''but'' it's unable to validate this cert. If it would be able to check the certificates both lines would be marked as <code>[VALIDATED]</code>! So in this case the CA cert compiled into the binary doesn't match the one which the web server certificate was signed with. More often you might just see no line starting with <code>FOG Server CA</code>. The binary was compiled with no embedded CA cert and iPXE is not to verify the cert received from the webserver.
+
+Either way you need to check your CA and certificate files on your FOG server and take a look at the installer log files in <code>fogproject/bin/error_logs/</code> to see why it didn't succeed compiling the right certificate into the iPXE binaries.
+
+Wrong system time can cause an issue as iPXE also checks if the embedded root CA certificate is valid based on the time. iPXE receives the current time from the BIOS / UEFI firmware and fails with <code>... Permission denied ...</code> on the HTTPS connection if it can't validate the root CA cert due to it not being valid with the wrong time set on the machine.
+
+If you can't find what's causing this you might consider re-running the FOG installer using command line options to re-generate the SSL keys and certs. '''<font style=color:red>But be aware this will break communication with all your fog-clients talking to this FOG server!</font>''' We do NOT recommend using this unless you really know what you are doing. Enough warning, here you go: <code>./installfog.sh --recreate-ca</code>
+
+== fog-client ==
+When the new fog-client came to life a few years back it was intended to enable secure communication between client and FOG server without forcing the webserver to HTTPS because the implications with PXE booting seemed too complex to force all users straight away. Therefore an encrypted communication channel was implemented that can be delivered over simple HTTP protocol without changing the webserver configuration.
+
+Now if you enable HTTPS on your FOG server you will need to update your fog-client settings as well. Edit <code>C:\Program Files (x86)\FOG\settings.json</code> and set HTTPS to 1. Save and restart the client.
+
+== Custom CA and certificates ==
+In many environments certificates from an internal CA are used. While you can switch over to use your custom cert with FOG you need to one of three options if you intend to use the fog-client software:
+
+TBD
+Using those with FOG will work if you follow a few hints. Considering the things mentioned above
+
+
+== Storage node setups ==
+TBD

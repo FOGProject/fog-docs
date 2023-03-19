@@ -1,0 +1,21 @@
+[[Image:Vista winload.png]]
+
+This is typically caused when the following commands are not run on the client computer right before it is shutdown, and then rebooted for an image upload:
+
+ bcdedit /set {bootmgr} device boot
+ bcdedit /set {default} device boot
+ bcdedit /set {default} osdevice boot
+
+
+However if you've already done this and received this message, you do not need to recreate your image.  All you need to do is insert your Vista Install DVD, and use it to repair your previous installation.  The machine will reboot, preform a checkdisk, and reboot again.
+
+
+----
+
+If it still isn't working, try [http://social.technet.microsoft.com/forums/en-US/itprovistadeployment/thread/096ec0c8-8f41-4824-873a-781315fc914e this]:
+
+<blockquote>"Before you sysprep, open RegEdit and export the Mounted Devices key (<tt>HKLM/SYSTEM/MountedDevices</tt>). '''Do not close RegEdit.''' Open a command prompt and run sysprep:</blockquote>
+<pre>c:\windows\system32\sysprep>sysprep -oobe -generalize -quit</pre>
+
+<blockquote>Go back to the RegEdit window and import the Mounted Devices key that you exported earlier."</blockquote>
+Now shutdown the PC and capture the image.

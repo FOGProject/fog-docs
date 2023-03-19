@@ -1,0 +1,72 @@
+*Note that this has only been tested on a test environment. Please be sure to test before you move to a production server. 
+
+*Be sure to backup all files that you change, if something does go wrong, you should be able to recover the server by copying 2 files back and a dhcp server restart (or the server itself). This is a modification from a guide from jbsclm (Giving credit where credit is due)on the forums, but this has been modified to work on Ubuntu installs.
+
+*If you restore FOG through the FOG installer, please note that pxelinux will more than likely be "re-installed".
+
+Alright, onto the changes:
+
+
+1.  Download and extract syslinux - https://www.kernel.org/pub/linux/utils/boot/syslinux/<br>
+*At the time of this guide, 5.01 was the latest version of Syslinux<br>
+2. Copy /gpxe/gpxelinux.0 to /tftpboot<br>
+3. Rename /tftpboot/vesamenu.c32 to /tftpboot/vesamenu.c32.old  - '''See note at bottom of page'''<br> 
+4. Copy /com32/menu/vesamenu.c32 to /tftpboot <br>
+5. Copy /memdisk/memdisk and replace /tftpboot/fog/images/memdisk and to /tftpboot<br>
+6. Search the syslinux folder for the following files and copy them to your /tftpboot folder:<br>
+ldlinux.c32<br>
+libcom32.c32<br>
+libutil.c32<br>
+
+the version of vesamenu.c32 needs to match that of gpxelinux.0 <br>
+
+7. Edit /etc/dhcp/dhcpd.conf, replacing pxelinux.0 with gpxelinux.0
+
+Gpxelinux.0 seems to be stricter on the configuration file, and complains about the newline characters in the config file so edit /tftpboot/pxelinux.cfg/default to remove any newlines (\n)
+
+8. Reboot, to restart services.
+
+At this point you should be able to confirm that clients will still boot using tftp.
+
+Next you need to set up apache to serve the files.
+
+Running in a command shell as root:
+
+cd /var/www/
+
+ln -s /tftpboot/fog fogboot
+
+
+ls -l should show
+
+drwxr-xr-x. 12 apache apache 4096 Dec 31 18:27 fog
+
+lrwxrwxrwx.  1 root   root     13 Jan 28 18:31 fogboot -> /tftpboot/fog
+
+-rw-r--r--.  1 root   root     45 Dec 31 18:27 index.php
+
+
+you should now type in the following on your browser
+
+http://localhost/fogboot/kernel/bzImage
+
+and confirm that you get a prompt to save the file bzImage
+
+Now you can edit /tftpboot/pxelinux.cfg/default to change the paths to urls, changing the IP to that of your fog server, see the examples below for setting up the "default" file for imaging with the Bypass Host Registration (bypass.gz), and booting an ISO.
+
+'''Booting an ISO:'''
+
+LABEL UBCD<br>
+MENU LABEL Ultimate Boot CD<br>
+KERNEL memdisk<br>
+APPEND iso initrd=http:// yourserverip/fogboot/images/ubcd511.iso
+<br>
+<br>
+'''Booting an image with BHR:'''
+
+LABEL XP Image<br>
+KERNEL http:// yourserverip/fogboot/kernel/bzImage<br>
+APPEND initrd=http:// yourserverip/fogboot/images/bypass.gz root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp dns=yourdnsserver type=down img=yourimagename ftp=yourserverip storage=yourserverip:/images/ web=yourserverip/fog/ osid=1 imgType=n loglevel=4 consoleblank=0
+<br>
+<br>
+'''*Note''' - You can make a folder called "backup" in the /tftpboot folder and copy "pxelinux.0" and "vesamenu.c32" to this. If something goes wrong during the transition, copy both of these files back to /tftpboot, edit the dhcpd.conf file back to pxelinux.0 instead of gpxelinux.0 and reboot the server. After the server comes back up, FOG should be back to the tftp system.

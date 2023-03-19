@@ -1,0 +1,1 @@
+It has been reported that the FOG server will run on a MAC without any issues.

@@ -1,0 +1,29 @@
+=Overview=
+This information pertains to FOG 0.33 and the new iPXE boot method.
+
+In order to continue to use dnsmasq to dole out ip addresses and to help find the boot file, some changes need to be made to force the boot file to load the iPXE boot file.
+
+The old pxelinux.0 file is still included in the fog installation as pxelinux.0.old but this file has been replaced bay a new file called undionly.kpxe.  We will use this file in place of the pxelinux.0 file when setting up our ltsp.conf file.
+
+
+First create a default file for undionly.kpxe to load (you may substitute gedit for your favorite text editor):
+<pre>
+sudo mkdir pxelinux.cfg
+cd pxelinux.cfg
+sudo gedit default</pre>
+
+Now insert the following lines and edit the server ip address to reflect your own fog server:
+<pre>
+DEFAULT vesamenu.c32
+LABEL fog
+    MENU DEFAULT
+    kernel ipxe.krn dhcp && chain http://(fog-server-ip-address)/fog/service/ipxe/boot.php?mac=${net0/mac}
+PROMPT 0
+TIMEOUT 01</pre>
+
+Save your files and restart your dnsmasq service with the following command:
+<pre>
+sudo service dnsmasq restart</pre>
+
+=References=
+Junkhacker, jbsclm, http://forum.ipxe.org/showthread.php?tid=6077

@@ -1,0 +1,3 @@
+If your upload and download seem to be particularly slow, and things were faster on a previous version of FOG, you may want to lower the compression effort: less effort means less compression, but may end up being faster.
+
+Do this by changing the FOG_PIGZ_COMP setting (9 in FOG 1.2.0, but 3 in earlier versions). You find this under FOG Settings, FOG Boot Settings..

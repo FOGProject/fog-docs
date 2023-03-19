@@ -1,0 +1,25 @@
+
+Normally, to get to the FOG web interface, you have to type
+<pre>x.x.x.x/fog/management</pre>
+
+This works fine, but if FOG is the '''only''' thing your Linux box is running, you can simplify this with a redirect so that simply typing the x.x.x.x into a web browser takes you to the FOG login page.
+
+
+'''Fedora'''
+
+On your FOG server, we will create a file called index.php using vi.
+
+<pre>vi /var/www/html/index.php</pre>
+
+in here, you'd write (or copy/paste) this:
+
+<pre><?php
+header('Location: http://x.x.x.x/fog/management/index.php');
+die();
+?></pre>
+
+Save this file.
+
+Now, when you go to x.x.x.x you'll be taken to the FOG login screen! How cool is that?!?
+
+Instructions on using Vi: [[vi]]

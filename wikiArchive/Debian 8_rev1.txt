@@ -1,0 +1,9 @@
+
+
+External Video Link:
+
+[https://www.youtube.com/watch?v=nKoqTvuOJpw Debian 8 Configuration]
+
+Video:
+
+<embedvideo service="youtube">https://www.youtube.com/watch?v=nKoqTvuOJpw</embedvideo>

@@ -1,0 +1,14 @@
+Error received:
+
+::Relocating needed data
+
+::Extended record needed (1904 > 1024) not yet supported!
+
+::Please try to free less space
+
+
+Then it waits a minute and reboots.
+
+If you [[Error: extended record needed | change UPLOADRESIZEPCT in /var/www/html/fog/commons/config.php]], the numbers in parens change, but it never works.
+
+Last tried with v0.09

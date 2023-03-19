@@ -1,0 +1,182 @@
+=Overview=
+This combines FOG with a proxyDHCP server. What a proxyDHCP service does is listen to DHCP requests and respond to clients identifying themselves as PXE Clients. It leaves the role of assigning IP addresses to the other DHCP servers, but provides the necessary information so the client can PXE boot. ProxyDHCP is a solution for those of you who are working with an unmodifiable DHCP server or wish to avoid the hassle of editing the already existing DHCP server, or even as a portable imaging solution.
+
+=How ProxyDHCP works=
+<ol><li>When a PXE client boots up, it sends a DHCP Discover broadcast on the network, which includes a list of information the client would like from the DHCP server, and some information identifying itself as a PXE capable device.</li>
+<li>A regular DHCP server responds with a DHCP Offer, which contains possible values for network settings requested by the client.Usually a possible IP address, subnet mask, router (gateway) address, dns domain name, etc.</li>
+<li>Because the client identified itself as a PXEClient, the proxyDHCP server also responds with a DHCP Offer with additional information, but not IP address info.  It leaves the IP address assigning to the regular DHCP server.  The proxyDHCP server provides the next-server-name and boot file name values, which is used by the client during the upcoming TFTP transaction.</li>
+<li>The PXE Client responds to the DHCP Offer with a DHCP Request, where it officially requests the IP configuration information from the regular DHCP server.</li>
+<li>The regular DHCP server responds back with an ACK (acknowledgement), letting the client know it can use the IP configuration information it requested.</li>
+<li>The client now has its IP configuration information, TFTP Server name, and boot file name and it initiate a TFTP transaction to download the boot file.</li>
+</ol>
+
+=Environment=
+Tested working with:
+{| class="wikitable"
+|-
+! OS Version
+! FOG Version
+|-
+| Ubuntu 10.04 LTS x64
+| Fog 0.29
+|-
+| Ubuntu 10.04 LTS x32
+| Fog 0.32
+|}
+
+* dnsmasq
+* LTSP Server, further documentation at [https://help.ubuntu.com/community/UbuntuLTSP/ProxyDHCP Ubuntu LTSP/ProxyDHCP].
+
+=Setup and Configuration=
+For information on using undionly.kpxe (pxelinux.0 replacement) to chainload iPXE please see the article http://www.fogproject.org/wiki/index.php/Chainload_iPXE_using_dnsmasq
+<ol>
+<li>First get your desired linux flavor installed</li>
+
+<li>Install FOG (use instructions on wiki user manual)</li>
+
+<li>Make sure you do a normal server installation, don't setup a DHCP router address or a DNS server address, also don't use FOG as a DHCP server.</li>
+
+<li>If you set a MySQL password make sure you change it in /var/www/fog/commons/config.php and also in /opt/fog/service/etc/config.php</li>
+
+<li>Edit /etc/exports to look like this:
+
+<pre>
+/images                        *(ro,async,no_wdelay,insecure_locks,no_root_squash,insecure)
+/images/dev                    *(rw,async,no_wdelay,no_root_squash,insecure)
+</pre></li>
+
+<li>Install dnsmasq using: <pre>sudo apt-get install dnsmasq</pre></li>
+
+<li>Create /etc/dnsmasq.d/ltsp.conf using the following settings, modify as needed:
+<pre>
+# Sample configuration for dnsmasq to function as a proxyDHCP server,
+# enabling LTSP clients to boot when an external, unmodifiable DHCP
+# server is present.
+# The main dnsmasq configuration is in /etc/dnsmasq.conf;
+# the contents of this script are added to the main configuration.
+# You may modify the file to suit your needs.
+
+# Don't function as a DNS server:
+port=0
+
+# Log lots of extra information about DHCP transactions.
+log-dhcp
+
+# Dnsmasq can also function as a TFTP server. You may uninstall
+# tftpd-hpa if you like, and uncomment the next line:
+# enable-tftp
+
+# Set the root directory for files available via FTP.
+tftp-root=/tftpboot
+
+# The boot filename.
+dhcp-boot=pxelinux.0
+
+# rootpath option, for NFS
+dhcp-option=17,/images
+
+# kill multicast
+dhcp-option=vendor:PXEClient,6,2b
+
+# Disable re-use of the DHCP servername and filename fields as extra
+# option space. That's to avoid confusing some old or broken DHCP clients.
+dhcp-no-override
+
+# PXE menu.  The first part is the text displayed to the user.  The second is the timeout, in seconds.
+pxe-prompt="Press F8 for boot menu", 3
+
+# The known types are x86PC, PC98, IA64_EFI, Alpha, Arc_x86,
+# Intel_Lean_Client, IA32_EFI, BC_EFI, Xscale_EFI and X86-64_EFI
+# This option is first and will be the default if there is no input from the user.
+pxe-service=X86PC, "Boot from network", pxelinux
+
+# A boot service type of 0 is special, and will abort the
+# net boot procedure and continue booting from local media.
+pxe-service=X86PC, "Boot from local hard disk", 0
+
+# If an integer boot service type, rather than a basename is given, then the
+# PXE client will search for a suitable boot service for that type on the
+# network. This search may be done by multicast or broadcast, or direct to a
+# server if its IP address is provided.
+# pxe-service=x86PC, "Install windows from RIS server", 1
+
+# This range(s) is for the public interface, where dnsmasq functions
+# as a proxy DHCP server providing boot information but no IP leases.
+# Any ip in the subnet will do, so you may just put your server NIC ip here.
+# Since dnsmasq is not providing true DHCP services, you do not want it
+# handing out IP addresses.  Just put your servers IP address for the interface
+# that is connected to the network on which the FOG clients exist.
+# If this setting is incorrect, the dnsmasq may not start, rendering
+# your proxyDHCP ineffective.
+dhcp-range=192.168.1.10,proxy
+
+# This range(s) is for the private network on 2-NIC servers,
+# where dnsmasq functions as a normal DHCP server, providing IP leases.
+# dhcp-range=192.168.0.20,192.168.0.250,8h
+
+# For static client IPs, and only for the private subnets,
+# you may put entries like this:
+# dhcp-host=00:20:e0:3b:13:af,10.160.31.111,client111,infinite</pre></li>
+
+<li>Restart dnsmasq with <pre>sudo dnsmasq restart</pre></li></ol>
+
+'''Note:''' After getting everything working, you can change the timeout to 0 on the line: <pre>pxe-prompt="Press F8 for boot menu", 3</pre>
+
+=Chainloading iPXE using dnsmasq setup=
+This information pertains to FOG 0.33 and the new iPXE boot method.
+
+In order to continue to use dnsmasq to dole out ip addresses and to help find the boot file, some changes need to be made to force the boot file to load the iPXE boot file.
+
+The old pxelinux.0 file is still included in the fog installation as pxelinux.0.old but this file has been replaced by a new file called '''undionly.kpxe'''.  We will use this file, undionly.kpxe, in place of the pxelinux.0 file when setting up the ltsp.conf file.
+
+The reason we are able to do this is because pxe boot looks for files that match a query of names, first starting with the MAC address of the machine and moving down the list until it reaches the default file. We are going to create a file for it to find every time it queries for the default file.<br>
+<br>
+<ol>
+<li>Create a default file for undionly.kpxe to load (you may substitute gedit for your favorite text editor):
+<pre>
+sudo mkdir pxelinux.cfg
+cd pxelinux.cfg
+sudo gedit default</pre>
+
+<li>Insert the following lines and edit the server ip address to reflect your own FOG server:
+<pre>
+DEFAULT vesamenu.c32
+LABEL fog
+    MENU DEFAULT
+    kernel ipxe.krn dhcp && chain http://(fog-server-ip-address)/fog/service/ipxe/boot.php?mac=${net0/mac}
+PROMPT 0
+TIMEOUT 01</pre>
+
+<li>Save your files and restart your dnsmasq service with the following command:
+<pre>
+sudo service dnsmasq restart</pre>
+</ol>
+
+=Serving ProxyDHCP to multiple subnets=
+If you are serving ProxyDHCP to multiple subnets some changes must be made to your switches/routers and your server config.
+
+<ol>
+<li>Modify your /etc/dnsmasq.d/ltsp.conf file by adding the subnet mask option to line: <pre>dhcp-range=192.168.1.10,proxy</pre> to make it <pre>dhcp-range=192.168.1.10,proxy,255.255.0.0</pre> which will serve all 192.168.x.x subnets.  If you are using 10.x.x.x addressing, use subnet mask "255.0.0.0" (8-bit) and if you are using 172.16.x.x, use subnet mask "255.240.0.0" (12 bit).  Basically set the subnet mask so that all subnets on which ProxyDHCP should answer are covered.
+
+If you don't do this, the ProxyDHCP server will not respond to DHCP requests for hosts outside of it's own subnet.</li>
+<li>Add an IP Helper/DHCP Relay record to your router or switch so the DHCP broadcasts are sent to your normal DHCP server AND the Fog server.</li>
+</ol>
+
+=References=
+I gathered a lot of my ideas from peoples' questions on the FOG forums and the Ubuntu documentation on the [https://help.ubuntu.com/community/UbuntuLTSP/ProxyDHCP LTSP proxyDHCP] server, so thanks to them.
+
+=Additional Info=
+A ProxyDHCP server can also help deal with PXE Clients that do not work with seperate DHCP and TFTP servers using option 66 &amp;67 (Windows), or next-server and filename (Linux). This can resolve situations where the clients are getting the tftp server IP address and filename, but are having issues with the TFTP Transaction, such as: PXE-T01: File not found, and other errors.
+
+This has successfully resolved issues with:
+{| class="wikitable"
+|-
+! Device !! NIC
+|-
+| Acer Iconia Tab w500p || Asix AX88772B USB to Fast Ethernet adapter
+|-
+|Compal JHL91 || Realtek RTL8139
+|}
+
+
+[[Category:Customization]][[Category:Dhcp]][[Category:Pxe]]

@@ -1,0 +1,1130 @@
+== Devices that are known/tested to work with FOG Imaging solution. ==
+
+
+ <span style="background-color:RED; color:white;">If you have a device that is known to work with FOG, please post it [https://forums.fogproject.org/topic/2987/hardware-currently-working-with-fog-v1-x-x <span style="color:pink">HERE</span>].</span>
+
+
+We would like to thank for following manufacturers for sending devices to us to verify their devices will function with FOG:
+
+* [http://www.bytespeed.com ByteSpeed Computers]
+
+There have been '''many''' modifications to Fog since Fog v0.32. On ''rare'' occasions there have been a report of machines not working with Fog v1.x.x but work perfectly with Fog 0.32. If you see a &#10004; in the column for Fog 1.x.x+ it means this Make/Model computer has been tested and confirmed working for Fog v1.x.x. If a &#10006; is in the column for "Fog 1.x.x+", this means this Make/Model computer has been tested but fails although it may work in ''Fog 0.32-'' (rare) . Also, a second column has been added to include the iPXE file used to boot to the Fog Menu. This iPXE is the same file for Option 67 for your DHCP server. 
+
+What is iPXE and the difference between the files? Check out the [[iPXE]] page.
+
+=== Devices ===
+
+{| class="wikitable sortable" border="1" cellspacing="0" cellpadding="3"
+|-
+! Manufacturer !! Model !!  Fog 1.x.x+ !! Kernel Version !! iPXE!! Date !! Notes
+|-
+| Acer || Aspire One D150-1920 || -- || --  || -- ||  -- || 
+|-
+| Acer || AspireOne AOA150 || -- || -- || -- || -- || 
+|-
+| Acer || Aspire One D250 || -- || -- || -- || -- ||  Must use Multiple Partition Image - Single Disk (Not resizable)
+|-
+| Acer || Aspire 1520 || -- || Kernel 2.6.24-ks  || -- ||  -- || Requires kernel argument vga=6 to have a working display
+|-
+| Acer || Aspire 5310 || -- || --  || -- ||  -- || 
+|-
+| Acer || Aspire 5315 || -- || --  || -- ||  -- || 
+|-
+| Acer || Aspire 5670 Series || -- || --  || -- ||  -- || 
+|-
+| Acer || Aspire 5735 || -- || --  || -- ||  -- || 
+|-
+| Acer || Aspire 5920 || -- || --  || -- ||  -- || 
+|-
+| Acer || Aspire 5920G || -- || --  || -- ||  -- || 
+|-
+| Acer || Aspire 6930G || -- || --  || -- ||  -- || 
+|-
+| Acer || Iconia Tab W500 || &#10006; || --  || -- ||  2014-10-29 || Does not work at this point in time. This is a "Tablet PC" (Screen is detachable from keyboard) Fog does not support Tablet "like" devices at this point. [http://www.cnet.com/products/acer-w500-bz467/ cNet Review]
+|-
+| Acer || L460 Series || -- || --  || -- ||  -- || 
+|-
+| Acer || TravelMate 270 Series || -- || --  || -- ||  -- || 
+|-
+| Acer || TravelMate 290 Series || -- || --  || -- ||  -- || 
+|-
+| Acer || TravelMate 530 Series || -- || --  || -- ||  -- || 
+|-
+| Acer || TravelMate 6592 || -- || --  || -- ||  -- || 
+|-
+| Acer || TravelMate 6410 || -- || --  || -- ||  -- || 
+|-
+| Acer || TravelMate 7530 || -- || 0.28  || -- ||  2009-11-17 || South bridge ATI/AMD SB700. Cannot access SATA hard drive with kernel 0.27 and probably older ones. Use kernel 0.28
+|-
+| Acer || Veriton L410 || -- || --  || -- ||  -- || 
+|-
+| Acer || Veriton L6610G || -- || -- ||  -- || 2011-08-03 || Enable LAN Boot in BIOS: Advanced > Integrated Peripherals > Onboard LAN Option Rom
+|-
+| Acer || Veriton M410 || --  || --  || -- || -- || Requires kernel args: acpi=force or acpi=off     See the following forum post [https://sourceforge.net/projects/freeghost/forums/forum/716419/topic/3441761]
+|-
+| Acer || Veriton M480G|| -- || Kernel 2.6.35.3-PS  || -- ||  2011-03-23 || 
+|-
+| Acer || Veriton X680B || --  || --  || -- || -- ||  Works with: Kernel-2.6.35.7
+|-
+| Aopen || MP57-D  || -- || FOG 0.32  ||  -- || 2012-02-29  || Enable PXE in BIOS
+|-
+| Aopen || DE57-HA  || -- || FOG 0.32  || -- ||  2012-02-29  || Enable PXE in BIOS
+|-
+| Asus || L3800  || -- || --  || -- ||  -- || 
+|-
+| Asus || L4R (Ergo Ensis L4500R) || -- || --  || -- ||  -- || Buggy PXE - will boot roughly 1 out of 5 tries. gPXE works fine. tested with FOG 0.28
+|-
+| Asus || EEE Top ET1601  || -- || --  || -- || -- ||  Requires PS Kernel
+|-
+| Asus || EEE Box B202  || -- || --  || -- ||  -- || 
+|-
+| Asus || EEE Box EB1007  || -- || FOG 0.29  || -- ||  2012-05-01 || Change BIOS, AHCI -> IDE
+|-
+| Asus || EEE Box EB1012P  || -- || FOG 0.29  || -- ||  2012-05-22 || Change BIOS, AHCI -> IDE, Crucial SSD
+|-
+| Asus || EEE Box EB1033  || -- || FOG 0.29  || -- ||  2013-03-11 || Change BIOS, AHCI -> IDE, Crucial SSD
+|-
+| Asus || EeePC 701 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Asus || EeePC 901 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Asus || EeePC 1000HE  || -- || FOG 0.29  || -- ||  -- || 
+|-
+| Asus || EeePC 1005PE  || -- || FOG 0.29  || -- ||  -- || 
+|-
+| Asus || EeePC 1016PT  || -- || FOG 0.29  || -- ||  -- || 
+|-
+| Asus || G1S  || -- || FOG 0.29  || -- ||  -- || 
+|-
+| Asus || Z91E (Ergo Ensis S Z9100E)  || -- || -- ||  --  || -- || Works fine with FOG 0.28
+|-
+| Boxx || 7500 series || -- || FOG 0.29 || -- ||  2011-03-03 || works with FOG 0.29, both Tyan and SuperMicro mobo versions
+|-
+| ByteSpeed  || 10" N450   || -- || Core (2.6.36.1)  || -- ||  -- || Works with 'Core' Kernel
+|-
+| Compaq || Armada 1700 || -- || FOG 0.29   || -- ||  2010-11-08 || Using PCMCIA Cardbus NICs under Ubuntu 10.x.  See "Known issues" under Ubuntu.
+|-
+| Compaq || Armada 1750 || -- || FOG 0.29   || -- ||  2010-11-08 || Using PCMCIA Cardbus NICs under Ubuntu 10.x.  See "Known issues" under Ubuntu.
+|-
+| Compaq || iPAQ 777 || -- || --  || -- || -- ||  BIOS sees max 10GB disk.
+|-
+| Compaq || Presario SR1607FR || -- || FOG 0.32   || -- ||  2012-06-06 || kernel 2-6-35-7-ks
+|-
+| Data Limited || DLI 8300 || -- || --  || -- ||  2009-11-1 || Rugged
+|-
+| Dell || Dimension E510 || -- || --  || -- ||  -- || 
+|-
+| Dell || Dimension 2400 || -- || --  || -- ||  -- || 
+|-
+| Dell || Dimension 3000 || -- || --  || -- ||  -- || 
+|-
+| Dell || Dimension 4100 || -- || --  || -- ||  -- || 
+|-
+| Dell || Dimension 4600 || -- || --  || -- || -- || 
+
+|-
+| Dell || Inspiron 1464 || -- || --  || -- || -- || 
+|-
+| Dell || Inspiron 1525 || -- || --  || -- ||  -- || 
+|-
+| Dell || Inspiron 1545 || -- || FOG 0.29 || -- ||  2011-03-14 ||
+|-
+| Dell || Inspiron 1546 || -- || --  || -- ||  -- || 
+|-
+| Dell || Inspiron 3800 || -- || FOG 0.29   || -- ||  2010-11-08 || Using PCMCIA Cardbus NICs under Ubuntu 10.x.  See "Known issues" under Ubuntu.
+|-
+| Dell || Inspiron 4100 || -- || --  || -- || -- ||  
+|-
+| Dell || Inspiron 8600 || -- || --  || -- ||  -- || 
+|-
+| Dell || Latitude 131L || -- || --  || -- ||  -- || 
+|-
+| Dell || Latitude 2100 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-31 ||
+|-
+| Dell || Latitude 2110 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude 2120 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude 3330 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Dell || Latitude 3540 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude D400 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D410 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D420 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D430 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D500 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D505 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Dell || Latitude D510 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D520 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D530 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D531 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Dell || Latitude D600 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D610 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D620 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude D630 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 ||
+|-
+| Dell || Latitude D631 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| Dell || Latitude D810 || --  || --  || -- ||  -- || 
+|-
+| Dell || Latitude D820 || --  || 2.6.35.7 KS  || -- ||  2011-02-24 || 
+|- 
+| Dell || Latitude D830 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Dell || Latitude E3350 || &#10004; || Kernel 4.5.0 || undionly.kpxe ||  2016-04-01 || Host Kernel Arguments <font color="red">pci=noacpi</font>
+|-
+| Dell || Latitude E3540 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude E4300 || --  || FOG 0.32  || -- || 2014-10-23 ||
+|-
+| Dell || Latitude E5330 || --  || --  || -- || -- || 
+|-
+| Dell || Latitude E5400 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude E5410 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 || 
+|-
+| Dell || Latitude E5420 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-16 || 
+|-
+| Dell || Latitude E5430 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude E5450 || &#10004;  || r4384  || ipxe.efi || 2016-01-05 || 
+|-
+| Dell || Latitude E5500 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude E5530 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-16 || 
+|-
+| Dell || Latitude E5540 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-07-16 || 
+|-
+| Dell || Latitude E6320 || --  || --  || -- ||  2011-05-31 || No issues, used .39 kernel and a few below it
+|-
+| Dell || Latitude E6400 || &#10004; || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| Dell || Latitude E6410 || &#10004; || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| Dell || Latitude E6420 || &#10004; || Default bzImage  || undionly.kpxe ||  2014-06-03 ||
+|-
+| Dell || Latitude E6430 || --  || 3.6.9 FOG.32 || -- ||  1/29/2013 || Works with factory SSD (Samsung).
+|-
+| Dell || Latitude E6500 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude E6510 || --  || 2.6.35.7 KS  || -- ||  2011-02-24 || 
+|-
+| Dell || Latitude E6530 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Latitude E7420 || &#10004; || r6215 || snponly.efi for UEFI, undionly.kpxe for BIOS ||  2016-02-08 || [https://forums.fogproject.org/topic/6611/kernel-for-ubuntu-64-bit/46 Reference]
+|-
+| Dell || Latitude E7440 || &#10004; || r6215 || snponly.efi for UEFI, undionly.kpxe for BIOS ||  2016-02-08 || [https://forums.fogproject.org/topic/6611/kernel-for-ubuntu-64-bit/46 Reference]
+|-
+| Dell || Latitude XT || --  || --  || -- ||  -- || -- PC
+|-
+| Dell || Latitude XT 2 || --  || --  || -- ||  -- || -- PC
+|-
+| Dell || Optiplex 160 || -- || 3.2.4.core|| -- ||  2012-02-15 || 0.32 works well
+|- 
+| Dell || Optiplex 170L || -- || --  || -- || -- || 
+|-
+| Dell || Optiplex 210L || -- || --  || -- ||  -- ||  
+|-
+| Dell || Optiplex 320 || -- || --  || -- || -- ||  kernel args: acpi=force irqpoll - Use Dell Bios 1.1.12
+|-
+| Dell || Optiplex 330 || --  || --  || -- || -- || 
+|- 
+| Dell || Optiplex 360 || --  || --  || -- ||  2012-04-03 || Ubuntu 10.x w/ FOG .32
+|- 
+| Dell || Optiplex 380 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-03 || 
+|-
+| Dell || Optiplex 390 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-03 ||
+|-
+| Dell || [[Optiplex 740]] || --  || PS (2.6.28.7)  || -- ||  -- || Problematic http://sourceforge.net/forum/forum.php?thread_id=2335674&forum_id=716419
+Works with 740 Enhanced with bios version 2.1.8 and 2.2.2
+|-
+| Dell || Optiplex 745 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-03 ||
+|-
+| Dell || Optiplex 755 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-16 || Update BIOS to BIOS A-22. Try using Official Kernel 3.0.1 if having trouble.
+|-
+| Dell || Optiplex 760 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-16 || If having issues with the Default Kernel please try using Official Kernel 3.0.1
+|-
+| Dell || Optiplex 780 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-16 || If having issues with the Default Kernel please try using Official Kernel 3.0.1
+|-
+| Dell || Optiplex 790 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-16 || 
+|-
+| Dell || Optiplex 960 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Dell || Optiplex 980 || -- || FOG 0.28 || -- ||  05/26/2011 ||Does not work with .30 We are using .30 and changed these hosts to use the .28 kernel
+|-
+| Dell || Optiplex 990 || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-20 ||
+|-
+| Dell || Optiplex 3010 || &#10004; || Default bzImage || undionly.kpxe ||  2014-11-26 || 
+|-
+| Dell || Optiplex 3020 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 || 
+|-
+| Dell || Optiplex 7010 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Dell || Optiplex 7020 || &#10004; || Default bzImage || undionly.kpxe ||  2014-12-02 ||
+|-
+| Dell || Optiplex 9020 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Dell || Optiplex GX150 || -- || --  || -- ||  -- || 
+|-
+| Dell || Optiplex GX200 || -- || --  || -- ||  -- || 
+|-
+| Dell || Optiplex GX240 || -- || --  || -- ||  -- || 
+|-
+| Dell || Optiplex GX260 || -- || --  || -- ||  -- || 
+|-
+| Dell || Optiplex GX270 || -- || Kitchen Sink (ALL) || -- ||  2012-09-20 || DOES NOT work with Kernel 3.3.3.core or Kernel 3.2.4.core. DOES work with FOG 0.32 default Kernel.
+|-
+| Dell || Optiplex GX280 || -- || Kitchen Sink (ALL) || -- ||  2009-01-23 || 
+|-
+| Dell || Optiplex GX520 || -- || --  || -- ||  -- || 
+|-
+| Dell || Optiplex GX620 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-13 || Change exit type to 'EXIT'. Otherwise, the machine with sit on a flashing cursor.
+|-
+| Dell || Optiplex SX280 || -- || --  || -- ||  -- || 
+|-
+| Dell || Precision 340 || -- || --  || -- ||  -- || 
+|-
+| Dell || Precision 350 || -- || FOG 0.29 || -- ||  2011-03-14 ||
+|-
+| Dell || Precision 370 || -- || FOG 0.30 || -- ||  2011-03-24 || Fog message says doesn't recognize system. Did quick inventory to get system registered. Had to reboot twice when initial capture image task didn't work. Second try went through ok. Haven't tested restore.
+|-
+| Dell || Precision 390 || -- || --  || -- ||  2009-05-21 || 
+|-
+| Dell || Precision 490 || -- || --  || -- ||  -- || 
+|-
+| Dell || Precision 650 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-13 ||
+|-
+| Dell || Precision T3400 || -- || --  || -- ||  -- || 
+|-
+| Dell || Precision T3500 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 || Multicasting has issues. Try setting up the task then unplugging the power cord and the ethernet cable. Then plug back in and boot. [http://fogproject.org/forum/threads/i-am-getting-dchp-bootp-reply-not-for-us-or-pxe-e51-no-dhcp-or-proxydhcp-offers-were-recieved.10635/#post-42294 Forum Post]
+|-
+| Dell || Precision T5400 || -- || --  || -- ||  -- || 
+|-
+| Dell || Precision T5500 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Dell || Precision T7500 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Dell || Precision M60 || -- || FOG 0.32  || -- ||  2012-05-07 ||
+|-
+| Dell || Precision M4400 || -- || --  || -- ||  -- || 
+|-
+| Dell || PowerEdge SC1425 || -- || 2.6.29 || -- ||  2009-07-07 ||
+|-
+| Dell || PowerEdge SC1435 || -- || 2.6.29 || -- || 2009-07-07 ||
+|-
+| Dell || [[PowerEdge R200]] || -- || 2.6.28 || -- ||  2009-07-07 || ** Had to roll back to FOG Kernel-2.6.28.7.PS - Kernel-2.6.29 would not load tg3 module (see possible Linux bug discussion [http://lkml.indiana.edu/hypermail/linux/kernel/0903.3/00186.html here]).<br />Also had to add "-m" option to Partimage... see [[Dell PowerEdge R200|here]] for details
+|-
+| Dell || Studio 1557/1558 (PP39L) || -- || FOG 0.32  || -- ||  -- || default kernel
+|-
+| Dell || Venu 8 Pro || 1.3.0 || 4.2.0-x32  || ipxe.efi 32-bit || 9-20-2015 || "Host Primary Disk" must be set to '''/dev/mmcblk0''' USB adapter used: '''USB-0301 v4''' made by LevelOne. It has a Realtek chip. [http://global.level1.com/Network-Card/USB-0301/p-3285.htm Vendor_Site]. the "Host Kernel Arguments" must have '''has_usb_nic=1''' set in it. Thread where this info comes from: [https://forums.fogproject.org/topic/5732/dell-venue-8-pro-imaging-emmc dell-venue-8-pro-imaging-emmc]
+|-
+| Dell || Vostro 200 || -- || --  || -- || -- ||  I needed change the SATA mode to ATA in the BIOS
+|-
+| Dell || Vostro 220 || -- || --  || -- || -- ||  Works with latest FOG "PS" kernel, with either BIOS setting ATA or AHCI setting
+|-
+| Dell || Vostro 220 || -- || 2.6.39.1.core || -- ||  2012-02-15 || 0.32 works well
+|-
+| Dell || Vostro 230 || -- || 2.6.39.1.core || -- ||  2012-02-15 || 0.32 works well
+|-
+| Dell || Vostro 260 || -- || 2.6.39.1.core || -- ||  2012-02-15 || 0.32 works well
+|-
+| Dell || Vostro 320 || -- -- || -- || -- ||  2010-01-31 || Sata set to Compatible in BIOS.
+|-
+| Dell || Vostro 410 || -- || 2.6.35.7 KS || -- ||  2012-12-18 || "irqpoll" in kernel arguemnts
+|-
+| Dell || Vostro 460 || -- || 2.6.35.7-KS || -- ||  2011-05-27 || 
+|-
+| Dell || Vostro 1220 || -- || 2.6.31.1 || -- ||  2009-12-06 ||
+|-
+| Dell || Vostro 1520 || -- || -- || -- || -- ||  Gives error "'''ide1: Unexpected interrupt, status=0xff, count=n'''" during imaging, but works anyway.
+|-
+| Dell || Vostro 1700 || -- || --  || -- ||  -- || 
+|-
+| Dell || Vostro 1700 || -- || Kernel FOG 0.30  || -- || 2011-05-06 || Must specify /dev/sdb un web interface cause /dev/sda seems to be something else
+|-
+| Dell || Vostro 3500 || -- || -- || -- || -- ||   Works with this kernel Kernel - 2.6.39 Core FOG ID: 1045 Date: May 27, 2011 Version: 2.6.39 FOG Type: Core
+|-
+| Dell || Vostro v131 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Dell || XPS M1330 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Dell || XPS M1530 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Dell || XPS ONE 2710 || &#10004; || Default bzImage || undionly.kpxe ||  2014-11-17 ||
+|-
+| Dell || XPS ONE 2720 || &#10004; || Default bzImage || undionly.kpxe ||  2014-11-17 ||
+|-
+| eMachines || E520 || -- || --  || -- ||  -- ||
+|-
+| Fujitsu || ST5112 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Fujitsu || ST6012 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Fujitsu || T902 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Fujitsu || T4010 || -- || --  || -- ||  -- || 
+|-
+| Fujitsu || T4215 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Fujitsu || T4220 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-03 ||
+|-
+| Fujitsu || T4410 || &#10004; || Default bzImage || undionly.kpxe ||  2014-07-16 ||
+|-
+| Fujitsu || T730 || &#10004; || Default bzImage || undionly.kpxe ||  2014-07-16 ||
+|-
+| Fujitsu || S710 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 ||
+|-
+| Fujitsu-Siemens || Esprimo Mobile U9200 || -- || -- ||  --  || -- || sata set to compatible in the bios
+|-
+| Fujitsu-Siemens || Esprimo Mobile V5505 || -- || --  || -- ||  2009-03-13 || 
+|-
+| Fujitsu-Siemens || Esprimo Mobile V5515 || -- || --  || -- ||  2010-12-14 || Needs [http://www.fogproject.org/wiki/index.php?title=SiS-191_based_NIC SiS-191 NIC workaround to image]
+|-
+| Fujitsu-Siemens || Esprimo E5600 || -- || --  || -- ||  2009-10-01 || 
+|-
+| Fujitsu-Siemens || Esprimo P5700 || -- || --  || -- ||  -- || 
+|-
+| Fujitsu-Siemens || Esprimo P2510 || X || --  || -- ||  2014-10-29 || Does not work at this point in time
+|-
+| Fujitsu-Siemens || Esprimo P2520 || X || --  || -- ||  2014-10-29 || Does not work at this point in time
+|-
+| Fujitsu-Siemens || Esprimo P2530 || -- || --  || -- ||  2009-03-18 || sata set to enhanced in the bios
+|-
+| Fujitsu-Siemens || Esprimo P2560 || -- || FOG 0.32  || -- ||  2012-02-29 || 
+|-
+| Fujitsu-Siemens || Esprimo P3510 || -- || FOG 0.32  || -- ||  2012-02-29 || 
+|-
+| Fujitsu-Siemens || Scenic Edition X 102 || -- || --  || -- ||  -- || 
+|-
+| Fujitsu-Siemens || Scenic P300 sis661|| -- || FOG 0.32  || -- ||  2012-06-12 || Default kernel, model with sis based mainboard
+|-
+| Fujitsu-Siemens || Scenic P320 || -- || FOG 0.32  || -- ||  2012-02-29 ||
+|-
+| Fujitsu-Siemens || Scenic C610 || -- || --  || -- || -- || 
+|-
+| Gateway || E-4100 || -- || ALT  || -- || -- ||  Requires ALT kernel with Gateway BIOS
+|-
+| Gateway || E-4300 || -- || ALT  || -- || -- ||  Using ALT for E4100 but should work without.
+|-
+| Gateway || E-4500S || -- || Default  || -- ||  2011-07-05 || Had to enable Legacy mode for the Sata/IDE controller in Bios
+|-
+| Gateway || E-4610S || -- || --  || -- ||  -- || 
+|-
+| Gateway || E295C || -- || --  || -- || -- || 
+|-
+| Gateway || E155C  || -- || --  || -- || -- || 
+|-
+| Gateway || E265M || -- || --  || -- || -- || 
+|-
+| Gateway || E275M || -- || ALT  || -- || -- ||  Using ALT for E4100 but should work without.
+|-
+| Gateway || E460M || -- || ALT  || -- || -- ||  Using ALT for E4100 but should work without. Requires kernel argument acpi=off 
+|-
+| Gateway || E475M || -- || --  || -- || -- || 
+|-
+| Gateway || MX3417 || -- || --  || -- || -- || 
+|-
+| Gateway || MX6931 || -- || --  || -- || -- || 
+|-
+| Gateway || MX6448 || -- || --  || -- || -- || 
+|-
+| Gateway || Profile 3 || -- || --  || -- || -- || 
+|-
+| Gateway || Profile 4 || -- || --  || -- || -- ||  Using ALT, otherwise display was scrambled for this model's GEForce MX400. Screen will take time to wake, it can make you think PXE not loading.
+|-
+| Gateway || Profile 6 || -- || --  || -- || -- || 
+|-
+| HiGrade || ?L100 || -- || --  || -- || -- || 
+|-
+| HP || Mini 2102 || &#10004; || Default bzImage  || '''undionly.kkpxe''' ||  2015-05-07 || 
+|-
+| HP || Mini 2140 || -- || -- || -- || -- || 
+|-
+| HP || 215 || &#10004; || Default bzImage  || '''undionly.kkpxe''' ||  2015-07-15 || 
+|-
+| HP || 2710p || -- || Kitchen Sink (ALL) || -- ||  2009-01-23 || 
+|-
+| HP || 2730P || -- || Peter Sykes (ALL) || -- ||  2009-01-23 || 
+|-
+| HP || 3125 || -- || -- || -- ||  2013-06-25 || Not compatible with Kernel 3.8.8.core
+|-
+| HP || 8510p || -- || --  || -- ||  -- || not tested yet with sata native enabled in bios
+|-
+| HP || Compaq 6000 Pro || &#10004; || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || Compaq 6005 Small || -- || 0.31  || -- ||  2011-06-22 || 
+|-
+| HP || Compaq 6200 Pro || -- || 0.32  || -- ||  2011-08-04 || 
+|-
+| HP || Compaq 6710b || &#10004; || Default bzImage  ||  undionly.kpxe|| 2014-06-13 ||
+|-
+| HP || Compaq 6715s || -- || --  || -- ||  -- || 
+|-
+| HP || Compaq 6715b || -- || --  || -- ||  -- || 
+|-
+| HP || Compaq 6720s || --  || --  || -- ||  -- || 
+|-
+| HP || Compaq 6730b || -- || -- || -- ||  2009-06-10 ||
+|-
+| HP || Compaq 6735b || &#10004; || Default bzImage  ||  undionly.kpxe|| 2014-06-13 ||
+|-
+| HP || [[HP Compaq 6910p|Compaq 6910p]] || -- || --  || -- || --||
+|-
+| HP || Compaq 8100 S || &#10004; || Default bzImage  ||  undionly.kpxe|| 2015-04-20 ||
+|-
+| HP || Compaq 8100 V || &#10004; || Default bzImage  ||  undionly.kpxe|| 2015-04-20 ||
+|-
+| HP || Compaq D610 || -- || 3.2.4.core || -- ||  2012-02-15 || 0.32 works well
+|-
+| HP || Compaq Elite 8200 || &#10004; || Default bzImage  ||  undionly.kpxe|| 2014-06-13 ||
+|-
+| HP || Compaq Elite 8300 || &#10004; || Default bzImage  ||  undionly.kpxe|| 2014-06-13 ||
+|-
+| HP || Compaq Pro 6300 SFF || &#10004; || Default bzImage  ||  undionly.kpxe|| 2015-04-20 ||
+|-
+| HP || Compaq n610c || -- || --  || -- || -- ||  Working with Alt or KS kernel
+|-
+| HP || Compaq NX6325 || -- || --  || -- ||  -- || 
+|-
+| HP || Compaq NC6210 || &#10004; || Default bzImage  ||  undionly.kpxe|| 2014-10-29 ||
+|-
+| HP || Compaq NC6220 || &#10004; || Default bzImage  ||  undionly.kpxe|| 2014-10-29 ||
+|-
+| HP || Compaq nc6320 || -- || --  || -- || -- || 
+|-
+| HP || Compaq nc6400 || -- || FOG 0.32  || -- ||  2012-05-07 ||
+|-
+| HP || Compaq NC8430 || &#10004; || Default bzImage  ||  undionly.kpxe|| 2014-10-29 ||
+|-
+| HP || Compaq nx6100 || -- || FOG 0.32  || -- ||  2012-05-07 ||
+|-
+| HP || Compaq ProOne 600 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || 550 || -- || --  || -- ||  -- || 
+|-
+| HP || D530 || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 || 
+|-
+| HP || DC5100 || -- || --  || -- ||  -- || 
+|-
+| HP || DV9620US || -- || --  || -- ||  2010-05-04 || 
+|-
+| HP || [[HP DC5700|DC5700]] || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || DC5750 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-17 || 
+|-
+| HP || DC5800 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || DC5850 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || DC6005 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || DC7100 || --  || --  || -- ||  -- || 
+|-
+| HP || DC7600 || --  || Kitchen Sink (ALL) || -- || 2009-01-23 || 
+|-
+| HP || DC7700 || -- || 3.2.4.core || -- ||  2012-02-15 || 0.32 works well.
+|-
+| HP || DC7800 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || DC7900 || X || Default bzImage || undionly.kpxe ||  2014-06-16 || Issues with "Loading boot sector... Booting...". Try Updating the BIOS and changing the Exit Type some have reported this to help.
+|-
+| HP || DC8200 || --  || 0.33 Beta with core 3.8.8 and 3.2.4 || -- || 2013-08-20 || Got an ioctl error but working without problems.
+|-
+| HP || 620 || -- || 3.2.4.core || -- ||  2012-02-15 || 0.32 works well
+|-
+| HP || 4530s || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || 4710s || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || 6530b || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || 8440p || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || 8510p || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || 8530w || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || 8540w || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || 6000 Pro || -- || -- ||  -- || 2009-12-15 || 
+|-
+| HP || 6005 Pro || -- || 0.28 || -- ||  15-02-2010 || Only seems to with "Multiple Partition Image - Single Disk"
+|-
+| HP || 8000 Elite || -- || -- || -- ||  2010-05-17 || 0.29 Kernel - 2.6.35.7 PS, with "acpi=off irqpoll hpet=disable" kernel arguments (may work without them). Kernel 2.6.37-core panics.
+|-
+| HP || 8100 Elite || -- || -- || -- ||  2010-01-18 || 0.29 Kernel - 2.6.35.7 PS otherwise poor performance.
+|-
+| HP || Compaq 8200 Elite || -- || 3.2.4.core || -- ||  2012-02-15 || 0.32 works well
+|-
+| HP || DX2200MT || -- || --  || -- ||  2011-07-13 ||  
+|-
+| HP || DX2000MT || -- || --  || -- || -- ||  Requires kernel args: acpi=force irqpoll, acpi=off also works. 
+|-
+| HP || DX6100MT || -- || --  || -- || -- ||  Requires Translation Mode to be set to LBA Assisted for HDD in BIOS
+|-
+| HP || [[HP DX2250|DX2250]] || -- || -- || --  || -- || 
+|-
+| HP || [[HP DX2300|DX2300]] || -- || -- ||  --  || -- || 
+|-
+| HP || DX2400 || -- || --  || -- ||  -- || 
+|-
+| HP || DX5150 CMT || &#10004; || Default bzImage || undionly.kpxe ||  2014-10-29 || 
+|-
+| HP || DX7500 || -- || -- || -- ||  2010-01-04 ||
+|-
+| HP || DX7300 || -- || 0.26 || -- || 2011-06-16 || 
+|-
+| HP || DX7400 || -- || 0.26 || -- || 2011-06-16 || 
+|-
+| HP || Elite 7300 MT || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-2-23 ||
+|-
+| HP || EliteBook 2540p || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || EliteBook 2760p || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 ||
+|-
+| HP || EliteBook 6530b || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || EliteBook 6550b || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || EliteBook 6930p || -- || --  || -- ||  -- ||
+|-
+| HP || EliteBook 8440p || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-05 || 
+|-
+| HP || EliteBook 8510p || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || EliteBook 8530w || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || EliteBook 8540p || -- || KS from Aug 10 2010 || -- || 2010-03-30 || Did not recognize NIC until Kernel was updated to Kitchen Sink build from Aug 10 2010
+|-
+| HP || EliteBook 8540w || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || EliteBook 8710w || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || EliteBook Revolve 810 G2 || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-1-8 || Secure Boot = off, Boot Mode = Legacy, IPv4 PXE
+|-
+| HP || [[HP EliteDesk 800 G1 |EliteDesk 800 G1]] || &#10004; || Default bzImage || undionly.kpxe || 2014-12-17 || Check page link [[HP EliteDesk 800 G1]]
+|-
+| HP || HP Touch Smart 9100 Business PC || -- || --  || -- || 2010-07-16 || 0.29
+|-
+| HP || Pavilion dm1-3010nr || -- || Kernel-2.6.35.7.kitchensink  || -- || 9/14/2011 || Works with Kernel-2.6.35.7.kitchensink and kernel arugements acpi=off noirq pci=use_crs
+|-
+| HP || Pavilion dv4000 || -- || --  || -- || 2010-08-18 || 0.29 
+|-
+| HP || Pavilion dv7-3125ef || -- || default Kernel 0.30  || -- || 2011-05-27 || 
+|-
+| HP || [[HP Pavilion 734n|Pavilion 734n]] || -- || --  || -- ||  -- || 
+|-
+| HP || NX7400 || -- || --  || -- || -- ||
+|-
+| HP || NX7300 || -- || --  || -- ||  -- ||
+|-
+| HP || Pavilion ze2000 || -- || --  || -- ||  -- ||
+|-
+| HP || Mini 1101 || -- || -- || -- ||  -- ||
+|-
+| HP || Mini Note || -- || --  || -- || -- ||
+|-
+| HP || Mini 5102 || -- || 0.29  || -- || 2010-07-09 || Very poor performance on imaging until acpi=force irqpoll was used as a Host Kernel Argument
+|-
+| HP || Mini 5103 || -- || -- || -- || 2012-01-19 || Disabling audio in BIOS will circumvent extremely slow imaging issue
+|-
+| HP || Mini Note 110 || -- || --  || -- ||  -- ||
+|-
+| HP || Mini 311-1037NR || -- || PS 2.6.28 || -- || 2010-12-06 || FOG .29 with kernel arg acpi=off noirq pci=use_crs Win 7
+|-
+| HP || ML110g5 || -- || 0.26 || -- || 2011-06-16 || 
+|-
+| HP || ML150g6 || -- || 0.26 || -- || 2011-06-16 || 
+|-
+| HP || NC8430 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || Pro 3000 MT || -- || 2.6.35.3 PS || -- || 2011-02-02 ||
+|-
+| HP || Pro 3400 MT || -- || 2.6.28.7 PS || -- || 2012-02-21 || Works well
+|-
+| HP || Pro 3015 MT || -- || 2.6.35.3 PS || -- || 2010-08-25 || Requires kernel argument hpet=disable (if not disabled you will get ehci/ohci interrupt errors, very slow boot, and the ethernet device will no longer work while kernel initializes himself).
+|-
+| HP || ProBook 430 G2 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-25 ||
+|-
+| HP || ProBook 440 G2 || &#10004;  || Default bzImage  || '''undionly.kkpxe''' ||  2015-05-07 ||
+|-
+| HP || ProBook 450 G1 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || ProBook 450 G2 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || ProBook 455 G2 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || ProBook 470 G2 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || ProBook 4510s || &#10004;  || Default bzImage  || undionly.kpxe||  2015-1-15 || 
+|-
+| HP || ProBook 4515s || -- || FOG 0.28  || -- || 2010-06-28 || May have a Blinking cursor after graphical FOG PXE menu and hard disk set to AHCI mode and using Windows XP. 
+|-
+| HP || ProBook 4520s || &#10004;  || Default bzImage  || '''undionly.kkpxe''' ||  2015-1-15 || http://fogproject.org/forum/threads/ipxe-boot-issue-with-realtek-rtl8153.10507/page-2#post-40836
+|-
+| HP || ProBook 4525s || -- || FOG 0.29  || -- || 2011-05-03 || May have a Blinking cursor after graphical FOG PXE menu (Bios F.08). Upon changing to bios F.09, no changes in behavior. 
+|-
+| HP || ProBook 4530s || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || ProBook 4540s || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-04-20 ||
+|-
+| HP || ProBook 4710s || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-10-29 ||
+|-
+| HP || ProBook 6440b || -- || --  || -- ||  -- ||
+|-
+| HP || ProBook 6450b || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || Probook 645 || &#10004;  || Default bzImage  || '''undionly.kkpxe''' ||  2014-06-13 || Disable UEFI-Bootdodus in BIOS. undionly.kkpxe is not a typo you need to use this file to boot properly.
+|-
+| HP || Probook 645 G1 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || ProBook 6460b || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || ProBook 6470b || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || ProBook 6530b || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || ProBook 6540b || -- || --  || -- ||  -- ||
+|-
+| HP || ProBook 6550 || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-04-20 ||
+|-
+| HP || ProBook 6550b || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-04-20 ||
+|-
+| HP || ProBook 6570b || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-04-20 ||
+|-
+| HP || ProDesktop 400 G1 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || ProDesktop 400 G2 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || ProDesktop 600 G1 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || ProDesktop 800 G1 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || Stream 11 Pro || SVN 5293 and up  || 4.2.3 (4.3.0 wasn’t working at the time for this specific problem)  || ipxe.efi ||  2014-11-20 || Kernel arguments: has_usb_nic=1 Host disk: /dev/mmcblk0  USB to Ethernet adapter has chipset ASIX AX88772B See [https://forums.fogproject.org/topic/6036/hp-stream-11-pro/34 this thread] for details.
+|-
+| HP || T510 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || T5730 || -- || --  || -- || 2010-05-03 || 0.29
+|-
+| HP || T5730w 2GF/1GR || -- || --  || -- || 2010-06-16 || 0.29
+|-
+| HP || XW4400 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || XW4600 || --  || --  || -- || 2011-08-03 ||
+|-
+| HP || XW6600 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || xw9400 || -- || -- || -- || 2011-03-03 || Works fine with FOG 0.29, Windows 7
+|-
+| HP || X2 210 || -- || Fog Trunk || ipxe.efi || 2-8-2016 || Used '''ASIX AX88772C''' usb to ethernet adapter. Thread: [https://forums.fogproject.org/topic/6525/pxe-boot-hp-x2-210-hybrid-tablet-windows-10-pro]
+|-
+| HP || Z400 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-06-13 || 
+|-
+| HP || Z600 || -- || -- || -- || 2011-03-03 || Works fine with FOG 0.29, Windows 7
+|-
+| HP || Z800 || -- || -- || -- || 2011-03-03 || Works fine with FOG 0.29, Windows 7
+|-
+| HP || Zbook Z15 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| HP || Zbook Z17 || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-11-20 ||
+|-
+| IBM || ThinkCentre S50 || -- || FOG 0.32 || -- || 2012-05-07 || 
+|-
+| Intel || NUC D54250WYB || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-12-12 || Set to Legacy Boot - Disabled UEFI / Secure boot
+|-
+| Intel || NUC D54250WYK || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-04-03 || Boot from LiveCD and shutdown properly or PXE boot might not work properly! Set to Legacy Boot - Disabled UEFI / Secure boot
+|-
+| Intel || NUC DN2820FYKH || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-12-12 || Set to Legacy Boot - Disabled UEFI / Secure boot
+|-
+| Intel || NUC DC53427HYE || -- || 5325 trunk bzImage  || '''ipxe.efi''' ||  2015-11-13 || UEFI Boot (!) but Secure boot disabled
+|-
+| Intel || NUC NUC5i5RYH || &#10004;  || Default bzImage  || undionly.kpxe ||  2014-12-12 || Set to Legacy Boot - Disabled UEFI / Secure boot
+|-
+| MSI || Hetis 900 || -- || 2.6.39.1.core || -- || 2012-02-15 || 0.32 works well
+|-
+| Motion Computing || J3400 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| Motion Computing || J3500 || &#10004; || Default bzImage || undionly.kpxe ||  2014-06-26 ||
+|-
+| MPC || TXTBook || -- || --  || -- || -- || ATOM Based
+|-
+| MPC || ClientPro 365 || -- || --  || -- || -- ||
+|-
+| MSI || Wind U100 || -- || --  || -- || 2009-05-15 ||
+|-
+| MSI || MegaBook S270 (Model MS-6855B) || -- || Fog 0.29  || -- || 2011-01-06 || 
+|-
+| NEC || Powermate ML-7 || -- || Fog 0.28 || -- || 2010-02-01 ||
+|-
+| NEC || Powermate ML-250 || -- || FOG 0.28 || -- || 2010-02-01 || Mainboard Asus P5S800, BIOS Ver 160 updated to 216: cannot connect to TFTP -- if IP differs from DHCP --. Use GPXE as a workaround.
+|-
+| NEC || Powermate VL-350 || -- || -- || -- || 2009-06-25 || Requires kernel argument acpi=off irqpoll
+|-
+| NEC || Powermate VL-370 || -- || 2.6.30.1 KS || -- || 2009-11-11 || Requires kernel argument acpi=off . If you don't set this argument, the BIOS will freeze on next boot. You will need to clear CMOS.
+|-
+| NEC || Versa One || -- || 2.6.35.3 PS || -- || 2010-10-12 || Only worked with kernel 2.6.35.3 PS
+|-
+| Panasonic || Toughbook CF-W7 || -- || --  || -- || -- ||
+|-
+| Panasonic || Toughbook FZ-G1 || &#10004; || Default bzImage || undionly.kpxe ||  2014-12-02 || Disable Secureboot/UEFI and Enable CSM in BIOS
+|-
+| Omni Tech || OTC-3200D01850 || -- || --  || -- || -- ||
+|-
+| Omni Tech || OTC-H3111D00 || -- || --  || -- || -- ||
+|-
+| Omni Tech || OTC-H3243D00 || -- || --  || -- || -- ||
+|-
+| Lenovo || B50-45 20388 || -- || 1.2.0  || undionly.kpxe || 07-9-2015 ||
+|-
+| Lenovo || A55 || -- || --  || -- || -- ||
+|-
+| Lenovo || M51 || -- || --  || -- || -- ||
+|-
+| Lenovo || M55 || -- || --  || -- || -- ||
+|-
+| Lenovo || M55P || -- || 0.31/32  || -- || 07-20-2011 ||
+|-
+| Lenovo || M57 || -- || --  || -- || -- ||
+|-
+| Lenovo || M58 || &#10004; || Default bzImage || undionly.kpxe ||  2014-11-17 ||
+|-
+| Lenovo || MT-M 5048 || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-04-20 ||
+|-
+| Lenovo || MT-M 5049 || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-04-20 ||
+|-
+| Lenovo || MT-M 7033 || &#10004;  || Default bzImage  || undionly.kpxe ||  2015-04-20 ||
+|-
+| Lenovo || MT-M 6073 || &#10004;  || Kernel 4.0.2 - r3451  || undionly.kkpxe ||  2015-05-21 ||
+|-
+| Lenovo || S9 || -- || --  || -- || -- || Fails at within 30seconds of image uptake using (took image by placing hard disk in another Lenovo R500), Image loading works okay with v 0.28
+|-
+| Lenovo || S10e || -- || --  || -- || -- ||
+|-
+| Lenovo || S10-2 || -- || --  || -- || -- ||
+|-
+| Lenovo ||MT-M 9964-A1U || -- || r3277  || '''undionly.kkpxe''' || 4-20-2015 ||
+|-
+| Lenovo || ThinkCenter A70z  || -- || 0.29 || -- || 08/2010 || needs Kernel-2.6.35.3PS, BIOS 98KT13AUS
+|-
+| Lenovo || ThinkCenter E31   || -- || 0.32 || -- || 09/2012 || needs kernel 3.3.3.core
+|-
+| Lenovo ||  ThinkCentre E73  || &#10004; || Default bzImage || undionly.kpxe ||  2015-04-23 ||
+|-
+| Lenovo || ThinkCentre Edge71 || -- || 0.32  || -- || 11-06-2012 || Works with default 0.32 kernel
+|-
+| Lenovo || ThinkCentre M900z  || -- || 1.3.5 || -- || 05/2017 || Turn off Secure boot by enabling '''CSM''', Boot Mode '''Auto''', Boot Priority '''UEFI First'''.  Booting from first HD from the FOG menu doesn't seem to work though, so don't put network boot first in the boot order
+|-
+| Lenovo || ThinkCentre M90z  || -- || 0.29 || -- || 08/2010 || works out of the box, BIOS 9BKT28AUS and 9BKT31AUS
+|-
+| Lenovo || ThinkCentre M72z  || &#10004; || Default bzImage || undionly.kpxe ||  2014-11-17 ||
+|-
+| Lenovo || ThinkCentre M73z  || &#10004; || Default bzImage || undionly.kpxe ||  2014-11-17 ||
+|-
+| Lenovo || ThinkCentre M75e  || -- || 0.32 / 2.6.35.3 PS  || -- || 07/2011 ||
+|-
+| Lenovo || ThinkCenter T510  || -- || 0.29 || -- || 08/2010 || works with Kernel-2.6.35.3PS
+|-
+| Lenovo || ThinkCenter X61  || -- || 0.29 || -- || 08/2010 || works with Kernel-2.6.35.3PS
+|-
+| Lenovo || Thinkpad E430  || &#10004; || Default bzImage || undionly.kpxe || 2015-06-24 ||
+|-
+| Lenovo || ThinkPad E520 || -- || 0.32  || -- || 02-10-2012 ||
+|-
+| Lenovo || ThinkPad R50 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || ThinkPad R51 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 || Change SATA settings from ACPI to Compatibility
+|-
+| Lenovo || ThinkPad R61 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-13 || Change SATA settings from ACPI to Compatibility
+|-
+| Lenovo || Thinkpad R400 || -- || --  || -- || -- ||
+|-
+| Lenovo || Thinkpad SL500 || -- || --  || -- || -- || Requires kernel argument irqpoll
+|-
+| Lenovo || Thinkpad SL410 || -- || 0.28  || -- || -- ||
+|-
+| Lenovo || Thinkpad Edge 13|| -- || 0.28 || -- || -- ||
+|-
+| Lenovo || Thinkpad Edge 15|| -- || 0.32 || -- || -- || Requires PXE Bzimage upgrade to 3.012
+|-
+| Lenovo || Thinkpad L440  || &#10004; || Default bzImage || undionly.kpxe || 2015-06-24 ||
+|-
+| Lenovo || Thinkpad L530|| &#10004; || r2922 || undionly.kpxe || 2015-1-28 ||
+|-
+| Lenovo || Thinkpad L412|| &#10004; || r3451 - Kernel 4.0.2 || undionly.kkpxe || 2015-5-21 ||
+|-
+| Lenovo || Thinkpad T42 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad T43 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad T60 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad T61 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad T400 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad T410 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad T410s || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad T420  || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Lenovo || Thinkpad T430  || &#10004; || Default bzImage || undionly.kpxe || 2015-06-24 ||
+|-
+| Lenovo || Thinkpad T440p  || &#10004; || Default bzImage || undionly.kpxe || 2015-06-24 ||
+|-
+| Lenovo || Thinkpad T500 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad W510 || -- || 0.32 || -- || 08-23-2013 || kernel 2.6.35-4  
+|-
+| Lenovo || Thinkpad x100e || -- || 0.29  || -- || -- ||
+|-
+| Lenovo || Thinkpad X200 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad X201 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Lenovo || Thinkpad x300 || -- || --  || -- || -- || (regular and Solid State Disk)
+|-
+| Lenovo || Thinkpad x301 || -- || --  || -- || -- || (regular and Solid State Disk)
+|-
+| Lenovo || Thinkpad x41 || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Lenovo || Thinkpad x60 || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Lenovo || Thinkpad x61  || -- || -- || -- || -- ||
+|-
+| Lenovo || ThinkStation S20  || -- || 0.29 || -- || 08/2010 || works with Kernel-2.6.35.3PS
+|-
+| Lenovo || ThinkStation D20  || -- || 0.29 || -- || 08/2010 || works with Kernel-2.6.35.3PS
+|-
+| Lenovo || Z60 || -- || --  || -- || -- ||
+|-
+| IBM || 300 PL   || -- || --  || -- || -- ||
+|-
+| IBM || Thinkcenter || -- || --  || -- || -- ||
+|-
+| IBM || Netvista || -- || --  || -- || -- ||
+|- 
+| RM || WV949(SGR) || -- || --  || -- || -- ||
+|-
+| Samsung || NC10 || -- || --  || -- || -- ||
+|-
+| Samsung || R20 (F00)|| -- || --  || -- || -- ||
+|-
+| Samsung || R510|| -- || --  || -- || -- || Requires kernel argument irqpoll
+|-
+| Samsung || R60 || -- || --  || -- || -- ||
+|-
+| Samsung || R60Plus || -- || --  || -- || -- ||
+|-
+| Shuttle || SA76G2 || --  || PS (2.6.28.7)  || -- || -- || With Marvel Yukon Gigabit Ethernet Controller
+|-
+| Sony || VAIO PCG-K23 || -- || --  || -- || -- ||
+|-
+| Sony || VAIO VGN-AR71M || -- || --  || -- || -- ||
+|-
+| Sony || VAIO VGN-BZ31VT || -- || 0.28 (2.6.31)  || -- || 2010-04-07 ||
+|-
+| Sony || VAIO VGN-V2S || -- || --  || -- || -- ||
+|-
+| Sun || xVM Virtualbox || -- || --  || -- || 2009-05-12 ||
+|-
+| Tangent || Pendant 2465LPB || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Tangent || Pendant 5131LP || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Tangent || Pendant 5131LPB || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Tangent || Pendant 5141LPB || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Tangent || Pendant 5161LPB || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Tangent || Pendant 5181LPB || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Toshiba || Protege M400 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege M600 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege M650 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege M700 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege M750 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege M780 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege R30-A || &#10004; || Default bzImage || undionly.kpxe || 2014-11-18 ||
+|-
+| Toshiba || Protege R100 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege R200 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege R500 || -- || --  || -- || -- ||
+|-
+| Toshiba || Protege R600 || -- || --  || -- || -- || BIOS 1.60 or newer
+|-
+| Toshiba || Protege R830 || &#10004; || Default bzImage || undionly.kpxe || 2014-11-18 ||
+|-
+| Toshiba || Protege R930 || &#10004; || Default bzImage || undionly.kpxe || 2014-11-18 ||
+|-
+| Toshiba || Protege Z30-A || &#10004; || Default bzImage || undionly.kpxe || 2014-11-18 ||
+|-
+| Toshiba || Protege Z30t-A || &#10004; || Default bzImage || undionly.kpxe || 2015-1-8 || Boot Mode - CSM Boot
+|-
+| Toshiba || Protege 930 || &#10004; || Default bzImage || undionly.kpxe || 2014-11-18 ||
+|-
+| Toshiba || Satellite A10-S127 || -- || default || -- || 2009-04-28 || 
+|-
+| Toshiba || Satellite L300 || -- || --  || -- ||  -- ||
+|-
+| Toshiba || Satellite L350 || -- || --  || -- ||  -- ||
+|-
+| Toshiba || Satellite L670 || -- || 2.6.35 KS  || -- || 2011-04-06 || 
+|-
+| Toshiba || Satellite Pro S300-EZ1513 || -- || Default || -- || 28JUL09 || 
+|-
+| Toshiba || Tecra A3X || -- || --  || -- || -- ||
+|-
+| Toshiba || Tecra A7-S254 || -- || --  || -- || -- || Imaged using the latest fog -- (0.27)
+|-
+| Toshiba || Tecra A8-EZ8512 || &#10004; || Default bzImage || undionly.kpxe || 2014-10-30 ||
+|-
+| Toshiba || Tecra A9 || -- || --  || -- || -- ||
+|-
+| Toshiba || Tecra A10 || &#10004; || Default bzImage || undionly.kpxe || 2014-06-14 ||
+|-
+| Toshiba || Tecra A11 || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Toshiba || Tecra M10 || -- || --  || -- || -- ||
+|-
+| Toshiba || Tecra M11 || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Toshiba || Tecra R700 || &#10004; || Default bzImage || undionly.kpxe || 2014-10-29 ||
+|-
+| Toshiba || Tecra RA950 || &#10004; || Default bzImage || undionly.kpxe || 2014-10-30 ||
+|-
+| Toshiba || Tecra S1 || -- || --  || -- || -- ||
+|-
+| Toshiba || Tecra S2 || -- || --  || -- || -- ||
+|- 
+| Toshiba || Tecra S3 || -- || --  || -- || -- ||
+|-
+| Toshiba || Tecra S4 || -- || --  || -- || -- ||
+|-
+| Toshiba || Tecra S11 || -- || --  || -- || -- || use FOG 0.28 is very slow, FOG 0.29 NOT working ! ( BIOS 2.20 )
+|-
+| Toshiba || Tecra S11-140 PTSE3E || -- || 0.29  || -- || 2010-09-17 || Default kernel doesn't support ethernet interface. You must use the kernel 2.6.35.3 PS (KS doesn't work)
+|}
+
+=== Hardware ===
+
+====Controllers====
+*LSI SAS 1068
+
+====Motherboards====
+
+{| class="wikitable sortable" border="1" cellspacing="0" cellpadding="3"
+|-
+! Manufacturer !! Model !! BIOS Version !! Onboard NIC !! Kernel Version !! Date !! Notes
+|-
+|Asus || M4N78-AM V2 || 1102  || Nvidia NForce || Fog 0.29 || 2011-02-12 || capture test !
+|-
+|Asus || M5A88-M || 0505  || Realtek 8111E || 3.3.3 Core || 2013-01-13 || FOG 0.32, wouldn't boot with default kernel, but later discovered was another issue (not kernel related)
+|-
+|Asus || M4A89GTD-PRO/USB3 rev 1.x|| 2001  || Realtek 8111E || 3.3.3 Core || 2013-01-11 || FOG 0.32, also worked with default kernel
+|-
+|Asus ||  M4A78LT-M-LE || 0407  || Atheros AR8131 || 3.3.3 Core || 2013-01-10 || FOG 0.32, also worked with default kernel
+|-
+|ASRock || M3A785GXH/128M || 1.1  || Realtek RTL8111DL || .28 || 1.1.2010 || Works Great!
+|-
+|Gigabyte || GA-MA770-DS3 rev 1.0 || F6 || Realtek 8111B || 2.6.28.7 Peter Sykes || 2009-04-28 || FOG 0.26, required different kernel than default
+|-
+|Gigabyte || GA-78LMT-S2P rev ? || FB || Atheros AR8151 || 3.3.3 Core || 2013-01-14 || FOG 0.32, also worked with default kernel
+|-
+|Intel || DG31GL || --  || -- || -- || -- || --
+|-
+|Intel || D845BG || --  || Intel Pro100VE || -- || -- || Problematic Intel Boot ROM version 4.0.19 (D845BGL)
+|-
+|Intel || DG35EC || --  || --|| -- || -- || --
+|-
+|Intel || D945GCZ || --  || --|| -- || -- || --
+|-
+|Intel || DQ965JO || --  || --|| -- || -- || --
+|-
+|Intel || DP55WB || --  || --|| -- || -- || --
+|-
+|Intel || DQ45CB || --  || --|| -- || -- || --
+|-
+|Intel || DG35EC || --  || --|| -- || -- || --
+|-
+|Jetway || NF93R-LF || --  || 2 x Realtek RTL8111C || 2.6.30.1 ks || 2012-08-19 || kernel arguments (maybe not necessary) acpi=off irqpoll vga=6
+|-
+|Sapphire|| Pure Black X58 || --  || 1 x Marvell Yukon || FOG 0.32 || 2013-12-14 || kernel arguments (maybe not necessary) acpi=off irqpoll vga=6
+|}
+
+====USB Ethernet Adapters====
+There are hundreds of USB NICs supported by the [http://cateee.net/lkddb/web-lkddb/USB_NET_DRIVERS.html linux kernel] alone. We will never be able to document all of those here. So this is just the gist of what we have heard about in the forums or tested on our own.
+'''So far you'd have to add 'has_usb_nic=1' as kernel parameter...'''
+{| class="wikitable sortable" border="1" cellspacing="0" cellpadding="3"
+|-
+! Manufacturer !! Model !! USB !! Speed !! Kernel Version !! Date !! Notes
+|-
+| ADMtek || Pegasus AN986 || ? || ? || [http://cateee.net/lkddb/web-lkddb/USB_PEGASUS.html check PCI ID] || - || '''just listing it here, not confirmed working''', devices using the same chip: ADMtek ADM8511 Pegasus II, D-Link DSB-650TX
+|-
+| ASIX || AX88179 || 3.0/2.0 || 1GiB || [http://cateee.net/lkddb/web-lkddb/USB_NET_AX88179_178A.html check PCI ID] || - || '''just listing it here, not confirmed working''', devices using the same chip: D-Link DUB-1312, [https://forums.fogproject.org/topic/6510/boot-dell-xps-12-to-usb-to-network-card/27 Sabrent USB-G1000], Sitcomm LN-032, Startech USB31000S and USB32000S (and US1GC30?), ThinkPad OneLink dock
+|-
+| ASIX || AX88772A/B || 2.0 || 100MiB || [http://cateee.net/lkddb/web-lkddb/USB_NET_AX8817X.html check PCI ID] || 2015-01-15 || [https://forums.fogproject.org/topic/2666/fog-pxe-boot-with-usb-to-ethernet-adapter/43 confirmed] [https://forums.fogproject.org/topic/6036/hp-stream-11-pro working] (with undionly.kkpxe), devices using the same chip: Ableconn USB2E100B, Aten UC210T, Billionton Systems USB2AR and GUSB2AM-1G-B, Buffalo LUA-U2-KTX, Corega FEther USB2-TX, D-Link DUB-E100, Hawking UF200, Linksys USB200M, Netgear FA120, Sitecom LN-029, Sitecom LN-028, Intellinet USB 2.0 Ethernet, ST Lab USB 2.0 Ethernet, TrendNet TU2-ET100
+|-
+| ASIX || AX88772C || 2.0 || 100MiB || [http://cateee.net/lkddb/web-lkddb/USB_NET_AX8817X.html check PCI ID] || 2016-02-08 || [https://forums.fogproject.org/topic/6525/pxe-boot-hp-x2-210-hybrid-tablet-windows-10-pro/126 confirmed] [https://forums.fogproject.org/topic/6829/legacy-boot-hp-stream-11-not-working/19 working] (with ipxe.efi)
+|-
+| Microchip || LAN78XX || 2.0/3.0 || 1GiB || [http://cateee.net/lkddb/web-lkddb/USB_LAN78XX.html check PCI ID] || - || '''just listing it here, not confirmed working'''
+|-
+| Realtek || RLT8150 || 1.1 || 10MiB (???) || [http://cateee.net/lkddb/web-lkddb/USB_RTL8150.html check PCI ID] || - || '''just listing it here, not confirmed working''', devices using the same chip: Zaurus SL-5000D
+|-
+| Realtek || RLT8152 || 2.0 || 100MiB || [http://cateee.net/lkddb/web-lkddb/USB_RTL8152.html check PCI ID] || 2016-01-13 || [https://forums.fogproject.org/topic/6227/surface-3-fails-to-image/41 confirmed] [https://www.youtube.com/watch?v=UFYNan98lmw working], devices using the same chip: Microsoft 1552 ([http://svn.exactcode.de/t2/trunk/package/base/linux/surface-dock-eth.patch needs kernel patch])
+|-
+| Realtek || RLT8153 || 3.0 || 1GiB || [http://cateee.net/lkddb/web-lkddb/USB_RTL8152.html check PCI ID] || 2015-07-09 || [https://forums.fogproject.org/topic/6319/m-2-pcie-ssd-not-recognised-in-fog confirmed] [https://forums.fogproject.org/topic/2620/realtek-8153-usb-network-adapter/29 working] (using undionly.kkpxe), devices using the same chip: Dell USB-C Network Adapter 470-ABND, Lenovo USB 3.0 Ethernet 4X90E51405, Microsoft 1663 ([http://svn.exactcode.de/t2/trunk/package/base/linux/surface-dock-eth.patch needs kernel patch]), TP-Link UE300
+|-
+| SMSC || LAN7500 || 2.0 || 1GiB || [http://cateee.net/lkddb/web-lkddb/USB_NET_SMSC75XX.html check PCI ID] || 2016-02-02 || [http://www.johnwillis.com/2014/03/pxe-booting-using-usb-to-ethernet-dongle.html confirmed] [https://forums.fogproject.org/topic/6510/boot-dell-xps-12-to-usb-to-network-card/67 working], devices using the same chip: Startech USB21000S2
+|-
+| SMSC || LAN9512/LAN9514 || 2.0 || 100MiB || [http://cateee.net/lkddb/web-lkddb/USB_NET_SMSC95XX.html check PCI ID] || - || '''[http://fogproject.org/forum/threads/elitepad-1000.12596/ not confirmed yet]''', devices using the same chip: USB 2.0 to Ethernet 10/100 Adapter within HSTNN-C75X dock
+|}
+
+=== Virtual Machines for building images ===
+
+{| class="wikitable sortable" border="1" cellspacing="0" cellpadding="3"
+|-
+! Manufacturer !! Model !! BIOS Version !! Onboard NIC !! Fog 1.x.x !!Kernel Version !! IPXE !! Date !! Notes
+|-
+|Proxmox VE 3.1|| KVM virtual machine || Seabios 1.7.4  || Intel E1000 || -- || FOG 0.32 || -- || 2014-01-04 || VM CPU=Nehalem (not working with CPU=Host), kernel arguments (maybe not necessary) acpi=off irqpoll vga=6
+|-
+| Oracle || xVM Virtualbox || -- || Intel E1000 || &#10004; || Default bzImage || ipxe.pxe || 2014-06-13 || Works best with E1000 NIC. Set physical connection to be bridged
+|-
+| Sun || VMware WorkStation || 9.0.1 build-894247 || --|| &#10004; || Default bzImage || undionly.kpxe || 2014-06-13 || Set physical connection to be bridged
+|-
+| Microsoft || Hyper-V || 2012 || --|| &#10004; || Default bzImage || undionly.kpxe || 2014-11-18 || Set physical connection to be bridged
+|}
+
+===NAS Devices ===
+*Note full setup may not be listed. Please contact the reporting user.
+
+{| class="wikitable sortable" border="1" cellspacing="0" cellpadding="3"
+|-
+! Manufacturer !! Model !! Firmware Version !! Software !! Fog 1.x.x !! Date !! User !!Notes
+|-
+|Western Digital|| MyBookLive || 02.43.09-038  || WD ||&#10004; || 2015-04-20 || wolfbane8653 ||Can be used as storage node or as Fog server.
+
+|}

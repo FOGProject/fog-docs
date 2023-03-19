@@ -1,0 +1,48 @@
+=== Building a Custom Kernel ===
+
+== Overview ==
+
+In FOG the kernel and the boot file system are separate and interchangeable, this makes it easier to upgrade a kernel without modifying the boot file system.  This also means that all drivers in the kernel are build into the kernel instead of being compiled as modules.  In our example we will be compiling the kernel on Fedora 9. 
+
+== Build Process ==
+
+# Install the required packages to build the kernel with: 
+#* RHEL/Fedora/CentOS/.rpm other: (need confirmation that this is all the packages required?!?, may also need qt-devel and a few others)
+#: <code>yum groupinstall "Development Tools"</code>
+#* Ubuntu/Debian/.deb other: 
+#: <code>sudo apt-get install qt3-dev-tools libqt3-mt-dev</code>
+# Download the latest kernel source (which in this case is version 2.6.35.3):
+#: <code>cd /usr/src</code>
+#: <code>wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.35.3.tar.gz</code>
+# Extract the tar file:
+#: <code>tar -zxvf linux-2.6.35.3.tar.gz</code>
+# Copy the .config file from the fog release package which is located in the Fog Setup ./kernel directory:
+#: <code>cp /opt/fog-setup/fog_0.29/kernel/kitchensink.config /usr/src/linux-2.6.35.3/.config</code>
+# Start configuring the kernel:
+#* RedHat forks:
+#: <code>make menuconfig</code>
+#* Ubuntu/Debian, etc:
+#: <code>make xconfig</code>
+#* This will run the kernel configuration tool, you will need to navigate around it a little to get a feel for it as there are many options.  Placing a check mark in a box will include it in the kernel, and unchecking an item will remove it from the kernel.  
+#* To add or remove drivers from the kernel you will need to go to '''Device Drivers''', and network drivers are in '''Network Device Support.'''
+#* '''Important:''' All settings required by fog are already in the kernel, when you are done making changes click '''save''' and close the application.
+# Now you need to build the kernel: 
+#: <code>make bzImage</code> 
+#* or possibly just:
+#: <code>make</code>
+#* ''This could take 10 minutes, depending on the speed of your machine and how many options you checked.''
+# Backup your FOG kernel, and copy the new kernel image to your TFTP kernel folder, probably under /tftpboot:
+#: <code>sudo cp /tftpboot/fog/kernel/bzImage /tftpboot/fog/kernel/backup/bzImage_</code>'''YYYYMMDDHHMMSS'''
+#:* ''Of course, you can name your backup anything you want, that is simply the name convention used by FOG
+#: <code>sudo cp /usr/src/linux-2.6.35.3/arch/x86/boot/bzImage /tftpboot/fog/kernel/bzImage</code>
+# And, you're done! Try booting a client with your new kernel to test it. Repeat steps 5-7 above if you need to make any changes. If you are happy with your configuration, you can save the configuration by backing up the .config file located in the boot of the kernel source directory.
+
+== Note ==
+
+When building on x86_64 systems you may need to specify that you are building for an x86 target architecture.
+
+<code>make ARCH=i386 menuconfig</code>
+
+<code>make ARCH=i386 bzImage</code>
+
+Test

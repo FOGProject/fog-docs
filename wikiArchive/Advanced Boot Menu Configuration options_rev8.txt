@@ -1,0 +1,119 @@
+= Advanced Configuration Options =
+The Advanced configuration options in the FOG PXE Boot Menu Configuration screen allows you to create a secondary menu that can be accessed from the boot menu screen
+
+The fog server adds the following items to the top of your ipxe boot menu automatically
+
+<pre>
+#!ipxe
+console
+set fog-ip <server IP listed in fog settings>
+set fog-webroot <fog installation web root listed in fog settings>
+cpair --foreground 7 --background 2 2
+console --picture http://${fog-ip}/${fog-webroot}/service/ipxe/bg.png --left 100 --right 80
+</pre>
+
+note: The variables fog-ip and fog-webroot have been created automatically for you, and assigned values relevant to your installation. 
+
+= Examples =
+
+<pre>
+:MENU
+menu
+item --gap -- ---------------- iPXE boot menu ----------------
+item ipxedemo        ipxe online boot demo
+item shell          ipxe shell
+item return        return to previous menu
+choose --default return --timeout 5000 target && goto ${target}
+ 
+:ipxedemo
+chain http://boot.ipxe.org/demo/boot.php ||
+goto MENU
+ 
+:shell
+shell ||
+goto MENU
+ 
+:return
+chain  http://${fog-ip}/${fog-webroot}/service/ipxe/boot.php?mac=${net0/mac} ||
+prompt
+goto MENU
+ 
+autoboot
+</pre>
+
+<pre>
+:MENU
+menu
+item --gap -- ---------------- iPXE boot menu ----------------
+item WIN7PE64BIT    Boot Windows 7 64 bit iso
+item WIN7PE32BIT    Boot Windows 7 32 bit iso
+item shell          ipxe shell
+item return        return to previous menu
+choose --default WIN7PE64BIT --timeout 5000 target && goto ${target}
+ 
+:WIN7PE64BIT
+initrd http://${fog-ip}/ISO/Win7PE_x64.ISO
+chain memdisk iso raw ||
+goto MENU
+ 
+:WIN7PE32BIT
+initrd http://${fog-ip}/ISO/Win7PE_x86.ISO
+chain memdisk iso raw ||
+goto MENU
+ 
+:ipxedemo
+chain http://boot.ipxe.org/demo/boot.php ||
+goto MENU
+ 
+:shell
+shell ||
+goto MENU
+ 
+:return
+chain  http://${fog-ip}/${fog-webroot}/service/ipxe/boot.php?mac=${net0/mac} ||
+prompt
+goto MENU
+ 
+autoboot
+</pre>
+
+<pre>
+:MENU
+menu
+item --gap -- ---------------- iPXE boot menu ----------------
+item ipxedemo        ipxe online boot demo
+item shell          ipxe shell
+item return        return to previous menu
+item hostinfo        details about this computer
+choose --default return --timeout 5000 target && goto ${target}
+ 
+:ipxedemo
+chain http://boot.ipxe.org/demo/boot.php ||
+goto MENU
+ 
+:shell
+shell ||
+goto MENU
+ 
+:return
+chain  http://${fog-ip}/${fog-webroot}/service/ipxe/boot.php?mac=${net0/mac} ||
+prompt
+goto MENU
+ 
+:hostinfo
+echo This computer : ||
+echo MAC address....${net0/mac} ||
+echo IP address.....${ip} ||
+echo Netmask........${netmask} ||
+echo Serial.........${serial} ||
+echo Asset number...${asset} ||
+echo Manufacturer...${manufacturer} ||
+echo Product........${product} ||
+echo BIOS platform..${platform} ||
+echo ||
+echo press any key to return to Menu ||
+prompt
+goto MENU
+ 
+autoboot
+</pre>

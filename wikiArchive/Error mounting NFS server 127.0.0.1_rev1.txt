@@ -1,0 +1,4 @@
+{{Merge|target=Error mounting NFS server 172.0.0.1|discuss=Talk:Error mounting NFS server 127.0.0.1}}
+
+* Set FOG_PXE_IMAGE_DNSADDRESS to your DNS server ip address.
+* Set FOG_USE_SLOPPY_NAME_LOOKUPS to 1.

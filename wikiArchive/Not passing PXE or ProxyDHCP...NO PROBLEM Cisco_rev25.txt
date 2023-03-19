@@ -1,0 +1,38 @@
+==Cisco WS-C2960S Not passing PXE, or ProxyDHCP==
+
+'''Original posting was done in the forum:''' All information is credited to Jaymes Driver
+
+
+===ORIGINAL POST===
+Hey all,
+
+I'm touching base here and hoping to find some information.
+
+Normally I work HP Pro-Curve equipment, but one of my school buildings had a new addition added to it and along with it, a whole new switch and network was added to the building that was purchased by the installation contract (So we got the equipment that the normally set up), installed by the contractors, and managed by the contractors. Now that they are gone, I have no one to help me to square away the new issues that are arising.
+
+I am looking for someone versed in these managed switches that can help me to get the new addition talking to the rest of my network properly. Currently DHCP, and Novell are working. Each machine is doled IP addresses from my DHCP server as expected, the units can log in and talk to my sever, tree, context all that good stuff. I can browse my NDS, but my fog server is not passing the PXE boot information through the new switches. I use the dchpmasq service to normally allow my units to boot via pxe, and the rest of the building is still working as expected THANK GOD, but the new addition is giving me fits!
+
+I can unplug my new Cisco managed switch and replace it with a "hub" of sorts and I can still see my pxe boot information as expected so I am thinking that there is maybe an IP helper or something along the lines that I need to update/add.
+
+So anyone with expertise or suggestions, I am open :)
+
+===Solution===
+
+
+'''I MANAGED TO ENABLE PXE BOOTING!!!'''
+
+Download Cisco Network Assistant - http://software.cisco.com/download/...twareid=280775097&release=5.8.9&rellifecycle=
+
+'''NOTE THE IGMP MAY NOT BE REQUIRED BUT I CHANGED BOTH OF THESE IN SYNC WITH EACH OTHER, ENABLE AT YOUR OWN DIGRESSION!!!!'''
+
+Log into your managed switch with the administrative username and password.
+
+Click Configure on the left hand side. Choose Port Settings from the list.
+
+Select all ports to be used for PXE boot. Click Modify. Enable Port Fast. Save. Close open windows.
+
+With Configure still selected, choose IGMP Snooping. Click the "Multicast Router Ports" tab.
+
+Click Create, enter the number of the vlan you wish to apply changes to, select all ports to enable multicast on (Select All click Add) click the apply button, settings may take a few minutes to take affect.
+
+'''NOTE THE IGMP MAY NOT BE REQUIRED BUT I CHANGED BOTH OF THESE IN SYNC WITH EACH OTHER, ENABLE AT YOUR OWN DIGRESSION!!!!'''

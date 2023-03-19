@@ -1,0 +1,76 @@
+*This is an option that has been successfully done on a few occasions and <u>'''NOT ALL'''</u> NAS devices work as a Storage node.
+**This is a generic setup for NAS devices
+
+== Basic Idea ==
+
+*Install FOG storage node script on NAS and use it as a Storage node for your FOG server.
+*A few basic things will need to be installed by the install script ssh, ftp, nfs, and mysql. 
+
+== Installation ==
+
+'''NOTE:''' It is assumed that you already have a working FOG server at this point in time. If you do not please ask in the [http://fogproject.org/forum forum] to get the server working first.
+
+*First you must obtain (enable) ssh on your NAS to be able to even work with it.
+**On some devices such as a "My Booklive" you will need to login to the web portal and enable it from there. See your device user manual for this.
+
+*Download FOG from our [http://sourceforge.net/projects/freeghost/files/latest/download download page] or use a [[Upgrade_to_trunk | trunk version]].
+
+*Unpack the FOG tar and navigate to fog/bin.
+
+*Figure out what operating system your NAS is using and try to figure out if it is closer to Red Hat, Ubuntu, or debian.
+
+* Run the installation script, ./installfog.sh
+#Select your operating system.
+#When prompted for Server Installation Mode, select S, for storage node.
+#Enter the IP address of the storage node.
+#Confirm your interface
+#Then you will need to enter the IP address or host name of the node running the FOG database (Fog Server IP)
+#Then you will be prompted for a username (typically fogstorage) and a password that is located on the FOG server, that will allow the storage node to access the main FOG server's database. This information is located in the FOG management portal for convenience (on the main for server). It can be accessed via Other Information -> FOG settings -> section FOG Storage Nodes.
+#You will then be prompted to confirm your installation settings, if they are correct press Y end hit Enter.
+#When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings
+
+*Go to your webgui of your FOG server and Add a Storage Node with the information shown in the installation script on the NAS.
+**If you lost or closed the interface before writing down the username and password it can be found in the install log located in /var/log/foginstall.log
+#Log into the FOG Management Portal
+#Navigate to the Storage Management section.
+#Click on Add Storage Nodes.
+#For the Storage Node Name, enter any alpha numeric string to represent the storage node.
+#Enter any description you wish
+#Enter the IP address of the storage node you are adding. This must be the IP address of the node, <u>'''DO NOT'''</u> use a hostname or the node will not function correctly.
+#Enter the maximum number of unicast clients you would like this node to handle at one time. The value that we recommend is 10.
+#Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[Managing_FOG#Master_Node_Status | Master Node Status]].
+#Next, select the storage group you would like this member to be a part of, in our example we will pick Default
+#Next, specify the image location on the storage node, typically /images/, your image location should always end with a /.
+#Next, you will want to check the box, to enable the node.
+#The last two fields take the username and password that are generated during the installation of the storage node. username is "fog", password is in /opt/fog/.fogsettings
+#Then click Add to have the node join the storage group.
+
+*You now should have a properly installed Storage node on a NAS device
+
+== Monitoring The Master Node ==
+*On all storage nodes there is a new service (as of version 0.24) called FOGImageReplicator which is a very basic script which, if the node is the master, copies all of its images to all other nodes in the storage group. The coping is done every ten minutes by default, which means your images are NOT instantly duplicated to all nodes.
+*If you would like to view the status of the image replication, you can do so on the storage node by switching to tty3, by typing ctl + alt + f3. Output is also logged to a file in the /opt/fog/log directory.
+**FOGImageReplicator logs are also located in [[File:Config.png]] Fog Configuration --> Log Viewer --> FILE: [Select Image Replicator]
+
+== Issues and Troubleshooting ==
+=== Information not being displayed in Dashboard correctly ===
+*[[File:Bad_Node_info.png]]
+*[[File:Bad_Node.png]]
+* Information sited from
+**http://fogproject.org/forum/threads/create-nas-and-fog-1-1-2.12597/#post-44080
+
+*Check to see if your NAS device can connect to your FOG server's mysql.
+<pre>
+#mysql -h <ipoffogserver> -u fogstorage <-p password> fog
+</pre>
+
+*If this fails you will need to check a few configuration settings.
+#Open and edit file '''/etc/mysql/my.cnf'''
+#Find the line '''bind-address''' and change '''127.0.0.1''' and change to the FOG server IP.
+#*bind-address =127.0.0.1 --> bind-address =<ipoffogserver>
+#Restart mysql
+<pre>
+sudo service mysql restart
+</pre>
+
+*Try again to access the server mysql database. If successful please go back to your webgui and see if your information is displaying correctly.

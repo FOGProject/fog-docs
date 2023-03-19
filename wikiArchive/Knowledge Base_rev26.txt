@@ -1,0 +1,132 @@
+Below are the knowledge base articles on this wiki. We will add more as we resolve and work around any issues.
+
+== General Questions ==
+
+=== Networking Questions ===
+*[[Modifying existing DHCP server to work with FOG|Can I use my existing DHCP Server?]]
+*[[PXE|What is PXE?]]
+*[[IPXE|What is iPXE?]]
+*[[Rate/Bandwidth limiting]]
+*[[Deploying_your_Image_a_group_of_clients#Unicast_vs._Multicast_vs._Torrent-Cast_images | Unicast vs. Multicast vs. Torrent-Cast]]
+
+=== Operating systems ===
+{{Installation}}
+
+=== Other Questions === 
+*[[FOG on a MAC|Can I run the FOG Server on a MAC (G4)?]]
+*[[Images|Where are images stored?]]
+*[[Default Username and Password?]]
+*[[SATA Support|Can I image SATA drives with FOG?]]
+*[[SAS Support|Does Fog support SAS?]]
+*[[Ubuntu 12.04 static ip configuration]]
+*[[debianinstaller|Is there an installer for Debian?]] (outdated)
+
+== Knowledge Base Articles ==
+
+=== Installation and Configuration===
+*[[Booting into FOG and Uploading your first Image]]
+*[[Deploying your Image a single client]]
+*[[Deploying your Image a group of clients]]
+*[[tftp timeout....]]
+*[[Unable to connect to TFTP]]
+*[[MySQL setup error when installing]]
+*[[Windows_TFTP|Installing Windows TFTP Client]]
+
+=== The FOG Interface ===
+*[[Dashboard Error: Permission denied...]]
+*[[Reset WebUI FOG password]]
+
+=== Using FOG ===
+*[[gunzip not found]]
+*[[Images Directory Permissions|You receive the error: <i>unable to move /images/dev/macaddress to /images/name-of-image</i> when creating an image]]
+*[[Error: extended record needed|I keep getting <i>Error: extended record needed</i>, what do I do?]]
+*[[Vista won't boot after being imaged?]]
+*[[Vista Image says 0xc000000e \windows\system32\winload.exe can not be loaded]]
+*[[Error mounting NFS server 127.0.0.1]]
+*[[Unable to start task either image, or MAC address is null]]
+*[[Kernel Parameters]]
+*[[Moving Between Servers]]
+*[[Supported Snapin's and Command Line Switches]]
+*[[Debug Mode is asking me for a password]]
+=== Hook System ===
+*[[Hook System]]*
+=== FOG Classes ===
+*[[FOGController]]*
+*[[FOGManagerController]]*
+
+== How-To-Guides ==
+
+=== FOG PXE/iPXE Menu ===
+*[[Boot looping and Chainloading]]
+*[[Create Custom Fog Registration menu| Create Custom Fog Registration process in the FOG Bootmenu.]]
+*[[Edit PXE menu to create sub menus]]
+*[[How to change your pxe background| How to modify the default pxe boot menu background.]]
+*[[Graphical Menu Configruation Advanced |How to modify the PXE menu color / font]]
+*[[Include DOS based applications into the PXE boot menu]]
+*[[Include GParted | Include GParted in the FOG Bootmenu.]]
+*[[Include SystemRescueCD | Include SystemRescueCD in the FOG Bootmenu.]]
+*[[Include DSL | Include DSL in the FOG Bootmenu.]]
+*[[Include Puppy Linux| Include Puppy Linux in the FOG Bootmenu.]]
+*[[Include Parted Magic | Include Parted Magic in the FOG Bootmenu.]]
+*[[Include any ISO in the FOG Bootmenu]]
+
+=== Kernels ===
+*[[Build FOG Core Kernel ]]
+*[[Build TomElliott Kernel]]
+
+=== OS Help ===
+*[[Auto_driver_Install]] (Windows)
+*[[Cross-hardware deployment|How to create an XP image that will deploy across different hardware types.]] (Windows)
+*[[How to get Macintosh's Netboot working with your FOG server]] (MAC)
+*[[What Operating Systems can be imaged with FOG?]] (ALL)
+
+=== Networking ===
+*[[Change FOG Server IP Address]]
+*[[Not passing PXE, or ProxyDHCP...NO PROBLEM Cisco]]
+*[[Multicasting over a router|How to multicast over a router]]
+
+=== Storage Nodes ===
+*[[Adding Storage to a FOG Server]]
+*[[Windows Storage Node|Using Windows Server as a nfs storage node]]
+*[[Moving your images directory/Adding Storage to the Images directory]]
+
+=== Upgrading/Uninstalling/Backup FOG ===
+*[[Backing up FOG]]
+*[[Restoring FOG from Backup]]
+*[[Uninstall FOG]]
+*[[Upgrading FOG | How do I upgrade FOG?]]
+*[[Upgrade_to_1.0.0 | How do I upgrade to Fog 1.0.0]]
+*[[Upgrade to trunk | How do I upgrade to Fog trunk]] & *[[SVN| How do I upgrade to Fog SVN]]
+
+=== WOL ===
+*[[WOL Forwarding|How to forward Wake-on-LAN and DHCP traffic from one subnet to another subnet.]]
+*[[Wake On LAN Bug workaround]]
+*[[How to use the wakeonlan perl script instead of etherwake.exe]]
+
+=== Other ===
+*[[Changing Serial Number|After making one image, can I change the Windows Serial Number?]]
+*[[Modifying the Init Image|How can I modify the init.gz file?]]
+*[[Make Snapins Using FOSS]]
+*[[How to remote control a computer through FOG]]
+*[[Bootable Media | Using FOG on removable media.]]
+*[[Using a Snapin to update ntuser.man]]
+*[[Bonding Multiple NICs]]
+*[[How to translate FOG]]
+*[[Booting/Imaging a computer without PXE capable Network Card]]
+*[[Using FOG with an unmodifiable DHCP server/ Using FOG with no DHCP server]]
+*[[How to install window XP using unattended and FOG]]
+*[[Build FOG file system with BuildRoot - init.gz ]]
+*[[Switching to gpxelinux on Ubuntu FOG server]]
+*[[Installing the FOG Bypass Host Registration]]
+
+== Troubleshooting ==
+
+*[[Debug Mode]]
+*[[Is PC compatible with FOG kernel]]
+*[[Multicasting]]
+*[[Active Directory - FOG Setting]]
+*[[PXE error code]]
+*[[Error Messages]]
+*[[Uninstalling FOG Service on WinXP clients]]
+*[[Boot looping and Chainloading]]
+*[[Setting up and building UDPCast...Failed!]]

@@ -1,0 +1,302 @@
+
+
+'''
+== FOG (r2922) Configuration on Fedora 21 Workstation inside Windows Server 2012 Hyper-V using Windows Server DHCP ==
+'''
+
+
+'''Notes:''' These instructions are intended to be followed ''IN ORDER''.
+
+
+Although these instructions were specifically written for r2922 & Fedora 21 (non-updated) inside Hyper-V using Windows Server DHCP, they might help a lot with other newer versions of Fedora; although these other versions have not been tested. These instructions should work fine if you're not using Hyper-V; maintaining that everything else remains the same.
+
+
+Also, these instructions should be good for any SVN above r2922. If you want to check out a newer revision (which I would recommend), simply change the SVN command below to a different number. Keep in mind, you can upgrade but not downgrade (unless using snapshots).
+
+
+
+==='''Hyper-V machine settings'''===
+
+*4 cores (or higher)
+*4086 MB of non-dynamic ram.
+*512GB HDD (large size for storing the images on the v-machine)
+*Ensure v-machine is connected to a working virtual switch (a working internet connection is required during the FOG software installation).
+*set Fedora 21 workstation ISO into the virtual optical drive.
+*Everything else is default
+
+For further details about network setup of Hyper-V: http://fogproject.org/forum/threads/hyper-v-server-2012-configuration-for-fog-overview.12694/
+
+==='''Installing Fedora 21'''===
+
+*Boot the V-Machine
+*Install to Hard drive
+*english & english -> next
+*‘Automatic partitioning selected’ is not optimal. Say you want to configure them on your own, and then click the “Make partitions automatically” on the left. From there, you can customize the mount points and their sizes.
+
+
+===='''Configuring your own partitions'''====
+
+*Create a directory called /images  and give it as much space as you can. You don’t need to specify the size at first. You can create it and then change the size in the next screen.
+*To give it over 400GB, you’ll need to reduce the “/home” and “/” directories.  “/” only needs double the amount of ram the system has (8GB). “/home” only needs working space… 20 gigs should be ample.
+*Network & Hostname: FOG (or whatever you like)
+*Click “Begin Installation”
+*Set root password to the Password, MAKE NOTE OF THIS (It must be longer than 8 characters and not a dictionary word, otherwise you’ll run into problems later).
+*Make user & Password (I made one called Administrator with a lowercase ‘a’ for the username.) 
+*Check ‘Make this user administrator’
+*Wait for Fedora to install….
+*When install is complete, click Quit.
+*Shutdown Fedora gracefully via the in-system power button. Then remove the ISO in the settings via Hyper-V.
+
+
+===='''Pre-Configuration of Fedora 21 for FOG'''====
+
+*boot, if given options, choose the non-emergency one.
+*Log in as the user you created. (Administrator)
+*On first login, choose english & then NEXT
+*Standard English keyboard and NEXT
+*Skip online accounts, “SKIP”
+*click “Start using Fedora”
+*Close “Getting Started” because were already started….
+*OPEN THIS DOCUMENT on the FOG Machine! Lots of copy/pasting!
+	
+
+===='''Disable Firewall and SELinux'''====
+
+*Click “Activities” in top left.
+*Type “Terminal” (this is a lot like windows metro on a desktop, just type what you want)
+*Switch to root with <pre>su root</pre>
+*Enter password set during install 
+*Disable the firewall
+ <pre>systemctl disable firewalld.service</pre>
+*Disable SELinux by editing /etc/selinux/config <pre>gedit /etc/selinux/config</pre>
+Change the line <pre>SELINUX=enforcing</pre> to <pre>SELINUX=disabled</pre>
+*save and close.
+*Reboot the machine.
+
+
+===='''CHECK SETTINGS SO FAR'''====
+
+*After reboot, verify that the firewall is off, and SELinux is off.
+*log into your Administrator account, open terminal.
+*Switch to root. <pre>su root</pre>
+*Enter your password.
+<pre>sestatus</pre> should return ‘disabled’
+<pre>systemctl status firewalld.service</pre> should return “disabled” and “dead”.
+*Don’t close terminal window, don’t exit ‘root’.
+
+
+===='''Set up a static IP address'''====
+
+*Click Activities
+*type “settings”, the Settings icon should appear. Click it.
+*Click Network
+*Under the “wired” adapter, click the gear to set up custom settings.
+*Click “IPv4”
+*Enter in the IP you want to use, netmask, gateway, and DNS server information.
+*Click “Apply”
+*For settings to update, turn off the adapter and then turn it back on. (click the slide)
+*Test by trying to visit Google with firefox. Confirm and close.
+
+
+===='''Configuring existing DHCP server (Windows Server 2012)'''====
+
+Inside your DHCP server, we have to set some options.
+*IPv4 -> Scope -> Scope Options. 
+*Right click Scope Options.
+*Enable 066 Boot Server Host Name, enter the FOG server’s IP.
+*Enable 067 Bootfile Name, set it as <pre>undionly.kpxe</pre>
+
+
+==='''Setting Up Fog'''===
+
+*install svn
+<pre>yum install svn</pre>
+*Yes, you want to install (this will install "beta" Please download from [http://sourceforge.net/projects/freeghost/files/latest/download?source=files sourceforge] for "Stable")
+<pre>svn co -r 2922 https://svn.code.sf.net/p/freeghost/code/trunk /opt/fog_trunk</pre>
+(for newer revisions, change the number to what you want. See more info about updating to revisions here: [[Upgrade to trunk]])
+
+<pre>cd /opt/fog_trunk</pre>
+<pre>cd bin</pre>
+<pre>./installfog.sh</pre>
+*Choose option 1 (because we are using Fedora)
+*Choose the “normal server” because we want it to do everything (but dhcp)
+*Hit enter to accept the currently assigned IP address.
+*Router Address for the DHCP server -> optional. I said no. You’d need this if you were using the FOG server as a DHCP server.
+*DNS address for the dhcp server ->optional. I said no. You’d need this if you were using the FOG server as a DHCP server.
+*Change default network interface, NO!
+*Use FOG server for DHCP service? NO!
+*Install internationalization support? NO!  (“yes” will break FOG running on Fedora)
+*Donate computer resources? NO! (Unless you want to. See wiki information on how that works)
+*Do you wish to continue? Yes!
+*Fog installs…. wait…
+*Make notes of ANY failed package installs…
+*When it asks, the installer directory should be /images  (we pre-made this during the Fedora install)
+*Yes, you left the mysql password blank (it’s blank out of the box).
+*Update the database schema by navigating to the provided link.
+*Use a web browser. Address is:  x.x.x.x/fog/management You don’t have to use Linux for this, use any computer’s web browser (any computer within your LAN).
+*If it only works in Fedora, check Firewall and SELinux status.
+*click “install/Upgrade Now”.
+*wait for that to get done.
+*Press enter in installer.
+
+==='''Necessary post install configuration'''===
+
+*Some required file manipulation and permission changes:
+*Change the fog user’s password using <pre>passwd fog</pre>
+*enter the Password
+*Create blank file to make Fog check directories 
+<pre>cd /</pre>
+<pre>touch /images/.mntcheck</pre>
+<pre>touch /images/dev/.mntcheck</pre>
+*Edit the FTP settings file with <pre>gedit /etc/vsftpd/vsftpd.conf</pre>
+*add this line to the bottom of the file:  <pre>seccomp_sandbox=NO</pre>
+*Save the file.Reboot server
+
+
+==='''Set the FOG services to start 30 seconds after boot''' ===
+
+(necessary with Fedora 21 & r2922. There's an issue with the FOGMulticastManager after a reboot; it's timing related.)
+
+
+*Disable FOG services with:
+<pre>systemctl disable FOG{MulticastManager,Scheduler,SnapinReplicator,ImageReplicator}</pre>
+Create a startup script with <pre>gedit /etc/rc.d/rc.local</pre>
+
+*Make that file look like below, exactly.
+
+<pre>#!/bin/bash
+sleep 30
+systemctl start FOGMulticastManager
+systemctl start FOGScheduler
+systemctl start FOGSnapinReplicator
+systemctl start FOGImageReplicator
+exit 0</pre>
+
+*save the file
+*Then Run this command to make that file executable: <pre>chmod +x /etc/rc.d/rc.local</pre>
+
+
+==='''FOG Configuration.''' ===
+
+*go to the web interface using <pre>x.x.x.x/fog/management</pre>
+*login (default is fog:password)
+*Click “Storage Management” (network folder looking thing at top).
+*Click “Default Member” in the list.
+*Change management password to the linux fog user’s Password and then click “Update”.
+*Click “Fog Configuration” (blue question mark at top).
+*Click “Fog Settings” on left.
+*Click “TFTP Server”
+*Change Password to the right one.
+*Click Save Changes
+*If you have custom Multicast Settings (like address and port), click Multicast settings and put them in there, and then save the changes.
+
+
+
+
+
+==='''At this point, you should be done with major configuration.'''===
+
+
+
+
+'''
+
+== FOG Server Troubleshooting Help (Fedora 21, r2922 & up) ==
+'''
+
+
+
+
+==='''TFTP Services'''===
+
+*Check TFTP status with <pre>systemctl status xinetd.service</pre> (should be on and green, no errors, and enabled)
+*stop, start, disable and enable TFTP service. 
+<pre>systemctl stop xinetd.service</pre>
+<pre>systemctl start xinetd.service</pre>
+<pre>systemctl enable xinetd.service</pre>
+<pre>systemctl disable xinetd.service</pre>
+
+
+==='''RPC Services'''===
+
+*Check the status of RPC with <pre>systemctl status rpcbind</pre> (should be on and green, no errors, and enabled)
+*Stop, start, disable and enable RPC Service
+<pre>systemctl stop rpcbind</pre>
+<pre>systemctl start rpcbind</pre>
+<pre>systemctl enable rpcbind</pre>
+<pre>systemctl disable rpcbind</pre>
+
+
+==='''NFS Services'''===
+
+*Check the status of NFS with <pre>systemctl status nfs-server</pre> (should be on and green, no errors, and enabled)
+*stop, start, disable and enable NFS service
+<pre>systemctl stop nfs-server</pre>
+<pre>systemctl start nfs-server</pre>
+<pre>systemctl enable nfs-server</pre>
+<pre>systemctl disable nfs-server</pre>
+
+
+==='''FTP Services'''===
+
+*Check the status of FTP with <pre>systemctl status vsftpd.service</pre> (should be on and green, no errors, and enabled)
+*stop, start, disable and enable FTP service.
+<pre>systemctl stop vsftpd.service</pre>
+<pre>systemctl start vsftpd.service</pre>
+<pre>systemctl disable vsftpd.service</pre>
+<pre>systemctl enable vsftpd.service</pre>
+*Test that it’s functioning by using a web browser and going to <pre>ftp://x.x.x.x</pre>
+*Use  fog / your-fog-account-Password  for the credentials
+*You should see “Index of /”
+
+
+==='''Firewall Service'''===
+
+*Check the status of the firewall with <pre>systemctl status firewalld.service</pre> (should be OFF, no errors, and disabled)
+*stop, start, disable and enable FTP service.
+<pre>systemctl stop firewalld.service</pre>
+<pre>systemctl start firewalld.service</pre>
+<pre>systemctl disable firewalld.service</pre>
+<pre>systemctl enable firewalld.service</pre>
+
+
+==='''SELinux Service'''===
+
+*Check the status of SELinux with <pre>sestatus</pre> (should be disabled)
+*Disable/enable by editing using <pre>gedit /etc/selinux/config</pre> followed by a reboot.
+
+
+==='''FOGMulticastManager'''===
+
+*Check status with <pre>systemctl status FOGMulticastManager.service</pre> (Should be active, green lit, with no errors)
+*Start, stop, disable, enable, restart by changing the “status” portion of that command to what you need.
+
+
+==='''FOGImageReplicator'''===
+
+*Check status with <pre>systemctl status FOGImageReplicator.service</pre> (Should be active, green lit, with no errors)
+*Start, stop, disable, enable, restart by changing the “status” portion of that command to what you need.
+
+
+==='''FOGSnapinReplicator'''===
+
+*Check status with <pre>systemctl status FOGSnapinReplicator.service</pre> (Should be active, green lit, with no errors)
+*Start, stop, disable, enable, restart by changing the “status” portion of that command to what you need.
+
+
+==='''FOGScheduler'''===
+
+*Check status with <pre>systemctl status FOGScheduler.service</pre> (Should be active, green lit, with no errors)
+*Start, stop, disable, enable, restart by changing the “status” portion of that command to what you need.
+
+== Client BIOS Settings for auto-boot to network ==
+
+
+==='''Dell Optiplex 7010 BIOS configuration'''===
+
+*F12 while system is powered on.
+*select “BIOS setup”
+*General -> Boot Sequence
+*“Onboard NIC” should be the first.
+*System Configuration -> Integrated NIC
+*“Enabled w/PXE” should be selected.

@@ -1,0 +1,50 @@
+{| class="wikitable sortable" border="1" cellspacing="0" cellpadding="3"
+|-
+! Software !! Version!! File Extension Used !!Command Line Switch Used !! Notes !! Documentation / Links !! Screen Shot !! Download Link
+|-
+| Firefox|| 3.6.x, 4.0+ || .exe || -ms ||Useful for both silent install and silent update. May be helpful to rename to <tt>Firefox.exe</tt> for updating purposes. || [https://wiki.mozilla.org/Installer:Command_Line_Arguments] || [http://www.fogproject.org/wiki/images/5/55/Firefox_snapin.PNG] || [http://www.mozilla.com/en-US/products/download.html]
+|-
+| Kidspiration|| 3 || .exe ||  || Used InstallRite and set to reboot after install and turned off quiet installation.  || [] ||  || [http://www.inspiration.com/kidspiration]
+|-
+| Spybot|| 1.6.2 || .exe || /verysilent || /very silent will do a full silent install, see documentation  || [http://forums.spybot.info/showthread.php?t=16684] [http://forums.spybot.info/showthread.php?t=17571] [http://www.msfn.org/board/Application_Switches_Contributions_t12657.html&st=200&p=691078#entry691078] || [http://www.fogproject.org/wiki/images/a/ac/Spybot_Snapin.PNG] || [http://download.cnet.com/Spybot-Search-amp-Destroy/3000-8022_4-10122137.html]
+|-
+| Adobe Reader||9.XX or 10.01 || .exe  || /sAll /rs /l || Other advanced features available, see documentation  || [http://www.adobe.com/devnet/acrobat/pdfs/deploying_reader9.pdf] || [http://www.fogproject.org/wiki/images/5/58/Adobe_reader_snapin.png] || [http://ardownload.adobe.com/pub/adobe/reader/win/9.x/9.1/enu/AdbeRdr910_en_US.exe]
+|-
+| Adobe Shockwave Full Installer ||11.5.1.601 || .exe  || /S || Please note you must use a capital S in the command line  || [http://www.msfn.org/board/release-adobe-shockwave-player-11-0-0-465-t64015-pid-825596-page-160.html&s=9b82edaf78d657cf0a79ec501c897ff2#entry825596] ||  || [http://www.adobe.com/go/sw_full_exe_installer]
+|-
+| .VBS Scripts || || .vbs  ||  || Must link to c:\windows\system32\cscript.exe in the "Snapin Run With:" command ||  ||  || 
+|-
+| Ninite Pro Installer || any || .exe || /silent || Free installer from ninite.com will not work, must subscribe to the pro service. Works great to update any apps available on Ninite. Always installs the latest version. || [http://ninite.com] [http://ninite.com/pro] [http://ninite.com/info/advanced] || ||
+|-
+| Microsoft Office 2007 or 2010 || any || .exe || Does not use a command line switches, you MUST use SFX Maker or other software to encapsulate the base folder.  Please see notes. || Uses a created .msp answer file.  Run setup.exe /admin under command prompt to get started.  Once you create the .msp file place it in the folder. See documentation links for help || [http://www.appdeploy.com/packages/detail.asp?id=860] [http://www.youtube.com/watch?v=Qzc1Q9NW_cE]  || ||
+|-
+| VLC || 1.1.11|| .exe || /L=1033 /S || Replace /L=1033 with the language code you need. 1033 is English. ||   || ||[http://www.videolan.org/vlc/download-windows.html]
+|-
+| Adobe AIR|| any || .exe || -silent -eulaAccepted || You must request distribution rights from Adobe to get links. ||   || || 
+|-
+| Adobe Flash Player 10 ActiveX|| 10 || .msi || /qn|| Run with 'c:\WINDOWS\system32\msiexec.exe' run with args '/i' You must request distribution rights from Adobe to get links.  ||   || || 
+|-
+| Adobe Flash Player 10 for Plugin Browsers|| 10 || .msi || /qn|| Run with 'c:\WINDOWS\system32\msiexec.exe' run with args '/i' You must request distribution rights from Adobe to get links.  ||   || || 
+|-
+| ESET Nod32|| 4 || .msi || || You need to create an install package with a tool like SFXMaker. Put the msi and your cfg.xml file into a directory along with a .bat file containing the script below. Then, set the package to execute the bat file.
+<pre>@ECHO OFF
+ECHO Installing ESET
+ECHO Please wait...
+start /wait msiexec.exe /i %systemdrive%\Windows\Temp\7ZipSfx.000\eavbe_nt32_enu.msi /qn REBOOT="ReallySuppress"</pre>
+  ||   || || 
+|-
+| Audacity || any || .exe || || Use InstallRite per the instructions in the documents link, to create a custom installer. || [http://schoolitexpert.com/Network-Tools/FOG/using-installrite-to-create-snapins-for-fog.html]  || || 
+|-
+| Google Chrome Standalone Enterprise || any || .msi|| || Run with 'c:\WINDOWS\system32\msiexec.exe' run with args '/i'. || || ||[http://www.google.com/apps/intl/en/business/chromebrowser.html] 
+|-
+| Microsoft Security Essentials  || 2.1.11|| .exe || /s /runwgacheck ||  ||   || ||[http://windows.microsoft.com/en-US/windows/products/security-essentials]
+|-
+|}
+
+
+
+
+
+There are also additional software packages that will load that have not been tested or confirmed working yet.  Please feel free to edit this document when you find more. 
+
+'''Please note that with FOG you must NOT have a space in the file name when it it is uploaded to the server, and you must also link to Windows .msi when deploying an .msi to the server as well.'''

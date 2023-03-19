@@ -1,0 +1,28 @@
+Article under construction - below you'll find notes/gibberish on the topic. Expect an article soon.
+
+
+
+[[File:Fedora 23 partitioning.png]]
+
+
+Create boot, root, images, home, and swap partitions - keep things seperate, prevent OS from crashing if images fill it's partition, likewise with home.
+
+
+Fedora 23 minimal.
+
+
+setup firewall
+
+
+set SELinux to permissive
+
+
+Reboot.
+
+
+
+dnf install -y subversion
+cd ~
+mkdir svn
+cd svn
+svn checkout https://svn.code.sf.net/p/freeghost/code/trunk

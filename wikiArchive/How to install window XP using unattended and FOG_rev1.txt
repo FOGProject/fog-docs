@@ -1,0 +1,11 @@
+=Overview=
+THIS WALKTHROUGH IS NOT COMPLETE
+
+This guide will show you how to install and configure [http://www.unattended.sourceforge.net Unattended] to work with [http://www.fogproject.org FOG].<br />
+This is helpful when you want to install Windows XP (or 2000 or 2003 server) by using an installer rather than an image. (such as in a repair shop environment)
+
+__TOC__
+
+==Installing Unattended==
+===Download and unpack===
+*Download the Unattended Package from [http://unattended.sourceforge.net/step-by-step.php#step1 unattended.sourceforge.net]

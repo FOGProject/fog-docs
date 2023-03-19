@@ -1,0 +1,8 @@
+<table border="1">
+<tr><td width="100px"valign="top">'''Kernel'''</td><td width="20px" valign="top">'''Working'''</td><td width="690px">'''Description'''</td></tr>
+
+<tr><td width="100px" valign="top">2.6.35.7 PS</td><td width="20px" valign="top" align="center">Yes</td><td valign="top" width="690px"> </td></tr>
+
+<tr><td width="100px" valign="top">2.6.39 (default)</td><td width="20px" valign="top" align="center">No</td><td valign="top" width="690px">"nvidiafb: unable to setup MTRR"</td></tr>
+
+</table>

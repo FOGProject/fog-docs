@@ -1,0 +1,27 @@
+'''USE AT YOUR OWN RISK: We are not responsible for any damage to yourself, hardware, or co-workers. Use at your own risk. This is a set up that was proven to work in at LEAST 3 test environments. Any misuse or replication of this walk through in any other form is STRICTLY PROHIBITED.'''
+== Ubuntu 12.04, 12.10, 13.10 Setup & Installation ==
+
+# Insert your Ubuntu installation disc and reboot the computer. Boot from the disc, Ubuntu will launch in it’s live form for you to get a feel for the OS or install. You will be presented with two options, install Ubuntu or run a Live instance. Click the “Install Ubuntu” Option when it is presented to you at the Welcome screen.
+# Proceed with a normal install of Ubuntu.  It is recommended to make the choice to Download the Latest updates while installing by Ticking the checkbox. Ubuntu will now examine hardware and alert you of any previously existing operating systems.  Recommended that you remove all information unless you have other OS's you want to keep on the system. During the install Ubuntu will ask you to set your timezone, Layout, and some user information such as a user name and password.  Set this information to your liking. In the latest flavors of Ubuntu the Root user account is disabled, after installation this guide will show you how to enable it. Ubuntu will copy files and begin the installation.
+# After installation is complete, reboot. Remove the installation disc and press enter, your computer will reboot and boot up in it’s new operating system that is much faster and more durable than it’s squishy, virus prone, partners. Log in with the Password and the User you specified during installation.
+
+Your system should now be installed and ready to go.
+
+== Enabling Root on Ubuntu ==
+
+# Please open up a terminal or console and log in as the user you created.
+# To gain access, enter the following command and re-type the user password.
+#*<pre>sudo su -</pre>
+#Then type the following command:
+#*<pre>passwd root</pre>
+#*It will ask you to enter the new password.  You will not see anything being entered, but it is typing.  Once complete Press Enter.
+#*It will ask you to confirm the password.  You will not see anything being entered, but it is typing.  Once complete Press Enter.
+#*The terminal will return with <code>Password updated successfully!</code>
+#Type or copy the following code into the terminal and press enter.
+#*<pre>echo "greeter-show-manual-login=true" >> /etc/lightdm/lightdm.conf</pre>
+#Please restart the machine with the command:
+#*<pre>shutdown -r now</pre>
+#Once the system returns, you can now login as the root user even from the GUI.  Just type the username: <code>root</code>  in the Password field, you'll type the password you set in the passwd root command above.
+
+== Setting static IP ==
+To be continued.

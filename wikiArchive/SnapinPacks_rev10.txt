@@ -1,0 +1,131 @@
+Under construction.
+
+
+= SnapinPacks Brief Overview =
+
+SnapinPacks are a new feature specific to FOG 1.3.0 and the new FOG Client (version 0.11.3+). The key ability that SnapinPacks allow is to deploy many files to hosts, and execute one of those files with any needed arguments.
+
+For example, you may deploy driver files to a host with a single SnapinPack. With those files, you can include a script which would run and place the drivers where they need to be. Another example would be bundling a dozen different MSI files, and include a script that runs each MSI with it's individual needed arguments if any. Another example would be larger silent installations such as Adobe Creative Cloud or Microsoft Office; both of these have silent installations with many files and would be well suited for SnapinPacks.
+
+= Snapins Are Silent =
+
+SnapinPacks must be silent, this requirement has not changed. What is a silent snapin? A silent snapin requires zero interaction to run. If at any point the snapin asks for input from a user, it will simply wait for input that will never come, and timeout eventually.
+
+= Snapins Run as SYSTEM or root =
+
+All Snapins including SnapinPacks run as the <font color="red">SYSTEM</font> or <font color="red">root</font> user's security context. If a snapin or SnapinPack runs successfully by manual execution but not via the FOG Client - this is typically related to the security context. For example, say you have a shared directory that is granted read access for all <font color="red">Domain Users</font>. Well, an individual host's local <font color="red">SYSTEM</font> or <font color="red">root</font> account is not a member of <font color="red">Domain Users</font>. Therefore, unless alternative credentials are supplied to access the share, any script executed that tries to read this share will not work. There are a few solutions to this. Granting the share read access for anonymous users is the most simple. Specifying credentials within scripts, or as arguments are viable options.
+
+= SnapinPacks are Compressed =
+
+Unlike a normal Snapin where a single file is uploaded to the Fog server, SnapinPacks are a collection of files that are compressed with the .zip format. The organization of files inside the .zip file is up to you, but you must supply FOG with the path to the executable inside the .zip file. This can be confusing to newcomers, so below are two generic examples of how it works.
+
+The new FOG Client extracts the .zip file to a directory with the name of the SnapinPack, On Windows it is in this location:
+<font color="red">C:\Program Files (x86)\FOG\tmp\Snapin-Pack-Name</font>
+
+If the .zip file extracts a folder with files, this internal folder's name does not change, but it is still all placed within a parent directory named with the SnapinPack's name. For instance, if I had a SnapinPack called "<font color="red">abc</font>", and I uploaded a .zip file to the FOG server for it called "<font color="red">def.zip</font>", and within that .zip file there was a folder called "<font color="red">ghi</font> and within that folder, a file called "<font color="red">jkl.bat</font>". 
+* The FOG Client would create a directory called "<font color="red">C:\Program Files (x86)\FOG\tmp\abc</font>"
+* The FOG Client would extract everything in the .zip file into the above path.
+* The folder inside the .zip file is now at "<font color="red">C:\Program Files (x86)\FOG\tmp\abc\ghi</font>"
+* The executable's path would be "<font color="red">C:\Program Files (x86)\FOG\tmp\abc\ghi\jkl.bat</font>"
+* The FOG Client's variable <font color="red">[FOG_SNAPIN_PATH]</font> for this SnapinPack expands to "<font color="red">C:\Program Files (x86)\FOG\tmp\abc</font>" at runtime.
+* To path further past the <font color="red">[FOG_SNAPIN_PATH]</font> variable, just append after it as in the provided example, include any folder paths, and the desired executable.
+
+So for example, you have created in FOG a snapin called "<font color="red">common-things</font>". For this snapin, you upload a .zip file called "<font color="red">All-common-things</font>". The FOG Client will create a directory called: <font color="red">C:\Program Files (x86)\FOG\tmp\common-things</font> and everything inside of the .zip file will be extracted into this new directory. The FOG Client will then attempt to execute the specified executable in this new directory.
+
+Let's say the SnapinPack had two files. A batch file and an msi file, <font color="red">run.bat</font> and <font color="red">install.msi</font>. These files would be extracted to a directory named with the SnapinPack's name - not the .zip file's name. Continuing with the above example, their locations would be:
+
+<font color="red">C:\Program Files (x86)\FOG\tmp\common-things\run.bat</font>
+<font color="red">C:\Program Files (x86)\FOG\tmp\common-things\install.msi</font>
+
+The file we wish to run is <font color="red">run.bat</font>. In the SnapinPack configuration, we see the field "Snapin Pack Arguments". If you have used the template for SnapinPacks, and then chosen an appropriate template for what type of executable, this field will be filled in for you mostly, but you must still edit it. 
+
+In this case, we want to run a batch file, so after selecting the Snapin Type's SnapinPack choice and then picking the Snapin Pack Template's Batch File choice, we find that the Snapin Pack Arguments is filled in with <font color="red">/c "[FOG_SNAPIN_PATH]\MyScript.bat"</font>. 
+
+In this argument, <font color="red">[FOG_SNAPIN_PATH]</font> is a variable within the FOG Client that is expanded during run-time of the snapin pack. This means you do not need to change this. The <font color="red">[FOG_SNAPIN_PATH]</font> portion, continuing the above example, would be expanded to: "<font color="red">C:\Program Files (x86)\FOG\tmp\common-things</font>" and then the rest of the argument would add on the other piece "<font color="red">\MyScript.bat</font>". So putting these together, you get "<font color="red">C:\Program Files (x86)\FOG\tmp\common-things\MyScript.bat</font>"
+
+Of course, in this example, we don't want to run "MyScript.bat" because it doesn't exist. We want to execute <font color="red">run.bat</font>. So, we simply edit the Snapin Pack Arguments, remove the generic executable name, and place our desired executable name.
+
+= Creating a SnapinPack =
+
+== Create New SnapinPack in FOG ==
+
+* '''1.''' Place all needed files in a folder. Right click the folder, choose to compress it. There are different menus for compressing depending on the OS you're using. Linux, Windows, and OSX SnapinPacks must use the .zip format.
+
+
+* '''2.''' Access your FOG server's web interface via <font color="red">x.x.x.x/fog/management</font> and log in.
+
+
+* '''3.''' Click the Snapin Management icon on the FOG Ribbon, it's at the top, here:
+
+
+[[File:Snapin Management.png]]
+
+
+
+* '''4.''' On the ''left'' of the Snapin Management page, click "Create New Snapin."
+
+
+[[File:Create New Snapin.png]]
+
+
+* '''5.''' Give the SnapinPack a name, Choose the correct Snapin Storage Group, and then click the arrow for Snapin Type and select Snapin Pack.
+
+
+[[File:SelectSnapinPack.png]]
+
+
+* '''6.''' Choose the appropriate SnapinPack template. There are several templates available. For example, if the SnapinPack only runs an EXE, choose EXE. If it only runs an MSI, choose MSI. If it only runs a BASH script, choose Bash Script. If it only runs a batch file (<font color="red">.bat</font>), choose Batch Script. SnapinPacks are '''not''' limited to the templates available.
+
+
+[[File:SnapinPack Templates.png]]
+
+
+* '''7.''' Edit the Snapin Pack Arguments as appropriate. If your .zip file has within it a folder, you would need to include the folder's name between "<font color="red">[FOG_SNAPIN_PATH]</font>" and the path to the executable. For example, let's say the .zip file contains a folder called "<font color="red">test-pack</font>", and within this folder we desire to execute a Batch Script called "<font color="red">install-common-things.bat</font>" We would make our Snapin Pack Arguments as follows:
+** <font color="red">"[FOG_SNAPIN_PATH]\test-pack\install-common-things.bat"</font>
+
+
+* '''8.''' Choose the .zip file you prepared in step '''1.''' by clicking the "Browse" button, and browsing to the .zip file and select it.
+
+
+* '''9.''' (optional) Check the "Snapin Arguments Hidden?" checkbox to hide the arguments of the Snapin. This is helpful if you send passwords to the Snapin via arguments. It's un-helpful when trying to troubleshoot.
+
+
+* '''10.''' (optional) Check or uncheck the "Replicate?" checkbox as you see appropriate. The default is checked, which means the SnapinPack will replicate to all storage nodes that are enabled members of the selected Snapin Storage Group from Step '''5.''' Disabling this option means the SnapinPack may only be "downloaded" by hosts from the master of the selected Snapin Storage Group.
+
+
+* '''11.''' (optional) Select if you would want hosts that this SnapinPack is deployed to - to reboot after completion, or shutdown after completion. If a shutdown or reboot is required, you '''<font color="red">must use this option</font>''' to reboot or shutdown instead of scripting it. Scripting a shutdown or reboot means the FOG Client cannot report success or failure of the SnapinPack's completion, the Snapin task will remain in queue, and the host will re-attempt to install the SnapinPack the next time it boots, resulting in a '''reboot loop'''.
+
+
+* '''12.''' Examine the "Snapin Command" at the bottom of the options. Does it look right? For troubleshooting, you may place the non-zipped SnapinPack on a host, and replace [FOG_SNAPIN_PATH] with the full path to the un-zipped SnapinPack files, and run the command with the OS's appropriate run dialog (run, terminal, powershell, etc).
+
+
+* '''13.''' Click the "ADD" button at the bottom when you are satisfied with your SnapinPack.
+
+== Deploying a SnapinPack ==
+
+= Examples =
+
+== Very thorough Batch Script example ==
+
+External Video Link:
+
+[https://www.youtube.com/watch?v=vIGbm5wvMC4 Chrome SnapinPack FOG 1 3 0 Example and Explanation ]
+
+Video:
+<embedvideo service="youtube">https://www.youtube.com/watch?v=vIGbm5wvMC4</embedvideo>
+
+== MSI ==
+
+== MSI + MST ==
+
+== Batch Script ==
+
+== BASH Script ==
+
+== VB Script ==
+
+== PowerShell Script ==
+
+== EXE ==
+
+== Mono ==

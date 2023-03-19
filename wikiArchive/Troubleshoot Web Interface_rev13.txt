@@ -1,0 +1,10 @@
+Page under construction. Below you'll find notes that are being collected to make into an article.
+
+= Fatal error: Allowed memory size of xxxxxxxx bytes exhausted =
+
+Reference: [https://forums.fogproject.org/topic/6234/fog-version-5507-cannot-access-host-management Fog Version 5507 Cannot Access Host Management]
+
+'''Solution:''' Raise the web interface's memory limit:
+<font color="red">FOG Configuration -> FOG Settings -> General Settings -> FOG_MEMORY_LIMIT</font> 
+
+It’s done in megs, so 128 = 128M, 256 = 256M etc…

@@ -1,0 +1,289 @@
+
+
+
+== TFTP's roles in FOG ==
+
+TFTP is used to download the boot-file specified by either DHCP or ProxyDHCP. TFTP is very simple and has very little protections in place; Generally read-only is preferred for files offered by TFTP, however full permissions will work too. Normally, the boot-files for FOG are located in /tftpboot   Generally, TFTP offers [http://fogproject.org/wiki/index.php/Filename_Information these boot files].
+
+== Testing TFTP ==
+
+
+
+=== Try to get a file with Linux: ===
+
+This is ran from a separate Linux machine, NOT your FOG server.
+
+Normally, you can use your Linux installation medium to live boot on another computer.
+
+<pre>tftp -v x.x.x.x -c get undionly.kpxe
+Connected to x.x.x.x (x.x.x.x), port 69
+getting from x.x.x.x:undionly.kpxe to undionly.kpxe [netascii]
+Received 89509 bytes in 0.0 seconds [84047115 bit/s]
+</pre>
+
+=== Try to get a file with Windows: ===
+<pre>tftp x.x.x.x get undionly.kpxe</pre>
+
+==== Testing using Windows ====
+{{:Windows_TFTP}}
+
+== TFTP Service ==
+
+=== Fedora 20/21 === 
+
+status/enable/restart
+<pre>systemctl status xinetd.service
+systemctl enable xinetd.service
+systemctl restart xinetd.service</pre>
+
+=== Ubuntu ===
+
+newer systems:
+
+status/enable/restart
+<pre>service tftpd-hpa status
+service tftpd-hpa restart
+service tftpd-hpa enable</pre>
+
+older systems:
+
+status/enable/restart
+<pre>sudo /etc/init.d/xinetd status
+sudo /etc/init.d/xinetd restart
+sudo /etc/init.d/xinetd enable</pre>
+
+== TFTP Settings file ==
+
+
+=== Fedora: ===
+
+Location:
+<pre>/etc/xinetd.d/tftp</pre>
+
+To display /etc/xinetd.d/tftp:
+<pre>cat /etc/xinetd.d/tftp</pre>
+
+It should look a whole lot like this:
+
+<pre># default: off
+# description: The tftp server serves files using the trivial file transfer #   protocol.  
+#The tftp protocol is often used to boot diskless workstations, download configuration files to network-aware printers, 
+# and to start the installation process for some operating systems.
+service tftp
+{
+        socket_type             = dgram
+        protocol                = udp
+        wait                    = yes
+        user                    = root
+        server                  = /usr/sbin/in.tftpd
+        server_args             = -s /tftpboot
+        disable                 = no
+        per_source              = 11
+        cps                     = 100 2
+        flags                   = IPv4
+}</pre>
+
+To edit /etc/xinetd.d/tftp:
+<pre>sudo vi /etc/xinetd.d/tftp</pre>
+
+
+Explanation of settings for /etc/xinetd.d/tftp:
+<pre>man xinetd.conf</pre>
+
+
+
+=== Ubuntu: ===
+
+Location:
+<pre>/etc/default/tftpd-hpa</pre>
+
+To display /etc/default/tftpd-hpa:
+<pre>cat /etc/default/tftpd-hpa</pre>
+
+It should look a whole lot like this:
+
+<pre># /etc/default/tftpd-hpa
+# FOG Modified version
+TFTP_USERNAME="root"
+TFTP_DIRECTORY="/tfptboot"
+TFTP_ADDRESS="0.0.0.0:69"
+TFTP_OPTIONS="-s"</pre>
+
+To edit /etc/default/tftpd-hpa:
+<pre>sudo vi /etc/default/tftpd-hpa</pre>
+
+Explanation of settings for /etc/default/tftpd-hpa:
+<pre>man tftpd-hpa</pre>
+
+
+
+=== Instructions on using Vi: ===
+
+[[Vi]]
+
+== FOG Configuration (web interface) ==
+
+x.x.x.x/fog/management -> FOG Configuration -> FOG Settings -> TFTP Server ->  
+
+Ensure that the below settings are set to a local FOG linux user that actually exists. Ensure correct password is provided. Ensure that the supplied user has permission to the /tftpboot directory (see permissions).
+
+FOG_TFTP_FTP_USERNAME
+
+FOG_TFTP_FTP_PASSWORD
+
+== Disable & Verify Firewall ==
+{{:Disable & Verify Firewall}}
+
+
+It's necessary to disable the Windows firewall when using windows for testing. The below image demonstrates disabling the firewall which allows TFTP traffic to pass. 
+
+[[File:TFTP Windows Firewall.png]]
+
+== Permissions ==
+
+Check permissions on /tftpboot directory by using:
+<pre>ls -laR /tftpboot</pre>
+
+Set permissions to allow everyone full access to /tftpboot and all contents:
+<pre>chmod -R 777 /tftpboot</pre>
+
+See example permissions below:
+
+<pre>/tftpboot:
+total 3960
+drwxr-xr-x   4 fog  root   4096 Apr 29 18:37 .
+dr-xr-xr-x. 23 root root   4096 Apr 29 18:37 ..
+-rw-r--r--   1 fog  root    840 Apr 29 18:37 boot.txt
+-rw-r--r--   1 root root    397 Apr 29 18:37 default.ipxe
+drwxr-xr-x   2 fog  root   4096 Apr 29 18:37 i386-efi
+-rw-r--r--   1 fog  root 171232 Apr 29 18:37 intel.efi
+-rw-r--r--   1 fog  root  89120 Apr 29 18:37 intel.kkpxe
+-rw-r--r--   1 fog  root  89168 Apr 29 18:37 intel.kpxe
+-rw-r--r--   1 fog  root  89153 Apr 29 18:37 intel.pxe
+-rw-r--r--   1 fog  root 890208 Apr 29 18:37 ipxe.efi
+-rw-r--r--   1 fog  root 329014 Apr 29 18:37 ipxe.kkpxe
+-rw-r--r--   1 fog  root 329062 Apr 29 18:37 ipxe.kpxe
+-rw-r--r--   1 fog  root 328438 Apr 29 18:37 ipxe.krn
+-rw-r--r--   1 fog  root 329115 Apr 29 18:37 ipxe.pxe
+-rw-r--r--   1 fog  root 123448 Apr 29 18:37 ldlinux.c32
+-rw-r--r--   1 fog  root  26140 Apr 29 18:37 memdisk
+-rw-r--r--   1 fog  root  29208 Apr 29 18:37 menu.c32
+-rw-r--r--   1 fog  root  43210 Apr 29 18:37 pxelinux.0
+-rw-r--r--   1 fog  root  43210 Apr 29 18:37 pxelinux.0.old
+drwxr-xr-x   2 fog  root   4096 Apr 29 18:37 pxelinux.cfg
+-rw-r--r--   1 fog  root 170912 Apr 29 18:37 realtek.efi
+-rw-r--r--   1 fog  root  90028 Apr 29 18:37 realtek.kkpxe
+-rw-r--r--   1 fog  root  90076 Apr 29 18:37 realtek.kpxe
+-rw-r--r--   1 fog  root  90105 Apr 29 18:37 realtek.pxe
+-rw-r--r--   1 fog  root 170112 Apr 29 18:37 snp.efi
+-rw-r--r--   1 fog  root 170272 Apr 29 18:37 snponly.efi
+-rw-r--r--   1 fog  root  88763 Apr 29 18:37 undionly.kkpxe
+-rw-r--r--   1 fog  root  88811 Apr 29 18:37 undionly.kpxe
+-rw-r--r--   1 fog  root  88856 Apr 29 18:37 undionly.pxe
+-rw-r--r--   1 fog  root  29728 Apr 29 18:37 vesamenu.c32
+
+/tftpboot/i386-efi:
+total 1348
+drwxr-xr-x 2 fog root   4096 Apr 29 18:37 .
+drwxr-xr-x 4 fog root   4096 Apr 29 18:37 ..
+-rw-r--r-- 1 fog root 137280 Apr 29 18:37 intel.efi
+-rw-r--r-- 1 fog root 812864 Apr 29 18:37 ipxe.efi
+-rw-r--r-- 1 fog root 137664 Apr 29 18:37 realtek.efi
+-rw-r--r-- 1 fog root 137088 Apr 29 18:37 snp.efi
+-rw-r--r-- 1 fog root 137216 Apr 29 18:37 snponly.efi
+
+/tftpboot/pxelinux.cfg:
+total 12
+drwxr-xr-x 2 fog root 4096 Apr 29 18:37 .
+drwxr-xr-x 4 fog root 4096 Apr 29 18:37 ..
+-rw-r--r-- 1 fog root  160 Apr 29 18:37 default
+</pre>
+
+==Check Network Switch settings==
+See [[IPXE]] for network switch settings concerning STP/portfast/etc.
+
+{{:DHCP_Settings}}
+
+== Common problems and fixes ==
+
+
+=== My problem isn't in the WiKi! ===
+
+{{:My problem isn't in the WiKi!}}
+
+
+
+=== Failed to load libcom32.c32  /  Failed to load COM32 file vesamenu.c32 ===
+
+==== Description ====
+
+You see a rolling error that says:
+<pre>Failed to load libcom32.c32
+Failed to load COM32 file vesamenu.c32</pre>
+
+And the client won't boot to the network.
+
+==== Solution ====
+
+This error has been seen in FOG Trunk (r3500s), and could possibly occur in 1.2.0 also.
+
+This is caused by DHCP option 067 being set to pxelinux.0
+
+Some people have large DHCP scopes set. Sometimes a higher-up global scope/setting can override local scope settings.
+Whatever the case, DHCP is indeed handing out pxelinux.0 and that's generally not advised.
+
+You should use either undionly.kpxe or undionly.kkpxe for option 067.
+
+Please see this article for more details about the various boot files available in fog: [[Filename Information]]
+
+=== Unable to connect to tftp server ===
+
+==== For Versions Before 0.24 ====
+
+
+This seems to be caused by a password issue,
+
+ 1. From the fog management interface, go to users.
+ 2. Reset the fog user password.
+ 3. Click the "I" icon - "Other Information"
+ 4. Click "Fog Settings" in the menu on the left
+ 5. Replace the FOG_TFTP_FTP_PASSWORD and the FOG_NFS_FTP_PASSWORD fields under FOG settings with 
+    your Linux fog user password. (Seems like FOG_NFS_FTP_PASSWORD is gone for ver .24).
+
+==== For Versions .24-.32 ====
+
+*Reset the local password for user fog with:  [sudo] passwd fog
+*In management front end, go to '''Storage Management''' -> '''All Storage Nodes'''
+*Click on '''DefaultMember'''
+*Change the '''Management Password''' to match the password you just changed.
+*Then go to '''Other Information''' and change '''FOG_TFTP_FTP_PASSWORD''' also.
+
+
+* Go to your fog web location, on Red Hat and CentOS is in:
+ /var/www/html/fog/
+
+Then open the file:
+ /commons/config.php
+
+and check the values of:
+'''TFTP_FTP_PASSWORD''' and '''STORAGE_FTP_PASSWORD'''
+
+These '''MUST''' match the password you set above, if not write them properly in here
+
+Finally reload of the service
+
+ /etc/init.d/vsftpd reload
+
+----
+==== Verify Server Settings ====
+
+If you have modified your server setup since first install, then the new changes must be updated and verified in the '''Fog Settings''' menu. 
+It might not be enough to just re-run the installer.
+For instance, a new IP lease will cause the server to show the '''Unable to connect to tftp server''' error message.
+
+* Go to the "I" icon, which is the '''About''' menu in 0.29
+* Select '''Fog Settings''' and navigate down to '''TFTP Settings''' and verify that all options are correct for your setup.
+
+==== Ensure nothing else on the network is conflicting with the DHCP server ====
+
+I had this error the past two days and tried all of the standard suggestions. Finally Wireshark came to the rescue. I discovered a second, feral DHCP server on the network that wasn't issuing IP addresses but must have been running interference somehow. When I disconnected it from the network, PXE boot worked as expected.

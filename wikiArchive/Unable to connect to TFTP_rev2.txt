@@ -1,0 +1,2 @@
+
+This article has been merged with the [http://fogproject.org/wiki/index.php/Troubleshoot_TFTP#Unable_to_connect_to_tftp_server Troubleshoot TFTP]  article. Click the link to navigate to that section of it.

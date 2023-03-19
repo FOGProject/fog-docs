@@ -1,0 +1,8 @@
+<table border="1">
+<tr><td width="100px"valign="top">'''Kernel'''</td><td width="20px" valign="top">'''Working'''</td><td width="690px">'''Description'''</td></tr>
+
+<tr><td width="100px" valign="top">3.13.1</td><td width="20px" valign="top" align="center">No</td><td valign="top" width="690px"> Begins to boot, hangs during kernel loading, reports no hard disk found, then crashes and reboots.</td></tr>
+
+<tr><td width="100px" valign="top">3.8.8 (default)</td><td width="20px" valign="top" align="center">No</td><td valign="top" width="690px"> Boots, but fails to recognize most of the hardware, and fails to connect through the network interface once the kernel is booted.</td></tr>
+
+</table>

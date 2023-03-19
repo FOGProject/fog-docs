@@ -1,0 +1,16 @@
+== Overview ==
+Installing FOG on Ubuntu 10.10 follows the same steps as installing FOG on [[Ubuntu 10.04|Ubuntu 10.04 LTS]], with the following exceptions.
+
+
+== PCMCIA NIC initialization issue (Ubuntu issue) ==
+
+The installer for Ubuntu 10.10 server properly initializes PCMCIA NICs during the installation process, but it does not configure the server to automatically initialize the NICs after installation is completed.  Therefore when the server starts up, it has no network connectivity.
+
+There are two ways to work around this:
+
+#The easy way - Use the "Alternate Install" disc, currently at version 10.04.01 LTS.  Select the language that you want.  Before clicking "Install", press F4 and select "Install a command-line system".  Now click "Install".  The installer on this CD will automatically set up the server to properly initialize the PCMCIA NICs.
+#The harder way - Use the "Server" installation disc but add the "pcmciautils" package, which automagically fixes this problem.  The machine will need an active Internet connection in order to download this package.  Go through most of the installation steps in the normal way.  When it prompts you to install the boot loader, press the F2 key to open another console.  Type the following:
+
+<pre>
+apt-get install pcmciautils
+</pre>

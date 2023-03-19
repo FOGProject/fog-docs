@@ -1,0 +1,1 @@
+Moved to the official docs, see here: https://docs.fogproject.org/en/latest/reference/compile_fos_kernel.html

@@ -1,0 +1,21 @@
+In order to multicast over a router/VLAN some configuration to your routers may be required.  Below are a few vendor specific examples:
+
+Cisco 2800 Series:
+
+ !
+ interface FastEthernet0/0
+ ip address 1.1.x.x 255.255.255.0
+ ip helper-address 10.10.10.2
+ ip pim sparse-dense-mode
+ duplex auto
+ speed auto
+ !
+ interface FastEthernet0/1
+ ip address 10.10.10.11 255.255.255.0
+ ip pim sparse-dense-mode
+ duplex auto
+ speed auto
+ !
+
+more information 
+http://www.cisco.com/en/US/tech/tk828/technologies_tech_note09186a0080094821.shtml

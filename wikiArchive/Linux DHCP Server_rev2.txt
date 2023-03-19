@@ -1,0 +1,20 @@
+I already have an existing DHCP server can I use that instead of the one provided with FOG?
+
+Yes, do the following on the FOG Server:
+
+  service dhcpd stop
+  chkconfig --level 345 dhcpd off
+
+Existing DHCP server
+
+You must add the following lines to your existing DHCP server:
+
+  if substring (option vendor-class-identifier, 0, 9) = "PXEClient" {
+    next-server x.x.x.x;
+    filename "pxelinux.0";
+  }
+
+
+
+[[category:dhcp]]
+[[category:linux]]

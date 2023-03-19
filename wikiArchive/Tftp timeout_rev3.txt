@@ -1,0 +1,86 @@
+If you get this issue its usually due to a firewall issue, do the following:
+=Disable firwall=
+== Fedora 9 ==
+
+<pre>
+service iptables stop 
+service ip6tables stop 
+ 
+chkconfig iptables off 
+chkconfig ip6tables off
+</pre>
+
+== Fedora 16 ==
+
+<pre>
+Add /bin/bash to /etc/shells as the vsftpd yum install does not do it correctly causing tftp timeout message
+</pre>
+
+== Ubuntu ==
+<pre>
+sudo ufw disable
+</pre>
+
+== Debian ==
+<pre>
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+</pre>
+
+== Other Troubleshooting ==
+=== 0.32 and below ===
+*From your FOG server test out tftp
+
+<pre>
+tftp -v X.X.X.X -c get pxelinux.0
+</pre>
+
+*From a Windows PC run at the cmd prompt: ([[Windows TFTP]] Service must be Installed first)
+<pre>
+ tftp x.x.x.x get pxelinux.0
+</pre>
+
+=== 0.33 and 1.x.x ===
+*From your FOG server test out tftp
+
+<pre>
+tftp -v X.X.X.X -c get undionly.kpxe
+</pre>
+
+*From a Windows PC run at the cmd prompt: ([[Windows TFTP]] Service must be Installed first)
+<pre>
+ tftp x.x.x.x get undionly.kpxe
+</pre>
+
+====Expected Results====
+*If tftp & xinetd are running your should get:
+<pre>
+Received XXXX bytes in X.X seconds....
+</pre>
+
+<hr>
+
+=Restart TFTP Service=
+*Restart the TFTP service.
+<pre>
+service tftpd-hpa restart
+</pre>
+
+<hr>
+
+=Rights to tftpboot folder=
+* Are the rights to your tftpboot folder correct?
+** If you tried the above Section-1.5.2 and you get the "Expected results" then the rights are correct.
+
+<hr>
+
+=Check DHCP Option 67=
+* Go to your DHCP and confirm that option 67 is set to undionly.kpxe.
+**{{:DHCP_Settings}}

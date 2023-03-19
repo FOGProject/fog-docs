@@ -1,0 +1,65 @@
+
+=== Fedora 20/21 ===
+
+'''Disable/stop Firewall'''
+<pre>systemctl disable firewalld.service</pre>
+<pre>systemctl stop firewalld.service</pre>
+Can be undone with "start" and "enable".
+
+'''Check Firewall in Fedora 20/21'''
+<pre>systemctl status firewalld.service</pre>
+
+=== Fedora 16 ===
+
+<pre>
+Add /bin/bash to /etc/shells as the vsftpd yum install does not do it correctly causing tftp timeout message
+</pre>
+
+
+=== Debian/Ubuntu ===
+<pre>sudo iptables -L</pre>
+
+If disabled, the output should look like this:
+
+<pre>Chain INPUT (policy ACCEPT)
+target prot opt source destination 
+
+Chain FORWARD (policy ACCEPT)
+target prot opt source destination 
+
+Chain OUTPUT (policy ACCEPT)
+target prot opt source destination</pre>
+
+'''Disable Ubuntu Firewall''' 
+<pre>
+sudo ufw disable
+</pre>
+
+'''Disable Debian Firewall'''
+<pre>
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+</pre>
+
+Other debian settings: 
+
+<pre>/etc/hosts.deny</pre>
+
+This setting in the above file will deny traffic from any source except locally:
+
+<pre>ALL:ALL EXCEPT 127.0.0.1:DENY</pre>
+
+Comment out this line like so:
+
+<pre>#ALL:ALL EXCEPT 127.0.0.1:DENY</pre>
+
+=== Windows 7 ===
+
+Start -> Control Panel -> View by "Small icons" -> Windows Firewall -> Turn Windows Firewall On or Off -> Turn off all three.

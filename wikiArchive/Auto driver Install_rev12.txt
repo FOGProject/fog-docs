@@ -1,0 +1,151 @@
+In Progress:  Documentation for adding the Auto Driver install script from Frontier School Division.
+Script To Do:
+*Make device ID's all lower case so PNP devices don't require upper case folder names & are consistent with all lower case.
+
+Overview:  The Auto Driver install script is an addon for FOG that allows you to build a hardware independent Windows 7 image.  Devices on the system will be detected by FOG, and drivers inserted into C:\Drivers.  Windows will then use that as an additional driver search path when doing Sysprep first run.
+
+==Setup Repository==
+*Create a folder inside of /images named drivers
+ mkdir /images/drivers
+*Create a Common folder for drivers/scripts you want on all systems.
+ mkdir /images/drivers/Common
+*Create a SetupComplete.cmd file.  (See: http://technet.microsoft.com/en-ca/library/cc766314%28v=ws.10%29.aspx)
+*This is a script, that when copied to C:\Windows\Setup\Scripts is executed at the end of the SysPrep process.  The Frontier script stops the FOG service, runs a netsh command to push out a wlan profile, deletes the profile xml file, the sysprep.xml and fixes the permissions on the C:\drivers folder.  It's a quite useful tool to use.  I recommend at least having:
+ net STOP "Fog Service"
+ start "Reset C:\Drivers Perms" /wait "icacls" C:\drivers /reset /T >>"C:\FOGDrivers.log" 2>&1
+
+===Adding Windows Device Drivers===
+*The script currently detects three categories of Drivers: PCI, USB & ACPI.
+*The first step is to identify the device that you want to install.  On an imaged Windows 7 machine, go to device Manager.
+**Right click the device, and go to Properties.
+**Click the details tab, and go to the Hardware IDs dropdown.
+**You'll see something like PCI\VEN_XXXX&Dev_YYYY&SUBSYS_ZZZZ.... or USB\VID_XXXX&PID_YYYY or ACPI\XXXXXXXXX
+***You take the driver for that device, and place it in a folder of /images/drivers/XXXX/YYYY.
+ For Example, a driver for Intel Video with a device ID of PCI\VEN_8086&DEV_5A3C would be in the folder /images/drivers/8086/5a3c **Note that it's lower case.
+***In the case of a drivers that contains drivers for multiple devices (Ie:  Chipset) you don't need to break out each individual device.  You can simply make the folder match one of the devices.
+***ACPI devices don't have a vendor/ID value, but only contain a single value.  ACPI/PNP devices should be placed in /images/pnp/XXXXXX.
+ For Example, a driver for the Dell Freefall sensor is ACPI\SMO8810 in Device Manager.  Place the driver in /images/pnp/SMO8810.
+
+===Adding Silent Install drivers===
+*Drivers that require an executable to be run can also be included in this method provided the driver has a silent install option with no user interaction.
+*If there is a drvinstall.bat file inside the driver folder, the script will take the contents of the bat file and add it to the end of the SetupComplete.cmd file to be executed at the end of the sysprep process.  See the example contents of:
+ echo Driver for SMO8810
+ start/wait C:\drivers\pnp\SMO8810\setup.exe /s
+*This is handy for devices that aren't detected by Device Manager's Update Driver.  Devices that operate this way for us have been some sound cards, freefall sensors, touchscreen calibration tools, etc.
+
+==Install Script==
+*There are two files you'll need to add to /images/postdownloadscripts/
+*machinedrivers.sh
+ #!/bin/bash
+ #machineinstall.sh
+ #Script version .1alpha
+ #FOG version 1.2.0
+ #Copies drivers to a C:\drivers on a universal image based on the hardware
+ #detected on PCI, USB & PNP.  Full documentation & How-To's on the FOG Wiki.
+ #http://www.fogproject.org/wiki/index.php/Auto_driver_Install
+ #Andrew Single - Frontier School Division (Frontier loves FOG!)
+ 
+ oIFS=$IFS;
+ getDeviceName()
+ {
+ #   echo "lspci -mm -d $1";
+     local devnamefull=`lspci -mm -d $1`;
+     devnamefull=${devnamefull//\" \"/¤};
+     IFS=¤;
+     pciDescr=($devnamefull);
+     IFS=$oIFS;
+ } 
+ #Read PCI Device strings
+ pci=`lspci -n |cut -c 15-23`;
+ usb=`lsusb |cut -c 23-32`;
+ last="";
+ for device in $pci
+ do
+     #filter for unique devices
+     if [ "$device" != "$last" ]; then
+         last=$device;
+         #Split up vendor & Device IDs
+         dMfg=${device:0:4};
+         dDev=${device:5:4};
+ #       echo "Device: $device";
+ #       echo "Mfg: $dMfg - Dev: $dDev";
+ #       sleep 1;
+         drvLoc="/images/drivers/$dMfg/$dDev";
+         #Does the driver folder exist?
+         if [ -d $drvLoc ];then
+             #Copy files
+ #           echo $device;
+             getDeviceName $device;
+             echo -n " * Copying ${pciDescr[4]} ";
+             #Does the vendor folder exist?
+             if [ -d /ntfs/Drivers/$dMfg ]; then
+                 cp -r $drvLoc /ntfs/Drivers/$dMfg
+             else
+                  mkdir /ntfs/Drivers/$dMfg
+                 cp -r $drvLoc /ntfs/Drivers/$dMfg
+             fi
+             if [ -f $drvLoc/drvinstall.bat ]; then
+                 cat $drvLoc/drvinstall.bat >>/ntfs/Windows/Setup/Scripts/SetupComplete.cmd
+                 unix2dos /ntfs/Windows/Setup/Scripts/SetupComplete.cmd
+             fi
+             echo "Done.";
+         fi
+     fi
+ done
+ IFS='
+*And driverinstall.sh
+ #!/bin/sh
+ #driverinstall.sh
+ #Script version .1alpha
+ #FOG version 1.2.0
+ #Copies drivers to a C:\drivers on a universal image based on the hardware
+ #detected on PCI, USB & PNP.  Full documentation & How-To's on the FOG Wiki.
+ #Andrew Single - Frontier School Division (Frontier loves FOG!) 
+ 
+ win7sys="/dev/sda2";
+ mkdir /ntfs 2>/dev/null
+ 
+ echo -n " * Mounting Windows File System...................";
+ mount.ntfs-3g $win7sys /ntfs 2>/tmp/mntfail
+ mntRet="$?";
+ if [ ! "$mntRet" = "0" ]
+ then
+     echo "Failed to mount C:";
+     echo "";
+     echo -n " * ";
+     cat /tmp/mntfail
+     echo "";
+     sleep 2;
+ else #Mount successful
+     echo "Done.";
+     mkdir /ntfs/Drivers 2>/dev/null
+     echo "";
+     echo -n " * Copying Common Drivers.........................";
+     cp -r /images/drivers/Common /ntfs/Drivers
+     if [ -d /ntfs/Windows/Setup/Scripts ]; then
+         cp /images/drivers/Common/SetupComplete.cmd /ntfs/Windows/Setup/Scripts/
+         cat /images/drivers/Common/commoninstall.bat >>/ntfs/Windows/Setup/Scripts/SetupComplete.cmd
+         unix2dos /ntfs/Windows/Setup/Scripts/SetupComplete.cmd
+         echo "Done.";
+     else
+         mkdir /ntfs/Windows/Setup/Scripts
+         cp /images/drivers/Common/SetupComplete.cmd /ntfs/Windows/Setup/Scripts/
+         cat /images/drivers/Common/commoninstall.bat >>/ntfs/Windows/Setup/Scripts/SetupComplete.cmd
+         unix2dos /ntfs/Windows/Setup/Scripts/SetupComplete.cmd
+         echo "Done.";
+     fi
+     #Needs to be exectued with bash
+     bash /images/postdownloadscripts/machinedrivers.sh
+     echo " ";
+     echo " * Driver copy completed.";
+     umount /ntfs
+     sleep 10;
+ fi
+*Make them executable with
+ chmod a+x *.sh
+*Finally, edit the fog.postdownload file and the following to the end of the file:
+ ${postdownpath}/driverinstall.sh
+
+==Building the Universal Image==
+*The script requires a sysprepped Windows 7 image to work.  If you're not using Sysprep, this process won't work.
+*Include driver search path to C:\Drivers (See: http://technet.microsoft.com/en-ca/library/cc753716.aspx)

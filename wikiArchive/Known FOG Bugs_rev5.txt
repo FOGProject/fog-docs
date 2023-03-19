@@ -1,0 +1,100 @@
+
+
+
+For those that make additions to this article, please include relevant Versions/Revisions, dates, and ample details (and hopefully fixes / workarounds).
+
+Please Do-Not post things in here that haven't been discussed in the forums prior, or with a developer.
+
+
+
+
+== The Image Resize Bug ==
+
+=== Description ===
+
+This bug became present sometime around the r3200s and was corrected in r3396. It is unrelated to boot-files and kernels.
+
+When an image is uploaded as "resizable", the resync process immediately after resizing does not occur. This means that although partitions were actually resized on the host, the upload used the prior partition data pulled from the drive and not the new information.  Any resizeable images created between r3200 and r3395 could be (and probably are) affected.
+
+
+When downloading an image to hosts that have the same size HDD as the source machine, or a larger size HDD as the source machine, imaging completes as normal.
+
+When downloading an image to hosts that have a '''smaller size HDD than the source machine''', errors are encountered and imaging does not complete.
+
+Some hosts will never get to the partclone process, some hosts do but fail during the imaging process.
+
+=== Verifying your image is affected ===
+
+Start a download task with debugging.
+
+Run this command on your host:
+
+<pre>fdisk -l</pre>
+
+Examine the output.
+
+[[File:Re-Size Bug.jpg]]
+
+Look closely at the three highlighted areas. The first is the command issued, the second is the size of the installed HDD, the third is the size of the image's partitions.
+
+'''If the partition data is larger than the size of the installed HDD, your image is affected.'''
+
+=== Fixing your image ===
+
+
+To fix the image, first update to FOG r3396 or later, and install an HDD of equal or greater size than the source machine had.
+
+Deploy your image to this host with the larger HDD.
+
+Boot the host and verify all is well.
+
+Shutdown the host.
+
+Create a new image, be sure to mark it as "resizeable" along with any other necessary settings, and assign this new image to the host using the FOG Web UI.
+
+Create a new upload task, and upload the new image.
+
+The new image should now be able to deploy to hosts with smaller HDDs than the source machine.
+
+You may now delete the old image.
+
+
+== dnsmasq ProxyDHCP .0 bug ==
+
+
+=== Description ===
+
+Last edited: May 24th, 2015
+
+First and foremost, dnsmasq is not developed by the FOG team. However, dnsmasq is utilized by many FOG users. dnsmasq is developed by [http://www.thekelleys.org.uk/dnsmasq/doc.html thekelleys], and we thank them for their amazing solution, it works very well.
+
+For those that do not have access to their DHCP server, or have a device (such as a home router/switch/dhcp combo device) that doesn't support modification of DHCP settings, or simply don't have any DHCP device on their network, they normally would use dnsmasq for ProxyDHCP.
+
+The dnsmasq .0 bug is quite simply - dnsmasq changes the extension of the bootfile information handed out to .0
+
+For example, say we must use dnsmasq and want to use undionly.kpxe
+
+When we configure dnsmasq to hand out the bootfile info:
+<pre>undionly.kpxe</pre>
+
+dnsmasq will instead hand out:
+<pre>undionly.0</pre>
+
+=== Verifying the bug ===
+
+Every FOG server using dnsmasq is affected by this bug.
+
+
+=== Working around the bug ===
+
+Assuming we will be using undionly.kpxe as our bootfile, there are two possible work arounds. Both are very simple.
+
+Copy needed file to correct name
+<pre>copy example</pre>
+
+Symbolic link the file to the correct name
+<pre>symlink example</pre>
+
+
+=== Further Info ===
+For further information on configuring dnsmasq to use for ProxyDHCP, see this article: [[Using FOG with an unmodifiable DHCP server/ Using FOG with no DHCP server]]

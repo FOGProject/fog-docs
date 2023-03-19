@@ -1,0 +1,52 @@
+Sometimes a computer may not support PXE booting, or there other limitations which prevent this. This is a quick guide to get you started, more information can be found in depth at the sites of the projects. The drawbacks of this method is when you upgrade FOG you must also upgrade the files on the media.
+
+
+----
+
+'''Bootable USB Stick'''
+This method involves making the usb stick bootable using some capabilities of the Syslinux project http://syslinux.zytor.com/wiki/index.php/SYSLINUX
+
+Prep the stick:
+Your usb stick usually is formatted as FAT/FAT32.
+Grab a version of syslinux from http://www.kernel.org/pub/linux/utils/boot/syslinux/
+Extract the files.
+Under Windows change to the syslinux-x.xx\win32 and run syslinux -ma <drive>:
+Example: ''syslinux -ma E:'' where E is the drive of to the usb stick. 
+For Linux change to syslinux-x.xx/unix (3.7x is syslinux-x.xx/linux) and run ./syslinux -ma /dev/<device>
+Example: ''./syslinux -ma /dev/da0'' where da0 is the device the usb stick. You may have to mount the stick first.
+
+Copy or download the fog folder from /tftpboot/ to the root of the usb stick. Then copy the /tftpboot/pxelinux.cfg/default file to the root of the usb stick and rename it to syslinux.cfg.
+This should be it, your drive should contain the following:
+\fog\
+syslinux.cfg
+
+If you need to image a computer and you feel the need to boot the task from the USB stick, it is possible to do this. Given the same above instructions the only difference is you copy the 01-00-01-a2-c3-d4-e5 from /tftpboot/pxelinux.cfg/ to the usb stick and rename it to syslinux.cfg. '''You should use caution when using this method because depending on your computer, bios, and random other mysterious factors you may image the usb stick, or corrupt the data if you pull your stick out at the wrong time in a panic.'''
+
+
+----
+'''Isolinux'''
+
+Isolinux is part of the Syslinux project and allows you to make a bootable CD  with FOG on it. http://syslinux.zytor.com/wiki/index.php/ISOLINUX The drawback of this method is you have to toss a disk when you upgrade FOG unless you are using RW media.
+
+''More info on this coming soon to a wiki near you.''
+----
+
+'''GPXE'''
+
+GPXE is part of the Etherboot Project, and can be used to mimic the PXE process, among other things, when the computer or network doesn't support it. http://etherboot.org/wiki/index.php This method will usa a CD to assist in the netboot process..
+There are 2 options here:
+1. Download the source, build it yourself, and generate a gpxe.iso. http://etherboot.org/wiki/download
+2. Download pre-built binaries ROMS/ISOs for your network card http://rom-o-matic.net/
+
+In the absence of a properly configured DHCP server to do the configuration pointing and PXE information you can also manually set the important info using some commands during the gpxe process. When prompted hit Control+B and you will get a command prompt. Help is available using the help command.
+
+Tell pxe which file to look for on the tftp server. Show it which server is the tftp server.
+<pre>
+gpxe> set filename pxelinux.0
+gpxe> set next-server 1.1.1.100
+gpxe> autoboot
+</pre>
+[[Linux DHCP Server | Making sense of the above commands.]]
+
+[[category:linux]]
+[[category:customization]]

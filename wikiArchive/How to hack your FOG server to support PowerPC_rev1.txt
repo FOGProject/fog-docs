@@ -1,0 +1,1 @@
+#REDIRECT [[How to get Netboot working with your FOG server]]

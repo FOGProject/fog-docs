@@ -1,0 +1,9 @@
+This is the error I see when trying to boot a server with a Broadcom tg3 NIC:
+
+<pre>[ 6.637970] tg3 0000:02:02.0: PME# disabled</pre>
+
+Very similar to the post [http://lkml.indiana.edu/hypermail/linux/kernel/0903.3/00195.html here] on the LKML
+
+Also I cannot even 'ifconfig eth0 up' - I get "Device or resource busy." The NIC won't even come up at all booted into FOG debug mode)
+
+Rolling back to kernel 2.6.28's bzImage (see [http://sourceforge.net/projects/freeghost/files/Kernels/Kernel-2.6.28.7.PS/download here]) got this working for me. -[[User:Ericgearhart|Ericgearhart]] 22:48, 26 July 2009 (MST)

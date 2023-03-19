@@ -1,0 +1,75 @@
+== Tasks to perform before uploading an Image ==
+Are you using sysprep? If so, you will save time and aggravation by always having TWO images: one pre-sysprep and one post-sysprep. As a guiding principle, it's best to backup before making an invasive change (like using Sysprep). Just so you don't lose time if the step fails and causes bad things to happen.
+
+Some people have mentioned a limit of three sysprep uses. This is not true, but it feels like it when you hit that wall the first time and have to redo everything. There is a flag in the generalize phase called skiprearm. This can be set via an xml unattend document. It's a double negative though, so count on yourself to make a mistake more than once over the years. The provided sample batch script should help to minimize human error by being more descriptive:
+
+ :start
+ echo off
+ echo Choose the appropriate sysprep stage:
+ echo.
+ echo 1) For Deployment (Limit three, final step before upload, take a backup first)
+ echo 2) Create Build Process Restore Point (Can be done an infinite number of times)
+ echo.
+ set /p type=
+ if %type% == 1 goto 1
+ if %type% == 2 goto 2
+ goto 3
+ :1
+ c:\windows\system32\sysprep\sysprep.exe /quiet /generalize /oobe /shutdown /unattend:c:\windows\system32\sysprep\unattend.noskiprearm.xml
+ goto 4
+ :2
+ c:\windows\system32\sysprep\sysprep.exe /quiet /generalize /oobe /shutdown /unattend:c:\windows\system32\sysprep\unattend.skiprearm.xml
+ goto 4
+ :3 
+ echo   That didn't look like a 1 or a 2, please try again and make a VALID choice.
+ pause
+ echo.
+ echo.
+ goto start
+ :4
+ echo All done
+ exit
+
+Please note that this should be run from the C:\windows\system32\sysprep folder, and should also have an appropriate unattend.xml file associated with it. This example uses unattend.noskiprearm.xml and unattend.skiprearm.xml from the same folder. The difference between the two files is this:
+
+Under the Generalize pass heading : 
+ <settings pass="generalize">
+
+There is a flag set to '''1''' for the build process restore point, and '''0''' for the final sysprep prior to deploy/upload. 
+ <SkipRearm>'''1'''</SkipRearm>
+
+=== All Operating Systems ===
+
+To get the most out of FOG, you will probably want to install the FOG Client service before uploading the image to the server.  This package can be downloaded directly from your FOG server by going to the address:  http://[fogserver]/fog/client
+Be sure to read up on recompiling the <tt>Hostnamechange.dll</tt> file with your password.
+
+=== Windows XP ===
+
+No special configuration/tasks are needed prior to upload.
+
+=== Windows Vista and Windows 7 ===
+
+Right before uploading the image the MountedDevices registry key must be cleared. If it is not, the master image and subsequent deploys will result in this problem: [[Vista Image says 0xc000000e \windows\system32\winload.exe can not be loaded]]
+
+This can be accomplished by ''any <span style="text-decoration: underline;">one</span>'' of the following methods:
+# use Sysprep with the /generalize switch
+# run [[FOGprep]].exe
+# manually delete the <tt>\??\volume{...}</tt> keys in the registry under "HKLM\SYSTEM\MountedDevices"
+# run the following from an administrator's console: 
+<pre>
+bcdedit /set {bootmgr} device boot
+bcdedit /set {default} device boot
+bcdedit /set {default} osdevice boot
+</pre>
+
+'''If the computer is restarted, your chosen method must be repeated again before imaging.'''
+====FOGprep====
+The FOG developers created a command to accomplish this easily. This application is called fogprep.exe, which is located in the utils/FOGPrep/ directory of the FOG download.  This command must be run prior to image upload. The fogprep.exe command removes all information about mounted devices that Windows 7 knows about by clearing the registry at "HKLM\SYSTEM\MountedDevices". This causes Windows 7 to re-query the machine after boot for mounted devices.
+
+It has also been mentioned that running checkdisk and defrag are necessary to prevent block errors. They're also a best practice
+
+==== Pre FOG 0.32 ====
+By default Windows 7 and Vista create a two partition setup. A common error is to think that using "Multiple Partition Image - Single Disk" is necessary. It is not. FOG handles the system partition silently and without error, even when choosing "single partition, resizable". If you get the error: "Boot selection failed because a required device is inaccessible" or "0xc000000e - Windows boot manager Error" then Win7 is still querying the above registry key. Did you run FOGprep.exe before shutting the master image down for the last time?
+
+==== FOG 0.32 &amp; Later ====
+FOG versions 0.32 and later incorporates the clearing out of the "HKLM\SYSTEM\MountedDevices" keys so no longer require FOGprep to be run before uploading the image.

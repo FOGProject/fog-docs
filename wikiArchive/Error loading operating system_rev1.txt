@@ -1,0 +1,1 @@
+To avoid this error, simply go in the BIOS of your computer (By using F2 or DEL right after computer boot), go to General Boot Settings, and change mode to LDA.

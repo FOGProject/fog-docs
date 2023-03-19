@@ -1,0 +1,3 @@
+Try to manually start MySQL server. 
+
+MySQL server will refuse to start if it cannot resolve its hostname. Verify that your DNS or /etc/hosts file will properly resolve your FOG server.

@@ -1,0 +1,42 @@
+In order for the FOG Client to boot on the hosts, it requires a kernel and a filesystem image containing its filesystem. Buildroot helps building the toolchain (uclibc) and generate that image with busybox and all the packages we need.
+This page will tell you how to build the filesystem on your own from SVN.
+
+== Debian 7 ==
+
+=== Debian update ===
+ 
+ sudo apt-get update
+ sudo apt-get upgrade
+
+=== Install the required packages for buildroot ===
+
+ sudo apt-get install build-essential subversion git bison flex gettext texinfo zlib1g-dev uuid-dev ncurses-dev unzip libpci-dev libssl-dev
+
+=== Download the relevant FOG source ===
+
+ svn checkout https://freeghost.svn.sourceforge.net/svnroot/freeghost/trunk/src fogsrc
+
+
+=== Download Buildroot ===
+ 
+ wget http://buildroot.uclibc.org/downloads/buildroot-2014.08.tar.bz2
+ tar xjf buildroot-2014.08.tar.bz2
+
+=== Copy source files inside Buildroot's tree ===
+
+ cp -r fogsvn/buildroot/* buildroot-2014.08/
+ cd buildroot-2014.08
+ mv fog.buildroot.config.32 .config # or config.64 for 64 bits
+
+=== build FOG file system ===
+ make menuconfig
+ # This will download all the required packages from their sources, it's around 300 MB
+ make source
+ # All packages are now in buildroot-2014.08/dl/ So we compile.
+ # Go get some coffee, this takes a long time, depending on your config.
+ make
+ # Here is our init.xz
+ cp output/images/rootfs.ext2.xz ../init.xz
+ cd ..
+
+ copy init.xz to your FOG server /tftpboot/fog/images/init_32.xz (or init.xz for 64 bits)

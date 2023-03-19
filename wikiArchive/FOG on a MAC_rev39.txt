@@ -1,0 +1,10 @@
+==Server Install==
+It has been reported that the FOG server will run on a MAC without any issues.
+
+==Client Tutorial==
+
+===Netbooting Apple Mac===
+Intel Macintoshs all use (U)EFI  - where common PCs have a  BIOS - to bootstrap and to some extend talk to hardware. Several different ways exist to make those Macs boot from network. Depending on your preference and setup choose whichever suites you.
+
+====Using stones====
+On startup (when you hear the sound, before Apple sign on the screen) you can hold down 'n' to boot from network. Apple uses a kind of special protocoll called NetBoot which is partly similar or includes DHCP protocol. But there is more to it. Find a detailed explanation [http://web.archive.org/web/20090215233615/http://www.bombich.com/mactips/bootpd.html here] if you want to dig into it.

@@ -1,0 +1,1 @@
+#REDIRECT [[Booting into FOG and Uploading your first Image]]

@@ -1,0 +1,263 @@
+<b>A guide to deployment, management,
+And concept overview
+For FOG.</b>
+
+Based on a document by: 
+Thomas J. Munn
+CISSP
+
+== Introduction ==
+
+=== Preface to this Document ===
+
+This document is intended to be modified by FOG users, in fact it is based on a document created by a FOG user.  If you feel something could be said better or put more clearly, it is encouraged that you make changes to this document.  We just ask that you keep it constructive and in good taste.  In order to edit the wiki you are now required to create an account, as spamming of the forum has gotten pretty bad recently.
+
+===What is FOG?===
+
+FOG is a Linux-based, free and open source computer imaging solution for Windows XP, Vista, 7, and Linux (limited) that ties together a few open-source tools with a php-based web interface. FOG doesn't use any boot disks, or CDs; everything is done via TFTP and PXE. Also with FOG many network drivers are built into the kernel, so you don't really need to worry about nic drivers (unless there isn't kernel support for it yet).  FOG also supports putting an image that came from a computer with a 80GB partition onto a machine with a 40GB hard drive as long as the data is less than 40GB.  FOG supports multi-casting, meaning that you can image many PCs from the same stream.  So it is about as fast whether you are imaging 1 PC or 20.&lt;BR&gt;
+
+=== Why FOG? ===
+
+Working in an educational environment, our organization's techs very often re-imaged computers in their day to day activities.  For a long time we used a commercial product that in many ways didn't meet our needs.  It wasn't web based, and you needed to create driver disks, floppys or USB drives.  Other things were very difficult, such as searching for a host by MAC address and the product was expensive, even with an educational discount.  So we started to investigate ways in which we could do things better, and as our organization struggled to make a commercial product work better by trying to pxe boot dos, and testing it in Windows PE, we, the FOG Team, started to build a linux based solution on our own time.  We finally got a working version and decided to release it as open source, since we use many other open source products, and figured we should give back to the community.
+
+===What features are included with FOG?===
+
+FOG is more than just an imaging solution. FOG has grown into a imaging/cloning and network management solution.  FOG now performs tasks like installing and managing printers, tracking user access to computers, installing applications remotely via snapins, and automatic user log offs.  If a computer is badly infected with a virus or malware, you can boot FOG in AV mode and have it remove the viruses.  You can wipe your disks, destroying all information that was on them, you can restore deleted files, or scan the disk for bad blocks.&lt;BR&gt;
+
+=== Fundamental Concepts ===
+This section provides some basic concepts that the FOG Project uses.
+&lt;UL&gt;&lt;LI&gt;'''Unicasting'''&lt;BR&gt;
+Unicasting in FOG means sending a single image to a single host.  This can mean an upload or a deploy, and is independent of the image type.&lt;BR&gt;
+See this section for more on [[Unicasting]]&lt;/li&gt;
+&lt;LI&gt;'''Multicasting'''&lt;BR&gt;
+Multicasting in FOG uses UDPcast to send a single image to multiple computers using only slightly more bandwidth then sending the image to a single computer or unicast.&lt;BR&gt;
+See this section for more on [[Multicasting]]&lt;/li&gt;&lt;/UL&gt;
+
+=== FOG Benchmarks ===
+ 
+'''[[Internal Benchmarks]]'''
+
+===Requirements===
+====Hardware====
+
+FOG is best implemented on a dedicated server, any spare machine you have.  We recommend that you have '''sufficient''' hard drive space as each image you make is usually between 5 and 10 GB and it's best to have a '''gigabit NIC''' with as much processor and RAM you can throw at it.&lt;BR&gt;
+
+====Software====
+
+The FOG server runs on various flavors of Linux, which can be downloaded for free. The FOG installer script will verify or download and automatically install many open-source packages such as: MySQL, PHP, Apache, and more software from the open source community.
+
+FOG is primarily geared toward helping school administrators manage mostly Windows environments, but more support for Linux clients is included in the latest version.
+&lt;BR&gt;
+
+====Network====
+
+FOG can be installed in a small lab on isolated network with just a single inexpensive switch and a handful of Ethernet cables; it can be added to your home network; or can be integrated with your existing enterprise network infrastructure with multiple subnets or VLANS (advanced configuration necessary.) The more robust your network, the better FOG can perform. Some adjustments are required on existing DHCP server(s) to integrate FOG into a network, as discussed later in the documentation.&lt;BR&gt;
+
+====How much does FOG cost?====
+
+FOG is an Open Source project and licensed under the GPL which means that you are free to use FOG on as many computers as you like for free.  This also means that if you want to make any changes to the source code you are free to do so.  
+
+The creators of FOG make no profits from this project with the exception of donations.  FOG comes with absolutely '''NO WARRANTY''' and the creators of FOG are in '''NO WAY RESPONSIBLE FOR ANY DAMAGE OR LOSS CAUSED BY FOG!'''  Please see the license file included with the FOG release for more information.  With that being said, we attempt to do a very good job of supporting our users; in fact it is one of the goals of FOG to have better support than most commercial products.  All support requests should be placed through the FOG's sourceforge forum which is located at:
+
+https://sourceforge.net/projects/freeghost/forums
+
+Thanks for supporting open source software and enjoy!&lt;BR&gt;
+*[http://www.office-coupons.net/office-depot-store-locator/ Office Depot Store Locator]
+
+== Installing FOG ==
+
+FOG is a typical ''[http://en.wikipedia.org/wiki/LAMP_%28software_bundle%29 LAMP]'' software bundle, so the main server is a '''L'''inux box. The rest of the components: '''A'''pache, '''M'''ySQL, '''P'''HP, and several other services, are automatically downloaded and installed by the FOG installation script.<br>
+FOG can be installed by an experienced administrator in about 30 minutes. A new user with some familiarity with Linux can expect results in a few hours by following the guides below.<br>
+<br>
+==='''Full Step-By-Step [[Installation]] Guides'''===
+
+====[[Installation#Ubuntu_.28Recommended.29|Ubuntu]] (Recommended)====
+====[[Installation#Fedora_.28Recommended.29|Fedora]] (Recommended)====
+====[[Installation#Debian|Debian]]====
+====[[Installation#CentOS|CentOS]]====
+====[[Installation#VMWare|VMware]]====
+
+=== Network Integration ===
+==== Basic Network Setup ====
+The FOG setup script asks several questions which might not be obvious. These sections describe only the most generic settings.
+<ul><li>'''Isolated Network'''<BR>
+The easiest method to image machines and get started using FOG is on a small, isolated network. The FOG setup program will configure all the necessary services for you completely automatically. This section covers only those basic steps.
+<br> '''See [[FOG on an Isolated Network]]'''</li><BR>
+<li>'''Integrating FOG Server with Existing Network Systems'''<BR>
+Slightly more complicated is the task of integrating FOG into your existing network infrastructure. This section attempts to describe the steps to link FOG with a fairly generic enterprise system.<br>
+'''See [[Integrating FOG into an Existing Network]]'''</li></ul>
+----
+====Advanced Network Setup====
+===== Modifications on your DHCP Server(s) =====
+If you are installing FOG on an existing network, adjustments are necessary to forward DHCP clients to the FOG server after they receive their IP addresses:<BR>[[Modifying existing DHCP server to work with FOG]]
+===== Wake On Lan (WOL) =====
+<ul><li> [[Cisco_Wake_on_lan|Cisco WOL - Layer 3]] </li>
+<li> [[ProCurve_Wake_on_lan|ProCurve WOL]] </li></ul>
+===== Multicast/UDPCast  =====
+<ul><li>  [[Cisco_Multi_Cast|Cisco Multicast - Layer 3]] </li></ul>
+
+=== FOG Server Maintenance ===
+====[[Backing up FOG]]====
+====[[Restoring FOG from Backup]]====
+====[[Upgrading the FOG Server]]====
+
+== Using FOG ==
+
+=== Quick Start - Basic Tasks ===
+
+So you have a FOG server installed and setup, now what do you do?  Below are a few common "Getting Started" items.
+
+#[[Uploading your first Image]]
+#[[Deploying your Image a single client]]
+#[[Deploying your Image a group of clients]]
+
+==== Tips ====
+
+#FOG requires that all hosts be entered in the FOG Database for imaging.  The most important part is getting the MAC address of the host right.  FOG uses the MAC for targeting image installs and acquires.  Using the wrong MAC could result in unpredictable results, including the complete erasure of the wrong pc!  The IP address isn’t that important, and the ‘name’ field is more for the user.  Mac address format is  00:12:3F:C4:57:0C .  Using dashes, spaces, or no items at all will result in the GUI not accepting the host.
+#At least one image must be defined using the FOG web interface under the Images section. After the image is defined, it must be associated with the hosts. This can be done through the web interface or on the client.
+#After hosts are entered, it is wise to group them together by function, hardware, or common image.  The image will be shared among all members of a particular group.  This occurs within the ‘hosts’ screen, and NOT on the groups screen.  This is a little confusing, so it helps to think of the ‘groups’ screen as a task generator, rather than controlling group memberships.
+#For importing hosts in a .csv file follow the format below: 1 line per host:<pre>"00:c0:4f:18:62:63","Hostname","1.1.1.1","Your description","XP/Vista","Image filename to use"</pre>
+#Hosts are then configured to boot via PXE boot by going into the BIOS.  Make sure PXE boot is the FIRST option, NOT the hard disk, or things won’t work.
+#Configure your ‘master’ pc for the first image.  Probably a good idea to run ‘[http://support.microsoft.com/kb/302577 sysprep]’ prior to imaging, but not necessary.  Sysprep will make your imaging life easier, if hardware is different, etc.  See Microsoft.com for more details on using sysprep.
+
+
+=== Mastering the FOG Web Interface ===
+
+====The Main [[Managing FOG]] Page====
+The FOG web interface is your primary management console. It is very well-documented in the pages linked below:<br>
+The Main [[Managing FOG]] document and has a Table of Contents of its own.<BR>
+Subcategories within the Managing Fog section include the following sections:
+<UL><LI>'''Understanding the FOG [[Managing_FOG#Dashboard|Dashboard]]'''<BR>
+Provides an overview of the GUI and explains the symbols used on the [[Managing_FOG#Menu Bar|Menu Bar]].</LI>
+<LI>'''Managing [[Managing_FOG#Hosts|Hosts]]'''<BR>
+This section covers management tasks such as: [[Managing_FOG#Adding a new host|Adding a new host]], [[Managing_FOG#Managing Hosts|Managing Hosts]], [[Managing_FOG#Host Status|Host Status]], and [[Managing_FOG#Creating Host Groups|Creating Host Groups]].</LI>
+<LI>'''Managing [[Managing_FOG#Groups|Groups of Hosts]]'''<BR>
+This section provides an [[Managing_FOG#Overview_4|Overview]] of sorting hosts into useful Groups, and provides instruction on [[Managing_FOG#Managing Groups|Managing Groups]].</LI>
+<LI>'''Defining and Managing [[Managing_FOG#Images|Images]]'''<BR>
+Defines types of images: Single Partition | Multiple Partition - Single Disk | Multiple Partition - All Disks | Raw Image<br>
+Also describes [[Managing_FOG#Creating_Images_Objects|Creating]], [[Managing_FOG#Modifying_Image_Objects|Modifying Image Objects]], and [[Managing_FOG#Adding_Existing_Image_Objects|Adding Images to Existing Objects]].</LI>
+<LI>'''[[Managing_FOG#Storage_Management|Storage Management]] - adding additional Storage Nodes'''<BR>
+This section introduces the [[Managing_FOG#Overview_6|concept of Storage Nodes]], which provide scalability to FOG with the ability to "share the load of computers being imaged."<br>
+Also covered are [[Managing_FOG#Adding_a_Storage_Node|Adding Storage Nodes]], Monitoring [[Managing_FOG#Monitoring_The_Master_Node|Image Replication]] between nodes, and Understanding the [[Managing_FOG#Master_Node_Status|role of the "Master Node"]] in a group.<br>
+In addition, this section details the necessary steps to [[Managing_FOG#Including_multiple_PXE_.2F_TFTP_servers|include PXE and TFTP Services]] for a node located on a remote network segment.</LI>
+<LI>'''Defining types of [[Managing_FOG#Users|Administrative FOG Users]]'''<BR>
+The difference between a regular FOG user and a [[Managing_FOG#Overview_7|Mobile user]]<br>
+Also covered are [[Managing_FOG#Creating_Accounts|Creating]] and [[Managing_FOG#Modifying_Users|Modifying]] FOG user accounts</LI></UL>
+
+====FOG [[Managing_FOG#Tasks|Tasks]]====
+This is a major section of FOG Management because all day-to-day client management is initiated within the FOG Tasks section.<br>
+The [[Managing_FOG#Overview_8|Overview Section]] provides a quick list of tasks available within FOG.<br>
+[[Managing_FOG#General_Tasks|General Tasks]] - Basic Imaging Tasks:
+::Uploading an image (includes video tutorial)<BR>Deploying an image<BR>Multicasting<br>
+[[Managing_FOG#Advanced_Tasks|Advanced Tasks]] - Describes tasks other than imaging:
+::Debug<BR>Upload - Unicast (Debug)<br>Send - Unicast (Debug)<br>Send - Unicast (Without Snapins)<br>Deploy All Snapins<br>Deploy Single Snapin<br>Memory Test<br>Wake Up<br>Fast Wipe<br>Normal Wipe<br>Full Wipe<br>Disk Surface Test<br>File Recovery<br>Virus Scan<br>Hardware Inventory
+
+====Delayed Tasks, or [[Managing_FOG#Scheduling|Scheduling Tasks]] in the future====
+Describes advanced settings available for scheduling tasks including Shutdown after Execution, [[Managing_FOG#Single_Execution_Scheduling|Single Task]] scheduling, and [[Managing_FOG#Cron_Style_Task_Scheduling|setting a CRON-Style Task]].
+
+====[[Managing_FOG#Printers|Adding Printers]] to FOG====
+How to add printers to FOG. This allows the [[Managing_FOG#Printer_Manager|FOG Service to manage printers]] on FOG Clients
+
+=== FOG Plugins ===
+Plugins enhance FOG's functionality.
+<UL><LI>The Capone plugin allows FOG to recognize similar hardware platforms and push your specified image to them with minimal (or no) interaction.</LI>
+</UL>
+See [[Plugins]] to activate and manage plugins.
+
+===The [[Managing_FOG#The_FOG_Client_Service|FOG Client Service]]===
+A service that runs on client computers allowing FOG to better manage them. Provides AD Integration, the ability to change a Hostname, Green Power management, Snap-in installation, User tracking, Printer Management, and more. See the [[Managing_FOG#Overview_10|Overview]] for a more complete list.<br>
+The FOG client can be partially or fully-enabled by [[Managing_FOG#Module_specific_configuration_settings|modifying the ini file.]]<br>
+
+===[[Managing_FOG#Installation|Installing]] the FOG Client===
+A typical client installation, Silent installation, and a video tutorial.
+
+===Advanced Description of [[Managing_FOG#Functions_and_Operation|FOG Services]]===
+More detail on:<br>
+::Auto Log Out<br>Hostname Changer<br>Host Register<br>Task Reboot<br>Directory Cleaner<br>Display Manager<br>Green FOG<br>Snapin Client<br>User Tracker<br>User Cleanup<br>Printer Manager<br>Client Updater
+
+===[[Managing_FOG#Keeping_Clients_up_to_date|Updating]] the FOG Client===
+How to update the FOG client.
+
+===The [[Managing_FOG#FOG_Tray|FOG Tray]]===
+Describes the Windows application that runs in the taskbar
+
+===[[Managing_FOG#Troubleshooting|Troubleshooting]] the FOG Client===
+Log file location
+
+===Snap-ins===
+A FOG [[Managing_FOG#Snap-ins|Snap-in]] is anything that can be run on a Windows client. This can be ''just about anything'', including: installing applications like Firefox or Microsoft Office, adding an icon or shortcut to the desktop, or tweaking a registry key. This section covers [[Managing_FOG#Creating_a_Snapin_.2F_Overview|Creating a Snap-in]], adjusting the FOG server to handle snap-ins [[Managing_FOG#Preparing_the_FOG_Server|larger than 2MB]], [[Managing_FOG#Uploading_the_Snapin|Uploading the Snap-in]] into the FOG system, and [[Managing_FOG#Linking_the_Snapin_to_Hosts|Linking]] the Snap-in to hosts.
+
+== Troubleshooting / Advanced Installations ==
+
+=== Troubleshooting ===
+This section is intended to bring together the most common issues from the [https://sourceforge.net/projects/freeghost/forums/forum/730843 Installation Problems] forums. The wiki format allows formatting and revision that isn't currently available in the SourceForge forums.
+==== [[Knowledge Base]]====
+Many pages and tips on diagnosing network, installation, and general troubleshooting steps. 
+====[[Password Central]]====
+A single resource to explain all passwords necessary for FOG in all its various configurations
+====[[Troubleshooting an image push to a client]]====
+====[[Troubleshooting an image upload]]====
+====[[Troubleshooting Driver Issues]]====
+====[[Speeding up the Graphical User Interface]]====
+====[[Bottleneck]] / Imaging Speed Issues====
+
+===Advanced Installations===
+==== Separate TFTP and DHCP Server ====
+
+In this setup, the TFTP server and the DHCP server are hosted on a separate server.  The TFTP server holds the PXE boot files including the Linux Kernel, boot file system image, and pxe config files.  The DHCP server is the server that assigns the clients with IP addresses and network connection information.  
+
+Click here for detailed steps:<br>
+[[Separate TFTP and DHCP Server]]
+
+==== Additional TFTP / DHCP Server on separate subnet ====
+This setup allows FOG to manage systems at a remote network location by installing the necessary services to allow clients to PXE boot to a Storage Node:<br>
+[[Multiple_TFTP_servers|Including multiple PXE / TFTP servers]]
+
+==== Separate NFS Server ====
+No Content yet.
+
+==== Change NFS location ====
+
+This is '''not about a seperate NFS server''' in general, but about how to '''change the local storage directory''' and export it correctly.
+
+See [[Change NFS location]] for more.
+
+==== Other Advanced Topics  ====
+
+*[[Building a Custom Kernel]]
+*[[Creating Custom FOG Service Modules]]
+*[[Editing the ramdisk/init file]]
+
+== Appendix ==
+=== Preparing a Client for Cloning ===
+FOG's strength can be better harnessed if some time and work is put into preparing a master image that fits the needs of your environment. <br>
+This section covers client preparation steps that will save you time and headaches like:
+::Setting a [[Client_Setup#Set_up_Default_Profile|Default User Profile]]<BR>Installing Windows Updates<BR>Pre-Installing the [[Client_Setup#Final_Steps_Before_Imaging_.2F_Before_Sysprep|FOG service]], etc.<br>
+It also covers more advanced ideas that are guaranteed to ''cause'' headaches, like:
+::Sysprep, [[Client_Setup#Hardware-Independent_Images_-_Understand_HAL|Hardware-Independent Images (HAL)]], and Driver integration.<br>
+Read more about ''[[Client Setup]]''
+
+For Microsoft sysprep information, see this page:  
+http://vernalex.com/guides/sysprep/video.shtml
+
+===Other Resources===
+FOG install HOWTO: 
+http://www.howtoforge.com/installing-fog-computer-imaging-solution-on-fedora8
+
+FOG sourceforge page:
+http://freeghost.sf.net/
+
+Deployment Forum at Edugeek contains many Fog related threads
+http://www.edugeek.net/forums/o-s-deployment/
+
+== About the Developers ==
+
+=== Chuck Syperski ===
+
+Chuck Syperski is the lead software developer for FOG computer imaging solution.  He is a software developer and network integration specialist for a public school district outside of Chicago, IL.  Chuck Syperski has a Bachelor of Science in Computer Science from the University of Illinois.  He specializes in Java, jsp, jsf, objective C, C, C++, C#, perl and php.  You can contact Chuck Syperski directly via sourceforge as the following link:
+
+http://sourceforge.net/users/microleaks/
+
+=== Jian Zhang ===
+
+No content

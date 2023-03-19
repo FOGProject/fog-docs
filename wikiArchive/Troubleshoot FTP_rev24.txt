@@ -1,0 +1,441 @@
+'''Note:''' It seems that greater than 90% of FOG FTP problems are caused by bad/mismatched credentials. Because of this, we recommend skipping straight to the '''Credentials / Passwords''' section first.
+ 
+
+== FTP's roles in FOG ==
+
+The primary purpose is moving & renaming image files in the /images/dev folder to the /images folder at the end of an image capture. FTP is not used for image upload or download because NFS is faster. FTP is also used to download kernels and delete images. FTP is also used to report "Image Size: ON SERVER". FTP is also used to ensure the image you wish to deploy exists before starting an image deployment.
+
+FTP should be able to read, write, and delete in /images/dev and /images.
+
+== Testing FTP ==
+
+=== Try to get a file with Linux: ===
+
+These commands are NOT done on your FOG server, they are done on another Linux machine (this example uses Fedora).
+
+''To explain what's happening below in the code box,''
+
+*Create a test file with some data in it to send later.
+
+*Start ftp (may need installed first).
+
+*Open connection to FOG server.
+
+*Provide username.
+
+*Provide password.
+
+*Change to /images directory.
+
+*List directory contents.
+
+*Upload file.
+
+*List directory contents to verify.
+
+*Download the file.
+
+*Delete the file.
+
+*Exit ftp.
+
+<pre>[administrator@D620 ~]$ echo 'some text here to send later' > test.txt
+[administrator@D620 ~]$ ftp
+ftp> open 10.0.0.3
+Connected to 10.0.0.3 (10.0.0.3).
+220 (vsFTPd 3.0.2)
+Name (10.0.0.3:administrator): fog
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> cd /images
+250 Directory successfully changed.
+ftp> ls
+227 Entering Passive Mode (10,0,0,3,204,176).
+150 Here comes the directory listing.
+drwxrwxrwx    2 0        0            4096 Apr 10 03:38 Optiplex745WinXPconfiguredApril2015
+drwxrwxrwx    2 0        0            4096 Apr 10 03:39 dev
+drwxrwxrwx    2 0        0           16384 Apr 07 01:58 lost+found
+drwxrwxrwx    2 0        0            4096 Apr 08 00:59 postdownloadscripts
+226 Directory send OK.
+ftp> put test.txt
+local: test.txt remote: test.txt
+227 Entering Passive Mode (10,0,0,3,132,59).
+150 Ok to send data.
+226 Transfer complete.
+29 bytes sent in 0.000114 secs (254.39 Kbytes/sec)
+ftp> ls
+227 Entering Passive Mode (10,0,0,3,118,48).
+150 Here comes the directory listing.
+drwxrwxrwx    2 0        0            4096 Apr 10 03:38 Optiplex745WinXPconfiguredApril2015
+drwxrwxrwx    2 0        0            4096 Apr 10 03:39 dev
+drwxrwxrwx    2 0        0           16384 Apr 07 01:58 lost+found
+drwxrwxrwx    2 0        0            4096 Apr 08 00:59 postdownloadscripts
+-rw-r--r--    1 1000     1000           29 Apr 30 00:29 test.txt
+226 Directory send OK.
+ftp> get test.txt
+local: test.txt remote: test.txt
+227 Entering Passive Mode (10,0,0,3,190,81).
+150 Opening BINARY mode data connection for test.txt (29 bytes).
+226 Transfer complete.
+29 bytes received in 0.000529 secs (54.82 Kbytes/sec)
+ftp> delete test.txt
+250 Delete operation successful.
+ftp> exit
+421 Timeout.
+[administrator@D620 ~]$ 
+</pre>
+
+=== Try to get a file with Windows: ===
+
+
+Explanation of the code below:
+
+*Create a file with some data
+
+*Start FTP
+
+*Open connection to FOG server
+
+*Enter username
+
+*Enter password
+
+*Upload file
+
+*List directory to verify
+
+*Download file
+
+*Close connection
+
+*Close FTP.
+
+<pre>c:\SomeFolder>echo This is a bit of text to throw into a file > text.txt
+
+c:\SomeFolder>ftp
+ftp> open 10.0.0.3
+Connected to 10.0.0.3.
+220 (vsFTPd 3.0.2)
+User (10.0.0.3:(none)): fog
+331 Please specify the password.
+Password:
+230 Login successful.
+ftp> put text.txt
+200 PORT command successful. Consider using PASV.
+150 Ok to send data.
+226 Transfer complete.
+ftp: 45 bytes sent in 0.00Seconds 22.50Kbytes/sec.
+ftp> ls
+200 PORT command successful. Consider using PASV.
+150 Here comes the directory listing.
+text.txt
+226 Directory send OK.
+ftp: 10 bytes received in 0.00Seconds 10.00Kbytes/sec.
+ftp> get text.txt
+200 PORT command successful. Consider using PASV.
+150 Opening BINARY mode data connection for text.txt (45 bytes).
+226 Transfer complete.
+ftp: 45 bytes received in 0.00Seconds 45000.00Kbytes/sec.
+ftp> close
+221 Goodbye.
+ftp> quit
+
+c:\SomeFolder></pre>
+
+== FTP Service ==
+
+=== Fedora 20/21 ===
+
+*Check the status of FTP with 
+<pre>systemctl status vsftpd.service</pre> (should be on and green, no errors, and enabled)
+*stop, start, disable and enable FTP service.
+<pre>systemctl stop vsftpd.service
+systemctl start vsftpd.service
+systemctl disable vsftpd.service
+systemctl enable vsftpd.service</pre>
+
+*Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to 
+
+<pre>ftp://x.x.x.x</pre>
+
+*Use  fog / your-fog-account-Password  for the credentials
+*You should see “Index of /”
+
+=== Ubuntu ===
+
+*Restart FTP service.
+<pre>/etc/init.d/vsftpd restart</pre>
+
+*Enable and disable are not available due to this service being in the Upstart scripts.
+
+*Test that it’s functioning by using the testing instructions at the top of this article additionally, if you open a web browser and go to 
+<pre>ftp://x.x.x.x</pre>
+*Use  fog / your-fog-account-Password  for the credentials
+*You should see “Index of /”
+
+== FTP Settings File ==
+
+=== Fedora 20/21: ===
+
+Location:
+
+<pre>/etc/vsftpd/vsftpd.conf</pre>
+
+To display file:
+
+<pre>cat /etc/vsftpd/vsftpd.conf</pre>
+
+It should look a lot like this:
+
+<pre>anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+xferlog_enable=YES
+connect_from_port_20=YES
+xferlog_std_format=YES
+listen=YES
+pam_service_name=vsftpd
+userlist_enable=NO
+tcp_wrappers=YES
+seccomp_sandbox=NO
+</pre>
+
+To edit:
+
+<pre>vi /etc/vsftpd/vsftpd.conf</pre>
+
+Explanation of settings:
+
+<pre>man vsftpd.conf</pre>
+
+
+=== Ubuntu ===
+
+Location:
+
+<pre>/etc/vsftpd.conf</pre>
+
+To display file:
+
+<pre>cat /etc/vsftpd.conf</pre>
+
+It should look a lot like this:
+
+<pre>anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+xferlog_enable=YES
+connect_from_port_20=YES
+xferlog_std_format=YES
+listen=YES
+pam_service_name=vsftpd
+userlist_enable=NO
+tcp_wrappers=YES
+seccomp_sandbox=NO
+</pre>
+
+To edit:
+<pre>vi /etc/vsftpd.conf</pre>
+Explanation of settings:
+
+<pre>man vsftpd</pre>
+
+--------------------------------------------------
+'''Instructions on using Vi: [[Vi]]'''
+--------------------------------------------------
+
+== Disable & Verify Firewall ==
+
+{{:Disable & Verify Firewall}}
+
+
+
+== Credentials / Passwords == 
+
+
+There are a few places where all the credentials (on a standard install) should match exactly.
+
+*Web Interface -> Storage Management -> Your storage node -> Management Username & Management Password
+
+*Web Interface -> FOG Configuration -> FOG Settings -> TFTP Server -> FOG_TFTP_FTP_USERNAME & FOG_TFTP_FTP_PASSWORD
+
+*The local 'fog' user's password on the Linux FOG server
+
+*/opt/fog/.fogsettings -> password (For recent FOG Trunk versions only. 1.2.0 does not have this setting. 1.3.0 will though.)
+
+
+All four of those should match (again, on a standard installation).
+
+
+To change the password of the local fog user:
+
+<pre>sudo passwd fog</pre>
+
+
+To edit /opt/fog/.fogsettings:
+
+<pre>vi /opt/fog/.fogsettings</pre>
+
+Instructions on using Vi: [[Vi]]
+
+== FTP Path ==
+
+The FTP Path is the exact path used to interact with the image files via FTP. This must be set correctly. You can find the the settings here:
+
+*Web Interface -> Storage Management -> [Your storage node] -> FTP Path
+
+Most of the time, the FTP Path will be the same as the Image Path. Synology NAS devices will have a different FTP Path than the Image path, typically the root directory in the Image Path is excluded from the FTP Path on Synology NAS devices.
+
+== Permissions ==
+
+The credentials used for this:
+
+Storage Management -> Storage Node -> Management Username / Management Password
+
+Should exactly match the ownership of the /images directory and all of it's contents. The path should also match the actual path to your images directory.
+
+
+You can check the permissions on all your image files with this:
+<pre>ls -laR /images</pre>
+
+
+
+You can enable all permissions (just for troubleshooting) on the /images directory recursively like this:
+<pre>sudo chmod -R 777 /images</pre>
+
+
+Normally, /images and all of it's contents should be owned by the local fog user. Whoever the owner is, that's the credentials you should use in you're storage node username / password fields.
+
+You can set ownership like this:
+<pre>sudo chown -R fog:root /images</pre>
+
+== Common problems and fixes ==
+
+=== My problem isn't in the WiKi! ===
+
+{{:My problem isn't in the WiKi!}}
+
+
+=== Image Size on server: 0 ===
+
+
+This is a common problem, and is ''almost'' always due to FTP credentials being incorrect.
+Please see the "Credentials" section above.
+
+
+
+
+=== You must first upload an image to create a download task ===
+
+
+You may get this message when you try to deploy an image to computers.
+
+[[File:YouMustFirstuploadAnImageToCreateDownloadTask.png]]
+
+FTP is used to validate that an image exists before creating an image task. When an image does exist, but can't be verified as existing, you will receive the above error. This can be caused by incorrect credentials, permissions, or when the storage node's FTP Path field is blank or incorrect. It's possible that Firewall could be blocking FTP as well.
+
+From what the FOG Community has seen in the forums, most people who receive this error have mismatched credentials.
+
+Please see these to correct the problem:
+
+[[Troubleshoot_FTP#Credentials_.2F_Passwords]] 
+
+[[Troubleshoot_FTP#FTP_Path]]
+
+Source: [https://forums.fogproject.org/topic/4949/deployment-ftp-not-working Deployment/FTP not working]
+
+=== Images stuck in /images/dev ===
+
+Images upload and are stored in /images/dev/[mac address of host] and they're never moved to /images
+
+Error messages on client at end of upload, being close to completed:
+
+*FTP move failed
+*FTP error
+*Can't rename/move Permission Denied
+*FOGFTP failed to rename file
+
+
+
+'''Solutions:'''
+
+
+Please see [[Troubleshoot_FTP#Credentials_.2F_Passwords]] above to correct the problem.
+
+
+Ensure the permissions on /images and /images/dev are correct. See [[Troubleshoot_FTP#Permissions]] above.
+
+For older versions of Ubuntu that have been upgraded to newer versions, this error could be caused by an older FTP setting that may be grandfather'ed in during the upgrade process.
+
+This setting may be commented out or set to NO inside the settings file (see above):
+<pre>write_enable=YES</pre>
+
+Un-comment this, and set it to YES.
+
+
+NOTE:
+Moving images from /images/dev to /images happens during image upload. After attempting to correct the issue, try to re-upload and see if your image gets moved.
+
+=== Updating Database...Failed ===
+
+An image capture goes to 100% and states that the Task is complete, but then says:
+
+<pre>Updating Database.....Failed
+An error has been detected!
+Could not complete tasking (/bin/fog.upload)
+Computer will reboot in 1 minute</pre>
+
+This error is only seen in FOG 1.3.0 and up due to the complete re-write of the upload & download scripts.
+
+Pictured below:
+
+[[File:Could not complete tasking fog.upload Smaller.jpg]]
+
+
+'''Solutions:'''
+
+This can be FTP Credentials and Permissions related, please look to the Credentials and Permissions section above.
+
+=== Large Image - Connection time out during Delete, Upload, and Replication ===
+
+At first glance, this problem looks a lot like the above problem, because it will cause images to be "stuck in /images/dev", however this specific probelm is not credentials related. It's file-system related.
+
+If your /images directory is '''formated with the ext3''' filesystem you probably run into an issue where deleting the old image in /images/[image name] takes a very long time (minutes with 100GB+ images) and therefore the FTP connection times out and does not rename/move the newly uploaded image from /images/dev/[mac address] to /images/[image name], or may not delete the image from /images.
+
+'''Solution:'''
+
+The solution is to have your images on a different filesystem like ext4 or LVM. The issue is defragmentation/reallocation in ext3. For a detailed explanation see here: [http://www.depesz.com/2010/04/04/how-to-remove-backups/ HOW TO REMOVE BACKUPS?]
+
+
+
+=== Images won't finish uploading, won't go past "Clearing ntfs flag" ===
+
+[[File:Clearing.ntfs.flag.png]]
+
+This is permissions related. See forum threads for more details:
+
+[https://forums.fogproject.org/topic/4804/stuck-after-clearning-ntfs-flag stuck-after-clearning-ntfs-flag]
+
+[https://forums.fogproject.org/topic/3072/imaging-stuck-on-upload-after-finished imaging-stuck-on-upload-after-finished]
+
+
+List permissions:
+
+<pre>ls -laR /images</pre>
+
+Fix permissions:
+Use the correct OS user, and correct storage node password to change ownership and give read/write/execute to everyone. Assumes user is "fog".
+
+<pre>chown fog -R /images
+chmod -R 777 /images</pre>
+
+Changing ownership with user AND group (replace "user" and "group" with actual values):
+
+<pre>chown user:group -R /images</pre>

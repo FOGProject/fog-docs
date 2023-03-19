@@ -1,0 +1,27 @@
+Ubuntu releases after 10.04 LTS do no longer provide unfs3 to workaround OpenVZ and LXC containers limitations
+
+You have to download, compile and install unfs3 from sources.
+
+* [http://sourceforge.net/projects/unfs3/files/ Download unfs3]
+* decompress the archive : tar zxf unfs3-0.9.22.tar.gz
+* apt-get install build-essential make flex bison
+* cd unfs3-0.9.22
+* ./configure
+* make
+* make install
+* make install-init
+* edit /etc/init.d/unfsd and replace the occurence of /usr/sbin/unfsd with /usr/local/sbin/unfsd
+* /etc/init.d/unfsd start
+* check unfsd is running : ps -ef | grep unfsd
+* if it runs, then run update-rc.d unfsd defaults
+
+Install and configure fog as usual.
+
+If you want to setup a separate volume for your images :
+
+* assuming you want to use a logical volume (LVM) /dev/vg0/lv with a ext3 filesystem :
+* run your container and move all files located in /images into an other location (/root/images-bak), including the hidden file /images/.mntcheck
+* from the lxc host, open /var/lib/your-container/fstab and add the following line : /dev/vg0/lv images ext3 defaults 0 0
+* restart the container, and check the nex volume is available : run mount without any argument.
+* If the LVM volume has been successfully mounted, move back the files backed up in /root/images-bak. Note there is no slash before '''images'''.
+* chmod 777 /images

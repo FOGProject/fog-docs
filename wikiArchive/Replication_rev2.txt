@@ -1,0 +1,51 @@
+See also: [[Location Plugin]]
+
+= Overview =
+
+The intention of this posting is to explain replication in regards to how FOG handles it's image and snapin distribution to other nodes.
+
+= History =
+
+FOG Replication system was designed as a means to distribute images to nodes within the group it resided in. It operated on a per image system and only replicated images themselves.
+
+= Basic process =
+
+Replication works by taking the master node of a group and distributing to the "subordinate" nodes within that same group.
+
+= Rethought =
+
+Due to the nature of replication, and the complexities and layouts of some FOG environments, the process of replication has been modified.
+
+== Basic Changes ==
+
+# Snapins can now be replicated.
+# Replication can now distribute to multiple groups as well as nodes.
+## This is handled per each item.
+## (e.g. Both snapins and images must be assigned to at least one group, but can be assigned to multiple groups)
+# Both snapins and images can be individually "replicated" or "not replicated".
+# Both snapins and images can be individually "enabled" or "disabled".
+
+== Why? ==
+
+As stated in the basic history, replication only worked with images.  It didn't, really, go that far either.  It only replicated the /images folder (whatever it may have been defined as).  It only replicated within a single group. It deleted any dubious / or purposefully extra data within.  This enabled an attacker or accidental change of the master node to essentially wipe an image series simply by changing which node is a "master" node.  For example, if you created a new node within a pre-existing group and defined that new node as the master, it would replicate it's contents (currently empty) to all other nodes in the group.  Hopefully you see the problem with this idea.  All an attacker would need to do, or an unknowing user, is create a blank node and define it as the master (as every node must belong to a group).
+
+== Lower-level Process ==
+Replication is handled at a per definition basis now.  Any data contained within either the snapin or image storage locations that does not have a corresponding definition associated will remain untouched. This leaves the data used for that segment.  For example, if you created an image definition and had a image defined there.  Later on you delete the definition with the GUI, but chose not to delete the data, that data will remain wherever it had existed (on any or all nodes it exists on).  It will NOT be replicated though because the FOG system knows nothing about it.  The same premise is used to deal with snapins (they share a common method now.)
+
+== Higher-level Process ==
+# The image and/or snapin replication service starts.
+# This service starts by checking if they are the master node.
+# If they are they master node for the group they're working on, they find out which data they have.
+## Nodes technically cannot exist in multiple groups, but there is a way around this (though it's very uncommon).
+# Filter the data that is "not enabled" and/or "not to be replicated".  Only enabled items with "replication" enable are selected to be replicated.
+# The replication method is called.  As a part of this replication method, we start by seeing which data is to be replicated between multiple storage groups.
+# If the node currently checking is the "primary master group" for the data it's working, it will attempt replicating its data to the master of each of the other groups the data is assigned under.
+# If the node currently checking is the master of the group for the data it's working, it will attempt replicating its data to the other nodes within the group.  (Remember, Storage Groups can only have one Master node.  Likewise, there can only be one primary master group per item to be replicated.)
+
+== Layman's replication rules ==
+
+# An image has one group as it’s primary group, but can be associated to many storage groups.
+# The image will always capture to the primary group’s master storage node.
+# Replication looks for images that belong to multiple groups - and replicates from the primary master to the other associated group’s master nodes.
+# Replication then replicates images from each group’s masters to other ‘regular’ storage nodes in the master’s group.
+# A storage node can belong to multiple storage groups - you just need a storage node entry for each. For example, a non-master in one group can be a master in another group.

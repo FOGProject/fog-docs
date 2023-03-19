@@ -1,0 +1,102 @@
+
+= Read First =
+
+* If you have a multi-node setup, they all need to be on the same version of FOG. Start by updating the master/web server, then update all your nodes.
+* If your fog server is in a VM, snapshot/checkpoint it first.
+* Backup your database first via: <font color="red">Web GUI -> FOG Configuration -> Configuration Save -> Export Database -> Export</font>
+
+
+= FOG has branches =
+
+What's a branch? In development terms, a branch is different states of the code. The developers of FOG keep the latest stable version in the <font color="red">master</font> branch. Release candidates are kept in <font color="red">dev-branch</font> and often you will be asked to try this branch to overcome some problem. The latest changes to FOG are kept in the <font color="red">working</font> branch. These latest changes may have broken something but generally the working branch is workable.
+
+
+= Installing GIT =
+
+The preferred method of getting FOG is via GIT. [https://en.wikipedia.org/wiki/Git Read about git here.]  First you'll need to install git onto your chosen Linux server. There's a couple ways to do this below.
+
+
+== Install GIT on Debian or Ubuntu ==
+
+<pre>
+sudo -i
+apt-get -y install git
+</pre>
+
+
+== Install GIT on CentOS 7 or RHEL 7 ==
+
+<pre>
+sudo -i
+yum -y install git
+</pre>
+
+
+== Install GIT on CentOS 8, RHEL 8, or Fedora ==
+
+<pre>
+sudo -i
+dnf -y install git
+</pre>
+
+
+= Getting FOG =
+
+Now that GIT is installed, you should be able to clone the FOG repository. Generally we recommend to put the repository inside of <font color="red">/root</font> but if you've done this sort of thing before, put it wherever you want. Here's how we clone FOG:
+
+<pre>
+sudo -i
+cd /root
+git clone https://github.com/FOGProject/fogproject.git
+cd fogproject
+</pre>
+
+
+= Using the desired FOG branch =
+
+'''If you want to use the master branch (latest stable release), skip to the next section.''' If you'd like to use the dev-branch, use this command:
+
+<pre>
+git checkout dev-branch
+</pre>
+
+If you would like to use the working branch, use this command:
+
+<pre>
+git checkout working
+</pre>
+
+To go back to master at a later date, always update your repository via the <font color="red">git pull</font> command like this:
+<pre>
+sudo -i
+cd /root/fogproject
+git pull
+git checkout master
+</pre>
+
+= Running the installer =
+
+To start the installation process, you would follow the below steps. Running the installer must be done as root.
+
+<pre>
+sudo -i
+cd /root/fogproject/bin
+./installfog.sh
+</pre>
+
+
+= Installation arguments =
+
+The FOG installer has installation arguments available. You can get them all by using this command with the installer:
+
+<pre>
+./installfog.sh --help
+</pre>
+
+If you wanted the installer to 'just go' and use all defaults, use this command:
+
+<pre>
+./installfog.sh -y
+</pre>
+
+If you want the installer to follow a configuration with the -y argument, just create a .fogsettings file ahead of time and put it here: <font color="red">/opt/fog/.fogsettings</font>  You can copy another server's file but will need to update the IP settings. Here's a writeup on the fogsettings file: [[.fogsettings]]

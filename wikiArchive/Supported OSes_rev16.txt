@@ -1,0 +1,19 @@
+We support the following:
+
+*Fedora 7, 8, 9, 10, 11(w/0.27) +
+*Ubuntu 7.10, 8.04, 8.10, 9.04 +
+
+FOG has been reported to work on:
+
+*Fedora 5, 6, 14
+*Debian
+*CentOS - 5.3 - 5.6 without issue using same procedures (.27 and .28)
+*Red Hat Enterprise Linux (RHEL) - 5.3
+*Ubuntu JeOS 8.04
+*Ubuntu Server 8.10
+
+Virtualization:
+
+*Works on Sun's Virtual Box using Centos 5.3-5.5 images.
+*Works on VMwares ESXi v4.1 using CentOS 5.5-5.6 images.
+*Works on VMWare ESXi 5 using Ubuntu 11.04.

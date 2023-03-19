@@ -1,0 +1,36 @@
+
+== '''FOG 1.3.0 Snapin Examples''' ==
+
+
+All below examples utilize the new FOG Client, version 0.9.11+ and FOG 1.3.0
+
+=Chrome MSI deployment=
+<pre>
+Google Chrome MSI:
+https://www.google.com/work/chrome/browser/</pre>
+
+Example fog server:
+10.0.0.4/fog/management
+
+Snapin name:
+Google Chrome
+
+Snapin Storage Group:
+
+Your storage group
+
+Snapin Run With:
+msiexec
+
+Snpain Run With Argument:
+/i
+
+Snapin File:
+googlechromestandaloneenterprise.msi
+
+Snapin Arguments:
+/quiet</pre>
+
+Video Example:
+
+<embedvideo service="youtube">https://youtu.be/SmM2V1KARB0</embedvideo>

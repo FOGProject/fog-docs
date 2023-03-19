@@ -1,0 +1,57 @@
+It is very easy to customize your FOG server to match / reflect your place of work or taste.
+
+====Software and config needed====
+
+*FTP Software - [http://filezilla-project.org/download.php?type=client] (I recommend that you use the .zip version of Filezilla so it is stand alone and portable)
+*TFTP password set / reset - [[http://www.fogproject.org/wiki/index.php?title=Unable_to_connect_to_TFTP]]
+
+You should be able to connect to your servers IP address (a.k.a. the fog server ip) and enter the default username + password.  If you can not connect please verify that you have the correct username + password set on your fog server.
+
+By default the correct user name and password are
+
+Username - '''fog'''
+
+Password - '''password'''
+
+
+
+====Steps for editing and modifying the PXE background====
+
+* Connect to the ftp with your username and password and navigate to /tftpboot/fog directory
+
+
+
+[[Image:10-10-2009_12-54-28_PM.png]]
+
+
+
+* Download the bg.png file to your desktop
+
+[[Image:10-10-2009_9-38-45_AM.png]]
+
+
+
+* Modify the bg.png file the way you want
+
+
+[[Image:10-10-2009_9-39-05_AM.png]]
+
+In this example I'm using mspaint to add TUX to the boot menu.  However you can add / remove / modify it how ever you want '''as long as you stay within the 640x480 paramaters''' 
+
+[[Image:10-10-2009_9-42-35_AM.png]]
+
+(please note that I am not trying to take credit away from Chuck Syperski or Jian Zhang.  I am just trying to show you that it is possible to tweak the PXE boot menu so it can reflect your usage)
+
+* Upload the modified file to the same directory you downloaded it from ''/tftpboot/fog''
+
+[[Image:10-10-2009_9-43-56_AM.png]]
+
+* PXE boot a computer and test it out! =)
+
+Below are some examples!
+
+[[Image:10-10-2009_9-46-07_AM.png]]
+
+
+
+[[Image:10-10-2009_12-47-38_PM.png]]

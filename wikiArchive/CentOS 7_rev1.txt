@@ -1,0 +1,155 @@
+
+= Installing CentOS 7 =
+
+== Configuring partitions for FOG ==
+
+The one thing with using CentOS 7 (or any red-hat based distro) is that the default partitioning isn't optimal for FOG. The default is that "root" only gets 50 GiB and the rest goes to /home. This is not optimal.
+
+You should delete any existing partitions, and then select "create partitions automatically". This is the easiest. Then you can manipulate and delete unneeded partitions. The most simple partitioning setup for FOG is below:
+
+*Give the <font color="red">swap</font> partition the same amount as the amount of RAM the system has. 
+
+*Optionally delete the <font color="red">/home</font> partition or limit it's size to something very small (perhaps 10GB).
+
+*Limit <font color="red">/</font> (root) to 20GB instead of 50 (optional but recommended). Please keep in mind that this is also the partition where the snapins are stored. If you plan to use a lot of snapins and don't think that (roughly) 15GB is enough, then leave this at 50.
+
+*Increase the size of <font color="red">/boot</font> from 500MB to 1GB for breathing room in the future (optional but recommended).
+
+*Finally, create a <font color="red">/images</font> partition with all remaining space.
+
+CentOS (and most Red-Hat based distributions) auto-adjust partition sizes for you if you go over what is available... meaning.. if you are unsure about how much space is left on the drive to assign to <font color="red">/images</font>, you can leave the size field blank and hit "update" and the installer will auto adjust to what is available.
+
+Another thing to keep in mind is when you install on UEFI enabled hardware, there will be an EFI boot partition made automatically - leave that partition alone.
+
+(Note: Video plays in Chrome or Firefox with html5 plugin)
+
+External Video Link:
+
+[https://youtu.be/sI2AuA5jdYA CentOS 7 FOG Optimal Partitioning]
+
+Video:
+<embedvideo service="youtube">https://youtu.be/sI2AuA5jdYA</embedvideo>
+
+== Continue installation ==
+
+*Under network settings, set a static IP with Subnet & router info and set a hostname. DNS entries are comma delimited (no spaces). For these to take effect, you can toggle off/on the network adapter. It's a slide switch on the NIC selection page.
+
+*Set the timezone (and any preferred NTP servers).
+
+*Start installing.
+
+*Set a root password.
+
+= CentOS 7 pre-config =
+
+
+== Update CentOS 7 ==
+
+Update everything installed with this line:
+
+<pre>yum update -y</pre>
+
+
+
+== Continue pre-config ==
+
+After installation is complete and reboot is done, you can work through putty from this point forward. You can get a copy [http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html here].
+
+*Log in as root with the password you set earlier.
+
+*Configure firewalld:
+
+<pre>
+yum install firewalld -y
+systemctl start firewalld
+systemctl enable firewalld
+for service in http https tftp ftp mysql nfs mountd rpc-bind proxy-dhcp samba; do firewall-cmd --permanent --zone=public --add-service=$service; 
+done
+
+echo "Open UDP port 49152 through 65532, the possible used ports for fog multicast" 
+firewall-cmd --permanent --add-port=49152-65532/udp
+echo "Allow IGMP traffic for multicast"
+firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -p igmp -j ACCEPT
+systemctl restart firewalld.service
+echo "Done."
+</pre>
+
+
+*Add firewalld exceptions for DHCP and DNS (if you plan to run DHCP on your FOG server):
+
+<pre>
+for service in dhcp dns; do firewall-cmd --permanent --zone=public --add-service=$service; done
+firewall-cmd --reload
+echo Additional firewalld config done.
+</pre>
+
+
+*Set SELinux to permissive on boot:
+
+<pre>sed -i.bak 's/^.*\SELINUX=enforcing\b.*$/SELINUX=permissive/' /etc/selinux/config</pre>
+
+
+*Set SELinux to permissive on the fly (this is not persistent, the above config must be done to be persistent):
+
+<pre>setenforce 0</pre>
+
+= Setup FOG =
+
+This will install the latest version of FOG using the Git method found here: [[Upgrade to trunk]]
+
+We need to use FOG 1.3+ with CentOS 7 and later because 1.2.0 does not support CentOS 7 out-of-box.
+
+
+<pre>
+yum install git -y
+cd ~
+mkdir git
+cd git
+git clone https://github.com/FOGProject/fogproject.git
+cd fogproject/bin
+./installfog.sh
+echo "Now you should have fog installed."
+</pre>
+
+*Follow the on-screen instructions to setup fog for your environment. If you are unsure about anything, choose the default option.
+
+
+
+= Set the FOG services to start 30 seconds after boot (Optional) =
+
+These steps are only needed if you have timing issues. If you're setting up a brand-new server, don't do these steps, try things out first as they are. It's very rare that services need delayed.
+
+These steps are for delaying all FOG Services, NFS, and RPC for 30 seconds. This is usually only needed for very fast booting servers.
+
+
+*Disable services with:
+
+<pre>systemctl disable FOG{MulticastManager,Scheduler,SnapinReplicator,ImageReplicator}
+systemctl disable nfs-server
+systemctl disable rpcbind
+echo FOG Services are now disabled.</pre>
+
+Create a startup script with:
+
+<pre>vi /etc/rc.d/rc.local</pre>
+
+Instructions on using Vi: [[Vi]]
+
+*Make that file look like below, exactly. This creates a 30 second delay for starting these services at boot.
+
+<pre>#!/bin/bash
+sleep 30
+touch /var/lock/subsys/local
+systemctl start nfs-server
+systemctl start rpcbind
+systemctl start FOGMulticastManager
+systemctl start FOGScheduler
+systemctl start FOGSnapinReplicator
+systemctl start FOGImageReplicator
+exit 0</pre>
+
+*save the file
+
+*Then Run this command to make that file executable: 
+
+<pre>chmod +x /etc/rc.d/rc.local</pre>

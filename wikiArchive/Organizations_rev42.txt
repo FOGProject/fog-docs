@@ -1,0 +1,33 @@
+= Burlington School District =
+[[File:bsd.png]]
+== Year started using ==
+2010
+== Location ==
+Burlington, VT - USA
+== Approximate number of systems ==
+2300
+
+= Catholic Central High School =
+[[File:cchs.gif]]
+== Year started using ==
+2012
+== Location ==
+Burlington, WI - USA
+== Approximate number of systems ==
+200
+= Southwest University =
+[[File:swu.jpeg]]
+== Year started using ==
+2011
+== Location ==
+Blagoevgrad, Bulgaria
+== Approximate number of systems ==
+1000
+= IUT-Amiens TC and GEA departements =
+[[File:iut.gif]]
+== Year started using ==
+2010
+== Location ==
+Amiens, France
+== Approximate number of systems ==
+120

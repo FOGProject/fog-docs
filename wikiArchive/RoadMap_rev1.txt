@@ -1,0 +1,9 @@
+The goal of this project is to have a stable, user-friendly method to image Windows based workstations. Below is a rough outline of the features we hope to include in each release of FOG. If you would like to recommend a feature to be added to FOG, please go here.
+
+Future
+
+    * Add MC utility.
+    * Add Shutdown / Reboot tasks.
+    * Add scheduled tasks.
+    * Add optional Samba Server for file sharing.
+    * Add bittorrent protocol to deploy big files on clients.

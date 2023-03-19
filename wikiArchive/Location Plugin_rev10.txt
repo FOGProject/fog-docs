@@ -1,0 +1,11 @@
+
+== Location Plugin ==
+
+
+External Video Link:
+
+[https://youtu.be/aZkGwQztITg FOG 1.3.0 Location Plugin Tutorial]
+
+Video:
+
+<embedvideo service="youtube">https://youtu.be/aZkGwQztITg</embedvideo>

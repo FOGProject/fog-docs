@@ -1,0 +1,31 @@
+'''Welcome to the FOG Wiki pages'''
+
+FOG is a free, open source computer cloning solution and this wiki contains the bulk of documentation for the project.
+
+# [[Introduction]]
+#* [[Introduction#What_is_FOG|What is FOG and what can I do with it?]]
+#* [[Introduction#Features|Features]]
+#* [[Introduction#Get_help|Where to get help?]]
+# [[Installation]]
+#* [[Installation#Requirements|Requirements]] 
+#* [[Installation#Official_archive|Download FOG]]
+#* [[Installation#Installer|Installer]]
+#* [[Installation#Installation_manuals|Installation manuals]]
+#* [[Installation#Virtualization|Virtualization]] 
+#* [[Installation#Security|Security]] 
+#* [[Installation#Troubleshooting|Troubleshooting]]
+# [[Managing_FOG|Management]]
+#* [[Managing_FOG#Dashboard|Dashboard]]
+#* [[Managing_FOG#Users|User management]]
+#* [[Managing_FOG#Hosts|Host management]]
+#* [[Managing_FOG#Groups|Group management]]
+#* [[Managing_FOG#Images|Image management]]
+#* [[Managing_FOG#Storage_Management|Storage management]]
+#* [[Managing_FOG#Snap-ins|Snapin management]]
+#* [[Managing_FOG#Printers|Printer managementr]]
+#* [[Managing_FOG#The_FOG_Client_Service|Service configuration]]
+#* [[Managing_FOG#Tasks|Task management]]
+#* [[Managing_FOG#FOG_Reports|Report management]]
+#* [[Managing_FOG#Other_Settings|FOG configuration]]
+#* [[Managing_FOG#Plugins|Plugin Management]]
+# [[FOG Client]] (as well [[Managing_FOG#The_FOG_Client_Service]])

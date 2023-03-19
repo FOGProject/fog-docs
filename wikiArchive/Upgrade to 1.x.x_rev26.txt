@@ -1,0 +1,105 @@
+= Overview =
+'''NOTE: 1.x.x is a, nearly, complete rewrite from previous versions of FOG.  There may be issues when upgrading from past revisions of FOG so please backup your installation before upgrading!
+
+*Migration for v0.32 to version v1.x.x will cause you to loose the operation system information that was associated with your hosts.  This information has been moved to the image item now, so you will need to update all your images to set the appropriate operating system!  Please see the Migration Instructions section below for more information. 
+
+*Many successful upgrades from v0.32 have occurred. It is possible to upgrade from v0.1 all the way to v1.x.x.
+
+----
+
+
+*All commands are assumed to be run as root.  If you don't have access to root, prepend the installation with sudo (ex.
+<pre>sudo svn co https://svn.code.sf.net/p/freeghost/code/tags/1.2.0 /opt/fog_1.2.0</pre>
+<pre>sudo ./installfog.sh</pre>
+
+== Download ==
+*Three Download Methods currently exist:
+# To get the Source from [[SVN]]
+#* <pre>svn co https://svn.code.sf.net/p/freeghost/code/tags/1.2.0 /opt/fog_1.2.0</pre>
+# To get tarball file.
+#* <pre>wget http://sourceforge.net/projects/freeghost/files/latest/download</pre>
+# Click to get tarball file
+#*http://sourceforge.net/projects/freeghost/files/FOG/fog_1.2.0/fog_1.2.0.tar.gz/download
+
+=Methods=
+
+*For <span style="background-color:Green;"><span style="color:White">'''Direct'''</span></span> upgrade from 0.32 to 1.x.x --> '''[[Upgrade_to_1.x.x#Direct_Upgrade | Direct Upgrade]]'''
+
+*For <span style="background-color:Yellow;"><span style="color:Black">'''Migration'''</span></span> from Old Server 0.32 to a New Server 1.x.x --> '''[[Upgrade_to_1.x.x#Migration_Upgrade| Migration Upgrade]]''' (Requires 2 separate Servers)
+==Direct Upgrade==
+* '''Requirements:'''
+#Current server that has 0.32
+#The new download from the [[Upgrade_to_1.x.x#Download|Download]] section above
+==== Prepare for install ====
+# Change to the downloaded source installation folder.
+#* <pre>cd /opt/fog_1.2.0/bin</pre>
+=== Install ===
+# Confirm your settings in .fogsettings <span style="background-color:Yellow;"><span style="color:Black">'''UNLESS YOU HAVE TO MAKE CHANGES'''</span></span>
+#* Example: If you added a password to mysql you will need to confirm the settings there. Also, if you changed the default user.
+# Begin installing.
+#* <pre>./installfog.sh</pre>
+
+=== Post Install ===
+
+# Go to the link you normally go to and you should notice the upgrade/install database screen. (http://<ip-address-of-FOG-Server/fog/management>/)
+#* Click the '''Submit''' button and it should move on to say, Click here to login, once complete.
+# '''Finish''' the install in the '''terminal window'''.
+
+*Continue to [[Upgrade_to_1.x.x#Operating_System_Information | Operating_System_Information ]]
+
+==Migration Upgrade==
+* '''Requirements:'''
+# Old Server with 0.32 installed
+# New Server with your choice flavor of Linux
+*If using a VM please create a second VM to serve as the ''second'' server
+=== Prepare for install  ===
+* On the Old Server
+# Backup old database
+#* <pre>mysqldump --opt -u'root' [-p'passwordhere' #only if password set] fog > fog_backup.sql</pre>
+#* '''NOTE:''' ''There is no space between -u and root also -p and password, also the name and password are wrapped with quotes.  In the case a single quote is used in your password, replace the current single quotes with double quotes.  If there is both a double and single quote (for whatever reason) in the password, you will need to escape the appropriate quote [ the one matching the quotes wrapping the entire field ] with a backslash (e.g. \ )''
+#* <span style="background-color:RED;"><span style="color:White">DO NOT tar ball or gz</span></span>
+# Save file to an easily up-loadable location
+* As far as the old server is concerned your done with this machine.
+
+=== Install ===
+* On the New Server
+*Click below for step-by-step guides written for your favorite flavor of Linux:
+
+{{Installation}}
+
+# Change to the downloaded source installation folder.
+#* <pre>cd /opt/fog_1.2.0/bin</pre>
+
+=== Post Install ===
+# Go to the link you normally go to and you should notice the upgrade/install database screen. (http://<ip-address-of-FOG-Server/fog/management>/)
+#* Click the '''Submit''' button and it should move on to say, Click here to login, once complete.
+# '''Finish''' the install in the '''terminal window'''.
+# '''Sign in''' into the FOG GUI with your normal user and password.
+# Record <span style="background-color:Green;"><span style="color:White">ALL</span></span> information on  [[File:Config.png]]'''Fog Confiuration''' --> '''Fog Settings''' and  [[File:Storage.png]]'''Storage management''' pages
+# Import old database backup '''fog_backup.sql''' on [[File:Config.png]] '''Fog Configuration''' --> '''Configuration Save'''
+# '''Click''' [[File:Home.png]] HOME.
+#* The upgrade/install database screen will reappear.
+# Click the '''Submit''' button and it should move on to say, Click here to login, once complete.
+# Edit any settings in the [[File:Config.png]] '''Fog Configuration''' --> '''Fog Settings''' page that may have changed from the server move (ip, paths, etc) that you recorded from the [[File:Config.png]] '''Fog Configuration''' --> '''Fog Settings''' page and [[File:Storage.png]]'''Storage Management''' pages
+# '''Finish''' the install in the '''terminal window'''.
+# Dispose of '''Old Server''' properly
+
+== Operating System Information ==
+* As the hostOS column has been moved to the images table rather than the hosts table, you need to specify the Operating system of the images currently on your system.
+* To do so, login to the FOG GUI and navigate to the [[File:Images.png]]Image Management Page.  Click on each of your images and set the OSID accordingly.
+
+== Change your DHCP Option 67 ==
+
+# Go to your DHCP server and change your Option 67 from ''pxelinux.0'' to '''undionly.kpxe''' (or other iPXE file)
+#* '''Default undionly.kpxe''' (Other boot files include ipxe.kkpxe, ipxe.pxe, default.ipxe, ipxe.kpxe, undionly.pxe, pxelinux.0.old, undionly.kkpxe and even custom ones if you wish to create them)
+
+== Old Images ==
+* Fog 1.x.x uses PartClone instead of PartImage. Meaning that your old Images will not deploy correctly, unless you do the following steps.
+* If you do a straight upgrade, existing Image definitions should automatically be set to partimage type but please verify these settings
+#Confirm that '''FOG_FORMAT_FLAG_IN_GUI''' is enable in your Fog settings
+#* [[File:Config.png]] '''Fog Configurations''' --> '''Fog Settings''' --> '''General Settings --> FOG_FORMAT_FLAG_IN_GUI
+#Go to your image and Change the '''Image Type''' to '''PartImage'''
+#* [[[File:Images.png]] '''Image Management''' --> '''[Select the ''OLD'' Image'' --> '''Image Type:''
+
+== Congratulations ==
+*You should now have an UPGRADED FOG server that will be able to perform all the tasks we've all come to know and love.

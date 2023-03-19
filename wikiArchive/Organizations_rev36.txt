@@ -1,0 +1,85 @@
+= Burlington School District =
+[[File:bsd.png]]
+== Year started using ==
+2010
+== Location ==
+Burlington, VT - USA
+== Approximate number of systems ==
+2300
+
+= Catholic Central High School =
+[[File:cchs.gif]]
+== Year started using ==
+2012
+== Location ==
+Burlington, WI - USA
+== Approximate number of systems ==
+200
+= Southwest University =
+[[File:swu.jpeg]]
+== Year started using ==
+2011
+== Location ==
+Blagoevgrad, Bulgaria
+== Approximate number of systems ==
+1000
+= IUT-Amiens TC and GEA departements =
+[[File:iut.gif]]
+== Year started using ==
+2010
+== Location ==
+Amiens, France
+== Approximate number of systems ==
+120
+= Seymour Community School Corporation =
+[[File:scsc.jpeg]]
+== Year started using ==
+2011
+== Location ==
+Seymour, IN - USA
+== Approximate number of systems ==
+4000
+= Fort Hays State University =
+[[File:fhsu.png]]
+
+== Year started using ==
+2014
+== Location ==
+Hays, KS - USA
+== Approximate number of systems ==
+800
+= Rockwood Area School District =
+[[File:rsdr.jpeg]]
+== Year started using ==
+2011
+== Location ==
+Rockwood, PA - USA
+== Approximate number of systems ==
+800
+= Weslaco Independent School District =
+[[File:wisd.jpeg]]
+== Year started using ==
+2009
+== Location ==
+Weslaco, TX - USA
+== Approximate number of systems ==
+9000
+= Groupe ESEO =
+[[File:eseo.jpg]]
+== Location ==
+Angers, France
+Paris, France
+Dijon, France
+Shanghai, China
+== Year started using ==
+2014
+== Approximate number of systems ==
+800
+= Prisma College =
+[[File:pcu.jpeg]]
+== Location ==
+Amersfoort, Netherlands
+== Year started using ==
+2010
+== Approximate number of systems ==
+550

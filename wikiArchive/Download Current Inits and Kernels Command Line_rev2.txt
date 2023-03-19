@@ -1,0 +1,15 @@
+= Download current inits and/or Kernels =
+How to get the most recent kernels and/or inits from FOG's website.
+== Debian (and based OS) ==
+=== Init (init.xz/init_32.xz) ===
+* wget -O /var/www/fog/service/ipxe/init.xz http://downloads.sourceforge.net/project/freeghost/InitList/init.xz
+* wget -O /var/www/fog/service/ipxe/init_32.xz http://downloads.sourceforge.net/project/freeghost/InitList/init_32.xz
+=== Kernels (bzImage/bzImage32) ===
+* wget -O /var/www/fog/service/ipxe/bzImage http://downloads.sourceforge.net/project/freeghost/KernelList/bzImage
+* wget -O /var/www/fog/service/ipxe/bzImage32 http://downloads.sourceforge.net/project/freeghost/KernelList/bzImage32
+== Redhat (and based OS) ==
+* wget -O /var/www/html/fog/service/ipxe/init.xz http://downloads.sourceforge.net/project/freeghost/InitList/init.xz
+* wget -O /var/www/html/fog/service/ipxe/init_32.xz http://downloads.sourceforge.net/project/freeghost/InitList/init_32.xz
+=== Kernels (bzImage/bzImage32) ===
+* wget -O /var/www/html/fog/service/ipxe/bzImage http://downloads.sourceforge.net/project/freeghost/KernelList/bzImage
+* wget -O /var/www/html/fog/service/ipxe/bzImage32 http://downloads.sourceforge.net/project/freeghost/KernelList/bzImage32

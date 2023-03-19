@@ -1,0 +1,10 @@
+Quick reference for basic editing in vi
+
+
+i = go into insert mode, here you may use arrows to navigate text, and edit it with the keyboard as normal.
+Esc (the escape key) = exit insert mode
+
+WHEN NOT in insert mode you may use
+:w (then enter) = write changes.
+:q (then enter) = exit vi
+:q! (then enter) = exit vi without saving changes.

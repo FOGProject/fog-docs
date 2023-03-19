@@ -1,0 +1,123 @@
+== CentOS 5.3 ==
+
+===Known Issues===
+
+Some packages are unavailable, causing an error during the installer script.  Follow the instructions below to install them so the script runs properly.
+
+===Installing CentOS===
+*Download the CentOS 5.3 CD1.
+*Boot into graphical install mode
+*After the media check, the GUI installer will come up
+*Select Language & Keyboard
+*Select the desired partitioning configuration
+*Setup IP networking.
+*Set Timezone
+*Select root password
+*At the software packages section, you must uncheck Desktop-Gnome, then select "Customize Now".
+**Unselect Base/Dialup Networking Support
+**Unselect Applications/Text-Based Internet
+*Proceed with the install & reboot when prompted.
+
+====Post Installation Tasks====
+
+On first boot, a setup section appears.  Run the Firewall configuration.
+
+*For a basic configuration, set security level to Disabled, and SELinux to Disabled.
+
+===Setting up FOG on CentOS===
+====Installing on 0.26====
+*download/scp the fog installer to the /root folder of your CentOS server.
+*Install yum-priorities
+ yum install yum-priorities
+
+*Download the current RPMForge for your system from http://packages.sw.be/rpmforge-release/ or another repository
+*Install rpmforge
+ rpm -i rpmforge-release-0.3.6-1.el5.rf.i386.rpm
+
+*Extract FOG
+ tar -xvzf fog_0.26.tar.gz
+
+*Fix the Path to include files used by the FOG Installer 
+ PATH=$PATH:/usr/sbin:/sbin
+
+*launch the installer
+ cd fog_0.26/bin
+ ./installfog.sh
+*Go through the install script, selecting Fedora
+*The rest of the install is identical to the Fedora section now.
+
+'''If you get an error of:   * Starting FOG Multicast Management Server...Failed! then just re-launch the installer & it will work the second time through'''
+
+====Installing on 0.27====
+The installer is more CentOS friendly with 0.27.  The only piece missing is RPMForge, so htmldoc can be seamlessly installed.
+*Download the current RPMForge for your system from http://packages.sw.be/rpmforge-release/ or another repository
+*Install rpmforge
+ rpm -i rpmforge-release-0.3.6-1.el5.rf.i386.rpm
+
+You can now do a regular install.
+
+==CentOS 5.4==
+
+The Fedora installer works without issue for CentOS install, assuming use of CentOS 5.4 (32 bit only tested).
+
+==CentOS 5.5==
+
+====Installing 0.29 and 0.30====
+Issues:
+
+(1) On CentOS 5.5, RPMForge is still required for htmldoc to work.
+
+(2) The package of php-gettext does not exist on CentOS.  It is a part of the base PHP package.  You will need to edit /fog_0.29/lib/redhat/config.sh & remove php-gettext from the packages list on line 22
+
+(3) Checking Package ClamAV-Update fails.  On CentOS the package is called clamav.  The config file specifies clamav-update.  Edit /fog_0.29/lib/redhat/config.sh & change clamav-update to clamav.
+
+(4) Configuring Fresh Clamcp:cannot start `/etc/sysconfig/freshclam': No such file or directory...Failed!  (Will need to change location of config file in /fog_0.29/lib/redhat/config.sh to match, should be `/usr/bin/freshclam')
+
+
+Solution:
+
+
+*Download the current RPMForge for your system from http://packages.sw.be/rpmforge-release/ or another repository
+
+*Install rpmforge
+
+ rpm -i rpmforge-release-0.5.2-2.el5.rf.i386.rpm
+
+
+Edit 'fog_0.29/lib/redhat/config.sh' *prior to* executing 'fog_0.29/bin/installfog.sh'.
+
+- Edit line 22 as mentioned in (2) and (3) above (remove 'php-gettext' and change 'clamav-update' to 'clamav')
+
+- Edit line 63 to read: 'freshDB="/var/clamav/";
+
+- Edit line 66 to read: 'freshcron="/usr/sbin/freshclam"
+
+
+(Tested with CentOS 5.5 32-bit, fog 029, and rpmforge-release-0.5.2-2.el5.rf.i386.rpm)
+
+(Tested with CentOS 5.5 64-bit, fog 030, and rpmforge-release-0.5.2-2.el5.rf.x86_64.rpm)
+
+
+==CentOS 5.6==
+
+
+====Installing 0.30====
+
+The changes above still apply to CentOS 5.6.
+
+
+====Installing 0.31====
+
+Version 0.31 now requires PHP-5.2.1+ to handle new features in the web interface.  See the [http://wiki.iuscommunity.org/Doc/ClientUsageGuide IUS Repo Wiki] on how to upgrade to either PHP-5.2 or PHP-5.3.
+
+Thus far all other requirements / changes are the same.
+
+====Installing 0.32====
+
+Version 0.31 now requires PHP-5.2.1+ to handle new features in the web interface.  See the [http://wiki.iuscommunity.org/Doc/ClientUsageGuide IUS Repo Wiki] on how to upgrade to either PHP-5.2 or PHP-5.3.
+
+*When you install CentOS do not install any version of PHP instead:
+**Edit the /fog_0.29/lib/redhat/config.sh file and change any reference of "php" to "php53"  (this will install PHP-5.3 during the FOG install)
+***When the FOG installation is completed, you'll need to edit the /etc/php.ini file
+****Add the following to line 2 (choose your own timezone [http://www.php.net/manual/en/timezones.php here]):
+ date.timezone = "America/Chicago"

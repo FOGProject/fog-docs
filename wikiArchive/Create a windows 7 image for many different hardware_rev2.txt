@@ -1,0 +1,344 @@
+[[Category:Windows]]
+== Tools required ==
+
+* [http://www.microsoft.com/downloads/fr-fr/details.aspx?FamilyID=696DD665-9F76-4177-A811-39C26D3B3B34 WAIK]
+* [http://downloads.vmware.com/fr/d/info/desktop_downloads/vmware_player/3_0 VMWare Player]
+* windows PE
+
+= Create Master computers =
+
+== configure the master VM ==
+A Virtual Machine gives an easy way to backup your windows 7 installation before you lauch sysprep. This can be done by copying the virtual machine's folder in an other place. (You may also upload an image to your FOG server). This is very useful because you may have errors when trying your unattend.xml file. If an error occurs, I recommend to revert back your VM, correct the errors and try again. If you need to rebuild a new master image, you may alter date of your virtual machine before restoring it and prevent windows from complaints for activation. In an other hand you may have dificulties to instal the latest hotfixes from windows update. I recommend maintaining a private repository of all hotfixes. It is easy to install them with a batch script. This is also faster because you will not have to download them again and again.
+
+Install VMWare player if not already done. 
+
+Configure the VM as following
+* 2 microprocessors to install windows 7 with ACPI multiprocessor HAL.
+* a 160 GB hard drive 
+* configure the VM BIOS to boot on the ethernet device first
+
+'''Edit .vmx file''' describing your VM and edit the following line:
+
+<pre>
+SCSI0.Present="TRUE"
+</pre>
+
+Change this line to this:
+
+<pre>
+SCSI0.Present="FALSE"
+</pre>
+
+This will disable the SCSI controller which is useless when you don't have any SCSI virtual drive. This is known to cause some trouble when dealing with windows XP and sysprep [http://www.fogproject.org/wiki/index.php?title=Create_a_windows_XP_image_for_many_different_hardware#configure_the_master_VM] . To prevent any similar problem, disable it.
+
+Boot your virtual machine and configure it to boot on the ethernet interface first, then DVD, then HDD.
+
+== Install windows 7 ==
+
+Use the needed version of windows 7 32 bits or 64 bits. Update to the latest SP and hotfixes.
+
+== Prepare sysprep ==
+
+=== Files for the reseal process ===
+
+Create a folder in a USB flash disk named '''sysprep-7-32''' (for windows 7 32 bits). You should create an other folder for windows 7 64 bits. All files for each windows version in separate folders will maye your work very straightforward when you will need to recreate your master image.
+
+In this folder create unattend.xml from the following example, or by reproducting it with WAIK [
+http://blog.brianleejackson.com/sysprep-a-windows-7-machine-%E2%80%93-start-to-finish-v2]
+
+Please note that this unattend.xml is for Windows 7 32 bits, french localized, and has first logon commands to register the licence KEY and activate it against Microsoft's activation server (Multiple Activation Key MAK). It seems the administrator account must be named in english. Its name appears localized after deploying the image.
+
+The file is very similar for windows 7 64 bits (see below). 
+
+You have to
+* set the administrator password on account definition section and autologon section
+* set the licence key
+* set Registered Organisation and Owner
+
+'''unattend.xml 32 bits version'''
+<pre>
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+    <settings pass="generalize">
+        <component name="Microsoft-Windows-Security-SPP" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SkipRearm>1</SkipRearm>
+        </component>
+    </settings>
+    <settings pass="specialize">
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                    <Path>net user administrator /active:yes</Path>
+                    <Order>1</Order>
+                </RunSynchronousCommand>
+            </RunSynchronous>
+        </component>
+        <component name="Microsoft-Windows-Security-SPP-UX" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SkipAutoActivation>true</SkipAutoActivation>
+        </component>
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ShowWindowsLive>false</ShowWindowsLive>
+            <TimeZone>Romance Standard Time</TimeZone>
+        </component>
+    </settings>
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-International-Core" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <InputLocale>fr-FR</InputLocale>
+            <SystemLocale>fr-FR</SystemLocale>
+            <UILanguage>fr-FR</UILanguage>
+            <UserLocale>fr-FR</UserLocale>
+        </component>
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <AutoLogon>
+                <Password>
+                    <Value>password</Value>
+                    <PlainText>true</PlainText>
+                </Password>
+                <LogonCount>5</LogonCount>
+                <Enabled>true</Enabled>
+                <Username>administrator</Username>
+            </AutoLogon>
+            <FirstLogonCommands>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>cscript //b c:\windows\system32\slmgr.vbs /ipk XXXXX-XXXXX-XXXXX-XXXXX-XXXXX </CommandLine>
+                    <RequiresUserInput>true</RequiresUserInput>
+                    <Order>1</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>2</Order>
+                    <RequiresUserInput>false</RequiresUserInput>
+                    <CommandLine>cscript //b c:\windows\system32\slmgr.vbs /ato</CommandLine>
+                </SynchronousCommand>
+            </FirstLogonCommands>
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+                <ProtectYourPC>1</ProtectYourPC>
+                <NetworkLocation>Work</NetworkLocation>
+                <SkipMachineOOBE>true</SkipMachineOOBE>
+                <SkipUserOOBE>true</SkipUserOOBE>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+            </OOBE>
+            <UserAccounts>
+                <AdministratorPassword>
+                    <Value>password</Value>
+                    <PlainText>true</PlainText>
+                </AdministratorPassword>
+            </UserAccounts>
+            <RegisteredOrganization>Your organization</RegisteredOrganization>
+            <RegisteredOwner>Your organization</RegisteredOwner>
+        </component>
+    </settings>
+    <cpi:offlineImage cpi:source="catalog://master-pc/users/master/desktop/win 7 sources/sources/install_windows 7 professional.clg" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+</unattend>
+</pre>
+
+'''unattend.xml 64 bits version'''
+<pre>
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+    <settings pass="generalize">
+        <component name="Microsoft-Windows-Security-SPP" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SkipRearm>1</SkipRearm>
+        </component>
+    </settings>
+    <settings pass="specialize">
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                    <Path>net user administrator /active:yes</Path>
+                    <Order>1</Order>
+                </RunSynchronousCommand>
+            </RunSynchronous>
+        </component>
+        <component name="Microsoft-Windows-Security-SPP-UX" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SkipAutoActivation>true</SkipAutoActivation>
+        </component>
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ShowWindowsLive>false</ShowWindowsLive>
+            <TimeZone>Romance Standard Time</TimeZone>
+        </component>
+    </settings>
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <InputLocale>fr-FR</InputLocale>
+            <SystemLocale>fr-FR</SystemLocale>
+            <UILanguage>fr-FR</UILanguage>
+            <UserLocale>fr-FR</UserLocale>
+        </component>
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <AutoLogon>
+                <Password>
+                    <Value>password</Value>
+                    <PlainText>true</PlainText>
+                </Password>
+                <LogonCount>5</LogonCount>
+                <Enabled>true</Enabled>
+                <Username>administrator</Username>
+            </AutoLogon>
+            <FirstLogonCommands>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>cscript //b c:\windows\system32\slmgr.vbs /ipk XXXXX-XXXXX-XXXXX-XXXXX-XXXXX </CommandLine>
+                    <Order>1</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <RequiresUserInput>false</RequiresUserInput>
+                    <CommandLine>cscript //b c:\windows\system32\slmgr.vbs /ato</CommandLine>
+                    <Order>2</Order>
+                </SynchronousCommand>
+            </FirstLogonCommands>
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+                <NetworkLocation>Work</NetworkLocation>
+                <ProtectYourPC>1</ProtectYourPC>
+                <SkipMachineOOBE>true</SkipMachineOOBE>
+                <SkipUserOOBE>true</SkipUserOOBE>
+            </OOBE>
+            <UserAccounts>
+                <AdministratorPassword>
+                    <Value>password</Value>
+                    <PlainText>true</PlainText>
+                </AdministratorPassword>
+            </UserAccounts>
+            <RegisteredOrganization>Your Organization</RegisteredOrganization>
+            <RegisteredOwner>Your Organization</RegisteredOwner>
+        </component>
+    </settings>
+    <cpi:offlineImage cpi:source="wim://master-pc/users/master/desktop/win%207%20sources/sources/install.wim#Windows 7 x64 Professionnel" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+</unattend>
+</pre>
+
+Create '''reseal.cmd''' and store it in the folder '''sysprep-7-32'''.
+
+<pre>
+@echo off
+set curdir=%~dp0
+%~d0
+cd %curdir%
+set unattendfile=unattend.xml
+if NOT %1!==! set unattendfile=%1
+
+echo sysprep with %unattendfile%
+echo pres Ctrl+C to cancel, or any key to continue
+pause
+
+:: Step #12
+mkdir %windir%\Setup\Scripts
+echo del /Q /F %windir%\system32\sysprep\unattend.xml > %windir%\Setup\Scripts\SetupComplete.cmd
+echo del /Q /F %windir%\panther\unattend.xml >> %windir%\Setup\Scripts\SetupComplete.cmd
+
+:: Step #13
+
+echo on
+copy "%unattendfile%" %windir%\system32\sysprep\unattend.xml
+cd %windir%\system32\sysprep
+%systemdrive%
+
+sysprep /generalize /oobe /quit /unattend:unattend.xml
+</pre>
+
+Create in '''sysprep-7-32''' the file SetupComplete.cmd with the following content:
+
+<pre>
+del /Q /F c:\windows\system32\sysprep\unattend.xml
+del /Q /F c:\windows\panther\unattend.xml
+</pre>
+
+== Rename your master ==
+
+If you wish to, rename your master computer. You may also need to join your domain, install some domain dependant software, and leave the domain, with all reboots required after joining an leaving your domain.
+
+== Delete user account ==
+
+If you wish to activate the administrator account, do it now. Then reboot the master computer, log in with the administrator account, then erase the limited user account, and his personal folder.
+
+== Install FOG service ==
+
+The time has come to install your most useful service ever made. Download it from your FOG server, and install it. Configure it for your server in your organization. the service will start on the next reboot, 
+
+== Run Sysprep ==
+
+The file '''reseal.cmd''' accepts one argument: an unattend file. If no file has been provided, reseal.cmd will use unattend.xml in his directory.
+
+Run it by right clicking on it and selecting '''run as administrator'''. You may run it from a command line with administrator privileges to specify a unatteded file.
+
+After sysprep you may turn off the master computer.
+
+== Driver repository ==
+
+Create a subfolder in '''sysprep-7-32''' in your UFD named '''drivers'''
+
+Create again two subfolders in '''drivers''' '''stor''' and '''net'''.
+
+Store your ethernet/wifi drivers in '''net''' and mass storage drivers in '''stor'''. You need the driver in his simplest form: a .inf file,  .sys files, .cat file and any file you feel useful. You need to unpack most of drivers to build your repository.
+
+Here is an example of the directory structure to store them.
+
+* drivers
+** net
+*** atheros
+**** L1
+**** L2
+*** broadcom
+**** BCM43xx
+**** BCM57xx
+** stor
+
+== Add drivers ==
+
+Reboot your master computer on windows PE (CD or UFD)
+
+in the command line use diskpart to mount a UFD with drivers
+
+<pre>
+diskpart
+</pre>
+
+Identify the UFD with your drivers
+
+<pre>
+list disk
+</pre>
+
+select the disk number which associated to your UFD
+
+<pre>
+select disk 2
+</pre>
+
+select the partition 1 (most UFD have only one partition, or use the command '''list partition''' to list them)
+
+<pre>
+select partition 1
+</pre>
+
+Mount the partition
+
+<pre>
+assign letter=z
+</pre>
+
+exit diskpart
+
+<pre>
+exit
+</pre>
+
+Run dism to add all the drivers in your repository.
+
+<pre>
+dism /image:c:\ /add-driver /recurse /driver:z:\sysprep-7-32\drivers
+</pre>
+
+Check the command runs with no error.
+
+Exit windows PE by typing '''exit''' in the command line. The computer will reboot. Shut it down before windows boots or press "pause" on the keyboard to suspend the BIOS boot process. Press "space" to resume.
+
+Reboot the computer with a third party tool to shrink the NTFS partition to its smallest possible size.
+
+Capture your image with FOG.
+
+= Links =
+
+http://blog.brianleejackson.com/sysprep-a-windows-7-machine-%E2%80%93-start-to-finish-v2

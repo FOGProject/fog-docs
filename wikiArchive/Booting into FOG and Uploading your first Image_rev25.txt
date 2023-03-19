@@ -1,0 +1,46 @@
+For many of us this will be the first encounter of FOG from a client machine. This article starts with explaining how to boot into FOG (what we actually call the FOS - FOG OS) and register a host, then moves on to how to create an image object. Finally, you'll start to upload a new image to the FOG server. There are quite a few things that can possibly go wrong in this process and we try to point out how to find and solve those issues.
+
+== Physical connection ==
+First of all make sure the client is connected to the network in which your FOG server resides. And I really mean this! '''We have seen very strange issues where clients miss DHCP or even just randomly fail - only because the patch cable used was not in a good condition. Please keep that in mind when you run into trouble!'''
+
+More details here!
+
+
+== PXE booting ==
+Boot up your client computer and try to have it PXE boot by pressing F12 (usually). More often then not, this works or at the very least, gets you to a "boot options" menu. This way you can PXE boot the client on the fly without changing BIOS settings. With that said, there are cases where PXE needs to be first enabled before you can use it and most often you want to change to always boot via PXE to be able to fully use FOG. For that you need to enter the BIOS setup - this step may be a little different for every computer though. In most cases this involves pressing either F2, F10, or DEL while you see BIOS POST messages on screen. There you should be able to enable PXE/network booting and change boot order, so the first boot device is PXE boot. The pictures show BIOS boot setup (permanent) and UEFI boot option selection (temporary):
+
+[[Image:Bios.png]] [[Image:efi_boot_manager.png]]
+
+As well FOG makes extensive use of Wake On LAN (WOL) to automatically boot clients which are scheduled for tasking. While you are in BIOS/UEFI setup anyway make sure WOL is enabled and check if there is an option called "Network startup: from server/from hard drive". Clients which have this option won't PXE boot on WOL if "from hard disk" is selected! Make sure you set it to "from server".
+
+== Register the Client with the FOG Server ==
+
+Now that the client is pxe booting, we can register it with the FOG server.  To do so, select "Perform Full Host Registration and Inventory."  During this process you will be asked to answer a few questions like the client's hostname etc.  After filling out all questions, the client will go through a quick hardware inventory and restart, at which point the client will be registered with the FOG server.
+
+
+[[Image:Bootmenu.png]]
+
+== Create an image object ==
+
+At this point we must log into the web interface for FOG, this can be done on any PC with network access and web browser.  
+
+#Open a browser and navigate to '''http://[yourserverip]/fog'''.  
+#Login to the server (default username is '''fog''' and default password is '''password''').
+#Navigate to the '''images section''' which is the icon in the top row that looks like picture.  
+#On the left hand menu select '''Create New Image'''.
+#Enter a meaningful Image Name (no special characters)
+#Enter a description if you wish.
+#Under storage group, select '''default'''
+#From the drop down menu select the appropriate operating system for the image 
+#If the image file is not as you would like it, change it now (no spaces or special characters)
+#If you are imaging a single partition Windows machine, select '''Single Partition'''
+#Click '''Add'''
+
+[[Image:AddImage.png]]
+
+== Create the Task ==
+
+#Still in the host object, click on the '''Basic Tasks''' option on the left hand menu.
+#Select '''Upload'''
+#Click '''Upload Image'''
+#Reboot client and it should pull an image from that computer.

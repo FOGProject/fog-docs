@@ -1,0 +1,105 @@
+Yes!  You are able to edit and modify the PXE server menu to run other programs.  Some of the programs that have been tested and found to be working include the following.
+
+===== Tested and supported programs =====
+
+Gparted - [http://gparted.sourceforge.net/livepxe.php]
+
+Dell Diagnostics Software - [http://www.youtube.com/watch?v=pDu9e_cnTU8&fmt=18] , works with version CW1337A0, see link - [http://support.dell.com/support/downloads/download.aspx?c=us&cs=555&l=en&s=biz&releaseid=R188840&SystemID=PREC_M2300&servicetag=&os=WLH&osl=en&deviceid=3841&devlib=0&typecnt=0&vercnt=4&catid=-1&impid=-1&formatcnt=2&libid=13&fileid=258592]
+
+Netbootdisk - [http://netbootdisk.com/pxeboot.htm] **When Booting a NetBootDisk floppy disk image from PXE, you need to add the kernel raw option, otherwise the process will hang when XP DOS is "Starting..."**
+
+Other software can also be launched via the PXE preboot menu, if you happen to have a simple program that will run in DOS, more than likely it will work with this PXE server.
+
+
+
+===== Pre Setup =====
+
+
+
+Before adding new menu options to your PXE server please verify the following:
+
+<ul>
+<li>You have a valid FTP client installed and working.</li>
+<li>You are able to TFTP into your FOG server with the root username and password.</li>
+<li>You have downloaded the Syslinux [http://www.kernel.org/pub/linux/utils/boot/syslinux/] package.  You will need the memdisk file for all additional software configurations.</li>
+<li>In this example I did NOT set a password to use the application.  You can adjust this to your liking</li>
+</ul>
+
+
+
+===== Modifying the PXE Server to include a new application =====
+
+
+In this example I will be adding an additional option on the PXE server to boot a network boot disk.  Before you add a additional line in the boot menu, you must first have a working floppy version of the disk, for examples and a how-to video on this please see the following link (link removed pending acceptace) 
+
+Once you have the floppy disk working properly you will need to create an .img of the file.  In this example I named the .img of my disk boot.img (you can name it what ever you want, as long as you keep everything case sensative) 
+
+<ul>
+# Connect to your FTP server and navigate to the root directory
+# Navigate to your tftpboot folder
+# You will need to modify the default file in notepad.  This file is located in the pxelinux.cfg folder.  In this example I will add the networkbootdisk image to the pxe server.
+# Scroll to the end of the document and copy / modify the text to include the new program
+</ul>
+
+
+
+ LABEL Network Boot Disk
+ 
+ kernel fog/netbootdisk/memdisk raw
+ append initrd=fog/netbootdisk/boot.img
+ MENU LABEL Network Boot Disk
+ TEXT HELP
+ Netbootdisk
+ ENDTEXT
+
+<ul>
+<li>In this example you can see I labeled the program '''Network Boot Disk'''.</li>
+<li>The path of the .img file is located at '''fog/netbootdisk/boot.img'''.</li>
+<li>Menu Label is what '''shows up in the PXE menu'''.</li>
+<li>The line below TEXT HELP gives the '''description of the application you can run'''.</li>
+</ul>
+
+
+Now that you have modified the default file you need to save it and push the modified file back to the server (in vmware simply replace the existing file with your ftp program)
+
+
+===== Adding the program image into the FOG folder =====
+
+
+
+<ul>
+# Navigate to your /tftpboot/fog folder and create a new subfolder and name it after your program (netbootdisk / dell / etc.)
+# Place the memdisk file and your .img file in this location.  Make sure that the path and file names corrispond with the modifications you made to your default file in the pxelinux.cfg folder
+# Once you have placed both files in the correct locations disconnect from your FTP and try the PXE server out
+</ul>
+
+===== Video Example =====
+
+Below is a video example of a modified pxe boot menu to include netbootdisk
+
+http://www.youtube.com/watch?v=jjDtJtuwIps
+
+--[[User:Ssx4life|Ssx4life]] 16:52, 10 September 2009 (MST)
+
+[[category:pxe]]
+[[category:customization]]
+
+===== Adding ZENWorks Manual Mode Imaging to the FOG Menu =====
+*Create folder /tftpboot/zenworks on your FOG server.
+*Copy the tftp files from your zenworks server to /tftpboot/zenworks.  (Found in SYS:/tftp)
+*Edit /tftpboot/pxelinux.cfg/default to add:
+ LABEL zen
+ 	MENU PASSWD 1234
+ 	KERNEL zenworks/boot/linux
+ 	APPEND initrd=zenworks/boot/initrd vga=0x314 install=tftp://192.168.0.X/zenworks/boot PROXYADDR=192.168.0.Y rootimage=/root TFTPIP=192.168.0.X splash=silent PXEBOOT=YES mode=5 pci=nomsi
+ 	MENU LABEL Zenworks Manual Imaging
+ 	TEXT HELP
+ 	Runs Zenworks Manual imaging
+ 	ENDTEXT
+ \n
+
+'''192.168.0.X is the IP of the FOG server, 192.168.0.Y is the IP of the Zenworks server'''
+
+<hr>
+===Other References to Editing Boot Menu===
+[[Advanced_Boot_Menu_Configuration_options]]

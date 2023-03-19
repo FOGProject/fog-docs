@@ -1,0 +1,228 @@
+== Ubuntu 9.04 ==
+
+=== Overview ===
+
+In this tutorial we are using the 9.04 Desktop (live cd) release of Ubuntu, but FOG can also be installed on any later version of the desktop and server edition.
+
+=== Known Issues ===
+
+This tutorial will probably only work with the English Installation of Ubuntu.
+
+
+After you are done installing FOG you are going to need to update / edit a few settings in Ubuntu before the server is fully working and usable.  Please see the links below for configuration changes that will need to take place.
+
+*TFTP password issues [http://www.fogproject.org/wiki/images/c/cc/TFTP_password_issues.png]
+*Storage group password issues [http://www.fogproject.org/wiki/images/8/83/Storage_node_password_issues.png]
+*PXE boot menu password issues [http://www.fogproject.org/wiki/images/2/2c/PXE_boot_menu_password_issues.png]
+
+=== Installing Ubuntu ===
+
+An Ubuntu cd/dvd can be obtained from:
+
+http://www.ubuntu.com/
+
+After burning a cd/dvd of the ISO image, we must boot the live cd.
+
+During boot select '''Install Ubuntu''' menu item.
+
+[[Image:9.04-install.png]]
+
+The first screen that loads will ask for your language preference, in this example we will select '''English''' and click '''forward'''.
+
+[[Image:9.04-lang.png]]
+
+The next screen will ask you about your time zone settings, in our example we will select '''Chicago''' and click '''forward'''.
+
+[[Image:Timezone.jpg]]
+
+The following screen will ask you for your keyboard layout, in our example we will select '''U.S. English''' and click '''forward'''.
+
+[[Image:9.04-key.png]]
+
+The next screen will prompt you for partitioning information, we will select to '''use entire disk''', and click '''forward'''.
+
+[[Image:9.04-part.png]]
+
+Now you will need to enter some user account information, enter the required information and click, '''forward'''.
+
+[[Image:9.04-user.png]]
+
+On the final screen, click '''install''' to start the installation process.
+
+At this point the installer will take over, this process may take a long time, so please be patient.
+
+When you are prompted, restart the server.
+
+=== Ubuntu Configuration ===
+
+After the computer restarts, login with the user you created during installation.
+
+==== Settings a static IP Address ====
+
+Newer versions of Ubuntu use an application called network-manager to manage network connections, which works great with desktops and laptops, but not so well for servers, so we are going to remove network-manager.  
+
+ Applications -> Accessories -> Terminal 
+
+Now type:
+
+ sudo apt-get remove network-manager
+
+Now lets setup a static IP address:
+
+ sudo gedit /etc/network/interfaces 
+
+Enter the following information in the text file:
+
+ auto lo
+ iface lo inet loopback
+ auto eth0
+ iface eth0 inet static
+         address [your.static.ip]
+         netmask [your.net.mask]
+         network [your.network]
+         broadcast [your.broadcast.addy]
+         gateway [your.gateway]
+
+Here is a example:
+
+ auto lo
+ iface lo inet loopback
+ auto eth0
+ iface eth0 inet static
+         address 192.168.1.100
+         netmask 255.255.255.0
+         network 192.168.1.0
+         broadcast 192.168.1.255
+         gateway 192.168.1.1
+
+Save the file and close it.
+
+Now we will set a name server (dns) address.
+
+ sudo gedit /etc/resolv.conf
+
+Add the following line:
+
+ nameserver 192.168.0.1
+
+Then also save this file and restart your server.  You can confirm your ip address is set by typing the following after your server restart.
+
+ sudo ifconfig
+
+=== Setting up FOG on Ubuntu ===
+
+Now we must download the FOG package from sourceforge. To do this click on Applications -> Internet -> Firefox Web Browser and enter the URL
+
+ http://www.sf.net/projects/freeghost.
+
+Then click on the Download link.
+
+Then click on the latest release to start the download and save the package to the /opt directory. It should be named something like fog_x.xx.tar.gz
+
+or by using command line
+ 
+ cd /opt
+ sudo wget http://downloads.sourceforge.net/freeghost/fog_x.xx.tar.gz
+
+Open a terminal (Applications -> Accessories -> Terminal) and type:
+
+ cd /opt
+ sudo tar -xvzf fog*
+ cd fog*
+ cd bin
+ sudo ./installfog.sh
+
+You will be prompted for the Linux distro you are installing, enter '''2''' and press '''enter'''.
+
+You will be prompted for the installation mode, either N (Normal Server) or S(Storage Server).  If you are not sure which option to select, use N for Normal Installation. (Version 0.24 and up) 
+
+The installer will ask you for the IP address of the server, then press '''enter'''.
+
+The installer will ask if you would like to enter a router address for DHCP, if you would like to press '''y''' and press '''enter''', then enter the address, then press '''enter'''.
+
+The installer will ask if you would like to enter a DNS address for DHCP and the boot image, if you would like to press '''y''' and press '''enter''', then enter the address, then press '''enter'''.
+
+You would then be prompted if you would like to change the default interface from eth0, if you would like press '''y''', press '''enter''' and add the interface (if you are unsure, select '''n''').  
+
+ Would you like to use the FOG server for dhcp service? [Y/n]
+ 
+ DHCP will not be setup but you must setup your
+ 
+ current DHCP server to use FOG for pxe services.
+ 
+ On a Linux DHCP server you must set:
+ 
+ next-server
+ 
+ On a Windows DHCP server you must set:
+ 
+ option 066 & 067
+ 
+ FOG now has everything it needs to setup your server, but please
+ understand that this script will overwrite any setting you may
+ have setup for services like DHCP, apache, pxe, tftp, and NFS.
+ 
+ It is not recommended that you install this on a production system
+ as this script modifies many of your system settings.
+ 
+ This script should be run by the root user on Fedora, or with sudo on Ubuntu.
+ 
+ Here are the settings FOG will use:
+         Distro: Ubuntu
+         Server IP Address: 192.168.0.150
+         DHCP router Address: 192.168.0.1
+         DHCP DNS Address: 192.168.0.150
+         Interface: eth0
+         Using FOG DHCP: 0
+
+
+Are you sure you wish to continue (Y/N) Y
+
+[[Image:Installf9.jpg]]
+
+During the installation you may be prompted to set a MySQL root password, leave this blank unless you wish to edit the FOG config.php files before the next step (by using sudo vi in the terminal, see file locations below).
+
+/opt/fog/service/etc/config.php
+'''and''' 
+/var/www/fog/commons/config.php
+
+Both of these have to be edited with the MySQL password if you set one, for Fog to function properly.  Also, add '''root''' under MYSQL_USERNAME if it is missing.
+
+Look for the message: '''Setup complete!'''  If this message is not displayed, the script has failed before all configurations were written.  Fix any problems and re-run the script until it completes successfully.
+
+After the installation has completed open Firefox again and enter the URL: http://[youripaddress]/fog/management. You will then be prompted to install the database schema.  Click on the '''Install/Update Now''' button.
+
+[[Image:Installf10.jpg]]
+
+When the schema is up to date, attempt to go to the URL: http://[youripaddress]/fog/management again. This time you should be prompted to login  
+
+ username: '''fog''' 
+ password: '''password'''.
+
+[[Image:Installf11.jpg]]
+
+=== Setting up Wake On Lan ===
+
+No special settings are required for Ubuntu.
+
+=== Testing your installation ===
+
+After login, click on the '''Hosts''' button (single computer monitor).
+
+Then click on the '''Add New Host''' button. Enter at least a MAC address (seperated by :) and a hostname and click the '''Add''' button.
+
+Now click on the '''Tasks''' button (the star).
+
+Then click on '''List All Hosts''' and find the host you just created and click on the '''Advanced''' button.
+
+Now under Advanced Actions click on '''Memtest86+''' and confirm that you would like to start the task.
+
+Now click on '''Active Tasks''' and you should see the task that you just created listed.
+
+Lastly, start the client computer that you created a task for and ensure that in BIOS, PXE boot has the highest boot priority. If everything worked correctly, you should see memtest86+ load.
+
+=== Final preparation of the fog server ===
+
+After Ubuntu is installed, we need to modify the server to allow Snapin's of larger sizes.  Please see the documentation below for more insight
+
+Modifying PHP for Fog use - http://www.fogproject.org/wiki/index.php?title=FOGUserGuide#Ubuntu_2

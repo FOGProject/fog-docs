@@ -1,0 +1,53 @@
+Under construction.
+
+
+= SnapinPacks Brief Overview =
+
+SnapinPacks are a new feature specific to FOG 1.3.0 and the new FOG Client (version 0.11.3+). The key ability that SnapinPacks allow is to deploy many files to hosts, and execute one of those files with any needed arguments.
+
+For example, you may deploy driver files to a host with a single SnapinPack. With those files, you can include a script which would run and place the drivers where they need to be. Another example would be bundling a dozen different MSI files, and include a script that runs each MSI with it's individual needed arguments if any. Another example would be larger silent installations such as Adobe Creative Cloud or Microsoft Office; both of these have silent installations and many files and would be well suited for SnapinPacks.
+
+= Snapins Are Silent =
+
+SnapinPacks must be silent, this requirement has not changed. What is a silent snapin? A silent snapin requires zero interaction to run. If at any point the snapin asks for input from a user, it will simply wait for input that will never come, and timeout eventually.
+
+= Snapins Run as SYSTEM or root =
+
+All Snapins including SnapinPacks run as the <font color="red">SYSTEM</font> or <font color="red">root</font> user's security context. If a snapin or SnapinPack runs successfully by manual execution but not via the FOG Client - this is typically related to the security context. For example, say you have a shared directory that is granted read access for all <font color="red">Domain Users</font>. Well, an individual host's local <font color="red">SYSTEM</font> or <font color="red">root</font> account is not a member of <font color="red">Domain Users</font>. Therefore, unless alternative credentials are supplied to access the share, any script executed that tries to read this share will not work. There are a few solutions to this. Granting the share read access for anonymous users is the most simple. Specifying credentials within scripts, or as arguments to the executable within the <font color="red">config.json</font> is another option.
+
+= Security of SnapinPacks =
+
+After a Snapin or SnapinPack is done executing, it is automatically deleted by the FOG Client, this provides a very narrow window where a SnapinPack which might contain credentials is residing on a host's disk.
+
+= Creating a SnapinPack =
+
+== Organizing files ==
+
+== config.json ==
+
+== Zip the SnapinPack ==
+
+== Upload SnapinPack to FOG ==
+
+== Deploying a Snapin ==
+
+
+
+
+= Examples =
+
+== MSI ==
+
+== MSI + MST ==
+
+== Batch Script ==
+
+== BASH Script ==
+
+== VB Script ==
+
+== PowerShell Script ==
+
+== EXE ==
+
+== Mono ==

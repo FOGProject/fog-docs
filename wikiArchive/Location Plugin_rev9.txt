@@ -1,0 +1,17 @@
+
+== Location Plugin ==
+
+
+The location plugin is for use in multi-node fog setups that have a large distance or limited amount of bandwidth between each node's network. The location plugin allows you to restrict a host's storage node selection when imaging or other tasks occur.
+
+For instance, say you have three physical sites. Site A, B, and C. Let's also say that all of these sites are interconnected by a 6Mbps link. If all storage nodes are not busy when a host at location C is told to image, it's possible that this host may select the storage nodes at locations A or B to pull it's image from. And on a 6Mbps link, this is not good. What the location plugin enables you to do is to assign a location to each of these sites, and then assign each site's storage nodes to the correct location, and then to assign each sites hosts to the correct location. Then when a host is told to image, it will be restricted to the correct location.
+
+
+
+External Video Link:
+
+[https://youtu.be/aZkGwQztITg FOG 1.3.0 Location Plugin Tutorial]
+
+Video:
+
+<embedvideo service="youtube">https://youtu.be/aZkGwQztITg</embedvideo>

@@ -1,0 +1,57 @@
+Page under construction. Below you'll find notes that are being collected to make into an article.
+
+= Fatal error: Allowed memory size of xxxxxxxx bytes exhausted =
+
+Reference: [https://forums.fogproject.org/topic/6234/fog-version-5507-cannot-access-host-management Fog Version 5507 Cannot Access Host Management]
+
+'''Solution:''' Raise the web interface's memory limit:
+<font color="red">FOG Configuration -> FOG Settings -> General Settings -> FOG_MEMORY_LIMIT</font> 
+
+It’s done in megs, so 128 = 128M, 256 = 256M etc…
+
+= Manually test WOL =
+
+This is the web address to manually test FOG's WOL functionality:
+
+<pre>http://x.x.x.x/fog/management/index.php?sub=wakeEmUp&mac=aa:bb:cc:dd:ee:ff</pre>
+
+Where x.x.x.x is your FOG server's IP address, and aa:bb:cc:dd:ee:ff is the MAC address of the host you wish to wake up.
+
+For instance, if my FOG server's IP is 10.0.0.7 and the target host's MAC is 14:fe:b5:df:fc:7e  I would then put the below web address into the address bar of a web browser and then press enter / click go. 
+
+[http://10.0.0.7/fog/management/index.php?sub=wakeEmUp&mac=14:fe:b5:df:fc:7e http://10.0.0.7/fog/management/index.php?sub=wakeEmUp&mac=14:fe:b5:df:fc:7e]
+
+After doing this, the target host will be sent a WOL packet from the FOG server.
+
+= High CPU load from web interface =
+
+There is a tool called apachetop that will list the amount of requests every file served by Apache receives, along with the total amount of data sent via that file. This tool will prove invaluable in solving web load issues.
+
+To install apachetop on Fedora 23:
+
+<pre>dnf install apachetop -y</pre>
+
+Then to run it, simply type:
+
+<pre>apachetop</pre>
+
+apachetop is probably available for other distributions too.
+
+
+= High CPU load from apache =
+
+Here are threads about high CPU load:
+
+[https://forums.fogproject.org/topic/6020/fog-svn-5020-and-above-cpu-hammered-thread/20?page=2 fog-svn-5020-and-above-cpu-hammered-thread]
+
+[https://forums.fogproject.org/topic/6469/tons-of-httpd-processes tons-of-httpd-processes]
+
+[https://forums.fogproject.org/topic/6277/not-sure-if-its-a-bug-or-a-feature-high-fog-server-cpu-on-dashboard/22 not-sure-if-its-a-bug-or-a-feature-high-fog-server-cpu-on-dashboard]
+
+[https://forums.fogproject.org/topic/6901/high-cpu-usage-from-multiple-httpd-processes-version-5800?page=1 high-cpu-usage-from-multiple-httpd-processes-version-5800]
+
+[https://forums.fogproject.org/topic/7234/after-update-of-fog-trunk-php-errors after-update-of-fog-trunk-php-errors]
+
+[https://forums.fogproject.org/topic/7215/high-cpu-php-errors-after-update-to-trunk-github-7234 high-cpu-php-errors-after-update-to-trunk-github-7234]
+
+[https://forums.fogproject.org/topic/4929/fog-3396-high-cpu-utilization-when-auto-update-is-running-on-the-active-tasks-page fog-3396-high-cpu-utilization-when-auto-update-is-running-on-the-active-tasks-page]

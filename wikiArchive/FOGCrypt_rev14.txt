@@ -1,0 +1,11 @@
+FOGCrypt
+#Using [http://winscp.net/eng/index.php winscp] or some other sftp tool copy the fogcrypt folder from your fog server (/opt/fog-setup/fog_0.32/) to a windows pc 
+#Move it to c:
+#Goto to ''Start'', ''Run'' and type ''cmd'' and hit the Enter key.
+#To get to the c: type ''cd c:\''
+#cd fog_0.32 (replace with name of the version you are using)
+#cd FOGCrypt
+#FOGCrypt.exe ''your password >encrypted-password.txt''
+#Open the file you created encrypted-password.txt with any text editor like notepad and the encrypted password can be copied into FOG via the FOG web interface.
+
+*This link was helpful:  http://www.edugeek.net/forums/o-s-deployment/36189-fog-installations-woes-5.html

@@ -1,0 +1,11 @@
+'''Articles related to ISC-DHCP'''
+
+[[BIOS and UEFI Co-Existence]]
+
+[[FOG on a MAC]]
+
+[[Fedora 21 Server#Verify Fedora DHCP config (if_using_DHCP)]]
+
+[http://docs.fedoraproject.org/en-US/Fedora/15/html/Deployment_Guide/sect-dhcp-starting_and_stopping.html Start/stop/enable/disable]
+
+[https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/s1-dhcp-configuring-server.html Configure DHCP]

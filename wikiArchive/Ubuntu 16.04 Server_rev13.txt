@@ -1,0 +1,35 @@
+Article under construction. Written for FOG Trunk, which will be the future 1.3.0 release.
+
+
+Notes:
+
+set a hostname, recommeded name is <font color="red">fog-server</font>, however you can set this as anything you want.
+
+set a username, recommended name is YOUR first name, or "tech". '''Do not use "fog"!'''
+
+Set a password for this account.
+
+verify password.
+
+Encryption - optional, but not recommended.
+
+Set a timezone because FOG Scheduled Tasks are dependent on the system time being correct.
+
+= Partitioning =
+
+no automatic updates (optional).
+
+set "standard system utilities" to not be installed (optional, but this tutorial is aimed to be as minimal as possible).
+
+set "OpenSSH server" to be installed (optional but required for remote management. Can be installed later).
+
+= Extra steps for Ubuntu 16 =
+
+Two bumps in the road, of which the forums and wiki covered. I’ll try to unify some instructions in the Ubuntu Server article.
+
+Basics are exactly what has already been posted in the forums and wiki.
+* When you are ready, run the installer with 
+<pre>php_ver='7.0' php_verAdds='-7.0' ./installfog.sh</pre>
+* When the installer asks you to update the database, there’s 1 extra step. (in another SSH session) Go to mysql and modify the password setting with:
+<pre>ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';</pre>
+Then you go to the web interface and update the DB as normal, come back to the installer and complete it as usual.

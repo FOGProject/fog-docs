@@ -1,0 +1,36 @@
+== Ubuntu Desktop 11.10 ==
+
+=== Ubuntu update ===
+ 
+ sudo apt-get update
+ sudo apt-get upgrade
+
+=== install all essential package ===
+
+ sudo apt-get install build-essential subversion libqt4-dev bison flex gettext texinfo zlib1g-dev uuid-dev
+
+
+=== Download the FOG source ===
+
+ cd ~/Desktop
+ mkdir svn 
+ cd svn 
+ svn checkout https://freeghost.svn.sourceforge.net/svnroot/freeghost/trunk 
+
+
+=== Download Kernel ===
+ 
+ cd ..
+ wget http://www.kernel.org/pub/linux/kernel/v3.0/linux-3.1.5.tar.bz2
+ tar -xjvf linux-3.1.5.tar.bz2
+
+=== Copy config to Kernel ===
+
+ cp -rf svn/trunk/kernel/core.config linux-3.1.5/.config
+ cd linux-3.1.5
+
+=== build FOG Core Kernel ===
+ make xconfig
+ make
+ 
+ Copy arch/x86/boot/bzImage to your FOG Server /tftpboot/fog/kernel/bzImage

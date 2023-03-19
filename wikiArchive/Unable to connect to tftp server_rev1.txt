@@ -1,0 +1,6 @@
+== Unable to connect to tftp server ==
+
+This seems to be caused by a password issue, 
+
+# reset fog password on system using the command '''passwd fog''' as root.
+# update the '''FOG_NFS_FTP_PASSWORD''', '''FOG_TFTP_FTP_PASSWORD''' fields under FOG settings in the FOG management portal.

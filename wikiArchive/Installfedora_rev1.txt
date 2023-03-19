@@ -1,0 +1,116 @@
+== Overview ==
+
+This tutorial will show how to install FOG on Fedora 8. 
+
+Before you begin, you will need at least two computers, one that will act as the FOG server and a second, which will at as our client. Please understand that will tutorial will have you destroy all data on the hard disks of both computers.
+
+== Installing Fedora 8 ==
+
+The first thing to do is download and burn an ISO image of Fedora 8 from http://fedoraproject.org/.
+
+Next boot off the CD / DVD you just created to start the Fedora installation process.
+
+You should see a screen similar to the pictured below, select: Install or Upgrade an existing System and press enter.
+
+[[Image:1.jpg]]
+
+You will then be prompted if you would like to test the installation media, choose: Skip and press enter.
+
+[[Image:2.jpg]]
+
+Now the graphical portion of the installation will begin. At the welcome screen, press: Next.
+
+Next you will be prompted for the installation language, choose you appropiate language and press: Next.
+
+You will now be asked about disk partitioning. Select Remove all partition on the selected drives and create default layout, then click: Next.
+
+[[Image:5.jpg]]
+
+You will now be asked about network addressing, select the network device you would like to use by putting an check in the box next to the device name then, click on the edit button. Assign the network device a IPv4 address with subnet mask and disable IPv6 support, then click OK. Enter a DNS server and gateway address along with a hostname, then click: Next.
+
+[[Image:6.jpg]]
+
+Next you will be prompted about you timezone information, select your timezone and click: Next.
+
+The next screen will prompt you to create a root password, enter a password in the textbox and confirm, then press: Next.
+
+The next screen will prompt you to select the software groups you would like to install, uncheck Office and Productivity and then click: Next.
+
+[[Image:9.jpg]]
+
+Then on the next screen click Next to start the installation. This step will take some time, so please be patient. When installation is complete, remove all disks from the CD/DVD drive and click reboot to restart the computer.
+
+== Selecting First Boot Settings ==
+
+The first time Fedora boots it will load a setup wizard, which allows you select how you would like Fedora to operate.
+
+At the first boot welcome screen, click: Forward.
+
+[[Image:11.jpg]]
+
+The next screen will ask you to accept the license agreement, do so and click: Forward.
+
+The next screen is about the firewall, change the firewall to: Disabled and click: Forward.
+
+[[Image:12.jpg]]
+
+The next screen will ask you about SELinux, set SELinux Setting to:Disabled and click: Forward.
+
+[[Image:13.jpg]]
+
+The next screen will prompt you for the date and time settings, click: Forward.
+
+The next screen will ask if you would like to send your hardware profile to Fedora select an option and click: Forward.
+
+You will now be prompted to create a user, you may skip this step and just use the root user we created during installation by clicking: Forward.
+
+The first boot wizard is now complete and you will be prompted to restart your computer.
+
+== Setting up FOG ==
+
+You system is now ready to login to and install the FOG Suite.
+
+Log into Fedora using the root username and password you created during installation.
+
+Now we must download the FOG package from sourceforge. To do this click on Applications -> Internet -> Firefox Web Browser and enter the URL http://www.sf.net/projects/freeghost. Then click on the Download link. Then click on the latest release to start the download and save the package to the /opt directory. It should be named something like fog_x.xx.fc.tar.gz
+
+Open a terminal (Applications -> System Tools -> Terminal) and type:
+
+<p class="code">
+cd /opt<br />
+tar -xvzf fog*<br />
+cd fog*<br />
+cd bin<br />
+./installfog.sh<br />
+</p>
+
+The installer will ask you for the IP address of the server, then press enter and the installer does the rest.
+
+[[Image:17.jpg]]
+
+After the installation has completed open Firefox again and enter the URL: http://[youripaddress]/fog/management. You will then be prompted to install the database schema.
+
+[[Image:18.jpg]]
+
+When the schema is up to date, attempt to go to the URL: http://[youripaddress]/fog/management again. This time you should be prompted to login, enter the username: fog and password: password.
+
+[[Image:20.jpg]]
+
+== Testing your installation ==
+
+After login, click on the Hosts button (single computer monitor).
+
+Then click on the Add New Host button. Enter at least a MAC address (seperated by :) and a hostname and click the Add button.
+
+Now click on the Tasks button (the star).
+
+Then click on List All Hosts and find the host you just created and click on the Advanced button.
+
+Now under Advanced Actions click on Memtest86+ and confirm that you would like to start the task.
+
+Now click on Active Tasks and you should see the task that you just created listed.
+
+Lastly, start the client computer that you created a task for and ensure that in BIOS, PXE boot has the highest boot priority. If everything worked correctly, you should see memtest86+ load.
+
+Note: 
+If setting a static IP does not seem to work on your Fedora 8/9 install, it might have to do with the known problem with the NetworkManager service. To remedy this, see the solution given [http://sourceforge.net/forum/message.php?msg_id=7473903 on the Sourceforge.net help forums for FOG] and [http://www.mac-how.net/ How to for OS X users]

@@ -1,0 +1,1 @@
+#REDIRECT [[Using FOG with an unmodifiable DHCP server/ Using FOG with no DHCP server]]

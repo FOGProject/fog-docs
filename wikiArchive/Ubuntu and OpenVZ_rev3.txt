@@ -1,0 +1,43 @@
+FOG will run fine in OpenVZ, when a few tricks are applied during installation.
+
+
+NFS-server wants to load a kernel module, which is not possible in OpenVZ. Therefore we replace nfs-server with unfs3. Here are the steps:
+
+
+
+untar the installation files as described in the manual. A few changes need to be made.
+
+in lib/ubuntu/config.php in the lines that start with
+
+  packages="
+  storageNodePackages="
+
+change 
+
+  nfs-kernel-server
+
+to
+
+  unfs3
+
+save the file.
+
+In the file lib/ubuntu/functions.php find the configureNFS function. First of all, unfs3 does not like the * in the /etc/exports file. Change them to your subnet, like
+
+  echo "/images                        x.x.x.x/255.255.255.0(ro,sync,no_wdelay,insecure_locks,no_root_squash,insecure)
+  /images/dev                    x.x.x.x/255.255.255.0(rw,sync,no_wdelay,no_root_squash,insecure)" > "${nfsconfig}";
+
+(More on the exports file format on the [http://www.nslu2-linux.org/wiki/Optware/Unfs3 unfs3] page.)
+
+and restart the correct service
+
+  sysv-rc-conf unfs3 on >/dev/null 2>&1;
+  /etc/init.d/unfs3 stop >/dev/null 2>&1;
+  /etc/init.d/unfs3 start >/dev/null 2>&1;
+
+Now, run the install as described in the manual.
+
+
+
+
+(this is all taken from [http://forum.proxmox.com/archive/index.php/t-1749.html this forum post] on the proxmox website.)

@@ -1,0 +1,7 @@
+In order to create an image from, or restore an image to an HP DX2250 computer you'll need to change the SATA settings in the system CMOS.
+
+<ol>
+<li>Enter the system CMOS by pressed F9 as the system boots</li>
+<li>Under 'Advanced' change the SATA emulation mode from Legacy IDE to Standard IDE</li>
+<li>FOG will now detect your hard drive and partitions properly</li>
+</ol>

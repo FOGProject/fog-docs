@@ -1,0 +1,39 @@
+Fog doesn't have native support for this but Microsoft has released a tool to change the Windows CD Key/serial number.  It can be downloaded from: 
+
+http://go.microsoft.com/fwlink/?LinkId=50346&clcid=0x409
+
+Description:
+
+The Genuine Advantage Product Key Update Tool is only valid for
+users attempting to change their current non-genuine Product Key
+to a genuine COA sticker or genuine Product Key - all without a
+reinstall!
+
+
+
+'''Other options:'''
+
+If the image you have installed is not activated you can also use this option:
+
+Run c:\windows\system32\oobe\msoobe.exe /a
+
+Choose activate via phone.
+
+Choose Change product key.
+
+
+
+A third option is to install sysprep from Support\deploy.cab on the Windows CD.
+
+With this tool you can reset the product key.
+
+You will be asked to input the product key on the first reboot of the machine.
+
+If you image the computer in this state all the computers you image will have to input the product key before the computer is useable.
+
+'''This option applies only to computers with pre-installed, OEM keys'''
+
+Another option is to install Windows with the following key for Windows XP 32 bit edition: MVF4D-W774K-MC4VM-QY6XY-R38TB
+This key tells the machine to use the OEM key installed in the motherboard
+For more information on this please read the following link:
+http://technet.microsoft.com/en-us/library/bb457078.aspx

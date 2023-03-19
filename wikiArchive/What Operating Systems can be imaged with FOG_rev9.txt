@@ -1,0 +1,30 @@
+So far we support:
+
+ '''Linux:'''
+Any formatted with ext/xfs
+ (More information required)
+
+ '''MAC:'''
+ (More information required)
+
+ '''Windows:'''
+ Windows 95
+ Windows 98
+ Windows 2000
+ Windows XP
+ Windows 2003
+ Windows Vista
+ Windows 7
+ Windows 2008
+ Windows 8
+ Windows 8.1
+
+
+'''Note about using Windows 7 OEM license'''
+
+Microsoft has changed their reimaging license in February 2011 so that you can't distribute an OEM image if you doesn't buy a full packaged product (FPP) or have a Volume Licensing program. This means that you have to buy an extra Win7 license besides the Win7 OEM license included in most computers.
+
+Text from the Microsoft license document:
+''"Organizations do not have the right to reimage by using OEM media. An OEM image can only be preloaded on a PC by the OEM during manufacturing."''
+
+Ref: http://www.microsoft.com/licensing/about-licensing/volume-licensing-briefs.aspx#tab=1

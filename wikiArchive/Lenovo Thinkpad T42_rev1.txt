@@ -1,0 +1,12 @@
+<table border="1">
+<tr><td width="100px"valign="top">'''Kernel'''</td><td width="20px" valign="top">'''Working'''</td><td width="690px">'''Description'''</td></tr>
+
+<tr><td width="100px" valign="top">2.6.33.0 KS</td><td width="20px" valign="top" align="center">Yes</td><td valign="top" width="690px">Had to change the bzImage to executable with "chmod: +x bzImage"</td></tr>
+
+<tr><td width="100px" valign="top">2.6.33.0 PS</td><td width="20px" valign="top" align="center">No</td><td valign="top" width="690px">Full Register and Quick Register start to launch the Linux kernel but reboot after fog/images/init.gz loads</td></tr>
+
+<tr><td width="100px" valign="top">2.6.33.0 ALT</td><td width="20px" valign="top" align="center">No</td><td valign="top" width="690px">Full Register and Quick Register start to launch the Linux kernel but reboot after fog/images/init.gz loads</td></tr>
+
+<tr><td width="100px" valign="top">22.6.32.4.KS</td><td width="20px" valign="top" align="center">No</td><td valign="top" width="690px">Full Register and Quick Register start to launch the Linux kernel but reboot after fog/images/init.gz loads</td></tr>
+
+</table>

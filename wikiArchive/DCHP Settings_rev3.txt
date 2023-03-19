@@ -1,0 +1,9 @@
+=Settings=
+
+==Windows Server DHCP==
+*Option 66
+**[[File:Windows 66.png]]
+*Option 67 
+**[[File:Windows 67.png]]
+==Linux Server DHCP==
+==MAC Server DHCP==

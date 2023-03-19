@@ -1,0 +1,33 @@
+== Restoring FOG ==
+
+Restoring a FOG installation requires essentially the opposite actions as taken above.  This section assumes you backed your installation up manually.  This section will assume that your backup is in /opt/fog_backup.  Also, you may need to be root for some of these actions.
+
+First, go to your backup directory:
+ # cd /opt/fog_backup
+ # ls
+ fogopt fog.sql web
+As you can see, I have named my /opt/fog into fogopt, and my /var/www/fog into web.  I chose not to backup my /images directory due to some issues copying such large files.
+
+=== Web Directory ===
+
+Restoring your web directory will take two steps.  First, remove the current one, if it exists, then copy the backup over to the appropriate location.
+ # rm -rf /var/www/fog
+ # cp -a /opt/fog_backup/web /var/www/fog
+
+=== OPT Directory ===
+
+Restoring the /opt directory is just about the same as the web directory above.
+ # rm -rf /opt/fog
+ # cp -a /opt/fog_backup/fogopt /opt/fog
+
+=== MySQL Databse ===
+
+In order to restore the database, you should first drop the current one (if it exists), then create a blank fog database, then import your backup.
+ # mysql -u root -p
+ Enter password: 
+ mysql> DROP DATABASE fog;
+ mysql> CREATE DATABASE fog;
+ mysql> exit
+ # mysql -D fog -u root -p < fog.sql
+
+That should do it!

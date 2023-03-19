@@ -1,0 +1,108 @@
+
+See also: [[SnapinPacks]]
+
+All below examples utilize the new FOG Client, version 0.9.11+ and FOG 1.3.0
+
+=Chrome MSI deployment=
+
+
+Google Chrome MSI:
+
+[https://www.google.com/work/chrome/browser/ https://www.google.com/work/chrome/browser/]
+
+Snapin name:
+
+<font color="red">Google Chrome</font>
+
+Snapin Storage Group:
+
+<font color="red">Your storage group</font>
+
+Snapin Run With:
+
+<font color="red">msiexec</font>
+
+Snapin Run With Argument:
+
+<font color="red">/i</font>
+
+Snapin File:
+
+<font color="red">googlechromestandaloneenterprise.msi</font>
+
+Snapin Arguments:
+
+<font color="red">/quiet</font>
+
+Video Example (plays in Chrome or Firefox with html5 plugin):
+
+<embedvideo service="youtube">https://youtu.be/SmM2V1KARB0</embedvideo>
+
+=7zip MSI example=
+
+
+7-zip MSI:
+
+[http://www.7-zip.org/download.html http://www.7-zip.org/download.html]
+
+Snapin Name:
+
+<font color="red">7-zip-x64</font>
+
+Snapin Storage Group:
+
+<font color="red">Your storage group</font>
+
+Snapin Run With:
+
+<font color="red">msiexec.exe</font>
+
+Snapin Run With Argument:
+
+<font color="red">/i</font>
+
+Snapin File:
+
+<font color="red">7z1514-x64.msi</font>
+
+Snapin Arguments:
+
+<font color="red">/quiet</font>
+
+
+Video Example (plays in Chrome or Firefox with html5 plugin):
+
+<embedvideo service="youtube">https://youtu.be/7WnZjccar5c</embedvideo>
+
+
+=EXE example deployment=
+
+You can run EXEs with FOG snapins. The arguments would be whatever arguments the EXE itself accepts - this is different for every EXE.
+
+For example an exe called <font color="red">writeAnimals.exe</font> might accept arguments such as <font color="red">-mammals</font> or <font color="red">-continent</font> and might also accept <font color="red">-habitat</font> or <font color="red">-outputFile</font>
+
+If we create a snapin for this EXE using these arguments, it would look something like this:
+
+Snapin Name:
+
+<font color="red">Run the writeAnimals executable</font>
+
+Snapin Storage Group:
+
+<font color="red">Your storage group</font>
+
+Snapin Run With:
+
+Leave Blank
+
+Snapin Run With Argument:
+
+Leave Blank
+
+Snapin File:
+
+<font color="red">writeAnimals.exe</font>
+
+Snapin Arguments:
+
+<font color="red">-mammals -continent 'asia' -habitat 'rainforest' -outputFile C:\mammal_list.txt</font>

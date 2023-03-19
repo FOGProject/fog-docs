@@ -1,0 +1,8 @@
+<table border="1">
+<tr><td width="100px"valign="top">'''Kernel'''</td><td width="20px" valign="top">'''Working'''</td><td width="690px">'''Description'''</td></tr>
+
+<tr><td width="100px" valign="top">3.13.1</td><td width="20px" valign="top" align="center">Yes</td><td valign="top" width="690px"> Low resolution, works fine. </td></tr>
+
+<tr><td width="100px" valign="top">3.8.8</td><td width="20px" valign="top" align="center">No</td><td valign="top" width="690px">Reported errors:  </td></tr>
+
+</table>

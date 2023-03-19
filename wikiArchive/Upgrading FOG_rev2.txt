@@ -1,0 +1,8 @@
+=Upgrade from 0.1 through 0.32=
+*You can upgrade FOG by simply running the new install script.  It will keep all the information in the database intact like your users and passwords, host, images, tasks, etc.  It WILL overwrite DHCP settings, TFTP setttings, NFS Settings, etc.  So any customizations done to these files will have to be duplicated.
+
+=Upgrade from 0.32 to 1.x.x=
+*See [[Upgrade_to_1.x.x]]
+
+=Upgrade from 1.x.x to another 1.x.x=
+*You can upgrade FOG by simply running the new install script.  It will keep all the information in the database intact like your users and passwords, host, images, tasks, etc.  It WILL overwrite DHCP settings, TFTP setttings, NFS Settings, etc.  So any customizations done to these files will have to be duplicated.

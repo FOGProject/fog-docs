@@ -1,0 +1,64 @@
+==WARNING==
+This is a sample file DO NOT USE THIS IN YOUR ENVIRONMENT!!!! OS X Server app will generate most of this code for you, this example file is to show you the place where the generated code needs to be placed.
+
+For Reference, your generated code should be placed between "dhcp_domain_search" and "dhcp_router"
+
+==bootpd.plist Example==
+<?xml version="1.0" encoding="UTF-8"?><br/>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><br/>
+<plist version="1.0"><br/>
+<dict><br/>
+	<key>NetBoot</key><br/>
+	<dict><br/>
+		<key>startTime</key><br/>
+		<string>2014-12-12 15:30:07 +0000</string><br/>
+	</dict><br/>
+	<key>Subnets</key><br/>
+	<array><br/>
+		<dict><br/>
+			<key>allocate</key><br/>
+			<true/><br/>
+			<key>dhcp_domain_name</key><br/>
+			<string></string><br/>
+			<key>dhcp_domain_name_server</key><br/>
+			<array><br/>
+				<string>172.16.98.100</string><br/>
+				<string>172.16.98.200</string><br/>
+			</array><br/>
+			'''<key>dhcp_domain_search</key><br/>
+			<array/><br/>
+			<key>dhcp_option_66</key><br/>
+			<data><br/>
+			PUT GENERATED CODE HERE!!!<br/>
+			</data><br/>
+			<key>dhcp_option_67</key><br/>
+			<data><br/>
+			PUT GENERATED CODE HERE!!!<br/>
+			</data>'''<br/>
+			<key>dhcp_router</key><br/>
+			<string>10.8.1.1</string><br/>
+			<key>lease_max</key><br/>
+			<integer>3600</integer><br/>
+			<key>name</key><br/>
+			<string>Test</string><br/>
+			<key>net_address</key><br/>
+			<string>10.8.0.0</string><br/>
+			<key>net_mask</key><br/>
+			<string>255.255.0.0</string><br/>
+			<key>net_range</key><br/>
+			<array><br/>
+				<string>10.8.1.1</string><br/>
+				<string>10.8.255.254</string><br/>
+			</array><br/>
+			<key>selected_port_name</key><br/>
+			<string>en0</string><br/>
+			<key>uuid</key><br/>
+			<string>4285D339-ABD1-4430-B68D-F5401BFDA253</string><br/>
+		</dict><br/>
+	</array><br/>
+	<key>netboot_enabled</key><br/>
+	<array><br/>
+		<string>en0</string><br/>
+	</array><br/>
+</dict><br/>
+</plist><br/>
