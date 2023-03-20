@@ -1,0 +1,42 @@
+For fixing a ping problem with FOG 0.32.
+
+In /var/www/fog/management/ajax/host.ping.php at line 48 :
+
+        try
+        {
+            $ip = gethostbyname($_GET["ping"]);
+            
+            if ($ip != $_GET["ping"])
+            {
+                /* FOG 0.32
+                $ping = new Ping($ip);
+                if ($ping->execute())
+                {
+                    // Ping Success!
+                    echo "1";
+                }
+                else
+                {
+                    // Ping failed
+                    echo "0";
+                }
+                */
+                /* Aruhuno's contrib */
+                $socket = fsockopen($ip, 20, $codeErreur, $msgErreur, 0.01);
+                if ($codeErreur != 111)
+                {
+                    echo "0";
+                }
+                else
+                {
+                    echo "1";
+                }
+            }
+            else
+            {
+                echo "Unable to resolve hostname: $ip";
+            }
+        }
+
+It is a do-it-yourself, but that works, while waiting for the version
+0.33.

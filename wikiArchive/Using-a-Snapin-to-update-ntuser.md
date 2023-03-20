@@ -1,0 +1,48 @@
+I hadn\'t explored Snapins very much, but it recently occurred to me
+that they might help me deploy changes to the user profile on our lab
+computers. I thought I would share the way I got it to work.
+
+A little background: Our school\'s computer lab runs Windows XP in a
+workgroup environment. I have been using mandatory profiles for a while
+to protect profile settings from being altered by users. There is a
+useful tutorial on mandatory profiles in Windows here:
+[1](http://support.microsoft.com/default.aspx?scid=kb;en-us;307800). The
+process is a bit tricky, but the main change to a profile is renaming
+its ntuser.dat to ntuser.man (ntuser.dat is a hidden system file that
+resides in the user\'s profile and contains registry data).
+
+I wanted to be able to place a new version of ntuser.man in a read-only
+share on our NAS and push that file out to the clients in the lab. This
+is much faster than using FOG to deploy a new image every time I update
+a user profile.
+
+First, I wrote a batch file to do this. I used xcopy
+\<<http://technet.microsoft.com/en-us/library/bb491035.aspx>\> because
+it can handle hidden files. Here is the content of that file:
+
+`xcopy /q /y /h "\\path\to\ntuser.man" "c:\documents and settings\UserName\" `
+
+*Note that using the /h flag allows copying hidden files and the /y flag
+suppresses prompting to confirm that you want to overwrite an existing
+destination file. The /q flag suppresses the display of xcopy messages
+and I am not sure whether it was necessary.*
+
+Next, I used a freeware tool called \"Bat To EXE\"
+[2](http://www.f2ko.de/English/b2e/download.php) to convert the batch
+file to an executable. B2E has an option to create a \"Console
+Application\" or a \"Ghost Application.\" I chose the Ghost option.
+
+Next, I used FOG\'s Snapin page to upload the EXE. I gave it a name,
+browsed to and uploaded the EXE and checked \'Reboot after install\'.
+
+Next, I assigned that Snapin to a test computer (edit the host in \'Host
+Management\') and then chose \'Deploy Snapins\' under \'Task
+Management\'.
+
+The computer rebooted after a few minutes and when I logged on to the
+host I found that the profile had been successfully updated.
+
+*Please note that messing with ntuser files is potentially dangerous if
+you don\'t back them up first. My batch file makes no provision for
+backing the file up as part of the script, so that would be a useful
+addition.*

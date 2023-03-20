@@ -1,0 +1,67 @@
+-   Here is my initial problem:
+
+```{=html}
+<!-- -->
+```
+    Error from Partimage: "Partition checks found error(s) on partitions" (Clonezilla works fine on this box though...)
+    Here's my filesystem layout:
+    /dev/hda1 is /boot
+    /dev/hda2 is swap
+    /dev/hda3 is /
+
+    An 'fsck -f /' reports no errors when I boot into single user mode,
+    and the box boots cleanly, yet when I setup a task to image the box in
+    FOG I get this error when Partimage tries to image the / filesystem.
+    The box is RHEL 5.3, if that makes a difference. No LVM in use, just
+    plain ol ext3.
+
+    Even stranger is the fact that Clonezilla (which also uses Partimage)
+    images and restores to the box fine
+
+**I was able to resolve this error when I saw this post over on the FOG
+forums:**
+
+    "RE: FOG 0.26 backup of Centos partition fails By: Tom Merrick
+    (tmerrick) - 2009-03-14 05:00
+
+    One way around this is to put a -m on the partimage command line,
+    telling it to ignore if already mounted.
+
+    Also, I wonder if there should not be a -M on this line also so it
+    will not save the MBR since you save it first anyway.
+
+    One note though is that people should specify linux as the OS type if
+    grub is the boot loader, even on dual boot systems. "
+
+**NOTE THIS IS FOR FOG VERSION .26 - they might incorporate this fix
+into .27**
+
+    cd /tftpboot/fog/images
+    gunzip init.gz
+    mkdir initmountdir
+    mount -o loop init initmountdir
+    cd initmountdir/bin
+    nano -w fog
+
+Page down to line 772 and add \'-m -M\' to the end of it The line should
+looks like this when you\'re done:
+
+    /usr/local/sbin/partimage save $part $imgpart --volume=9900000000 -z1 -o -d -f3 -b -c -m -M
+
+Page down to line 851 and add \'m -M\' to that line as well
+
+When you\'re done line 851 should also look like this:
+
+    /usr/local/sbin/partimage save $part $imgpart --volume=9900000000 -z1 -o -d -f3 -b -c -m -M
+
+After editing these lines, we have to cleanup and put init.gz back where
+it was:
+
+    cd ../..
+    umount initmountdir/
+    rmdir initmountdir
+    gzip init
+
+A task to image your CentOS / RHEL host should work now\... that fixed
+it for me! [Ericgearhart](User:Ericgearhart "wikilink") 19:17, 7 July
+2009 (MST)

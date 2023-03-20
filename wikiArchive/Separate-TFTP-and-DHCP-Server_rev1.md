@@ -1,0 +1,90 @@
+### Separate TFTP and DHCP Server {#separate_tftp_and_dhcp_server}
+
+In this setup, the TFTP server and the DHCP server are hosted on a
+separate server. The TFTP server holds the PXE boot files including the
+Linux Kernel, boot file system image, and pxe config files. The DHCP
+server is the server that assigns the clients with IP addresses and
+network connection information.
+
+In this setup we will have two servers:
+
+-   **Server A**: This is the \'Master\' server which will host Apache,
+    MySql, NFS and HTTP
+-   **Server B**: This server will host TFTP and DHCP
+
+In our example, both of these servers need to have a fresh install of
+Fedora. They will both need static IP addresses, in our example we will
+use:
+
+-   **Server A**: 192.168.1.50
+-   **Server B**: 192.168.1.51
+
+On both nodes, download the FOG installation package from:
+
+<http://sourceforge.net/project/showfiles.php?group_id=201099>
+
+On Server A install FOG, when you are prompted with:
+
+`Would you like to use the FOG server for dhcp service? [Y/n]`
+
+Select \"n\" to not start DHCP on that server.
+
+After installation is complete navigate to:
+
+[`http://localhost/fog`](http://localhost/fog)
+
+and install the FOG schema.
+
+On server A go to:
+
+`System -> Administration -> Services`
+
+Uncheck and Stop the following Services:
+
+-   dhcpd (should already be stopped.)
+-   xinetd
+-   vsftpd
+
+On Server B install FOG, but this time install the dhcp service.
+
+On server B go to:
+
+`System -> Administration -> Services`
+
+Uncheck and Stop the following Services:
+
+-   FOGMulticastManager
+-   httpd
+-   mysqld
+
+On server B open:
+
+`/var/www/html/fog/commons/config.php`
+
+Copy the value from **TFTP_FTP_PASSWORD**
+
+Then open
+
+`/tftpboot/pxelinux.cfg/default`
+
+Replace all instances of web=x.x.x.x/fog/ with the the ip address of
+Server A.
+
+Now on Server A, open:
+
+`/var/www/html/fog/commons/config.php`
+
+Replaced the value from **TFTP_FTP_PASSWORD** on Server B.
+
+To test your configuration, navigate to
+
+[`http://192.168.1.50/fog`](http://192.168.1.50/fog)` `
+
+login as:
+
+`Username: fog`\
+`Password: password`
+
+Create a host and then attempt to create a task, if everything works
+correctly you should see a file created on Server B in the directory
+/tftpboot/pxeconfig.pxe/ name with the mac address of the host.

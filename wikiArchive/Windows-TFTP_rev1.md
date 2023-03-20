@@ -1,0 +1,15 @@
+To test from windows, TFTP Client must be installed and the Firewall
+must allow TFTP Traffic. The best way to guarantee that your windows
+firewall isn\'t blocking TFTP is to turn it off during your
+troubleshooting.
+
+**Using Windows 7 Pro:**
+
+Control Panel -\> Programs and Features -\> Turn Windows Features on or
+off -\> TFTP Client
+
+<figure>
+<img src="TFTP_Client_in_Windows.png"
+title="TFTP_Client_in_Windows.png" />
+<figcaption>TFTP_Client_in_Windows.png</figcaption>
+</figure>

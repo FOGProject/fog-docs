@@ -1,0 +1,715 @@
+# At the very beginning {#at_the_very_beginning}
+
+Because I realized my process many times and because I didn\'t wrote it
+before this howto, I may omit something. Please contact me if you got
+any problem while trying to create your master XP image. I gave so many
+hours to set up this receipe that I certainly encounteered a problem you
+may encounteer too. Use the discussion page for this howto to get an
+answer.
+
+I hope this receipe will help you to reduce your everyday work.
+
+I tested with Windows XP Home, Professionnal and Corporate yet and all
+hardware I found for now worked like a charm (about 20 or 30 different
+motherboards, including some laptops, from Pentium 4 / Athlon (socket
+462) to Dual Core from AMD and Intel)
+
+This may also work for Windows 2003, and windows 2000 (except for HAL
+detection and change because I don\'t know if sysprep for windows 2000
+supports this feature)
+
+You can find a quickly translated into french version of this tutorial
+here:
+[1](http://howto-windows.tbugier.fr.eu.org/wiki/index.php/Cr%C3%A9ation_d%27une_image_g%C3%A9n%C3%A9rique_Windows_XP)
+
+# Before we begin {#before_we_begin}
+
+I managed to create a windows XP FOG image virtually able to run on any
+hardware configuration. My goal is to have one and only one FOG image
+for this operating system. I\'m currently working with 2 FOG images:
+
+-   a disk image for hard drives greater than 128 GB
+-   a disk image for hard drives less than 128 GB
+
+~~After days trying to boot with a single image, I found that there is
+an issue with disks related to the 128 GB limit and the BIOS setting
+LARGE/LBA. I didn\'t found the exact thing which causes the blinking
+cursor of death while working on my receipe. That\'s why I decided to
+use 2 FOG images, as described above. I only know there is someting
+wrong related to the partition boot code in a NTFS partition ([see this
+interesting page about NTFS partition boot
+code](http://mirror.href.com/thestarman/asm/mbr/NTFSBR.htm)).~~
+
+I successfully tested both images I did on an 10 GB disk and a 160 GB
+disk on some systems. It seems my first tries were on a computer with a
+compatibility issue, I couldn\'t find for now. There is a chance only
+one XP image will work on any disk size. You may create only one XP
+installation and use it on all drives size you can find.
+
+When running VMWare player, the guest OS runs on a CPU similar to the
+physical CPU running the virtual machine. If you install windows XP on
+an non-intel CPU, the Intelppm service will not install. Therefore,
+**you must use an physical Intel CPU to run your virtual machines**.
+
+All target computer I tried support LBA addressing mode in the BIOS. If
+you got a system disk smaller than 128 GB, you may need to force the
+BIOS on this computer to LBA. If you don\'t do this you may have a
+blinking cursor of death on boot. If you don\'t have a LARGE/LBA setting
+in BIOS try updating it with the latest version. I found some modern
+computers without this option: the BIOS has been designed to an \"auto\"
+setting. If so, I advice you use a system disk bigger than 128 GB.
+
+# Warning about Virtual machines {#warning_about_virtual_machines}
+
+I found some issues related to virtual machines:
+
+-   **Virtual Box** seems to run well, but when deploying your XP image
+    on a computer, **you will get the blinking cursor of death**.
+-   **VMWare Player** makes a working image but **you will get USB
+    issues on deployed XP**.
+
+Therefore, I advice you to **use VMWare Player only for testing
+purposes**. When you feel ready for production, **consider using a
+physical Intel based computer to create your master image**. You will
+have to follow this how-to on your physical computer, exactly as you
+would do (or already done) on your virtual machine.
+
+# Tools required {#tools_required}
+
+-   A computer with an Intel CPU (do not use an AMD CPU)
+-   [VMWare
+    Player](http://downloads.vmware.com/fr/d/info/desktop_downloads/vmware_player/3_0)
+    (do not use Virtual Box because I tried it and i didn\'t manage to
+    get a working disk image with this software)
+-   A Windows XP home/professionnal/corporate CD
+-   [sysprep](http://www.microsoft.com/downloads/details.aspx?familyid=3E90DC91-AC56-4665-949B-BEDA3080E0F6&displaylang=fr)
+-   [Sysprep Driver Scanner](http://www.vernalex.com/tools/spdrvscn/)
+-   [hwid.cmd](http://www.msfn.org/board/topic/43413-request-script-for-massstorage-section-sysprep/page__p__301583&#entry301583)
+-   [Autoit](http://www.autoitscript.com/)
+
+# Create Master computers {#create_master_computers}
+
+## configure the master VM {#configure_the_master_vm}
+
+Install VMWare player if not already done.
+
+Configure 2 VMs
+
+-   both with 2 microprocessors to install windows XP with ACPI
+    multiprocessor HAL.
+-   one with an 40 GB hard drive and one with a 160 GB hard drive
+-   configure the VM BIOS to boot on the ethernet device first
+
+**Edit both .vmx files** describing your VM and edit the following line:
+
+    SCSI0.Present="TRUE"
+
+Change this line to this:
+
+    SCSI0.Present="FALSE"
+
+If you omit this, and you try to deploy windows XP on a VM, you will
+have an exclamation mark on the ethernet device in your VM. Of course we
+want a fully working guest OS !
+
+## Install windows XP on the master virtual computers (easy, isn\'t it ?) {#install_windows_xp_on_the_master_virtual_computers_easy_isnt_it}
+
+**Install windows XP in a regular way**, and use if possible a SP3 CD or
+ISO image. Do not install windows XP with the zero touch method provided
+by VMWare player. **Install all hotfixes, .NET Frameworks, last version
+of IE**. Do not install VMWare tools, or any driver. Do not install any
+software (adobe reader, java, office or any frequently used software)
+You can install them using FOG\'s Snapin feature. **Do not activate your
+windows installation** (if you used Home, Professionnal or Media Center)
+
+Use the **disk cleanup tool** to remove all obsolete restore points, and
+useless files created while windows was updating. Restore points created
+by all hotfixes need several GigaBytes !
+
+Now you got your windows XP up to date, use FOG web interface to
+**capture an image**. This image may be used as a roll back if something
+goes wrong later.
+
+## Prepare sysprep {#prepare_sysprep}
+
+Note: I\'m used to store my sysprep folder in an USB stick. Doing so
+makes easier the (re)creation of the master computer from scratch.
+
+Create the sysprep folder in **c:\\**. Extract sysprep previously
+downloaded from Microsoft in this newly created folder.
+
+### Files for the reseal process {#files_for_the_reseal_process}
+
+Create **sysprep.inf** using this example. Customize your Timezone, your
+name, your company, AutoLogonCount and so on
+
+    ;SetupMgrTag
+    [GuiUnattended]
+        AutoLogon=Yes
+        AutoLogonCount=1
+        AdminPassword=*
+        EncryptedAdminPassword=NO
+        OEMSkipRegional=1
+        OEMDuplicatorstring="Windows XP"
+        TimeZone=105
+        OemSkipWelcome=1
+
+    [GuiRunOnce]
+        Command0="C:\WINDOWS\temp\checkforintel.cmd"
+
+
+    [UserData]
+        ProductID=xxxxx-xxxxx-xxxxx-xxxxx
+        FullName="Your Name"
+        OrgName="Your Company"
+        ComputerName=*
+
+    [Networking]
+        InstallDefaultComponents=Yes
+
+    [Identification]
+        JoinWorkgroup=WORKGROUP
+
+    [Unattended]
+        UpdateHAL=ACPIAPIC_MP,%WINDIR%\Inf\Hal.inf
+        OEMSkipEula=Yes
+        TargetPath=\WINDOWS
+
+    [Sysprep]
+        BuildMassStorageSection=No
+
+    [Branding]
+        BrandIEUsingUnattended=Yes
+
+    [Proxy]
+        Proxy_Enable=0
+        Use_Same_Proxy=0
+
+    ;This must be the last line !
+    [SysprepMassStorage]
+
+Download and copy Sysprep Driver Scanner in **c:\\sysprep**
+
+Create **hwid.cmd** [source
+here](http://www.msfn.org/board/topic/43413-request-script-for-massstorage-section-sysprep/page__p__301583&#entry301583)
+
+    rem %1 is path to MassDriverPacks Folder
+    IF "%1"=="" GOTO EOF
+    IF NOT EXIST %1 GOTO EOF
+
+    SETLOCAL ENABLEDELAYEDEXPANSION
+    SET STDOUT=%cd%\HWIDS.TXT
+    TYPE>%STDOUT% 2>NUL
+
+    ::traverse drivers path
+    CALL :TRAVERSAL %1
+
+    GOTO EOF
+
+    :TRAVERSAL
+    PUSHD %1
+    for /f %%f in ('Dir /b *.inf') do (
+      for /f "eol=- tokens=2 delims=," %%i in ('find /i "pci\ven" %%f') do (
+       for /f "tokens=*" %%j in ("%%i") do (
+         for /f "tokens=1* delims=_" %%k in ("%%j") do (
+           if /i "%%k" EQU "PCI\VEN" (
+             for /f "usebackq tokens=1* delims=; " %%a in ('%%j') do (
+               echo %%a=%cd%\%%f>>%STDOUT%
+             )
+           )
+         )
+       )
+     )
+    )
+
+    FOR /F %%I IN ('DIR /AD /OGN /B') DO (
+    CALL :TRAVERSAL %CD%\%%I
+    )
+    POPD
+    GOTO EOF
+
+    :EOF
+
+Create the file **kbdmouse.txt** on **c:\\sysprep**
+
+    *pnp0303=C:\windows\inf\keyboard.inf  
+    *pnp0f03=C:\windows\inf\msmouse.inf 
+    *pnp0f0b=C:\windows\inf\msmouse.inf 
+    *pnp0f0e=C:\windows\inf\msmouse.inf 
+    *pnp0f12=C:\windows\inf\msmouse.inf 
+    *pnp0f13=C:\windows\inf\msmouse.inf
+
+Use Autoit to compile this script into an exe. **This is for french
+windows XP** ! Edit the file with the three lines below to make it for
+english windows XP. The new exe file must be in **c:\\sysprep**.
+
+    ; <AUT2EXE VERSION: 3.1.1.0>
+
+    ; ----------------------------------------------------------------------------
+    ;
+    ; AutoIt Version: 3.1.0
+    ; Author:         Isaac Holmes
+    ;
+    ; Script Function:
+    ;   Click Continue Anyway for hardware installation during sysprep
+    ;
+    ; Edited to be easily localized
+    ;
+    ; ----------------------------------------------------------------------------
+
+    ; Script Start - Add your code below here
+
+    $hardwareInstall = "Installation matérielle"
+    $confirmFileReplace = "Confirmer le remplacement du fichier"
+    $addHardwareWizard = "Assistant Ajout de matériel"
+
+    do
+
+    while not (winexists ($hardwareInstall) or winexists ($confirmFileReplace) or winexists ($addHardwareWizard))
+    wend
+
+    Sleep (100)
+
+    if winexists($hardwareInstall) then 
+        WinActivate($hardwareInstall)
+        send("!c")
+    EndIf
+
+    if winexists($confirmFileReplace) then 
+        WinActivate($confirmFileReplace)
+        send("{TAB}{ENTER}")
+    EndIf
+
+    if winexists($addHardwareWizard) then 
+        WinActivate($confirmFileReplace)
+        send("{ENTER}")
+    EndIf
+    until 1=2
+
+For english, replace the three variables definitions by these lines
+(thanks to google for providing images an find the exact translation !)
+
+    ; ----------------------------------------------------------------------------
+    ; English/US strings
+    ; ----------------------------------------------------------------------------
+    $hardwareInstall = "Hardware Installation"
+    $confirmFileReplace = "Confirm File Replace"
+    $addHardwareWizard = "Add Hardware Wizard"
+
+Create **reseal.cmd** in **c:\\sysprep**
+
+    @echo off
+
+    echo ==============================================
+    echo.
+    echo Replace the IDE driver by the 
+    echo generic IDE driver.
+    echo You may do this now
+    echo and then, press a key to continue
+    echo.
+    echo ==============================================
+    pause
+
+    echo ==============================================
+    echo.
+    echo Customize your local admin password in 
+    echo %systemdrive%\sysprep\sysprep.inf
+    echo.
+    echo You may do this now
+    echo and then, press a key to continue
+    echo.
+    echo ==============================================
+    notepad %systemdrive%\sysprep\sysprep.inf
+    pause
+
+    echo ==============================================
+    echo.
+    echo Install FOG client, and configure it for your 
+    echo network.
+    echo.
+    echo You may do this now
+    echo and then, press a key to continue
+    echo.
+    echo ==============================================
+    pause
+
+    pushd %systemdrive%\sysprep
+
+    ::sysprep driver scanner (voir spdrvscn.exe /?)
+    echo Sysprep Driver Scanner...
+    %systemdrive%\sysprep\spdrvscn.exe /p %systemdrive%\sysprep\drivers\net /e inf /f /o "XP Image: ~year/~month/~day" /s /a /q
+
+    ::désactiver le service/driver de processeur intel
+    echo Désactivation de intelppm
+    sc config intelppm start= disabled
+
+    ::reactivation auto par script (pour, un jour, se passer du .vbs)
+    :: wmic cpu get Manufacturer | findstr /i intel
+    :: if "%errorlevel%" == "0" (sc config intelppm start= system)
+
+    ::construire la liste des drivers de stockage de masse
+    echo Création de la liste des pilotes de stockage de masse
+    %systemdrive%\sysprep\sysprep.exe -bmsd
+
+    ::créer la liste des drivers de stockage de masse personnalisés
+    echo Création de la liste additionnelle des pilotes de stockage de masse
+    call %systemdrive%\sysprep\hwid.cmd %systemdrive%\sysprep\drivers\stor
+
+    ::ajouter les drivers clavier et souris de base au drivers de stockage de masse
+    ::voir http://support.microsoft.com/?scid=kb%3Ben-us%3B283079&x=15&y=14
+    ::permet de résoudre les problèmes de clavier et souris qui ne répondent pas
+    ::pendant le mini-setup (ou windows welcome)
+    echo Bug de non-réponse du clavier et de la souris
+    type %systemdrive%\sysprep\kbdmouse.txt >> %systemdrive%\sysprep\sysprep.inf
+
+    ::ajouter la liste des drivers de stockage de masse au sysprep
+    echo Fusion des 2 listes de pilotes de stockage de masse dans sysprep.inf
+    type %systemdrive%\sysprep\hwids.txt >> %systemdrive%\sysprep\sysprep.inf
+
+    ::Nettoyage du disque
+    echo Nettoyage du disque dur
+    ::désactivé pour l'instant
+    ::call clean-hdd.cmd
+
+    ::copier la vérification de CPU intel dans %windir%\temp
+    echo Copie des fichiers pour réactiver intelppm
+    copy checkforintel.cmd %windir%\temp\checkforintel.cmd /Y
+    echo Copie des fichiers pour redétecter les interfaces IDE
+    ::désactivé pour recherche d'un petit bug
+    ::copy update-ide.cmd %windir%\temp\update-ide.cmd /Y
+
+    echo Sysprep
+    start %systemdrive%\sysprep\continue-xp-fr.exe
+    if %1!==debug! %systemdrive%\sysprep\sysprep.exe
+    if NOT %1!==debug! %systemdrive%\sysprep\sysprep.exe -reseal -mini -noreboot -quiet
+
+    popd
+
+### Device drivers repository {#device_drivers_repository}
+
+Create folders **c:\\sysprep\\drivers\\net** and
+**c:\\sysprep\\drivers\\stor**. These folders are respectively for
+ethernet drivers (including wireless) and mass storage controllers.
+
+Create subdirectories with no space, and with a explicit name to easily
+identify the contained driver. Here is my repository tree with drivers
+working in the reseal process:
+
+-   drivers
+    -   net
+        -   atheros
+            -   ar8121
+            -   ar8131
+            -   ar81xx
+        -   broadcom
+            -   43xx
+            -   [440x](http://www.broadcom.com/support/ethernet_nic/4401.php)
+            -   [57xx](http://www.broadcom.com/support/ethernet_nic/netxtreme_desktop.php)
+        -   intel
+            -   pro100
+            -   pro1000
+            -   progb
+        -   marvell
+            -   yukon
+        -   nvidia
+            -   [15.23](http://www.nvidia.com/object/nforce_winxp_15.23.html)
+            -   [15.25](http://www.nvidia.com/object/nforce_winxp_15.25.html)
+            -   [15.26](http://www.nvidia.com/object/nforce_winxp_15.26.html)
+            -   [15.45](http://www.nvidia.com/object/nforce_winxp_15.45.html)
+            -   [15.46](http://www.nvidia.com/object/nforce_winxp_15.46.html)
+            -   [20.09](http://www.nvidia.com/object/nforce_winxp_20.09.html)
+        -   realtek
+            -   8102,8102,8138,8168
+            -   8139,8169
+        -   sis
+            -   19x
+            -   6xx,7xx,9xx
+        -   via
+            -   [rhine](http://www.via.com.tw/en/support/drivers.jsp)
+    -   stor
+        -   [ali](http://www.nvidia.com/page/uli_drivers.html)
+            -   ide
+            -   M5281
+            -   M528x
+        -   [ati](http://game.amd.com/gb-uk/drivers_catalyst.aspx?driver=Integrated/xp32-chipset)
+        -   intel
+        -   ite
+            -   raid
+        -   marvell
+            -   m614x
+        -   nvidia
+            -   [15.23](http://www.nvidia.com/object/nforce_winxp_15.23.html)
+            -   [15.25](http://www.nvidia.com/object/nforce_winxp_15.25.html)
+            -   [15.26](http://www.nvidia.com/object/nforce_winxp_15.26.html)
+            -   [20.09](http://www.nvidia.com/object/nforce_winxp_20.09.html)
+        -   promise
+            -   378r
+        -   [sil-img](http://www.siliconimage.com/support/index.aspx)
+            -   3112r
+            -   3114r
+            -   3124
+            -   3124r
+            -   3132
+            -   3132r5
+            -   3x14
+        -   [sis](http://www.sis.com/download/)
+            -   180OB
+            -   964
+            -   965
+            -   966-968-1182
+            -   966-968-1184
+            -   ide
+        -   via
+            -   vt64xx
+            -   vt87xx
+
+### Files for the deployment process {#files_for_the_deployment_process}
+
+Create a file named **checkforintel.cmd** in **c:\\sysprep** with this
+content:
+
+    @echo off
+    wmic cpu get Manufacturer | findstr /i GenuineIntel
+    if "%errorlevel%" == "0" (sc config intelppm start= system)
+
+## Run sysprep {#run_sysprep}
+
+If you didn\'t captured a FOG image of your master (virtual) computer
+before launching the reseal process do it now. If something goes wrong
+while sysprep is running, you may be happy to have an easy roolback.
+
+Run the reseal process by launching **reseal.cmd** and follow the
+instructions given at the beginning. They are here as a remainder.
+
+The reseal process is very long depending of the number of mass storage
+drivers in the repository. I\'m used to wait between 2 and 5 hours.
+
+reseal.cmd doesn\'t shuts down the system after the work ended. Doing so
+ensures you can see any error before you shut down the guest yourself.
+You may add shutdown command at the end of the script or use the
+appropriate switch when invoking sysprep.exe
+
+Note: I read somewhere that sysprep is alternatively long and fast. I
+saw that is true. If you want to add a single driver for a new hardware,
+you may deploy a master computer with your sealed XP image and re-seal
+it a second time with your new driver. (use the sysprep folder you ever
+keep near you in an USB stick).
+
+# Capture the final master image {#capture_the_final_master_image}
+
+Use FOG\'s web interface to capture your final image. Don\'t overwrite
+the rollback image you created before the reseal process. This image may
+be useful later.
+
+# Deploy the master image on target computers {#deploy_the_master_image_on_target_computers}
+
+Use FOG\'s web interface as usual to deploy your target computers.
+
+With a 100 Mb/s network my images are about 1.5 GB and are downloaded in
+less than 2 minutes. After some reboots your windows XP is ready. From
+the image push to a working desktop on the target computer, the elapsed
+time is less than 10 minutes.
+
+# Create snapins for device drivers {#create_snapins_for_device_drivers}
+
+## Howto create an autoextractible 7Zip archive {#howto_create_an_autoextractible_7zip_archive}
+
+Download the 7Zip sfx for installer
+[here](http://7-zip.org/download.html).
+
+Extract **7zS.sfx**.
+
+Create **7zip.txt** with the following (more about the file format
+[here](http://www.bugaco.com/7zip/MANUAL/switches/sfx.htm)):
+
+    ;!@Install@!UTF-8!
+    Title="7-Zip 4.01 Update"
+    ExecuteFile="setup.cmd"
+    ;!@InstallEnd@!
+
+Edit the file as you wish
+
+Create a file **setup.cmd** with all commands needed by your software or
+driver to setup silently.
+
+Create or re-use a folder containing the software to pack into an
+autoextractible file. Create a folder **\_\_7zip\_\_** containing a copy
+of **7zip.txt** (this is useful when you want to update the
+autoextractible file)
+
+Create an 7Zip archive with all needed files. then concatenate it to the
+SFX with the copy command:
+
+    copy /b 7zS.sfx + __7zip__\7zip.txt + archive.7z archive.exe
+
+You will get a new .exe file able to unpack and setup your software.
+Upload this .exe file to your snapins repository
+
+## Close all \"new hardware detected\" wizard\" {#close_all_new_hardware_detected_wizard}
+
+Please edit **\$WizardTitle** to match the title of the windows
+depending your language. This example is for french Windows XP.
+
+Compile this script into an exe with the tool provided with autoit.
+
+    #region ---Au3Recorder generated code Start ---
+    Opt("WinWaitDelay",100)
+    Opt("WinDetectHiddenText",1)
+    Opt("MouseCoordMode",0)
+
+    Dim $CheckAgain
+    Dim $WizardTitle = "Assistant Matériel détecté"
+
+    $CheckAgain = 1
+    While ($CheckAgain > 0)
+        sleep(5000)
+        If (WinExists($WizardTitle ,"")) then
+            _WinWaitActivate($WizardTitle ,"")
+            Send("{ESC}")
+        Else
+            $CheckAgain = 0
+        EndIf
+    WEnd
+
+    #region --- Internal functions Au3Recorder Start ---
+    Func _WinWaitActivate($title,$text,$timeout=0)
+        WinWait($title,$text,$timeout)
+        If Not WinActive($title,$text) Then WinActivate($title,$text)
+        WinWaitActive($title,$text,$timeout)
+    EndFunc
+    #endregion --- Internal functions Au3Recorder End ---
+
+    #endregion --- Au3Recorder generated code End ---
+
+## Find how to install a driver with silent switchs {#find_how_to_install_a_driver_with_silent_switchs}
+
+Some drivers may be unpacked by 7Zip and some others need to be unpacked
+and cancelled (nvidia chipset/video drivers, ATI video drivers). Some
+drivers may run like a charm by adding switches to their commandline.
+Some drivers may need an autoit script.
+
+When you found a way to install your device driver silently, create an
+archive with 7Zip as described earlier.
+
+Here is a (very incomplete) list of device drivers I managed to install
+silently. I will grow this list soon.
+
+[Working device drivers
+snapins](Working_device_drivers_snapins "wikilink")
+
+# Disabling autologon {#disabling_autologon}
+
+If you set AutologonCount, you may want tu set it to a high number and
+disable it manually once it becomes useless.
+
+You may create a snapin which executes this commandline
+
+    rundll32 netplwiz.dll,ClearAutoLogon
+
+It will disable autologon, and erase from the registry the administrator
+password given in sysprep.inf.
+
+This is a security issue because the password remains in plaintext in
+the registry when you set **EncryptedAdminPassword=NO** in sysprep.inf.
+
+# Troubleshooting
+
+## Sysprep fails writing registry {#sysprep_fails_writing_registry}
+
+I had this error and after lots of research, I found a forum where
+someone said that a mass storage driver may be responsible of this
+error. Because my driver repository is quite big, I had to try and retry
+by eliminating drivers by brand and model until I found the bad driver.
+Because the system is not automatically shut down after sysprep.exe runs
+you may run sysprep.exe manually without rebooting and reset files
+changed by reseal.cmd
+
+All my drivers are from the chip manufacturer. I remember that my faulty
+driver is from Silicon Image, but cannot remember today which one I had
+to remove. All drivers in the above list are working in the reseal
+process. However I cannot test all of them in deployment process because
+I don\'t have a motherboard with each model of mass storage controller.
+
+## I have to plug my USB Flash Disk our my USB stick twice before windows lets me read his content {#i_have_to_plug_my_usb_flash_disk_our_my_usb_stick_twice_before_windows_lets_me_read_his_content}
+
+I noticed this issue after I released my second version of disk image
+for my own purpose. I checked my first disk image and it works well. I
+did some tries on my virtual machine: install the universal USB driver
+instead of the intel one, create my XP instalation withou plugging any
+USB device, and installing windows on a VM without any USB port. None of
+these tries was successful. I\'m nearly sure that the only workaround is
+to create your master XP image from a physical computer. The major
+difference between my first final image and my second one is
+virtualization. I\'m nearly sure building the master XP installation on
+a pure physical computer will work better with USB. I\'ll give a try
+soon.
+
+## Chipset Intel P45 {#chipset_intel_p45}
+
+I found a computer which doesn\'t work with my driver repository. It is
+build with an Asus P5Q motherboard. You may have to add to the drivers
+the mass storage driver from the CD provided with the motherboard. Not
+yet tested. I found in the txtsetup.oem file some small differences
+compared to the f6floppy drivers provided on Intel\'s website.
+
+## I\'m sure I got the mass storage driver for my chipset but it keeps to reboot or show STOP 0x7B error {#im_sure_i_got_the_mass_storage_driver_for_my_chipset_but_it_keeps_to_reboot_or_show_stop_0x7b_error}
+
+A found a computer with ATI chipset which doesn\'t work with SATA when
+it is set to AHCI mode or native mode (deployed with XP). I had to set
+the SATA to IDE mode. Googling showed a similar problem on a gigabyte
+mainboard with the same ATI chipset, whereas windows has been installed
+a classic way. A change on the driver\'s .inf file found in a forum
+didn\'t help. If performance is not critical, try to use IDE (or legacy)
+mode in the BIOS setup.
+
+## The key entered during Mini Setup is invalid when I\'m activating my windows installation {#the_key_entered_during_mini_setup_is_invalid_when_im_activating_my_windows_installation}
+
+This issue doesn\'t appear when the licence key is in sysprep.inf.
+
+I noticed this small issue, and if you re-enter the same licence key and
+try to activate it a second time, it just works fine. I noticed also
+this occurred when I installed Windows XP Home without providing the
+licence key during setup (you can do that only with a XP SP3 CD,
+slipstreamed or not) **AND** without providing a licence key in
+sysprep.inf . I will try to provide a licence key during the
+installation on my master computer and compare if this issue keeps to
+occur after deployment on a target conputer. I think this will also
+affect XP Professionnal when installed the same way.
+
+## I changed some settings in VMWare Player and now my XP fails to boot with a BSOD 0x0000007B {#i_changed_some_settings_in_vmware_player_and_now_my_xp_fails_to_boot_with_a_bsod_0x0000007b}
+
+Have a look in your .vmx file defining the hardware of your virtual
+machine. The parameter **scsi0.present** may be reverted to **TRUE**.
+
+# TO DO {#to_do}
+
+-   Begin a howto to create device drivers snapins
+
+I got working snapins for Intel (chipset, graphic), ATI (graphic),
+Realtek (AC97, HDAudio), NVidia (chipset, graphic), and some other
+hardware
+
+-   give download links to each driver in the driver repository tree
+
+```{=html}
+<!-- -->
+```
+-   Increase Autologoncount to 5, give snapin to deactivate autologon,
+    and delete the password in the registry (after autologoncount
+    reaches 0, the password remains (if unencrypted in sysprep.inf)
+    unencrypted in the registry !)
+
+# Links
+
+[command line to disable/enable intelppm
+service](http://www.windowsreference.com/windows-xp-sp3/stop-0x0000007e-error-after-installing-sp3-on-amd-based-systems/)
+
+[Autoit script to install unsigned
+drivers](http://www.msfn.org/board/topic/115873-sysprep-ghost-and-drivers/)
+
+[About STOP 0x0000007E, Intelppm.sys
+related](http://www.runpcrun.com/0x0000007E)
+
+[How to disable Autologon](http://windowsxp.mvps.org/noautologon.htm)
+
+[Category:Windows](Category:Windows "wikilink")

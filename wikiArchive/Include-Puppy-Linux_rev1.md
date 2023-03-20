@@ -1,0 +1,59 @@
+[Puppy Linux](http://puppylinux.org/) will boot from the fog pxe menu
+without too much trouble. I prefer this to DSL as it has a more modern
+kernel (2.6 vs DSL\'s 2.4) and the drivers that go along with it. DSL-N
+is seems to be no longer maintained, so that\'s not a great option
+either. However, Puppy is a bit heavier than DSL, at 130M. These
+instructions have been tested with Puppy 5.1.1 and Fog 0.2.9 running on
+Ubunut 10.04.
+
+First, download the [puppy
+iso](http://puppylinux.org/main/Download%20Latest%20Release.htm) to your
+home folder, then mount it so you can get to the files inside. Note, add
+paths to these directions as needed.
+
+    mkdir /tmp/puppy
+    mount -o loop -t iso9660 lupu-511.iso /tmp/puppy/
+
+So far, the only way I\'ve found to get Puppy to PXE boot is to include
+the main file (sfs extension; lupu-511.sfs for Puppy 5.1.1) inside the
+ramdisk itself. You will need to copy the initrd.gz to a temporary
+folder, then embed the sfs inside it. Thanks go to jamesbond for the
+embedding instructions. So\...
+
+    mkdir /tmp/junk
+    cp /tmp/puppy/initrd.gz /tmp/junk
+    cp /tmp/puppy/lupu-511.sfs /tmp/junk
+    cd /tmp/junk
+    mv initrd.gz initrd.gz.old
+    TMPDIR=`mktemp -d XXXX`
+    cd $TMPDIR
+    zcat ../initrd.gz.old | cpio -i
+    cp ../lupu-511.sfs .
+    find . | cpio -o -H newc | gzip -9 > ../initrd.gz
+    cd ..
+    rm -rf $TMPDIR
+
+Next, you need to copy the new ramdisk and the vmlinuz to a tftpboot
+folder, which you make.
+
+    mkdir /tftpboot/puppy
+    cp /tmp/junk/initrd.gz /tftpboot/puppy
+    cp /tmp/puppy/vmlinuz /tftpboot/puppy
+
+Now update the pxelinux menu settings (in the file
+/tftpboot/pxelinux.cfg/default) adding the following entry at the end:
+
+    LABEL Puppy Linux
+            KERNEL puppy/vmlinuz
+            append initrd=puppy/initrd.gz
+            TEXT
+            Puppy Linux
+            ENDTEXT
+    \n
+
+At this point, you should be done. Test it out. Do be aware that the
+initrd.gz will take about a minute to load (on a 100 Mb network)
+connection. Hope this helps someone else.
+
+[Category:pxe](Category:pxe "wikilink")
+[Category:Customization](Category:Customization "wikilink")

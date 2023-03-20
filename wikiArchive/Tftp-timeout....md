@@ -1,0 +1,3 @@
+```{=mediawiki}
+{{:Troubleshoot_TFTP}}
+```

@@ -1,0 +1,64 @@
+This article applies to FOG 1.3.0.
+
+# PowerManagement Module {#powermanagement_module}
+
+When evaluating how GreenFOG was being used, we came to the conclusion
+that there was room for significant improvements to the entire module.
+We believe this new module will achieve what we always wanted from
+GreenFOG: scheduled power management of your entire network. This module
+lets you define for each host, or group, a CRON schedule for power
+operations and the ability to execute power operations on demand. Note:
+Your hosts must be set to allow WOL packets inorder for the startup
+tasks to work
+
+## CRON Tasks {#cron_tasks}
+
+Wake On Lan, Shutdown, and Reboot tasks can be scheduled using CRON. In
+the below screenshot, a host is set to shutdown every Friday at 00:00,
+and turn on every Monday at 06:30. If you are new to CRON, there are
+many sites to help you create schedules, such as CronTab.Guru which will
+show you what a CRON expression means in english.
+
+<figure>
+<img src="PowerManagementCRON.png" title="PowerManagementCRON.png" />
+<figcaption>PowerManagementCRON.png</figcaption>
+</figure>
+
+## On Demand Tasks {#on_demand_tasks}
+
+Wake On Lan, Shutdown, and Reboot tasks can be set to run immediately.
+In the below screenshot, by clicking the Add button, the host will
+immediately Shutdown as soon as it contacts the FOG server, which
+depends on your checkin time configuration. On Demand tasks can be
+applied to a single host, or an entire group.
+
+<figure>
+<img src="PowerManagementOnDemand.png"
+title="PowerManagementOnDemand.png" />
+<figcaption>PowerManagementOnDemand.png</figcaption>
+</figure>
+
+## How it interacts with logged on users {#how_it_interacts_with_logged_on_users}
+
+If a person is using a computer when a shutdown or reboot task is set to
+run, they will be prompted by a dialog. They can choose to abort the
+operation if they are not yet finished working. After aborting, that
+power task is ignored and will not prompt them again.
+
+If you would like to ensure that all computers are shutdown / restarted
+you can create multiple CRON tasks. For example, you could schedule a
+shutdown every day at 20:00 and again at 22:00. This way if a user
+aborts the 20:00 shutdown, the client will retry at 22:00.
+
+## CRON tutorials online {#cron_tutorials_online}
+
+While reading the below links, keep in mind that the only part of these
+articles that apply to FOG is the scheduling syntax, not the file paths.
+
+[<https://en.wikipedia.org/wiki/Cron>](https://en.wikipedia.org/wiki/Cron)
+
+[<http://www.nncron.ru/help/EN/working/cron-format.htm>](http://www.nncron.ru/help/EN/working/cron-format.htm)
+
+[<https://www.pantz.org/software/cron/croninfo.html>](https://www.pantz.org/software/cron/croninfo.html)
+
+[<http://www.thegeekstuff.com/2009/06/15-practical-crontab-examples>](http://www.thegeekstuff.com/2009/06/15-practical-crontab-examples)

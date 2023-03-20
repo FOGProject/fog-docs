@@ -1,0 +1,15 @@
+Article under construction. Below, you may find gibberish / notes that
+I\'m collecting for this article.
+
+------------------------------------------------------------------------
+
+SSDs are fast. Many times, SSDs allow the target host to start services
+before the NIC is ready. If you are using the FOG Client, you may
+benefit from setting it\'s \'service\' to delayed start instead of
+automatic start.
+
+------------------------------------------------------------------------
+
+Some SSD can be used as RAM. That function is available via a driver. If
+the image is uploaded with a certain quantity of memory, you have to
+restore it with the same quantity.

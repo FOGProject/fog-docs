@@ -1,0 +1,86 @@
+`<font color="red">`{=html}NOTICE:`</font>`{=html} FOG no longer uses
+syslinux. The below content is left intact because it may help someone
+with something, but it\'s not been updated since 2013 and is no longer
+relevant to the FOG Project.
+
+## Overview
+
+Some computer models may experience problems booting to the next device
+after performing a PXE boot and loading the Fog boot menu. This problem
+has been mostly observed with Dell computers but can happen on others as
+well.
+
+The steps below will help you modify your Fog installation to support
+Chainloading to bypass the BIOS boot device order, and proceed to the
+first hard drive after the Fog menu exits.
+
+From this forum thread:
+<http://fogproject.org/forum/threads/after-deploying-image-reboot-loop-dell-e6520-fog-0-32.445/>
+
+------------------------------------------------------------------------
+
+Apparently there were several versions of PXELINUX that had issues with
+chainloading, and the current version of FOG uses one of those. Here is
+a copy of the steps used to setup chainloading:
+
+## Update SYSLINUX {#update_syslinux}
+
+-   Download and extract the latest SYSLINUX (Currently using 4.04):
+    <http://www.kernel.org/pub/linux/utils/boot/syslinux/>
+-   Copy/Overwrite the following files to /tftpboot/:
+
+```{=html}
+<!-- -->
+```
+       syslinux-4.04/com32/modules/chain.c32
+       syslinux-4.04/com32/menu/vesamenu.c32
+       syslinux-4.04/core/pxelinux.0
+     
+
+## Update the Fog boot menu {#update_the_fog_boot_menu}
+
+### Text based menu {#text_based_menu}
+
+**Only set this if you\'re using the text based menu**
+
+-   Edit `/tftpboot/pxelinux.cfg/default` to include the following
+    DEFAULT option and LABEL entry:
+
+```{=html}
+<!-- -->
+```
+      DEFAULT fog.next 
+      LABEL fog.next 
+          kernel chain.c32 
+          append hd0
+
+### Graphical menu {#graphical_menu}
+
+-   If you are using the Graphical menu modify fog.local in your
+    `/tftpboot/pxelinux.cfg/default` to look like this
+
+```{=html}
+<!-- -->
+```
+        LABEL fog.local
+               kernel chain.c32
+               append hd0
+               MENU DEFAULT
+               MENU LABEL Boot from hard disk
+               TEXT HELP
+                     Boot from the local hard drive.
+                     If you are unsure, select this option.
+               ENDTEXT
+
+## Warnings
+
+**WARNING**: Using this configuration does have some side effects:
+
+Chainloading bypasses the BIOS boot device list and will go straight
+from the FOG boot menu loaded during network boot to the MBR of the
+first hard drive recognized by the motherboard. This means that you
+cannot boot to a bootable CD or flash drive after network booting, the
+same goes for any bootable hard drives other than the first one
+recognized by the motherboard; to access other bootable devices you must
+select the boot menu option during POST and manually select the bootable
+device desired.

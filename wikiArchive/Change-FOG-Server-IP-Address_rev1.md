@@ -1,0 +1,3 @@
+This article moved to the new documentation platform.
+
+<https://docs.fogproject.org/en/latest/reference/change_fog_server_ip_address.html>

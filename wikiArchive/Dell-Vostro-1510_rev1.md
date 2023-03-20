@@ -1,0 +1,10 @@
+I have experimenting for the 1st time today with FOG and i\'ve heard
+lots of great stories about it working. However, I have 35 Dell VOSTRO
+1510 laptops that I would like to have built with it! It appears to
+initially not recognise the hard disk, so I changed the disk from ACPI
+to ATA in the BIOS in the hope that it would see it. After doing this,
+it did not complain about not seeing the disk, but came up with the
+error:![](Photo-1-.jpg "Photo-1-.jpg")
+
+Jan 6, 2009 Actually, I just tried putting \"irqpoll\" into the Host
+Kernel Arguments field for the host and it works!

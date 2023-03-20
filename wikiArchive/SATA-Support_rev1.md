@@ -1,0 +1,39 @@
+FOG will work fine with SATA (serial ATA) devices, but it has been
+reported that you can not take an image that was created on a SATA
+device and move it to a PATA device and vice versa.
+
+Possible workaround to cross-controller deployment (for Windows
+deployments): Prior to creating the image from the source installation
+go to the \'Device Manager -\> IDE ATA/ATAPI Controllers\' section and
+update the proprietary busmaster IDE or SATA controller driver - select
+\'Install from specific location -\> Don\'t Search \...\' -\> select
+\'Standard Dual Channel PCI IDE Controller\' -\> Next to install it.
+This is what prevents the 0x0000007b error related at boot up.
+
+During image creation you may get this error from FOG:
+
+    ########################################################################################### 
+    # # 
+    # An error has been detected # 
+    # # 
+    ########################################################################################### 
+     
+    Fatal Error: Failed located hard disk 
+     
+    ########################################################################################### 
+    # # 
+    # Computer will reboot in 1 minute. # 
+    # # 
+    ###########################################################################################
+
+Check the BIOS settings on the target computer and make sure the SATA
+controller is in Compatibility mode (maybe listed as Legacy/Normal/IDE
+mode).
+
+Some motherboard BIOSes do not allow the selection of Legacy/Normal/IDE
+mode for the SATA interfaces and default to AHCI mode (Will cause the
+image to not fully boot and hang at a black screen). In which case you
+would either need to make an image from a source machine with the same
+controller and leave the proprietary driver in place OR do a Windows
+repair install from CD with the appropriate driver integrated or using
+the F6 driver install function.

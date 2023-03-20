@@ -1,0 +1,3 @@
+The information on this page has moved:
+
+<http://fogproject.org/wiki/index.php/Using_FOG_with_an_unmodifiable_DHCP_server/_Using_FOG_with_no_DHCP_server#DNSMASQ_settings_for_iPXE>

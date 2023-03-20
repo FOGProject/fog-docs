@@ -1,0 +1,3 @@
+We feel that FOG is production ready, it is currently being used by many
+organizations in production. If you do have any issues, please report
+them to the bug tracker or to the forum.

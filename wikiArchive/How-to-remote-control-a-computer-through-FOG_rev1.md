@@ -1,0 +1,70 @@
+Remote controlling a computer can be extremely beneficial for helping a
+user remotely. FOG does not have any remote control software built into
+the installation, however you can create a snapin using FOSS (free open
+source software) which accomplishes this task.
+
+In this article we will be creating a snapin of UltraVNC SC (single
+click) which can be pushed / run on a remote computer allowing remote
+access.
+
+**\*\*note\*\*** This article assumes that your current installation and
+configuration of fog is working for snapins with no issues.
+
+Also please note that UltraVNC SC was written for Windows XP, and at
+this time Windows 7 support has been found to be working, but may not be
+fully functional with FOG at this time. This is due to UAC and how
+Windows 7 handles remote permissions of executed software on the pc.
+This is a known issue that is being worked on, see the UltraVNC SC
+forums for more information
+[1](http://forum.ultravnc.info/viewforum.php?f=15)
+
+Assuming the UltraVNC server has been deployed to the client and the
+java viewer applet is using the default port 5800. To add the remote
+link to the FOG web interface you must edit line 320 in the
+hosts.edit.include.php in FOG .29. The original line should be deleted
+and this one should replace it
+
+echo ( \"
+
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+\<a href=<http://>\" . \$ar\[\"hostName\"\] .\":5800
+target=\\\"\_blank\\\"\>Remote Control`</a>`{=html}
+
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+\".\_(\"Host IP\").\":
+
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+\<input class=\\\"smaller\\\" type=\\\"text\\\" name=\\\"ip\\\"
+value=\\\"\" . \$host-\>getIPAddress() . \"\\\" /\>
+
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+\" );
+
+Similar edits can be made to groups.edit.include.php and
+host.search.php.

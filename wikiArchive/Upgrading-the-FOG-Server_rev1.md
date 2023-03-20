@@ -1,0 +1,28 @@
+## Upgrading the FOG Server {#upgrading_the_fog_server}
+
+**It is highly recommended that you backup your data before you perform
+the upgrade.**
+
+Upgrading from one version of FOG to a newer version is as easy as
+running the installer for the new version of FOG. It will update your
+system while leaving your data in place.
+
+Remember install settings are in
+`<install directory>`{=html}/fog/.fogsettings. If anything has changed
+since the last install make updates to .fosettings before running the
+install.
+
+FOG will **NOT** modify:
+
+-   Any modified reports
+-   Image Files
+-   All database settings
+
+FOG **WILL** modify:
+
+-   Any Custom changes to php/init.gz file.
+-   Any changes to dhcpd.conf.
+-   Any changes to /etc/xinetd.d/tftp.
+-   Any changes to /etc/vsftpd/vsftpd.conf.
+-   Any changes to /etc/exports.
+-   Any changes to php config files on /var/www/fog and /opt/fog

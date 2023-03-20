@@ -1,0 +1,6 @@
+Fog allows you to edit / add / or change your PXE boot menu. To add
+items such as Norton Ghost / Acronis / DBAN / or Diantoics software
+(including Hirens) look at the forum post below.
+
+[Documentation /
+How-To](https://sourceforge.net/projects/freeghost/forums/forum/730844/topic/4049466)

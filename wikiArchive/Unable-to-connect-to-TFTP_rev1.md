@@ -1,0 +1,3 @@
+```{=mediawiki}
+{{:Troubleshoot_TFTP#Unable_to_connect_to_tftp_server}}
+```

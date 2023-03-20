@@ -1,0 +1,13 @@
+All 15 Dell Dimension 2400 we have add an extra character to the initial
+PXE filename when doing the initial request to the TFTP server
+
+A simple (if inelegant) solution is to add a symbolic link to the
+correct file in the /tftpboot directory:
+
+ln -s /tftpboot/pxelinux.0 /tftpboot/pxelinux.0ÿ
+
+(the final character is a lower case y umlaut) To diagnose the issue,
+add several -v parameters the /etc/default/tftpd-hpa file (before the -s
+parameter), and look in /var/log/syslog for tftp client failures
+
+Possibly a better solution would be to use a filename map.

@@ -1,0 +1,8 @@
+These HiGrade machines use a motherboard made by FIC but with a custom
+BIOS by HiGrade. None of these motherboards that we have in our repair
+center will work with FOG at present and our suppliers confirm that the
+boards have the latest version of BIOS already installed (BIOS updates
+are not available to the general public, or our repair center so I
+cannot check this).
+
+At present I would consider this not working.

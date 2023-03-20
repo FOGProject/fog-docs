@@ -1,0 +1,2 @@
+We have not tested it, but we have gotten reports from the forum that it
+does work with Windows 2000 as long as the file system is NTFS.

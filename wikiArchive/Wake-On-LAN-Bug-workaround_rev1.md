@@ -1,0 +1,23 @@
+## Wake On LAN does not work with etherwake {#wake_on_lan_does_not_work_with_etherwake}
+
+FOG-Version: 0.21
+
+etherwake is located in: /usr/sbin/etherwake
+
+The wol.php sourcecode reveals two things:
+
+-   FOG expects it here: /sbin
+-   it is expected to have a DIFERENT NAME(!) \*argh\* (ether-wake)
+
+solution:
+
+-   become root
+-   ln -s /usr/sbin/etherwake /sbin/ether-wake OR cp /usr/sbin/etherwake
+    /sbin/ether-wake
+-   visudo
+
+add this line: www-data ALL=(ALL) NOPASSWD: /sbin/ether-wake
+
+WOL should work now. At least it does at my site.
+
+Best Regards, Roland
