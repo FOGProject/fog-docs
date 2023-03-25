@@ -4,3 +4,5 @@ site
 .lastprereqrun
 docs/.obsidian
 docs/.obsidian/*
+.obsidian/*
+.obsidian
