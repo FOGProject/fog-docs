@@ -1,4 +1,4 @@
-## Quick reference for basic editing in Vi {#quick_reference_for_basic_editing_in_vi}
+## Quick reference for basic editing in Vi 
 
 Vi is a very basic (yet incredibly powerful) text editor that comes with
 just about every single Linux Distribution. Using Vi allows you to avoid

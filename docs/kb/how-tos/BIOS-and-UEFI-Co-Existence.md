@@ -1,11 +1,7 @@
 # General
 
-To make network booting for several different client platforms possible
-you\'d have to offer adequate boot images for those clients. To be able
-to distinguish between varying platforms the DHCP server needs to
-utilize the information sent by the clients. According to [RFC
-4578](http://tools.ietf.org/html/rfc4578) \"the following pre-boot
-architecture types have been requested\" (by the RFC):
+To make network booting for several different client platforms possible you'd have to offer adequate boot images for those clients. To be able to distinguish between varying platforms the DHCP server needs to utilize the information sent by the clients. According to [RFC
+4578](http://tools.ietf.org/html/rfc4578)  the following pre-boot architecture types have been requested (by the RFC):
 
 `           Type   Architecture Name`\
 `           ----   -----------------`\
@@ -25,7 +21,7 @@ work with these various architecture types. They are located in the
 /tftpboot directory usually. Here is more information on them: [Filename
 Information](Filename_Information "wikilink")
 
-# Using Linux DHCP {#using_linux_dhcp}
+# Using Linux DHCP
 
 According to this post there are (at least) three different ways to
 configure ISC DHCP server that way:
@@ -57,7 +53,7 @@ subnet definition and the following classes anywhere in the config:
 `    }`\
 `}`
 
-## Example 1 {#example_1}
+## Example 1
 
 Here\'s a complete configuration example where TFTP and DNS is on the
 same Server. No router is defined in this configuration but can easily
@@ -117,7 +113,7 @@ be added by changing X.X.X.X and un-commenting the line.
 
     }
 
-## Example 2 {#example_2}
+## Example 2
 
 Here is another complete example setup for a 10.0.0.0/24 network where
 10.0.0.3 is the TFTP server, 10.0.0.1 is the router, and 10.0.0.1 is the
@@ -184,7 +180,7 @@ When you have Mac OS clients as well you might want to check out this:
 
 Restart the DHCP service and you are good to go!
 
-## ISC-DCHP static IP address and other things {#isc_dchp_static_ip_address_and_other_things}
+## ISC-DCHP static IP address and other things
 
 Here are a few examples of exclusively defined options based on MAC
 addresses. These would be placed at the **very end** of your dhcpd.conf
@@ -217,7 +213,7 @@ boot options.
                             option domain-name-servers 8.8.8.8;
                     }
 
-# Using ProxyDHCP (dnsmasq) {#using_proxydhcp_dnsmasq}
+# Using ProxyDHCP (dnsmasq)
 
 Related article: [ProxyDHCP with
 dnsmasq](ProxyDHCP_with_dnsmasq "wikilink")
@@ -238,7 +234,7 @@ and UEFI. **Note: This will NOT work in proxy mode!!**
 `dhcp-match=set:efi64,60,PXEClient:Arch:00009`\
 `dhcp-boot=`[`tag:efi64,ipxe.efi,x.x.x.x,x.x.x.x`](tag:efi64,ipxe.efi,x.x.x.x,x.x.x.x)`            # x.x.x.x = TFTP/FOG server IP`
 
-# Using Windows Server 2012 (R1 and later) DHCP Policy {#using_windows_server_2012_r1_and_later_dhcp_policy}
+# Using Windows Server 2012 (R1 and later) DHCP Policy
 
 The below method assumes that your normal Scope options 066 and 067 are
 already setup for BIOS based network booting (without these already set,
@@ -249,23 +245,16 @@ booting will still use the default scope options set in the scope.
 You may substitute whatever Vendor Class Identifier you need in the
 ASCII field on step 3.
 
-## Step 1 {#step_1}
+## Step 1
 
 Right click IPv4, and pick \"Define vendor class\".
+![[bios-uefi-Step_1.png]]
 
-<figure>
-<img src="Step_1.png" title="Step_1.png" />
-<figcaption>Step_1.png</figcaption>
-</figure>
+## Step 2
 
-## Step 2 {#step_2}
+![[bios-uefi-Step_2.png]]
 
-<figure>
-<img src="Step_2.png" title="Step_2.png" />
-<figcaption>Step_2.png</figcaption>
-</figure>
-
-## Step 3 {#step_3}
+## Step 3
 
 Here, The display name and description aren\'t really important but
 should describe what this does.
@@ -296,64 +285,40 @@ Server 2012 steps for each one, Set the matching (step 3) and the boot
 file for each accordingly, and change the names to reflect what they
 are.
 
-<figure>
-<img src="Step_3.png" title="Step_3.png" />
-<figcaption>Step_3.png</figcaption>
-</figure>
+![[bios-uefi-Step_3.png]]
 
-## Step 4 {#step_4}
+
+## Step 4
 
 Underneath IPv4 -\> Scope -\> Policies, right click on \"Policies\" and
 choose \"New Policy\...\"
 
-<figure>
-<img src="Step_4.png" title="Step_4.png" />
-<figcaption>Step_4.png</figcaption>
-</figure>
+![[bios-uefi-Step_4.png]]
 
-## Step 5 {#step_5}
+## Step 5
 
-<figure>
-<img src="Step_5.png" title="Step_5.png" />
-<figcaption>Step_5.png</figcaption>
-</figure>
+![[bios-uefi-Step_5.png]]
 
-## Step 6 {#step_6}
+## Step 6
 
-<figure>
-<img src="Step_6.png" title="Step_6.png" />
-<figcaption>Step_6.png</figcaption>
-</figure>
+![[bios-uefi-Step_6.png]]
+## Step 7
 
-## Step 7 {#step_7}
+![[bios-uefi-Step_7.png]]
+## Step 8
 
-<figure>
-<img src="Step_7.png" title="Step_7.png" />
-<figcaption>Step_7.png</figcaption>
-</figure>
+![[bios-uefi-Step_8.png]]
 
-## Step 8 {#step_8}
+## Step 9
 
-<figure>
-<img src="Step_8.png" title="Step_8.png" />
-<figcaption>Step_8.png</figcaption>
-</figure>
+![[bios-uefi-Step_9.png]]
 
-## Step 9 {#step_9}
+## Step 10
 
-<figure>
-<img src="Step_9.png" title="Step_9.png" />
-<figcaption>Step_9.png</figcaption>
-</figure>
+![[bios-uefi-Step_10.png]]
 
-## Step 10 {#step_10}
 
-<figure>
-<img src="Step_10.png" title="Step_10.png" />
-<figcaption>Step_10.png</figcaption>
-</figure>
-
-# Using Windows Server 2008 (and earlier) using DHCP Vendor Predefined options {#using_windows_server_2008_and_earlier_using_dhcp_vendor_predefined_options}
+# Using Windows Server 2008 (and earlier) using DHCP Vendor Predefined options
 
 This has been attempted **unsuccessfully**. The setup for Server 2008 is
 very similar to Windows Server 2012. You would create a Vendor Class and
@@ -378,52 +343,28 @@ you can set their values in the Predefined options and values window.
 Enable these two options under the advanced tab of either scope options
 or server options.
 
-<figure>
-<img src="A._Create_DHCP_Vendor_Class.png"
-title="A._Create_DHCP_Vendor_Class.png" />
-<figcaption>A._Create_DHCP_Vendor_Class.png</figcaption>
-</figure>
 
-<figure>
-<img src="B._Edit_Class.png" title="B._Edit_Class.png" />
-<figcaption>B._Edit_Class.png</figcaption>
-</figure>
+![[bios-uefi-A._Create_DHCP_Vendor_Class.png]]
 
-<figure>
-<img src="C._Select_predefined_options.png"
-title="C._Select_predefined_options.png" />
-<figcaption>C._Select_predefined_options.png</figcaption>
-</figure>
+![[bios-uefi-B._Edit_Class.png]]
 
-<figure>
-<img src="D._Predefined_options_and_values.png"
-title="D._Predefined_options_and_values.png" />
-<figcaption>D._Predefined_options_and_values.png</figcaption>
-</figure>
+![[bios-uefi-C._Select_predefined_options.png]]
 
-<figure>
-<img src="E._Option_66.png" title="E._Option_66.png" />
-<figcaption>E._Option_66.png</figcaption>
-</figure>
+![[bios-uefi-D._Predefined_options_and_values.png]]
 
-<figure>
-<img src="F._Option_67.png" title="F._Option_67.png" />
-<figcaption>F._Option_67.png</figcaption>
-</figure>
+![[bios-uefi-E._Option_66.png]]
 
-<figure>
-<img src="G._Apply_Scope_Options.png"
-title="G._Apply_Scope_Options.png" />
-<figcaption>G._Apply_Scope_Options.png</figcaption>
-</figure>
+![[bios-uefi-F._Option_67.png]]
 
-# Using OS X DHCP {#using_os_x_dhcp}
+![[bios-uefi-G._Apply_Scope_Options.png]]
 
-## Steps Here {#steps_here}
+# Using OS X DHCP
+
+## Steps Here
 
 Please list OS X steps here.\'
 
-# Building custom DHCP Classes for co-existence with FOG {#building_custom_dhcp_classes_for_co_existence_with_fog}
+# Building custom DHCP Classes for co-existence with FOG
 
 It\'s possible and easy to configure ISC-DHCP and Windows Server 2012 to
 support network booting with FOG and other devices (like IP Phones or
@@ -477,7 +418,9 @@ In Windows Server DHCP, you cannot match like you can in ISC-DHCP,
 however you can define a string value of your liking when you setup a
 Vendor Class.
 
-# Relevant Resources {#relevant_resources}
+# Relevant Resources
+
+[[Related-to-ISC-DHCP_rev1]]
 
 ```{=mediawiki}
 {{:Related to ISC-DHCP}}
