@@ -371,6 +371,8 @@ or server options.
 
 # Using OS X DHCP
 
+osx dhcp tbd
+
 ## Steps Here
 
 Please list OS X steps here.\'
@@ -429,10 +431,3 @@ In Windows Server DHCP, you cannot match like you can in ISC-DHCP,
 however you can define a string value of your liking when you setup a
 Vendor Class.
 
-# Relevant Resources
-
-<!-- [[Related-to-ISC-DHCP_rev1]] -->
-
-```{=mediawiki}
-{{:Related to ISC-DHCP}}
-```

@@ -114,7 +114,7 @@ nav:
       - Report Management: management/web/reports.md
       - Fog Configuration: 
         - management/web/config.md
-        - management/web/config
+        - management/web/config/*
       - Plugin Management: management/web/plugins.md
   - Knowledge Base: 
     - kb/README.md
