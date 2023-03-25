@@ -1,7 +1,18 @@
+---
+title: Bios and UEFI Co-Existence
+tags:
+    - bios
+    - uefi
+    - pxe
+    - ipxe
+    - netboot
+    - dhcp
+    - window-server
+---
+
 # General
 
-To make network booting for several different client platforms possible you'd have to offer adequate boot images for those clients. To be able to distinguish between varying platforms the DHCP server needs to utilize the information sent by the clients. According to [RFC
-4578](http://tools.ietf.org/html/rfc4578)  the following pre-boot architecture types have been requested (by the RFC):
+To make network booting for several different client platforms possible you'd have to offer adequate boot images for those clients. To be able to distinguish between varying platforms the DHCP server needs to utilize the information sent by the clients. According to [RFC 4578](http://tools.ietf.org/html/rfc4578) the following pre-boot architecture types have been requested (by the RFC):
 
 `           Type   Architecture Name`\
 `           ----   -----------------`\
@@ -420,7 +431,7 @@ Vendor Class.
 
 # Relevant Resources
 
-[[Related-to-ISC-DHCP_rev1]]
+<!-- [[Related-to-ISC-DHCP_rev1]] -->
 
 ```{=mediawiki}
 {{:Related to ISC-DHCP}}
