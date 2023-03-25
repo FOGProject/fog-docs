@@ -112,9 +112,8 @@ nav:
       - Service Management: management/web/service.md
       - Task Management: management/web/tasks.md
       - Report Management: management/web/reports.md
-      - Fog Configuration: 
-        - management/web/config.md
-        - management/web/config/*
+      - Fog Configuration: management/web/config.md
+      - AD Config: management/web/ad-integration.md
       - Plugin Management: management/web/plugins.md
   - Knowledge Base: 
     - kb/README.md
