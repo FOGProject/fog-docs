@@ -10,7 +10,7 @@ tags:
     - window-server
 ---
 
-# General
+# Configuring Bios and UEFI Co-Existence
 
 To make network booting for several different client platforms possible you'd have to offer adequate boot images for those clients. To be able to distinguish between varying platforms the DHCP server needs to utilize the information sent by the clients. According to [RFC 4578](http://tools.ietf.org/html/rfc4578) the following pre-boot architecture types have been requested (by the RFC):
 
@@ -32,7 +32,7 @@ work with these various architecture types. They are located in the
 /tftpboot directory usually. Here is more information on them: [Filename
 Information](Filename_Information "wikilink")
 
-# Using Linux DHCP
+## Using Linux DHCP
 
 According to this post there are (at least) three different ways to
 configure ISC DHCP server that way:
@@ -64,7 +64,7 @@ subnet definition and the following classes anywhere in the config:
 `    }`\
 `}`
 
-## Example 1
+### Example 1
 
 Here\'s a complete configuration example where TFTP and DNS is on the
 same Server. No router is defined in this configuration but can easily
@@ -124,7 +124,7 @@ be added by changing X.X.X.X and un-commenting the line.
 
     }
 
-## Example 2
+### Example 2
 
 Here is another complete example setup for a 10.0.0.0/24 network where
 10.0.0.3 is the TFTP server, 10.0.0.1 is the router, and 10.0.0.1 is the
@@ -191,7 +191,7 @@ When you have Mac OS clients as well you might want to check out this:
 
 Restart the DHCP service and you are good to go!
 
-## ISC-DCHP static IP address and other things
+### ISC-DCHP static IP address and other things
 
 Here are a few examples of exclusively defined options based on MAC
 addresses. These would be placed at the **very end** of your dhcpd.conf
@@ -224,7 +224,7 @@ boot options.
                             option domain-name-servers 8.8.8.8;
                     }
 
-# Using ProxyDHCP (dnsmasq)
+## Using ProxyDHCP (dnsmasq)
 
 Related article: [ProxyDHCP with
 dnsmasq](ProxyDHCP_with_dnsmasq "wikilink")
@@ -245,7 +245,7 @@ and UEFI. **Note: This will NOT work in proxy mode!!**
 `dhcp-match=set:efi64,60,PXEClient:Arch:00009`\
 `dhcp-boot=`[`tag:efi64,ipxe.efi,x.x.x.x,x.x.x.x`](tag:efi64,ipxe.efi,x.x.x.x,x.x.x.x)`            # x.x.x.x = TFTP/FOG server IP`
 
-# Using Windows Server 2012 (R1 and later) DHCP Policy
+## Using Windows Server 2012 (R1 and later) DHCP Policy
 
 The below method assumes that your normal Scope options 066 and 067 are
 already setup for BIOS based network booting (without these already set,
@@ -256,16 +256,16 @@ booting will still use the default scope options set in the scope.
 You may substitute whatever Vendor Class Identifier you need in the
 ASCII field on step 3.
 
-## Step 1
+### Step 1
 
 Right click IPv4, and pick \"Define vendor class\".
 ![[bios-uefi-Step_1.png]]
 
-## Step 2
+### Step 2
 
 ![[bios-uefi-Step_2.png]]
 
-## Step 3
+### Step 3
 
 Here, The display name and description aren\'t really important but
 should describe what this does.
@@ -299,37 +299,37 @@ are.
 ![[bios-uefi-Step_3.png]]
 
 
-## Step 4
+### Step 4
 
 Underneath IPv4 -\> Scope -\> Policies, right click on \"Policies\" and
 choose \"New Policy\...\"
 
 ![[bios-uefi-Step_4.png]]
 
-## Step 5
+### Step 5
 
 ![[bios-uefi-Step_5.png]]
 
-## Step 6
+### Step 6
 
 ![[bios-uefi-Step_6.png]]
-## Step 7
+### Step 7
 
 ![[bios-uefi-Step_7.png]]
-## Step 8
+### Step 8
 
 ![[bios-uefi-Step_8.png]]
 
-## Step 9
+### Step 9
 
 ![[bios-uefi-Step_9.png]]
 
-## Step 10
+### Step 10
 
 ![[bios-uefi-Step_10.png]]
 
 
-# Using Windows Server 2008 (and earlier) using DHCP Vendor Predefined options
+## Using Windows Server 2008 (and earlier) using DHCP Vendor Predefined options
 
 This has been attempted **unsuccessfully**. The setup for Server 2008 is
 very similar to Windows Server 2012. You would create a Vendor Class and
@@ -373,11 +373,11 @@ or server options.
 
 osx dhcp tbd
 
-## Steps Here
+### Steps Here
 
 Please list OS X steps here.\'
 
-# Building custom DHCP Classes for co-existence with FOG
+## Building custom DHCP Classes for co-existence with FOG
 
 It\'s possible and easy to configure ISC-DHCP and Windows Server 2012 to
 support network booting with FOG and other devices (like IP Phones or
