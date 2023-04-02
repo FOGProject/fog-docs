@@ -9,10 +9,16 @@ tags:
 
 # Welcome to the Fog Project documentation!
 
-Fog Project is really cool
-This documentation is under construction
-We are slowly moving from wiki.fogproject.org to here
-Once all existing docs are moved over we'll start updating the docs 
+> [!NOTE]
+> This documentation is under construction
+> We are slowly moving from wiki.fogproject.org to here
+> Once all existing docs are moved over we'll start updating the docs 
+
+> [!warning]
+> While we are migrating content there will be occasional changes to links and paths
+> However, this documentation is versioned, so while the latest version will have changes for the next bit.
+> You can use https://docs.fogproject.org/en/1.5.9/ for linking to things that won't change. 
+> Once all documentation from the wiki has been migrated into a sensible folder structure, these paths will no longer change
 
 ## Fog Documentation Sections
 
