@@ -22,17 +22,12 @@ according to the instruction above in this manual
 The machine that you're installing the FOG client on is a Windows 10
 machine.
 
-!!! info
 
-  -   .NET Framework version 4.0+ (Note: .NET 4 client profile will NOT
-      work)
-  -   You can download the framework from here: [Microsoft .NET Framework
-      4.5.1 (Offline Installer) for Windows Vista SP2, Windows 7 SP1,
-      Windows 8, Windows Server 2008 SP2 Windows Server 2008 R2 SP1 and
-      Windows Server
-      2012](https://www.microsoft.com/en-us/download/details.aspx?id=40779)
-  -   Windows 10 comes with a version of .Net that will work.
-
+> [!Info]
+> -   .NET Framework version 4.0+ (Note: .NET 4 client profile will NOT work)
+> -   You can download the framework from here:
+>    [Microsoft .NET Framework 4.5.1 (Offline Installer) for Windows Vista SP2, Windows 7 SP1, Windows 8, Windows Server 2008 SP2 Windows Server 2008 R2 SP1 and Windows Server 2012](https://www.microsoft.com/en-us/download/details.aspx?id=40779)
+>  -   Windows 10 comes with a version of .Net that will work.
 
 ## Fog Client Installation
 
@@ -64,16 +59,13 @@ The following are the steps to install the client on a host
 
 ### Run The Installer
 
-!!! info
-
-    The following steps follow the msi installer wizard. The Smart Installer
-    wizard is similar
+> [!info]
+> The following steps follow the msi installer wizard. The Smart Installer wizard is similar
 
 
-!!! note
-
-    You may get a 'Windows protected your PC' popup. In that case you have to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'. 
-
+> [!note]
+> You may get a 'Windows protected your PC' popup. In that case you have to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'. 
+  
 -   At the Welcome screen, click on 'Next'
 -   Accept the terms in the License Agreement (it's the GPL license, so
     why not) and click on 'Next'
@@ -137,47 +129,51 @@ If you would like to create a silent installation to deploy the fog
 client here is an example of a powershell script that would do that for
 you
 
-!!! note
-
-    This script assumes that you can access your fogserver by the default
-    name of [fogserver]{.title-ref} which can be a hostname or a dns alias
-
+>[!note]
+>This script assumes that you can access your fogserver by the default name of `fogserver` which can be a hostname or a dns alias
 
 ``` powershell
 #download the client installer to C:\fogtemp\fog.msi
-Invoke-WebRequest -URI "http://fogserver/fog/client/download.php?newclient" -UseBasicParsing -OutFile 'C:\fogtemp\fog.msi'
+$webclient = New-Object System.Net.WebClient
+$webClient.downloadfile("http://fogserver/fog/client/download.php?newclient","C:\fogtemp\fog.msi")
 #run the installer with msiexec and pass the command line args of /quiet /qn /norestart
 Start-Process -FilePath msiexec -ArgumentList @('/i','C:\fogtemp\fog,msi','/quiet','/qn','/norestart') -NoNewWindow -Wait;
 ```
 
 ### MSI Switches
 
-|  USETRAY= defaults to "1", if "0" the tray will be hidden
-|  HTTPS= defaults to "0", if "1" the client will use HTTPS (not
-  recommended)
-|  WEBADDRESS= defaults to "fogserver", this is the ip/dns name of
-  your server
-|  WEBROOT= defaults to "/fog"
-|  ROOTLOG= defaults to "0", if "1" the fog.log will be at
-  C:fog.log, otherwise %PROGRAMFILES%FOGfog.log
+| Switch     | Values                                                                                              |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| USETRAY    | defaults to "1", if "0" the tray will be hidden                                                     |
+| HTTPS      | defaults to "0", if "1" the client will use HTTPS (not recommended)                                 |
+| WEBADDRESS | defaults to "fogserver", this is the ip/dns name of your server                                     |
+| WEBROOT    | defaults to "/fog"                                                                                  |
+| ROOTLOG    | defaults to "0", if "1" the fog.log will be at `C:\fog.log`, otherwise `%PROGRAMFILES%\FOG\fog.log` |
 
 Reference:
 <https://forums.fogproject.org/topic/6222/msi-silent-install-without-tray-icon/2>
 
 ### Smart Installer Switches
 
-| All switches with \--{OPTION} can also be used as /{OPTION}
-| 
-| \--server= Specify the server address. Default is fogserver
-| \--webroot= Specify the webroot. Default is /fog
-| -h or -https Use https for server communication
-| -r or -rootlog Put fog.log in the root of the filesystem
-| -s or \--start Automatically start the service after installation.
-  Linux only
-| -t or \--tray Enabled the FOG Tray and notifications
-| -u or \--uninstall Uninstall the client
-| \--upgrade Upgrade the client
-| -l= or \--log= Specify where to put the SmartInstaller log
+> [!tip]
+> All switches with \--{OPTION} can also be used as /{OPTION}
+
+#### Universal swtiches
+| Switch         | Description                                         |
+| -------------- |:--------------------------------------------------- |
+| \--server      | Specify the server address. Default is fogserver    |
+| \--webroot     | Specify the webroot. Default is /fog                |
+| -h or -https   | Use https for server communication                  |
+| -r or -rootlog | Put fog.log in the root of the filesystem           |
+| -s or \--start | Automatically start the service after installation. |
+  
+#### Linux only switches
+| Switch             | Value                                       |
+| ------------------ |:------------------------------------------- |
+| -t or \--tray      | Enabled the FOG Tray and notifications      |
+| -u or \--uninstall | Uninstall the client                        |
+| \--upgrade         | Upgrade the client                          |
+| -l= or \--log=     | Specify where to put the SmartInstaller log |
 
 See also <https://news.fogproject.org/fog-client-v0-11-0-released-2/>
 
