@@ -20,8 +20,10 @@ pymdown-extensions #>=9.9.1
 colorama #>=0.4
 regex #>=2022.4.24
 requests #>=2.26
-mkdocs-include-dir-to-nav # makes it so our navigation tree is built from our directory tree
-mkdocs-roamlinks-plugin #>=0.1.3
+# makes it so our navigation tree is built from our directory tree
+mkdocs-include-dir-to-nav
+# allow wikilinks aka roamlinks for obsidian compatibility
+mkdocs-roamlinks-plugin
 mkdocs-callouts
 # mkdocs-table-reader-plugin
 # mkdocs-mermaid2-plugin

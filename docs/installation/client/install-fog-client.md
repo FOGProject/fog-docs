@@ -148,7 +148,7 @@ Start-Process -FilePath msiexec -ArgumentList @('/i','C:\fogtemp\fog,msi','/quie
 | HTTPS      | defaults to "0", if "1" the client will use HTTPS (not recommended)                                 |
 | WEBADDRESS | defaults to "fogserver", this is the ip/dns name of your server                                     |
 | WEBROOT    | defaults to "/fog"                                                                                  |
-| ROOTLOG    | defaults to "0", if "1" the fog.log will be at `C:\fog.log`, otherwise `%PROGRAMFILES%\FOG\fog.log` |
+| ROOTLOG    | defaults to "1", if "0" the fog.log will be at `%PROGRAMFILES%\FOG\fog.log`, otherwise `C:\fog.log` |
 
 Reference:
 <https://forums.fogproject.org/topic/6222/msi-silent-install-without-tray-icon/2>
@@ -159,21 +159,23 @@ Reference:
 > All switches with \--{OPTION} can also be used as /{OPTION}
 
 #### Universal swtiches
+
 | Switch         | Description                                         |
 | -------------- |:--------------------------------------------------- |
-| \--server      | Specify the server address. Default is fogserver    |
-| \--webroot     | Specify the webroot. Default is /fog                |
+| --server      | Specify the server address. Default is fogserver    |
+| --webroot     | Specify the webroot. Default is /fog                |
 | -h or -https   | Use https for server communication                  |
 | -r or -rootlog | Put fog.log in the root of the filesystem           |
-| -s or \--start | Automatically start the service after installation. |
+| -s or --start | Automatically start the service after installation. |
   
 #### Linux only switches
+
 | Switch             | Value                                       |
 | ------------------ |:------------------------------------------- |
-| -t or \--tray      | Enabled the FOG Tray and notifications      |
-| -u or \--uninstall | Uninstall the client                        |
-| \--upgrade         | Upgrade the client                          |
-| -l= or \--log=     | Specify where to put the SmartInstaller log |
+| -t or --tray      | Enabled the FOG Tray and notifications      |
+| -u or --uninstall | Uninstall the client                        |
+| --upgrade         | Upgrade the client                          |
+| -l= or --log=     | Specify where to put the SmartInstaller log |
 
 See also <https://news.fogproject.org/fog-client-v0-11-0-released-2/>
 

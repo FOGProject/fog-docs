@@ -1,13 +1,9 @@
-`<font color="red" size="10">`{=html}Note:`</font>`{=html}
 
-`<b>`{=html}This article is quality and may be followed, however a new
-article is written at the below link that includes UEFI
-support.`</b>`{=html}
+> [!note]
+>This article is quality and may be followed, however a new article is written at the below link that includes UEFI support. [[ProxyDHCP-with-dnsmasq]]
+# Legacy proxy dhcp configuration
 
-`<b>`{=html}New article: [ProxyDHCP with
-dnsmasq](ProxyDHCP_with_dnsmasq "wikilink")`</b>`{=html}
-
-# Overview
+## Overview
 
 This combines FOG with a proxyDHCP server. What a proxyDHCP service does
 is listen to DHCP requests and respond to clients identifying themselves
@@ -18,7 +14,7 @@ with an unmodifiable DHCP server or wish to avoid the hassle of editing
 the already existing DHCP server, or even as a portable imaging
 solution.
 
-# How ProxyDHCP works {#how_proxydhcp_works}
+## How ProxyDHCP works {#how_proxydhcp_works}
 
 1.  When a PXE client boots up, it sends a DHCP Discover broadcast on
     the network, which includes a list of information the client would
@@ -44,7 +40,7 @@ solution.
     name, and boot file name and it initiate a TFTP transaction to
     download the boot file.
 
-# Environment
+## Environment
 
 Tested working with:
 
@@ -61,7 +57,7 @@ Tested working with:
 -   LTSP Server, further documentation at [Ubuntu
     LTSP/ProxyDHCP](https://help.ubuntu.com/community/UbuntuLTSP/ProxyDHCP).
 
-# Setup and Configuration {#setup_and_configuration}
+## Setup and Configuration {#setup_and_configuration}
 
 1.  First get your desired linux flavor installed
 2.  Install FOG (use instructions on wiki user manual)
@@ -154,7 +150,7 @@ to 0 on the line:
 
     pxe-prompt="Press F8 for boot menu", 3
 
-# DNSMASQ settings for iPXE {#dnsmasq_settings_for_ipxe}
+## DNSMASQ settings for iPXE {#dnsmasq_settings_for_ipxe}
 
 This information pertains to FOG 0.33 and the new iPXE boot method.
 
@@ -244,7 +240,7 @@ OR
     cd /tftpboot
     cp undionly.kpxe undionly.0
 
-# Additional Steps for 12.04.4, 12.04.5, 14.04, 14.10 {#additional_steps_for_12.04.4_12.04.5_14.04_14.10}
+## Additional Steps for 12.04.4, 12.04.5, 14.04, 14.10 {#additional_steps_for_12.04.4_12.04.5_14.04_14.10}
 
 In Specific, when starting DNSMASQ you receive the following error:
 
@@ -267,7 +263,7 @@ an error, the error mentioned above. To fix this error:
 5.  Issue the following command:
         sudo service dnsmasq restart
 
-# Serving ProxyDHCP to multiple subnets {#serving_proxydhcp_to_multiple_subnets}
+## Serving ProxyDHCP to multiple subnets {#serving_proxydhcp_to_multiple_subnets}
 
 If you are serving ProxyDHCP to multiple subnets some changes must be
 made to your switches/routers and your server config.
@@ -292,7 +288,7 @@ made to your switches/routers and your server config.
     DHCP broadcasts are sent to your normal DHCP server AND the Fog
     server.
 
-# References
+## References
 
 I gathered a lot of my ideas from peoples\' questions on the FOG forums
 and the Ubuntu documentation on the [LTSP
@@ -302,7 +298,7 @@ jbsclm - for his work on figuring out how to chainload 0.33b with 0.32
 pxelinux.0 <http://forum.ipxe.org/showthread.php?tid=6077> -
 documentation on chainloading with dnsmasq
 
-# Troubleshooting
+## Troubleshooting
 
 As ProxyDHCP intercepts DHCP requests, it starts its own internal
 checks. If it can\'t find the boot-file that is supposed to be assigned,
@@ -324,7 +320,7 @@ Using the above method and filter, this is what a **BROKEN** dnsmasq
 In this case, dnsmasq boot file name is not configured correctly, the
 boot file does not exist, or TFTP is not configured properly.
 
-# Additional Info {#additional_info}
+## Additional Info {#additional_info}
 
 A ProxyDHCP server can also help deal with PXE Clients that do not work
 with seperate DHCP and TFTP servers using option 66 &67 (Windows), or

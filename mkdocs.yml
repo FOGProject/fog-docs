@@ -92,11 +92,14 @@ nav:
   - Home/Getting Started: 
     - Home: index.md
     - What is Fog?: introduction.md
-    - System Requirements: installation/requirements.md
-    - Install Fog: installation/install-fog-server.md
+    - System Requirements: installation/server/requirements.md
+    - Install Fog: installation/server/install-fog-server.md
     - Capture an Image: kb/how-tos/capture-an-image.md
     - Deploy an Image: kb/how-tos/deploy-an-image.md
-  - Installing/Updating: installation
+  - Installing/Updating: 
+    - Network Setup: installation/network-setup
+    - Server Install: installation/server
+    - Client Install: installation/client
   - Management: 
     - management/README.md
     - Web Management: 

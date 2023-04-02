@@ -118,7 +118,7 @@ function Start-MkDocsBuild {
             try {
                 $mkDocs = (Get-ChildItem -Filter "mkdocs.exe" -Recurse -file -Path "\" -force -ea 0).FullName;
                 if ( !($mkdocs.count -eq 1) ) {
-                	Write-Warning "Multiple versions of mkdocs.exe found in system, will try first one $($mkdocs | out-string). Set the correct one with $ENV:mkdocs = 'correct\path\to\sphinx-build.exe'"
+                	Write-Warning "Multiple versions of mkdocs.exe found in system, will try first one $($mkdocs | out-string). "
                 
                     $mkDocs = $mkdocs[0]
                 } 

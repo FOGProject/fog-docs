@@ -16,8 +16,7 @@ tags:
 
 > [!warning]
 > While we are migrating content there will be occasional changes to links and paths
-> However, this documentation is versioned, so while the latest version will have changes for the next bit.
-> You can use https://docs.fogproject.org/en/1.5.9/ for linking to things that won't change. 
+> However, this documentation is versioned, so while the 'latest' version will have changes for the next bit. You can use https://docs.fogproject.org/en/1.5.9/ for linking to things that won't change. 
 > Once all documentation from the wiki has been migrated into a sensible folder structure, these paths will no longer change
 
 ## Fog Documentation Sections
@@ -33,9 +32,9 @@ Below you'll find basic descriptions of each section
 > [!tip]
 > ### Installation, Updating, and Migrating
 >Documentation on the installation, updating, and migrating of a Fog Server
-> - [Install Fog Server](install-fog-server.md)
-> - [Install Fog Client](install-fog-client.md)
-> - [Running in a Virtual Environment](virtualization)	
+> - [[install-fog-server|Install Fog Server]]
+> - [[install-fog-client|Install Fog Client]]
+> - [[virtualization|Running in a Virtual Environment]]
 
 >[!tip]
 >### Management
