@@ -25,12 +25,13 @@ You can then utilize graph view to see how all the documentation connects. This 
 
 There are some quirks with creating this compatibility.
 
-* Links in obsidian will default to filename format, which needs to be lower-case-with-dashes.md and that's not the friendliest look. So you need to add a friendly name for each link i.e.
+* Links in obsidian are `[[wikilinks]]` which are enabled in mkdocs via the roaming links plugin. These provide a simpler formatting of links that allows you to move internal pages without breaking internal links.
+* Links in obsidian will default to filename format, which needs to be lower-case-with-dashes.md and that's not the friendliest look. So you need to add a friendly name for each link i.e. 
 	* Link to a specific heading of a page: `[[file-name#Heading name|Friendly Name For Link]]` 
 	* Link to a Page: `[[file-name|Title Of Page]]`
 		* If you have aliases defined in the [front matter](#Markdown-Front-matter), the friendly display name of the link will autofill when you add a link using the link insert/search tool (auto starts when you type `[[` in obsidian)
 	* Link to an image `![[imageName.extension]]`
-		* The image links don't need a friendly name. All images should be organized somewhere in the docs/assets/img folder. Each image should have a unique name, this makes it so you don't have to define the full path to the image, just the name and it wi
+		* The image links don't need a friendly name. All images should be organized somewhere in the docs/assets/img folder. Each image should have a unique name, this makes it so you don't have to define the full path to the image, just the name and it will find it within the docs
 * Admonitions like these https://squidfunk.github.io/mkdocs-material/reference/admonitions/ should be created as obsidian callouts https://help.obsidian.md/How+to/Format+your+notes#Callouts  like this (We use a mkdocs plugin to convert callouts to admonitions at build time)
 
 ```
