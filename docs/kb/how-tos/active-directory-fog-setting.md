@@ -1,4 +1,5 @@
 ---
+status: converting-from-wiki
 title: Active Directory Settings
 description: Instructions for the installation of the fog server on an existing linux server
 aliases:

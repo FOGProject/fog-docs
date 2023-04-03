@@ -1,9 +1,13 @@
 ---
-title: Legacy version of Proxy DHCP with dnsmasq
-description: Configuration of a proxy dhcp service like dnsmasq to use fog as a pxeboot server, this is the legacy version of this doc, it may need to be removed or merged with the newer version of the doc after they're both reviewed
+title: Legacy proxy dhcp configuration
+description: Configuration of a proxy dhcp service like dnsmasq to use fog as a
+  pxeboot server, this is the legacy version of this doc, it may need to be
+  removed or merged with the newer version of the doc after they're both
+  reviewed
 aliases:
-	- Legacy version of Proxy DHCP with dnsmasq
-	- Using FOG with an unmodifiable DHCP server (Legacy)
+    - Legacy version of Proxy DHCP with dnsmasq
+    - Using FOG with an unmodifiable DHCP server (Legacy)
+    - Legacy proxy dhcp configuration
 tags:
     - pxe
     - ipxe
@@ -18,10 +22,11 @@ tags:
     - legacy
 ---
 
-> [!note]
->This article is quality and may be followed, however a new article is written at the below link that includes UEFI support. [[proxy-dhcp]] 
 
 # Legacy proxy dhcp configuration
+
+> [!note]
+>This article is quality and may be followed, however a new article is written at the below link that includes UEFI support. [[proxy-dhcp|Proxy DHCP with dnsmasq]] 
 
 ## Overview
 

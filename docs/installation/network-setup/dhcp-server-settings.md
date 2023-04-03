@@ -2,9 +2,9 @@
 title: DHCP Server Settings
 description: The required settings for your DHCP server to point to fog on network boot
 aliases:
-	- DHCP Server Settings
-	- Configuring DHCP Options 66 and 67
-	- Other DHCP server than Fog
+    - DHCP Server Settings
+    - Configuring DHCP Options 66 and 67
+    - Other DHCP server than Fog
 tags:
     - pxe
     - ipxe
@@ -41,7 +41,7 @@ For modern UEFI environments, either of these files have the best compatibility 
 Most newer clients will be able to boot with one of the efi boot files above, but older hardware models that do not have UEFI support and only support legacy BIOS firmware will not boot. 
 
 > [!tip]
-> If you have a mixed environment see [[BIOS-and-UEFI-Co-Existence]]
+> If you have a mixed environment see [[bios-and-uefi-co-existence]]
 
 For older legacy models, these are the boot files to set
 

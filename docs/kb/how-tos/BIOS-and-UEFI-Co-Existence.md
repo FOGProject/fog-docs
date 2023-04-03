@@ -1,5 +1,7 @@
 ---
 title: Bios and UEFI Co-Existence
+alias:
+    - Bios and UEFI Co-Existence
 tags:
     - bios
     - uefi

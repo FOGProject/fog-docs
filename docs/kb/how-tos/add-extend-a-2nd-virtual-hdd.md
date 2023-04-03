@@ -1,3 +1,9 @@
+---
+title: Add & Extend a 2nd Virtual HDD
+aliases:
+    - Add & Extend a 2nd Virtual HDD
+    - Add and Extend a 2nd Virtual HDD
+---
 # Add & Extend a 2nd Virtual HDD
 
 [](https://wiki.fogproject.org/wiki/index.php?title=Add_%26_Extend_a_2nd_Virtual_HDD#mw-head)[](https://wiki.fogproject.org/wiki/index.php?title=Add_%26_Extend_a_2nd_Virtual_HDD#p-search)
