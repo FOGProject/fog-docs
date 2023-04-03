@@ -1,3 +1,19 @@
+---
+title: Install FOG Server
+description: Instructions for the installation of the fog server on an existing linux server
+aliases:
+ - Install FOG Server
+ - FOG Server Installation
+tags:
+    - install
+    - fogserver
+    - git
+    - prerequisites
+    - install-script
+    - configuration
+    - database
+    - cli-switches
+---
 # Install FOG server
 
 Before rushing into installing FOG you want to make sure you check the [[requirements]] 

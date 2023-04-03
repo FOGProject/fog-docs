@@ -2,7 +2,7 @@
 
 -   It is important to know that versions 0.32 and below use
     **pxelinux.0** for option 67 in DHCP
--   For all versions 0.33 to current(1.3.0beta) use **undionly.kpxe** is
+-   For all versions 0.33 to current() use **undionly.kpxe** is
     generally recommended for option 67.
     -   Other files that can be used are listed in your directory
         \"/tftpboot\"

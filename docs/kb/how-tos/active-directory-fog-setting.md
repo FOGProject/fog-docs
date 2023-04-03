@@ -1,7 +1,21 @@
-Related articles:
+---
+title: Active Directory Settings
+description: Instructions for the installation of the fog server on an existing linux server
+aliases:
+ - Active Directory Settings
+ - FOG Server Installation
+tags:
+    - install
+    - fogserver
+    - git
+    - prerequisites
+    - install-script
+    - configuration
+    - database
+    - cli-switches
+---
 
--   [FOG Client](FOG_Client "wikilink")
--   [Password Central](Password_Central "wikilink")
+# Active Directory Settings
 
 ## Overview
 
@@ -16,9 +30,9 @@ FOG can automatically join computers to an Active Directory domain.
     configuration
 -   FOG 0.31 and earlier may require netdom.exe on hosts
 
-## Where to Configure {#where_to_configure}
+## Where to Configure
 
-### Turn on HostNameChanger module {#turn_on_hostnamechanger_module}
+### Turn on HostNameChanger module 
 
 This module determines if a host will join the domain. It must be
 enabled in several locations for it to work properly.
@@ -31,7 +45,7 @@ enabled in several locations for it to work properly.
 -   In the server webUI, FOG configuration menu option, HostNameChanger
     menu option on the left, service must be enabled.
 
-### FOG Defaults {#fog_defaults}
+### FOG Defaults 
 
 Set the default domain, username, password, and organization unit (OU)
 for joining computer accounts to the domain. See

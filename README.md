@@ -25,8 +25,13 @@ You can then utilize graph view to see how all the documentation connects. This 
 
 There are some quirks with creating this compatibility.
 
-* Links in obsidian will default to filename format, which needs to be lower-case-with-dashes.md and that's not the friendliest look. So you need to add a friendly name for each link `[[file-name#Heading name|Friendly Name For Link]]`
-* Admonitions like these https://squidfunk.github.io/mkdocs-material/reference/admonitions/ should be created as obsidian callouts https://help.obsidian.md/How+to/Format+your+notes#Callouts 
+* Links in obsidian will default to filename format, which needs to be lower-case-with-dashes.md and that's not the friendliest look. So you need to add a friendly name for each link i.e.
+	* Link to a specific heading of a page: `[[file-name#Heading name|Friendly Name For Link]]` 
+	* Link to a Page: `[[file-name|Title Of Page]]`
+		* If you have aliases defined in the [front matter](#Markdown-Front-matter), the friendly display name of the link will autofill when you add a link using the link insert/search tool (auto starts when you type `[[` in obsidian)
+	* Link to an image `![[imageName.extension]]`
+		* The image links don't need a friendly name. All images should be organized somewhere in the docs/assets/img folder. Each image should have a unique name, this makes it so you don't have to define the full path to the image, just the name and it wi
+* Admonitions like these https://squidfunk.github.io/mkdocs-material/reference/admonitions/ should be created as obsidian callouts https://help.obsidian.md/How+to/Format+your+notes#Callouts  like this (We use a mkdocs plugin to convert callouts to admonitions at build time)
 
 ```
 >[!note]
@@ -50,8 +55,13 @@ This adds tags and titles that work in both obsidian and mkdocs. In obsidian, be
 
 ```
 --- 
-title: Can match first heading
+title: Can and should match first title heading
 description: brief description of the page
+aliases:
+	- These are searchable alias titles
+	- They autofill as the link display text when selected
+	- making links even simpler while maintaining a lower-case-file-name-scheme
+	- Should include the title above as one, and any other titles this page might need in links or searches
 tags:
     - labels
     - for
