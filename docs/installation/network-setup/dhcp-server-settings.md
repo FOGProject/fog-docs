@@ -60,6 +60,43 @@ The screenshots are a bit old but the general idea is still the same on modern v
 
 ### Windows Server DHCP
 
+#### Setting the options with powershell
+
+This little powershell snippet will get all your dhcp server scopes and set option 66 and option 67 to the values you input into the script.
+> [!note]
+> This requires the dhcp module that is installed on a server when the dhcp role is added. You can also add it to your windows workstation machine by installing rsat tools, and of course it also requires admin privileges to manage the dhcp server options.
+> This script will set the options at the scope/subnet levels rather than at a global server level
+
+```powershell
+#define your dhcp server hostname or ip
+$dhcpSvr = 'dhcp.yourDomain.tld'
+#define your fog server fqdn, hostname, or ip
+$fogAddr = 'fogserver.yourDomain.tld'
+#define you pxe boot file
+$pxeBootFile = 'snponly.efi'
+
+#get all the scopes from the main dhcp server and expand to the nested ipAddressToString property of the scopeIDs to get a string array of scope ids`
+
+$scopes = (Get-DhcpServerv4Scope -ComputerName $dhcpSvr).scopeID.ipaddresstostring
+
+#loop through all dhcp scopes and add the options
+$scopes | Foreach-object {
+	$dhcpOptions = @{
+        ComputerName = $dhcpSvr;
+        ScopeId = $_
+	}
+	Set-DhcpServerv4OptionValue @dhcpOptions -OptionID 66 -value $fogAddr;
+    Set-DhcpServerv4OptionValue @dhcpOptions -OptionID 67 -value $pxeBootFile;
+}
+
+```
+
+
+
+#### Setting the options in the dhcp console
+
+You can get to the server or scope options of your dhcp server in `dhcpmgmt.msc` and set them like so
+
 - Option 66
 > [!tip]
 > This can be the ip address, hostname, of fully qualified domain name (fqdn) of your fog server.
