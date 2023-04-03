@@ -64,7 +64,8 @@ The screenshots are a bit old but the general idea is still the same on modern v
 > This can be the ip address, hostname, of fully qualified domain name (fqdn) of your fog server.
 
 
-![[Windows_66.png]]
+![[windows-66.png]]
+
 -   Option 67
 ![[Windows_67.png]]
 

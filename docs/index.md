@@ -32,6 +32,7 @@ Below you'll find basic descriptions of each section
 > [!tip]
 > ### Installation, Updating, and Migrating
 >Documentation on the installation, updating, and migrating of a Fog Server
+> - [[docs/installation/network-setup/index|Network Setup]]
 > - [[install-fog-server|Install Fog Server]]
 > - [[install-fog-client|Install Fog Client]]
 > - [[virtualization|Running in a Virtual Environment]]
