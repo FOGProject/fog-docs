@@ -1,12 +1,15 @@
 ---
 title: Deploying a Dual-Boot Multi-Disk Image
+aliases:
+    - Deploying a Dual-Boot Multi-Disk Image
 description: describe how to deploy a dual-boot multi-disk image to other devices
 tags:
-	- dual-boot
-	- multi-disk
-	- linux
-	- postinstall
-	- efibootmgr
+    - dual-boot
+    - multi-disk
+    - linux
+    - postinstall
+    - efibootmgr
+    
 ---
 
 # Deploying a Dual-Boot Multi-Disk Image
