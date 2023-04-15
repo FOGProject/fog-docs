@@ -1,12 +1,12 @@
 ---
 title: Fog User Guide
 aliases:
-	- Fog User Guide
+  - Fog User Guide
 description: An overview of what fog is and how to use it 
 tags:
-	- guides
-	- install
-	- overview
+  - guides
+  - install
+  - overview
 ---
 
 # Fog User Guide
