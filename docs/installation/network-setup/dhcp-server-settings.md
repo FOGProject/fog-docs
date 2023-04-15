@@ -42,7 +42,7 @@ For modern UEFI environments, either of these files have the best compatibility 
 Most newer clients will be able to boot with one of the efi boot files above, but older hardware models that do not have UEFI support and only support legacy BIOS firmware will not boot. 
 
 > [!tip]
-> If you have a mixed environment see [[bios-and-uefi-co-existence]]
+> If you have a mixed environment see [[bios-and-uefi-co-existence|Bios and UEFI Co-Existence]]
 
 For older legacy models, these are the boot files to set
 

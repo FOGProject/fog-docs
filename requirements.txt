@@ -9,21 +9,22 @@
 # myst
 # sphinx_rtd_theme
 # Requirements for core
-jinja2 #>=3.0
-markdown #>=3.2
-mkdocs #>=1.4.2
+jinja2
+markdown
+mkdocs
 mkdocs-material
-mkdocs-material-extensions #>=1.1
-pygments #>=2.14
-pymdown-extensions #>=9.9.1
+mkdocs-material-extensions
+pygments
+pymdown-extensions
 # Requirements for plugins
-colorama #>=0.4
-regex #>=2022.4.24
-requests #>=2.26
+colorama
+regex
+requests
 # makes it so our navigation tree is built from our directory tree
 mkdocs-include-dir-to-nav
 # allow wikilinks aka roamlinks for obsidian compatibility
 mkdocs-roamlinks-plugin
+#use obsidian callout format in source markdown and convert to mkdocs format on build
 mkdocs-callouts
 # mkdocs-table-reader-plugin
 # mkdocs-mermaid2-plugin
