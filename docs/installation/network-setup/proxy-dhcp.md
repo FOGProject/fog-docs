@@ -3,6 +3,7 @@ title: Proxy DHCP with dnsmasq
 description: Configuration of a proxy dhcp service like dnsmasq to use fog as a pxeboot server
 aliases:
     - Proxy DHCP with dnsmasq
+    - Proxy DHCP using DNSMasq
     - Using FOG with an unmodifiable DHCP server
     - Proxy DHCP
 tags:
@@ -24,7 +25,6 @@ tags:
 Legacy article:
 
 [[legacy-proxy-dhcp|Legacy proxy dhcp configuration]]
-
 
 ## dnsmasq's Roles in FOG
 

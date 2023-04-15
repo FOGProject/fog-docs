@@ -1,6 +1,10 @@
 ---
 title: .fogsettings
 description: Details on the special .fogsettings file that configures future installs
+aliases:
+    - .fogsettings
+    - The .fogsettings file
+    - Fog Servre install settings
 tags:
     - install
     - settings
@@ -9,6 +13,7 @@ tags:
     - updates
     - network-settings
 ---
+
 # The .fogsettings file
 
 The low-level settings that are used during installation and some

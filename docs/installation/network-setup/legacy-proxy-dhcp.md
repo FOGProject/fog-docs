@@ -26,7 +26,9 @@ tags:
 # Legacy proxy dhcp configuration
 
 > [!note]
->This article is quality and may be followed, however a new article is written at the below link that includes UEFI support. [[proxy-dhcp|Proxy DHCP with dnsmasq]] 
+> This article is quality and may be followed, however a new article is written at the below link that includes UEFI support.
+> [[proxy-dhcp|Proxy DHCP using DNSMasq]]
+
 
 ## Overview
 

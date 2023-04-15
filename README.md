@@ -21,6 +21,33 @@ You can then utilize graph view to see how all the documentation connects. This 
 ![Graph-example.png](docs/assets/img/Graph-example.png)
 
 
+## General Style/Structure Rules
+
+* Every Page should have front matter aka metadata that defines
+	* title (should match the title heading)
+	* description
+	* aliases (for friendly link names, should include at least one that matches title)
+	* tags
+* Every md file should be named in all-lower-case-with-dashes-not-spaces
+* Every folder should have a `README.md` file with the above mentioned front matter that serves as the index page with a simple description of that's in that folder
+	* i.e. a simple inded page for a folder can look like this
+```
+---
+title: Installation
+aliases:
+    - Installation
+description: index page for installation
+tags:
+    - installation
+---
+
+# Installation
+
+These are articles related to the installation and setup of FOG in your network, on your server and the service on your clients
+```
+	
+- Links should be in the format `[[file-name|Alias name]]` These can be auto-completed by searching for the alias when editing in obsidian. 
+
 ## Quirks
 
 There are some quirks with creating this compatibility.

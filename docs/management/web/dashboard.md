@@ -1,3 +1,15 @@
+---
+title: Dashboard
+description: Describes the various sections of the fog homepage/dashboard
+aliases:
+  - Web UI Dashboard
+tags:
+  - dashboard
+  - management
+  - web-management
+  - web-ui
+---
+
 # Dashboard
 
 ## Overview
