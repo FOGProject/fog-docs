@@ -1,9 +1,12 @@
 ---
 title: Fog Release
 description: How to create a new release of fog
+aliases:
+    - Fog Release
 tags:
     - development
     - release
+    - in-progress
 ---
 # FOG Release
 

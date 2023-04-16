@@ -1,9 +1,25 @@
-Note: The things in this article apply to FOG 1.2.0 and below. FOG 1.3.0
+---
+title: Advanced Boot Menu Configuration Options
+aliases:
+    - Advanced Boot Menu Configuration Options
+    - Advanced Configuration Options
+description: 
+index page for Advanced-Boot-Menu-Configuration-options
+tags:
+    - in-progress
+    - convert-Wiki2MD
+---
+
+
+# Advanced Configuration Options 
+
+
+> [!NOTE]
+> The things in this article apply to FOG 1.2.0 and below. FOG 1.3.0
 uses a web-based interface that easily alters the boot menu. Many of the
 things in this article still apply, but the process has been greatly
 simplified.
 
-# Advanced Configuration Options {#advanced_configuration_options}
 
 The Advanced configuration options in the FOG PXE Boot Menu
 Configuration screen allows you to create a secondary menu that can be

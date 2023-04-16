@@ -1,3 +1,18 @@
+---
+title: Install Fog Client
+aliases:
+    - Install Fog Client
+description: Describes installation of fog client
+tags:
+    - install
+    - client
+    - service
+    - fog-service
+    - setup
+    - silent-install
+    - in-progress
+---
+
 # Install the FOG client
 
 The FOG client is an agent running on the machines you are managing with

@@ -1,3 +1,15 @@
+---
+title: What is FOG
+aliases:
+    - Introduction
+    - What is FOG
+description: What is FOG 
+tags:
+    - intro
+    - introduction
+---
+
+
 # What is FOG
 
 FOG is a Linux-based, free and open source computer imaging solution for

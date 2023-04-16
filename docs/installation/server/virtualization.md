@@ -1,3 +1,19 @@
+---
+title: Virtualization
+aliases:
+    - Virtualization
+    - Running Fog in a Virtual Environment
+description: how to run FOG in a Virtual environment
+tags:
+    - in-progress
+    - virtualization
+    - hyperv
+    - vmware
+    - kvm
+    - convert-Wiki2MD
+---
+
+
 # Virtualization
 
 FOG can be used on bare metal as well as in most virtual server and

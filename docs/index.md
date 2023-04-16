@@ -1,10 +1,14 @@
 ---
 title: Fog Docs Home Page
 description: The home page for fog docs with navigation to the various sections
+aliases:
+    - home
+    - Fog Docs Home Page
 tags:
     - home
     - index
     - start-page
+    - in-progress
 ---
 
 # Welcome to the Fog Project documentation!

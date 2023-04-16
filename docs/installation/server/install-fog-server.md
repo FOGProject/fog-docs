@@ -13,6 +13,7 @@ tags:
     - configuration
     - database
     - cli-switches
+    - in-progress
 ---
 # Install FOG server
 

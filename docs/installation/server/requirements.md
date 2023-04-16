@@ -1,3 +1,16 @@
+---
+title: Requirements
+aliases:
+    - Requirements
+    - System Requirements
+description: detail the hardware and os requirements
+tags:
+    - in-progress
+    - system-requirements
+    - dependencies
+---
+
+
 # System Requirements
 
 <!-- Ideally this page will be a simple table of requirements and then more info for reference like the packages installed by the installer -->

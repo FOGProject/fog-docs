@@ -20,6 +20,7 @@ pymdown-extensions
 colorama
 regex
 requests
+mkdocs-git-revision-date-plugin
 # makes it so our navigation tree is built from our directory tree
 mkdocs-include-dir-to-nav
 # allow wikilinks aka roamlinks for obsidian compatibility
