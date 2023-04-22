@@ -8,6 +8,9 @@ index page for Advanced-Boot-Menu-Configuration-options
 tags:
     - in-progress
     - convert-Wiki2MD
+    - customization
+    - boot-menu
+    - php
 ---
 
 

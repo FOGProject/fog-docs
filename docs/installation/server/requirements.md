@@ -6,6 +6,7 @@ aliases:
 description: detail the hardware and os requirements
 tags:
     - in-progress
+    - updating-content
     - system-requirements
     - dependencies
 ---

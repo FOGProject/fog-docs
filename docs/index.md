@@ -51,7 +51,7 @@ Below you'll find basic descriptions of each section
 >### Knowledge Base
 >Documentation on important references, integrations, customizations, FAQs, and troubleshooting
 > - [Customization](knowledge-base\customization)
-> - [[faq|FAQs]]
+> - [[kb/faqs/README|FAQs]]
 > - [[integrations|Integrations]]
 > - [[kb/how-tos/README|How To Guides]]
 > - [[kb/reference/README| Reference]]

@@ -1,8 +1,14 @@
 ---
 title: Add & Extend a 2nd Virtual HDD
+description: Describes attaching a second disk to a Fog server and making it usable to the server 
 aliases:
     - Add & Extend a 2nd Virtual HDD
     - Add and Extend a 2nd Virtual HDD
+tags:
+	- in-progress
+	- convert-Wiki2MD
+	- linux
+	- disks
 ---
 # Add & Extend a 2nd Virtual HDD
 

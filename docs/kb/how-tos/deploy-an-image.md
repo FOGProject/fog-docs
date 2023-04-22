@@ -1,3 +1,14 @@
+---
+title: Deploy an image
+aliases:
+    - Deploy an image
+description: basics on how to deploy an image in fog
+tags:
+    - tasks
+    - deploy
+    - how-to
+---
+
 # Deploy an image
 
 One of the main tasks of FOG is to quickly deploy images to machines.

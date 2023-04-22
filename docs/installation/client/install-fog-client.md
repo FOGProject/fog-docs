@@ -10,7 +10,6 @@ tags:
     - fog-service
     - setup
     - silent-install
-    - in-progress
 ---
 
 # Install the FOG client

@@ -9,11 +9,9 @@ tags:
     - linux
     - postinstall
     - efibootmgr
-    
 ---
 
 # Deploying a Dual-Boot Multi-Disk Image
-
 
 If you create a Multi-Disk image with a dual boot configuration, the efi
 boot entries will not be maintained automatically when deployed to
@@ -32,4 +30,8 @@ Post install scripts can be added on the fog server at
 You need to use efibootmgr in a post script to configure the efi boot
 entries and maintain your dual boot config
 
+This is an example of a line in a post install script that would add a debian boot entry 
+
 `` ` efibootmgr -c -d /dev/nvme0n1 -p 1 -L "Debian" -l "\EFI\debian\shimx64.efi" ``\`
+
+See also [[post-download-scripts|Post Download Scripts]]

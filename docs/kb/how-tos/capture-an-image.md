@@ -1,3 +1,14 @@
+---
+title: Capture an image
+aliases:
+    - Capture an image
+description: Decribes the basic flow of capturing an image
+tags:
+    - how-to
+    - capture
+    - tasks
+---
+
 # Capture an image
 
 After installing a FOG server, one of the first tasks you'll do is to

@@ -13,14 +13,11 @@ tags:
     - configuration
     - database
     - cli-switches
-    - in-progress
 ---
 # Install FOG server
 
 Before rushing into installing FOG you want to make sure you check the [[requirements]] 
 The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
-
-
 
 ## Prerequisite
 

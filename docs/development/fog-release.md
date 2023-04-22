@@ -7,6 +7,7 @@ tags:
     - development
     - release
     - in-progress
+    - updating-content
 ---
 # FOG Release
 

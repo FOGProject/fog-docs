@@ -1,5 +1,4 @@
 ---
-status: converting-from-wiki
 title: Active Directory Settings
 description: Instructions for the installation of the fog server on an existing linux server
 aliases:
@@ -14,6 +13,8 @@ tags:
     - configuration
     - database
     - cli-switches
+    - in-progress
+    - convert-Wiki2MD
 ---
 
 # Active Directory Settings
@@ -154,18 +155,18 @@ will restart the computer to update the hostname even when a user is
 logged in. If disabled, the client will wait until no one is using the
 computer before restarting to apply the hostname / AD.
 
-## Testing with Netdom to troubleshoot {#testing_with_netdom_to_troubleshoot}
+## Testing with Netdom to troubleshoot
 
 Windows Command Line(cmd)
 
 **FOGPassword is NOT encrypted for the command line test.**
 
-### Join Domain {#join_domain}
+### Join Domain
 
 netdom JOIN mypcHostname /Domain:SyperiorSoft /OU:FOGou /UserD:FOGUser
 /passwordd:FOGPassword /reboot:35
 
-### Remove from Domain {#remove_from_domain}
+### Remove from Domain
 
 netdom REMOVE mypcHostname /domain:SyperiorSoft /UserD:FOGUser
 /passwordd:FOGPassword

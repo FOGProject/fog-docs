@@ -1,5 +1,6 @@
 ---
 title: Bios and UEFI Co-Existence
+description: Describes how to configure a dhcp server to provide different pxe boot files based on hardware
 alias:
     - Bios and UEFI Co-Existence
 tags:

@@ -1,3 +1,16 @@
+---
+title: User Management
+aliases:
+    - User Management
+description: Details how to manage users in the ui
+tags:
+    - in-progress
+    - management
+    - users
+    - web-ui
+---
+
+
 # User Management
 
 ## Overview

@@ -1,3 +1,14 @@
+---
+title: Customizing FOG iPXE Settings
+aliases:
+    - Customizing FOG iPXE Settings
+description: index page for ipxe
+tags:
+    - in-progress
+    - convert-Wiki2MD
+---
+
+
 # Customizing FOG iPXE Settings
 
 ## Custom Background
