@@ -1,3 +1,16 @@
+---
+title: Example tasks with the FOG client
+aliases:
+    - Example tasks with the FOG client
+    - Fog Client Example Tasks
+description: General examples of using fog client tasks
+tags:
+    - how-to
+    - client
+    - tasks
+---
+
+
 # Example tasks with the FOG client
 
 The purpose of this guide is to show you some example tasks that you can
@@ -21,7 +34,7 @@ deployment the machine has the computer name as set in the image or by
 sysprep.
 
 -   Start a browser, go to the Fog Web UI and log in
--   Go to 'Host Management' :octicons-arrow-right-24: 'List all Hosts' and click on the
+-   Go to 'Host Management' -> 'List all Hosts' and click on the
     machine you have just installed the FOG client on.
 
 -   On the tab 'General', Change the 'Host Name' field into the name

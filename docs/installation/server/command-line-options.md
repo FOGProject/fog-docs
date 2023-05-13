@@ -1,3 +1,16 @@
+---
+title: Fog installer command line options
+aliases:
+    - Fog installer command line options
+description: Fog installer command line options 
+tags:
+    - in-progress
+    - updating-content
+    - installation
+    - fog-server
+---
+
+
 # Fog installer command line options
 
 The FOG installer has quite a few command line options. See the output

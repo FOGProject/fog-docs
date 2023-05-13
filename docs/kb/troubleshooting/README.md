@@ -1,3 +1,12 @@
+---
+title: Troubleshooting
+aliases:
+    - Troubleshooting
+description: index page for Troubleshooting articles
+tags:
+    - troubleshooting
+---
+
 # Troubleshooting
 
 This section contains articles related to Troubleshooting various fog

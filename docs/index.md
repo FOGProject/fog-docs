@@ -52,7 +52,7 @@ Below you'll find basic descriptions of each section
 >Documentation on important references, integrations, customizations, FAQs, and troubleshooting
 > - [Customization](knowledge-base\customization)
 > - [[kb/faqs/README|FAQs]]
-> - [[integrations|Integrations]]
+> - [[kb/integrations/README|Integrations]]
 > - [[kb/how-tos/README|How To Guides]]
 > - [[kb/reference/README| Reference]]
 > - [[kb/troubleshooting/README|Troubleshooting]]

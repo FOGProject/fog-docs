@@ -9,6 +9,7 @@ tags:
     - linux
     - postinstall
     - efibootmgr
+    - how-to
 ---
 
 # Deploying a Dual-Boot Multi-Disk Image

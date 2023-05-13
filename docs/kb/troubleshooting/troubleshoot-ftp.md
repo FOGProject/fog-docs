@@ -1,9 +1,22 @@
+---
+title: Troubleshooting FTP
+aliases:
+    - Troubleshooting FTP
+description: Information on how to Troubleshoot FTP issues in fog
+tags:
+    - troubleshooting
+    - kb
+    - ftp
+    - in-progress
+---
+
+
 # Troubleshooting FTP
 
 >[!note]
 >It seems that greater than 90% of FOG FTP problems are caused by
 >bad/mismatched credentials. Because of this, we recommend skipping
->straight to the Credentials / Passwords section first.
+>straight to the [[#Credentials / Passwords]] section first. 
 
 
 ## FTP's roles in FOG

@@ -9,6 +9,7 @@ tags:
   - convert-Wiki2MD
   - linux
   - disks
+  - how-to
 ---
 
 # Add & Extend a 2nd Virtual HDD

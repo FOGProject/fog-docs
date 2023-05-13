@@ -1,10 +1,10 @@
 ---
-title: .fogsettings
-description: Details on the special .fogsettings file that configures future installs
+title: The .fogsettings file
+description: Details on the special .fogsettings file that configures future installs/upgrades and contains general configuration information of fog
 aliases:
     - .fogsettings
     - The .fogsettings file
-    - Fog Servre install settings
+    - Fog Server install settings
 tags:
     - install
     - settings
@@ -12,6 +12,12 @@ tags:
     - automation
     - updates
     - network-settings
+    - management
+    - linux
+    - server
+    - server-management
+    - in-progress
+    - updating-content
 ---
 
 # The .fogsettings file

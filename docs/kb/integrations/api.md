@@ -1,3 +1,15 @@
+---
+title: API
+aliases:
+    - API
+    - Fog API
+description: Information about the FOG api general usage
+tags:
+    - in-progress
+    - kb
+    - updating-content
+---
+
 
 # API
 

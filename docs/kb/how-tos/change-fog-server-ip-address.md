@@ -1,3 +1,19 @@
+---
+title: Change FOG Server IP Address
+aliases:
+    - Change FOG Server IP Address
+description: describes how to Change FOG Server IP Address
+tags:
+    - in-progress
+    - convert-Wiki2MD
+    - how-to
+    - kb
+    - ip-address
+    - web-management
+    - server-management
+---
+
+
 # Change FOG Server IP Address
 
 ## Procedural Steps

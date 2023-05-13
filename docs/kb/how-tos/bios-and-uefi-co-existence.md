@@ -11,6 +11,7 @@ tags:
     - netboot
     - dhcp
     - window-server
+    - how-to
 ---
 
 # Bios and UEFI Co-Existence

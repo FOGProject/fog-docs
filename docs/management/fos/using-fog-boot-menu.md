@@ -1,4 +1,21 @@
-# Client Side Tasks
+---
+title: Using the FOG Boot Menu
+aliases:
+    - Client Side Tasks
+    - Using the FOG Boot Menu
+description: Client Side Tasks triggered from the fog pxe boot menu usage, was called Client Side Tasks before
+tags:
+    - in-progress
+    - convert-Wiki2MD
+    - management
+    - fos
+    - fos-management
+    - boot-menu
+    - ipxe
+---
+
+
+# Using the FOG Boot Menu
 
 ## Overview
 

@@ -1,3 +1,14 @@
+---
+title: Plugins
+aliases:
+    - Plugins
+description: Describes enabling and installing plugins
+tags:
+    - in-progress
+    - updating-content
+---
+
+
 # Plugins
 
 Plugins give FOG extra functionality wanted for some users but not all.

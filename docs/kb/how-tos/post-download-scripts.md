@@ -9,6 +9,8 @@ tags:
     - help-wanted
     - driver-injection
     - post-download
+    - how-to
+    - fos
 ---
 
 # Post Download Scripts
