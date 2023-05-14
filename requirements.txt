@@ -32,3 +32,4 @@ mkdocs-callouts
 # obs2mk
 # mkdocs-awesome-pages-plugin # https://pypi.org/project/mkdocs-awesome-pages-plugin/ - we may want to come back to this one to replace include-dir-to-nav
 # markdown-include
+mkdocs-redirects

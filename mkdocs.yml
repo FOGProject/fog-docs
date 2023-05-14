@@ -67,6 +67,8 @@ plugins:
   - git-revision-date
   - tags: # https://squidfunk.github.io/mkdocs-material/setup/setting-up-tags/
       tags_file: tags.md
+  - redirects: 
+     redirect_maps:
 
 # Extensions
 markdown_extensions:
@@ -120,6 +122,9 @@ nav:
       - Fog Configuration: management/web/config.md
       - AD Config: management/web/ad-integration.md
       - Plugin Management: management/web/plugins.md
+    - Server Management: management/server
+    - FOS Management: management/fos
+
   - Knowledge Base: 
     - kb/README.md
     - FAQ: kb/faqs
@@ -137,3 +142,6 @@ nav:
 # General Management Section (basic use/glossary of the UI once installed)
 # KB section (how to guides, troubleshooting guides, general reference docs)
 # Development/Contribution Section (stuff like what we've added for making new releases)
+
+hooks:
+  - hook.py
