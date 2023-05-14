@@ -1,4 +1,4 @@
-# Taken from https://github.com/squidfunk/mkdocs-material/discussions/3758#discussioncomment-4397373 not yet working for us though
+# Taken from https://github.com/squidfunk/mkdocs-material/discussions/3758#discussioncomment-4397373 works in readthedocs/linux but not in windows local builds due to \ vs /
 import logging
 import mkdocs.plugins
 
