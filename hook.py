@@ -19,13 +19,13 @@ def on_page_content(html, page, config, files):
             log_context_id_warning(page.meta.context_id, page.file.src_path, redirects[key])
         redirects[key] = page.file.src_path
 
-    for item in page.toc.items:
-        # maybe implement check for UUID or something else
-        if item.id.isdigit():
-            key = f"{item.id}.md"
-            if key in redirects:
-                log_context_id_warning(item.id, page.file.src_path, redirects[key])
-            redirects[key] = f"{page.file.src_path}{item.url}"
+    # for item in page.toc.items:
+    #     # maybe implement check for UUID or something else
+    #     if item.id.isdigit():
+    #         key = f"{item.id}.md"
+    #         if key in redirects:
+    #             log_context_id_warning(item.id, page.file.src_path, redirects[key])
+    #         redirects[key] = f"{page.file.src_path}{item.url}"
 
 def log_context_id_warning(context_id, markdown1,  markdown2):
     log.warning(f"Context ID {context_id} used in {markdown1} and {markdown2}")
