@@ -1,7 +1,7 @@
 ---
 title: The .fogsettings file
 description: Details on the special .fogsettings file that configures future installs/upgrades and contains general configuration information of fog
-context-id: install-fogsettings-1
+context-id: 1
 aliases:
     - .fogsettings
     - The .fogsettings file
@@ -21,7 +21,7 @@ tags:
     - updating-content
 ---
 
-# The .fogsettings file
+# The .fogsettings file {d93e92ab-1409-4480-8b36-1d4c756ee4c7}
 
 The low-level settings that are used during installation and some
 settings that simply cannot be stored in the database are contained in
