@@ -1,6 +1,6 @@
 ---
 title: DHCP Server Settings
-context-id: 11111
+context-id: 123456
 description: The required settings for your DHCP server to point to fog on network boot
 aliases:
     - DHCP Server Settings
