@@ -1,7 +1,7 @@
 ---
 title: Active Directory Integration
 description: Overview of the Active Directory settings management
-context-id: 9bc8fec2-5235-483c-8a3a-95b6ddea27b9
+context_id: 9bc8fec2-5235-483c-8a3a-95b6ddea27b9
 tags:
     - management
     - active-directory

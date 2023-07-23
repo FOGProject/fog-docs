@@ -1,7 +1,7 @@
 ---
 title: Fog Release
 description: How to create a new release of fog
-context-id: 9bc8fec2-5235-483c-8a3a-95b6ddea27b8
+context_id: fog-123
 aliases:
     - Fog Release
 tags:
