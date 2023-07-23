@@ -14,6 +14,7 @@ copyright: Copyright &copy; 2020 - 2023 FOG Project
 #many of these options were taken from the material mkdocs home page so we can quickly use any options documented there
 theme:
   name: material
+  custom_dir: overrides
   features:
     - announce.dismiss
     - content.action.edit

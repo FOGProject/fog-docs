@@ -12,7 +12,7 @@ tags:
     - dependencies
 ---
 
-[Permanent Link](https://docs.fogproject.org/en/latest/{{ context_id }})
+<!-- [Permanent Link](https://docs.fogproject.org/en/latest/{{ context_id }}) -->
 
 # System Requirements
 
