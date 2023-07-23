@@ -24,7 +24,7 @@ one central location/server. Again like with the server OS we don't
 prefer any of the following or others that are out there. This is only a
 collection of hints and tricks plus maybe issues we know about.
 
-## Hyper-V {#hyper_v}
+## Hyper-V
 
 **Using the New VM Wizard:**
 
@@ -130,7 +130,7 @@ get an IP from the DHCP if started cold (vs. reboot).
 This can be fixed by changing the iPXE binary from `undionly.kkpxe` to
 `ipxe.pxe` in the DHCP server config.
 
-## VMWare ESXi {#vmware_esxi}
+## VMWare ESXi
 
 Running a FOG client within an ESXi server is pretty close to what you
 would do on a bare metal machine:
@@ -156,7 +156,7 @@ the boot firmware from BIOS to EFI.
 
 Thanks to [moses](https://forums.fogproject.org/user/moses)
 
-## VMWare Player {#vmware_player}
+## VMWare Player
 
 Is this still in use?? Don't care if there is nothing about it in wiki
 or forums!
