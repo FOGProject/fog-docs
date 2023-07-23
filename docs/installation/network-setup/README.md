@@ -3,6 +3,7 @@ title: Network Setup
 aliases:
     - Network Setup
 description: index page for installation\network-setup
+context_id: network-setup-home
 tags:
     - installation
     - network

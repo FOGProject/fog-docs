@@ -3,6 +3,7 @@ title: Client Installation
 aliases:
     - Client Installation
 description: index page for Client Installation docs
+context_id: client-installation-home
 tags:
     - installation
     - client

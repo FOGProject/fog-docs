@@ -4,6 +4,7 @@ aliases:
     - Virtualization
     - Running Fog in a Virtual Environment
 description: how to run FOG in a Virtual environment
+context_id: virtualization
 tags:
     - in-progress
     - virtualization

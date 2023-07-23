@@ -1,6 +1,7 @@
 ---
 title: Install FOG Server
 description: Instructions for the installation of the fog server on an existing linux server
+context_id: install-fog-server
 aliases:
     - Install FOG Server
     - FOG Server Installation

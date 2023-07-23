@@ -2,7 +2,8 @@
 title: Fog installer command line options
 aliases:
     - Fog installer command line options
-description: Fog installer command line options 
+description: Fog installer command line options
+context_id: command-line-options
 tags:
     - in-progress
     - updating-content

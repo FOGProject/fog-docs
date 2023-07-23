@@ -3,6 +3,7 @@ title: Fog User Guide
 aliases:
   - Fog User Guide
 description: An overview of what fog is and how to use it 
+context_id: fog-user-guide
 tags:
   - guides
   - install

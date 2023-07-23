@@ -1,6 +1,7 @@
 ---
 title: Active Directory Settings
 description: Instructions for the installation of the fog server on an existing linux server
+context_id: active-directory-fog-setting
 aliases:
  - Active Directory Settings
  - FOG Server Installation

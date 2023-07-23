@@ -4,7 +4,7 @@ description: Configuration of a proxy dhcp service like dnsmasq to use fog as a
   pxeboot server, this is the legacy version of this doc, it may need to be
   removed or merged with the newer version of the doc after they're both
   reviewed
-context-id: 88ef03e0-58fd-4229-9ce5-2f0c8f5de5af
+context-id: legacy-proxy-dhcp
 aliases:
     - Legacy version of Proxy DHCP with dnsmasq
     - Using FOG with an unmodifiable DHCP server (Legacy)

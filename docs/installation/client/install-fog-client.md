@@ -3,6 +3,7 @@ title: Install Fog Client
 aliases:
     - Install Fog Client
 description: Describes installation of fog client
+context_id: install-fog-client
 tags:
     - install
     - client

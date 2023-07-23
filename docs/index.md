@@ -1,6 +1,7 @@
 ---
 title: Fog Docs Home Page
 description: The home page for fog docs with navigation to the various sections
+context_id: home
 aliases:
     - home
     - Fog Docs Home Page

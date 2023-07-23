@@ -4,6 +4,7 @@ aliases:
     - Advanced Boot Menu Configuration Options
     - Advanced Configuration Options
 description: Describes how to manually create custom boot configurations at the php level
+context_id: advanced-boot-menu
 tags:
     - in-progress
     - convert-Wiki2MD

@@ -3,6 +3,7 @@ title: Installation
 aliases:
     - Installation
 description: index page for installation
+context_id: installation-home
 tags:
     - installation
 ---

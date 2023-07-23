@@ -3,6 +3,7 @@ title: Customizing FOG iPXE Settings
 aliases:
     - Customizing FOG iPXE Settings
 description: index page for ipxe
+context_id: ipxe
 tags:
     - in-progress
     - convert-Wiki2MD
