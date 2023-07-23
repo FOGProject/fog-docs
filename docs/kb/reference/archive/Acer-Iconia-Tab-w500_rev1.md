@@ -2,7 +2,7 @@
 (year 2012), and has only had it\'s terminology updated to reflect
 current FOG terminology.
 
-## Build a Custom Kernel with Asix USB NIC Drivers {#build_a_custom_kernel_with_asix_usb_nic_drivers}
+## Build a Custom Kernel with Asix USB NIC Drivers
 
 Start by following the instructions for [Build FOG Core
 Kernel](Build_FOG_Core_Kernel "wikilink").
@@ -12,7 +12,7 @@ This entry was written based on creating a 3.1.5 kernel using Ubuntu
 instructions is being used on FOG 0.29 and has successfully imaged 40
 Iconia w500 Tablets.
 
-### Download Asix 88772B USB NIC Drivers Source Code {#download_asix_88772b_usb_nic_drivers_source_code}
+### Download Asix 88772B USB NIC Drivers Source Code
 
 Before completing the \"make xconfig\" step, download the Asix drivers,
 extract them, and copy them into the kernel source tree.
@@ -31,7 +31,7 @@ needed. Thus the a\*\...)
 Kernel](Build_FOG_Core_Kernel "wikilink") page,
 (kernel-source-tree-root) is located in \~/Desktop/linux-3.1.5)
 
-### make xconfig and modify it for w500 {#make_xconfig_and_modify_it_for_w500}
+### make xconfig and modify it for w500
 
 `make xconfig`
 
@@ -47,7 +47,7 @@ Kernel](Build_FOG_Core_Kernel "wikilink") page,
 
 `Continue instructions on `[`Build FOG Core Kernel`](Build_FOG_Core_Kernel "wikilink")` by issuing the make command and copying your kernel to FOG's tftpboot location listed on that page.`
 
-### Create tftpd-map and alter configuration if using a separate DHCP server {#create_tftpd_map_and_alter_configuration_if_using_a_separate_dhcp_server}
+### Create tftpd-map and alter configuration if using a separate DHCP server
 
 Create file named /etc/default/tftpd-hpa.map using your favorite text
 editor such as nano. (i.e. sudo nano /etc/default/tftpd-hpa.map)
@@ -82,7 +82,7 @@ FOG server.
 
 `sudo service tftpd-hpa restart`
 
-### Keyboard / PXE issue {#keyboard_pxe_issue}
+### Keyboard / PXE issue
 
 To inventory the Iconia w500 and navigate the FOG Menu after PXE booting
 there is an Acer Support document that you\'ll need to follow\... This

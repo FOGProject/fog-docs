@@ -27,7 +27,7 @@ The Advanced configuration options in the FOG PXE Boot Menu
 Configuration screen allows you to create a secondary menu that can be
 accessed from the boot menu screen
 
-## View All Boot Menu code {#view_all_boot_menu_code}
+## View All Boot Menu code
 
 Where x.x.x.x is the FOG server\'s IP address, put this into a
 browser\'s address bar:
@@ -36,7 +36,7 @@ browser\'s address bar:
 
 This is the start of the ipxe advanced.php file.
 
-## Contents of php file {#contents_of_php_file}
+## Contents of php file
 
     <?php
     header("Content-type: text/plain");
@@ -80,7 +80,7 @@ note: The variables fog-ip and fog-webroot have been created
 automatically for you, and assigned values relevant to your
 installation.
 
-# Examples Basic Menu {#examples_basic_menu}
+# Examples Basic Menu
 
     :MENU
     menu
@@ -178,7 +178,7 @@ installation.
      
     autoboot
 
-# Example secured menu advanced option {#example_secured_menu_advanced_option}
+# Example secured menu advanced option
 
     isset ${userID} && goto do_me || goto MENU
     :do_me

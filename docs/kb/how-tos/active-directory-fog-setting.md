@@ -84,7 +84,7 @@ details about the values for each field.
 
 ## Syntax
 
-### Join Domain after image task {#join_domain_after_image_task}
+### Join Domain after image task
 
 Ticking this checkbox in FOG 1.3.0+ will cause the Active Directory
 global defaults to populate the below text boxes if the below text boxes
