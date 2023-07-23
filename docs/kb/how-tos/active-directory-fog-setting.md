@@ -71,7 +71,7 @@ joining hosts to the domain for all hosts currently in this group. See
 saved. These settings are not stored in the group settings permanently,
 nor applied to future hosts automatically when added to the group.
 
-### Individual Hosts {#individual_hosts}
+### Individual Hosts
 
 Set the domain, username, password, and organization unit (OU) for
 joining the host to the domain. See [#Syntax](#Syntax "wikilink")
@@ -91,7 +91,7 @@ global defaults to populate the below text boxes if the below text boxes
 are blank. This checkbox will also cause hosts to attempt to join the
 domain immediately after imaging and renaming.
 
-### Domain Name {#domain_name}
+### Domain Name
 
 The fully qualified domain name.
 
@@ -102,7 +102,7 @@ Examples:
 -   company.com
 -   company.local
 
-### Organizational Unit {#organizational_unit}
+### Organizational Unit
 
 The organizational unit, in LDAP format.
 
@@ -118,7 +118,7 @@ Examples:
     \"OU=Computers,DC=MYCOMPANYSUBDOMAIN,DC=MYCOMPANYDOMAIN,DC=COM\" for
     me. The computer immediately joined the domain and rebooted.
 
-### Domain Username {#domain_username}
+### Domain Username
 
 The user in your domain you wish to use to add the computers to Active
 Directory.
@@ -140,7 +140,7 @@ work.**
 
 **Note: Domain does not need to be fully qualified for Domain Username**
 
-### Domain Password {#domain_password}
+### Domain Password
 
 For FOG 1.3.0+ The password should be typed plain-text, and will
 auto-encrypt on it\'s own when saved.
@@ -148,7 +148,7 @@ auto-encrypt on it\'s own when saved.
 For the Legacy client (not recommended), the domain password must be
 encrypted using [FOGCrypt](FOGCrypt "wikilink").
 
-### Reboot host on hostname changes and AD changes even if users are logged in? {#reboot_host_on_hostname_changes_and_ad_changes_even_if_users_are_logged_in}
+### Reboot host on hostname changes and AD changes even if users are logged in?
 
 This setting will configure the client to enforce the hostname / AD
 setting regardless of if a user is logged in. So if enabled, the client

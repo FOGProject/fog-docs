@@ -333,9 +333,9 @@ it tells the requesting system there is nothing to find.
 
 If it finds the file, it will send out the info as normal.
 
-```{=mediawiki}
+<!-- ```{=mediawiki}
 {{:TCPDump}}
-```
+``` -->
 Using the above method and filter, this is what a **BROKEN** dnsmasq
 (ProxyDHCP) conversation looks like:
 
