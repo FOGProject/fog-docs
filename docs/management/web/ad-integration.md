@@ -1,6 +1,7 @@
 ---
 title: Active Directory Integration
 description: Overview of the Active Directory settings management
+context-id: fog-123
 tags:
     - management
     - active-directory
@@ -8,7 +9,6 @@ tags:
     - microsoft
 ---
 # Active Directory Integration
-
 FOG has the ability to register a host with Active Directory, in a
 limited sense.
 
