@@ -2,14 +2,14 @@
 title: Storage Node Management
 description: The home page for fog docs with navigation to the various sections
 aliases:
-	- Storage Node Management
+    - Storage Node Management
 context_id: storage-node
 tags:
     - storage
     - storage-node
     - management
     - web-management
-	- web-ui
+    - web-ui
     - scalability
     - networking
     - locations
@@ -23,9 +23,9 @@ tags:
 - This image shows a single Storage Group and the flow of data within the group. The queue size of the system is the sum of the queue size of all the storage nodes within the system. So if you have 4 nodes each with a queue size of 10, then the queue size of the system is 40, which means 40 clients can be imaged (unicast) at one time. ![[StorageGroups.jpg]]
 - This image shows that it is possible to have multiple storage groups on your network, which are isolated from each other. This image also demonstrates, that captures always go to the master node and multicast session always send data from the master node. Images are pushed out from the master node of the group to all other members of the group. 
 - **Key Benefits** 
-	1. Increased throughput 
-	2. Redundant Storage 
-	3. Scalability 
+    1. Increased throughput 
+    2. Redundant Storage 
+    3. Scalability 
 - Also see [ Storage Nodes](Knowledge_Base#Storage_Nodes "wikilink") for tutorials.
  
 ## Adding a Storage Node
@@ -36,33 +36,33 @@ tags:
 - Surprisingly enough some users have actually gotten a Windows Storage node to work properly. See [Windows_Storage_Node](Windows_Storage_Node "wikilink") for more information on this. 
 ## Installing the Node
 - To Install a node: 
-	1. Run the installation script, ./installfog.sh 
-	2. Select your operating system. 
-	3. When prompted for Server Installation Mode, select **S**, for storage node. 
-	4. Enter the IP address of the storage node. 
-	5. Confirm you interface 
-	6. Then you will need to enter the IP address or host name of the node running the FOG database 
-	7. Then you will be prompted for a username (typically fogstorage) 
-	8. and a password that is located on the FOG server, that will allow the storage node to access the main FOG server's database. This information is located in the FOG management portal for convenience (on the main for server). It can be accessed via **Other Information** -> **FOG settings** -> section **FOG Storage Nodes**. 
-	9. You will then be prompted to confirm your installation settings, if they are correct press **Y** end hit **Enter**. 
-	10. When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings (see also [[install-fogsettings]] )
+    1. Run the installation script, ./installfog.sh 
+    2. Select your operating system. 
+    3. When prompted for Server Installation Mode, select **S**, for storage node. 
+    4. Enter the IP address of the storage node. 
+    5. Confirm you interface 
+    6. Then you will need to enter the IP address or host name of the node running the FOG database 
+    7. Then you will be prompted for a username (typically fogstorage) 
+    8. and a password that is located on the FOG server, that will allow the storage node to access the main FOG server's database. This information is located in the FOG management portal for convenience (on the main for server). It can be accessed via **Other Information** -> **FOG settings** -> section **FOG Storage Nodes**. 
+    9. You will then be prompted to confirm your installation settings, if they are correct press **Y** end hit **Enter**. 
+    10. When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings (see also [[install-fogsettings]] )
 
 ## Adding the Node to the Management Portal
 
 - To Add a Node 
-	1. Log into the FOG Management Portal 
-	2. Navigate to the **Storage Management** section. 
-	3. Click on **Add Storage Nodes**. 
-	4. For the **Storage Node Name**, enter any alpha numeric string to represent the storage node. 
-	5. Enter any description you wish 
-	6. Enter the IP address of the storage node you are adding. This must be the IP address of the node, DO NOT use a hostname here or the node will not function correctly.
-	7. Enter the maximum number of unicast clients you would like this node to handle at one time. The value that we recommend is 10. 
-	8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[storage-node#Master Node Status]] 
-	9. Next, select the storage group you would like this member to be a part of, in our example we will pick **Default**
-	10. Next, specify the image location on the storage node, typically **/images/**, your image location should always end with a **/**. 
-	11. Next, you will want to check the box, to enable the node.
-	12. The last two fields take the username and password that are generated during the installation of the storage node. username is "fog", password is in /opt/fog/.fogsettings 
-	13. Then click **Add** to have the node join the storage group. #### Monitoring The Master Node 	
+    1. Log into the FOG Management Portal 
+    2. Navigate to the **Storage Management** section. 
+    3. Click on **Add Storage Nodes**. 
+    4. For the **Storage Node Name**, enter any alpha numeric string to represent the storage node. 
+    5. Enter any description you wish 
+    6. Enter the IP address of the storage node you are adding. This must be the IP address of the node, DO NOT use a hostname here or the node will not function correctly.
+    7. Enter the maximum number of unicast clients you would like this node to handle at one time. The value that we recommend is 10. 
+    8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[storage-node#Master Node Status]] 
+    9. Next, select the storage group you would like this member to be a part of, in our example we will pick **Default**
+    10. Next, specify the image location on the storage node, typically **/images/**, your image location should always end with a **/**. 
+    11. Next, you will want to check the box, to enable the node.
+    12. The last two fields take the username and password that are generated during the installation of the storage node. username is "fog", password is in /opt/fog/.fogsettings 
+    13. Then click **Add** to have the node join the storage group. #### Monitoring The Master Node     
  - On all storage nodes there is a new service (as of version 0.24) called FOGImageReplicator which is a very basic script which, if the node is the master, copies all of its images to all other nodes in the storage group. The coping is done every ten minutes by default, which means your images are NOT instantly duplicated to all nodes. 
  - If you would like to view the status of the image replication, you can do so on the storage node by switching to tty3, by typing ctl + alt + f3. Output is also logged to a file in the **/opt/fog/log** directory. 
  - FOGImageReplicator logs are also located in ![[Config.png]] **Fog Configuration** -> **Log Viewer** -> **FILE: \[Select Image Replicator\]** 
