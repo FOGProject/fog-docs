@@ -3,6 +3,7 @@ title: User Management
 aliases:
     - User Management
 description: Details how to manage users in the ui
+context_id: users
 tags:
     - in-progress
     - management

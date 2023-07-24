@@ -1,3 +1,17 @@
+---
+title: Fog Configuration
+aliases:
+    - Fog Config
+description: Documentation on the configuration settings in the web ui
+context_id: config
+tags:
+    - in-progress
+    - management
+    - web-management
+    - web-ui
+    - config
+---
+
 # Fog Configuration
 
 much more content is needed here

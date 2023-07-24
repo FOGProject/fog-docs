@@ -1,3 +1,18 @@
+---
+title: Group Management
+aliases:
+    - groups
+    - Fog Group Management
+description: index page for groups
+context_id: groups
+tags:
+    - in-progress
+    - management
+    - web-management
+	- web-ui
+    - groups
+---
+
 # Group Management
 
 ## Groups

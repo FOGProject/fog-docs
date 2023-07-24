@@ -1,3 +1,15 @@
+---
+title: Host Management
+aliases:
+    - hosts
+description: index page for hosts
+context_id: hosts
+tags:
+    - in-progress
+    - management
+    - hosts
+---
+
 # Host Management
 
 ## Hosts

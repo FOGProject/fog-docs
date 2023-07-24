@@ -1,3 +1,17 @@
+---
+title: Image Management
+aliases:
+    - images
+description: index page for images
+context_id: images
+tags:
+    - in-progress
+    - management
+    - web-management
+    - web-ui
+    - images
+---
+
 # Image Management
 
 -   Image objects in FOG are the representation of the physical files

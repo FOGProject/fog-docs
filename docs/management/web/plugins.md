@@ -3,6 +3,7 @@ title: Plugins
 aliases:
     - Plugins
 description: Describes enabling and installing plugins
+context_id: plugins
 tags:
     - in-progress
     - updating-content

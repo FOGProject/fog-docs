@@ -1,3 +1,16 @@
+---
+title: Printer Management
+aliases:
+    - printers
+description: index page for printers
+context_id: printers
+tags:
+    - in-progress
+	- management
+	- web-management
+	- web-ui
+---
+
 # Printer Management
 
 Setting up Printers With Fog Printer Management
