@@ -25,7 +25,7 @@ tags:
 > For example, This page https://docs.fogproject.org/en/latest/management/web/dashboard/
 > has a permalink of https://docs.fogproject.org/en/latest/dashboard 
 > So even if the web management section moved elsewhere in the site, that permalink will get you to where ever that page is now.
-> **This is **
+
 
 
 
