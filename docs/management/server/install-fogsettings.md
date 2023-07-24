@@ -20,7 +20,6 @@ tags:
     - in-progress
     - updating-content
 ---
-[Permanent Link](https://docs.fogproject.org/en/latest/{{ context_id }})
 
 # The .fogsettings file
 

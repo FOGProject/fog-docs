@@ -66,7 +66,7 @@ plugins:
   - roamlinks # added for support of obsidian see also https://about.gitlab.com/blog/2022/03/15/publishing-obsidian-notes-with-gitlab-pages/ and https://github.com/Jackiexiao/mkdocs-roamlinks-plugin
   - callouts
   - git-revision-date
-  - macros
+  # - macros
   - tags: # https://squidfunk.github.io/mkdocs-material/setup/setting-up-tags/
       tags_file: tags.md
   - redirects: 

@@ -12,8 +12,6 @@ tags:
     - dependencies
 ---
 
-<!-- [Permanent Link](https://docs.fogproject.org/en/latest/{{ context_id }}) -->
-
 # System Requirements
 
 <!-- Ideally this page will be a simple table of requirements and then more info for reference like the packages installed by the installer -->

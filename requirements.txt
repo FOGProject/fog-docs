@@ -14,7 +14,7 @@ markdown
 mkdocs
 mkdocs-material
 mkdocs-material-extensions
-mkdocs-macros-plugin
+# mkdocs-macros-plugin
 pygments
 pymdown-extensions
 # Requirements for plugins
