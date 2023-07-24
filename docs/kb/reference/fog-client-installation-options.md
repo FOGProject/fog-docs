@@ -1,3 +1,16 @@
+---
+title: FOG Client installation options
+aliases:
+    - FOG Client installation options
+description: index page for fog-client-installation-options
+context_id: fog-client-installation-options
+tags:
+    - in-progress
+    - silent-install
+    - fog-client
+    - convert-Wiki2MD
+---
+
 # FOG Client installation options
 
 ## Windows Client
@@ -42,17 +55,17 @@ download the client from the FOG Web UI:
 
 ### Run The Installer
 
-!!! info
 
-    The following steps follow the msi installer wizard. The Smart Installer
-    wizard is similar
+> [!info]
+> The following steps follow the msi installer wizard. 
+> The Smart Installer wizard is similar
 
 
-!!! note
 
-    You may get a 'Windows protected your PC' popup. In that case you have
-    to convince windows that this installer is safe to run. Click on 'More
-    info' and 'Run anyway'.
+> [!NOTE]
+>  You may get a 'Windows protected your PC' popup. In that case you have
+>  to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'.
+
 
 
 -   At the Welcome screen, click on 'Next'

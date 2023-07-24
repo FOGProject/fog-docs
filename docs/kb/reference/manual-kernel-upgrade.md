@@ -1,3 +1,14 @@
+---
+title: Manually Upgrade FOS Kernel
+aliases:
+    - Manually Upgrade FOS Kernel
+description: index page for manual-kernel-upgrade
+context_id: manual-kernel-upgrade
+tags:
+    - in-progress
+    - kernel
+---
+
 # Manually Upgrade FOS Kernel
 
 The kernel that the fog server uses to image clients with can be out of

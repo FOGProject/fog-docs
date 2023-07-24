@@ -1,3 +1,16 @@
+---
+title: Compile FOS kernel
+aliases:
+    - Compile FOS kernel
+description: index page for compile-fos-kernel
+context_id: compile-fos-kernel
+tags:
+    - in-progress
+    - how-to
+    - kernel
+    - fos
+---
+
 # Compile FOS kernel
 
 FOS kernels (Linux kernel used by the FOG OS - a minimal Linux OS doing

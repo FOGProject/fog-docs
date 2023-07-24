@@ -1,6 +1,7 @@
 ---
 title: Fog Configuration
 aliases:
+    - Fog Configuration
     - Fog Config
 description: Documentation on the configuration settings in the web ui
 context_id: config

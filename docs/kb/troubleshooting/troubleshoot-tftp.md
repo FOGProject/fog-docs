@@ -1,3 +1,16 @@
+---
+title: Troubleshooting TFTP
+aliases:
+    - Troubleshooting TFTP
+description: index page for troubleshoot-tftp
+context_id: troubleshoot-tftp
+tags:
+    - in-progress
+    - troubleshooting
+    - tftp
+    - kb
+---
+
 # Troubleshooting TFTP
 
 ## TFTP's roles in FOG

@@ -1,7 +1,7 @@
 ---
 title: Host Management
 aliases:
-    - hosts
+    - Host Management
 description: index page for hosts
 context_id: hosts
 tags:

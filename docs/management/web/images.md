@@ -1,7 +1,7 @@
 ---
 title: Image Management
 aliases:
-    - images
+    - Image Management
 description: index page for images
 context_id: images
 tags:

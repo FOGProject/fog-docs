@@ -1,3 +1,16 @@
+---
+title: Acer Iconia Tab w500
+aliases:
+    - Acer Iconia Tab w500
+description: index page for Acer-Iconia-Tab-w500_rev1
+context_id: Acer-Iconia-Tab-w500
+tags:
+    - in-progress
+    - archive
+---
+
+# Acer Iconia Tab w500
+
 `<font color="red">`{=html}Note:`</font>`{=html} This article is older
 (year 2012), and has only had it\'s terminology updated to reflect
 current FOG terminology.

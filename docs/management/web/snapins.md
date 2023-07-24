@@ -1,3 +1,17 @@
+---
+title: Snapin Management
+aliases:
+    - Snapin Management
+description: index page for snapins
+context_id: snapins
+tags:
+    - in-progress
+    - management
+    - web-management
+    - web-ui
+    - snapins
+---
+
 # Snapin Management
 
 ## Overview

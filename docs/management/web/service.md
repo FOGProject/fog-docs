@@ -1,3 +1,18 @@
+---
+title: Fog Service (aka Client) Management
+aliases:
+    - Fog Service (aka Client) Management
+description: index page for service
+context_id: service
+tags:
+    - in-progress
+    - management
+    - web-management
+    - web-ui
+    - fog-service
+    - fog-client
+---
+
 # Fog Service (aka Client) Management
 
 Note: Most of the things here about the FOG Client service apply to the legacy FOG client that came with FOG versions 1.2.0 and older. FOG 1.3.0 now comes with a new FOG Client. Details on this can be found here: [FOG Client](https://wiki.fogproject.org/wiki/index.php?title=FOG_Client "FOG Client")

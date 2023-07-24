@@ -1,7 +1,7 @@
 ---
 title: Group Management
 aliases:
-    - groups
+    - Group Management
     - Fog Group Management
 description: index page for groups
 context_id: groups

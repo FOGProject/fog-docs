@@ -1,3 +1,16 @@
+---
+title: Compile iPXE binaries
+aliases:
+    - Compile iPXE binaries
+description: index page for compile_ipxe_binaries
+context_id: compile_ipxe_binaries
+tags:
+    - in-progress
+    - ipxe
+    - how-to
+    - linux
+---
+
 # Compile iPXE binaries
 
 FOG is using the most current iPXE source code to build many different

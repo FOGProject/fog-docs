@@ -1,7 +1,7 @@
 ---
 title: Printer Management
 aliases:
-    - printers
+    - Printer Management
 description: index page for printers
 context_id: printers
 tags:

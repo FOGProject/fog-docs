@@ -1,3 +1,15 @@
+---
+title: Network and firewall requirements
+aliases:
+    - Network and firewall requirements
+description: index page for network-and-firewall-requirements
+context_id: network-and-firewall-requirements
+tags:
+    - in-progress
+    - firewall
+    - convert-Wiki2MD
+---
+
 # Network and firewall requirements
 
 FOG depends on quite some network protocols, like FTP, NFS, DHCP and

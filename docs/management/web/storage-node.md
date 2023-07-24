@@ -1,11 +1,15 @@
 ---
 title: Storage Node Management
 description: The home page for fog docs with navigation to the various sections
+aliases:
+	- Storage Node Management
 context_id: storage-node
 tags:
     - storage
     - storage-node
     - management
+    - web-management
+	- web-ui
     - scalability
     - networking
     - locations

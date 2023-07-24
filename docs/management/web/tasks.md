@@ -1,3 +1,17 @@
+---
+title: Task Management
+aliases:
+    - Task Management
+description: index page for tasks
+context_id: tasks
+tags:
+    - in-progress
+    - management
+    - web-management
+    - web-ui
+    - tasks
+---
+
 # Task Management
 
 ## Overview

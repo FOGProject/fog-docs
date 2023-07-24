@@ -1,3 +1,17 @@
+---
+title: Report Management
+aliases:
+    - Report Management
+description: index page for reports
+context_id: reports
+tags:
+    - in-progress
+    - reports
+    - management
+    - web-management
+    - web-ui
+---
+
 # Report Management
 
 ## Overview

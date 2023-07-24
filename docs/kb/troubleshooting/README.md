@@ -6,6 +6,7 @@ description: index page for Troubleshooting articles
 context_id: troubleshooting-home
 tags:
     - troubleshooting
+    - kb
 ---
 
 # Troubleshooting

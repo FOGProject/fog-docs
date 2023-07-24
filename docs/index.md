@@ -21,8 +21,13 @@ tags:
 
 > [!warning]
 > While we are migrating content there will be occasional changes to links and paths
-> However, this documentation is versioned, so while the 'latest' version will have changes for the next bit. You can use https://docs.fogproject.org/en/1.5.9/ for linking to things that won't change. 
-> Once all documentation from the wiki has been migrated into a sensible folder structure, these paths will no longer change
+> You will find that all (or at least most) pages have a `permalink` link below their labels/tags at the top of the page. This link is based on the markdown file name that creates the page and the last part of its full link. It is a shorter and permanent link to that given page, even if it moves to a new home. 
+> For example, This page https://docs.fogproject.org/en/latest/management/web/dashboard/
+> has a permalink of https://docs.fogproject.org/en/latest/dashboard 
+> So even if the web management section moved elsewhere in the site, that permalink will get you to where ever that page is now.
+> **This is **
+
+
 
 ## Fog Documentation Sections
 
