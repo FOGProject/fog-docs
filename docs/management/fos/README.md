@@ -3,6 +3,7 @@ title: FOS (Fog Operating System) Management
 aliases:
     - FOS (Fog Operating System) Management
 description: index page for FOS (Fog Operating System) Management
+context_id: fos-home
 tags:
     - FOS (Fog Operating System) Management
     - fos

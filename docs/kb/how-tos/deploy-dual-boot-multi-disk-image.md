@@ -3,6 +3,7 @@ title: Deploying a Dual-Boot Multi-Disk Image
 aliases:
     - Deploying a Dual-Boot Multi-Disk Image
 description: describe how to deploy a dual-boot multi-disk image to other devices
+context_id: deploy-dual-boot-multi-disk-image
 tags:
     - dual-boot
     - multi-disk

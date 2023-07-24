@@ -3,6 +3,7 @@ title: Deploy an image
 aliases:
     - Deploy an image
 description: basics on how to deploy an image in fog
+context_id: deploy-an-image
 tags:
     - tasks
     - deploy

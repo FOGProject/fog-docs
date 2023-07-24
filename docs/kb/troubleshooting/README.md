@@ -3,6 +3,7 @@ title: Troubleshooting
 aliases:
     - Troubleshooting
 description: index page for Troubleshooting articles
+context_id: troubleshooting-home
 tags:
     - troubleshooting
 ---

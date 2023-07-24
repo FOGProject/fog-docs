@@ -3,6 +3,7 @@ title: Change FOG Server IP Address
 aliases:
     - Change FOG Server IP Address
 description: describes how to Change FOG Server IP Address
+context_id: change-fog-server-ip-address
 tags:
     - in-progress
     - convert-Wiki2MD

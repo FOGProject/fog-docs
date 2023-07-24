@@ -3,6 +3,7 @@ title: Troubleshooting FTP
 aliases:
     - Troubleshooting FTP
 description: Information on how to Troubleshoot FTP issues in fog
+context_id: troubleshoot-ftp
 tags:
     - troubleshooting
     - kb

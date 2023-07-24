@@ -3,6 +3,7 @@ title: How To Guides
 aliases:
     - How To Guides
 description: index page for How To Guides
+context_id: how-to-guides-home
 tags:
     - how-to
 ---

@@ -3,6 +3,7 @@ title: Capture an image
 aliases:
     - Capture an image
 description: Decribes the basic flow of capturing an image
+context_id: capture-an-image
 tags:
     - how-to
     - capture

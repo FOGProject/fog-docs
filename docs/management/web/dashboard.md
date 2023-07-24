@@ -1,6 +1,7 @@
 ---
 title: Dashboard
 description: Describes the various sections of the fog homepage/dashboard
+context_id: dashboard
 aliases:
   - Web UI Dashboard
 tags:

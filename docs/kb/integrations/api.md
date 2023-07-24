@@ -4,6 +4,7 @@ aliases:
     - API
     - Fog API
 description: Information about the FOG api general usage
+context_id: api
 tags:
     - in-progress
     - kb

@@ -3,6 +3,7 @@ title: Integrations
 aliases:
     - Integrations
 description: index page for Integrations
+context_id: integrations-home
 tags:
     - kb
     - integrations

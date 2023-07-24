@@ -4,6 +4,7 @@ aliases:
     - Client Side Tasks
     - Using the FOG Boot Menu
 description: Client Side Tasks triggered from the fog pxe boot menu usage, was called Client Side Tasks before
+context_id: using-fog-boot-menu
 tags:
     - in-progress
     - convert-Wiki2MD

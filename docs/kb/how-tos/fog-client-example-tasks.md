@@ -4,6 +4,7 @@ aliases:
     - Example tasks with the FOG client
     - Fog Client Example Tasks
 description: General examples of using fog client tasks
+context_id: fog-client-example-tasks
 tags:
     - how-to
     - client
