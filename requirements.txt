@@ -11,9 +11,10 @@
 # Requirements for core
 jinja2
 markdown
-mkdocs
+mkdocs==1.5.2 #after 10-3-2023 remove the pinned version to ensure we are always on the latest version of mkdocs
 mkdocs-material
 mkdocs-material-extensions
+
 # mkdocs-macros-plugin
 pygments
 pymdown-extensions
@@ -34,3 +35,8 @@ mkdocs-callouts
 # mkdocs-awesome-pages-plugin # https://pypi.org/project/mkdocs-awesome-pages-plugin/ - we may want to come back to this one to replace include-dir-to-nav
 # markdown-include
 mkdocs-redirects
+#system packages no longer included after 8-29-2023, I don't believe we use any of them, uncomment after 8-29 if things break
+# scipy
+# numpy
+# pandas
+# matplotlib
