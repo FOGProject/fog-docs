@@ -54,7 +54,8 @@ version is typically a stable option since much testing still occurs
 before changes are committed, but not as much testing as is done for the
 longer-term "stable" version in the master branch.
 
-!!! warning Be aware that you should **not** consider switching back to
+>[!warning]
+>Be aware that you should **not** consider switching back to
 the master branch without thorough consideration. This is due to the
 database schema changes that might be introduced over time. For example
 when FOG was installed using the master branch (currently version
