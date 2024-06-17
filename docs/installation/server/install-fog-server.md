@@ -54,15 +54,12 @@ version is typically a stable option since much testing still occurs
 before changes are committed, but not as much testing as is done for the
 longer-term "stable" version in the master branch.
 
->[!warning]
->Be aware that you should **not** consider switching back to
-the master branch without thorough consideration. This is due to the
-database schema changes that might be introduced over time. For example
-when FOG was installed using the master branch (currently version
-1.5.10) you can move forward to newer dev-branch versions like 1.5.10.53
-with no problem. But if you want to switch to the master branch again
-you need to wait until the next official release, 1.5.11, is out. Doing
-otherwise is at your own risk!
+> [!warning]
+> Be aware that you should **not** consider switching back to the master branch without thorough consideration.
+> This is due to the database schema changes that are introduced over time.
+> For example when FOG was installed using the master branch (currently version 1.5.10) you can move forward to newer dev-branch versions like 1.5.10.53 with no problem.
+> But if you want to switch back to the master branch, it's possible that the schema changes will cause issues when you revert and you may need to wait until the next official release, i.e. 1.5.11, to revert to the master branch version.
+> Doing otherwise is at your own risk! (Though to be fair, these types of issues have been rare, this is just a disclaimer)
 
 If you want the latest and greatest, would like to contribute to testing
 new features, or were instructed to install the dev-branch version to
