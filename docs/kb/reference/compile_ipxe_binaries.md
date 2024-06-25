@@ -26,7 +26,7 @@ To be able to build iPXE from source you need tools to checkout and
 compile source code.
 
     debian/ubuntu# sudo apt-get install git build-essential zlib1g-dev binutils-dev
-    fedora/centos# sudo yum install git gcc gcc-c++ make zlib-devel binutils-devel
+    fedora/centos# sudo yum install git gcc gcc-c++ make zlib-devel binutils-devel genisoimage isomd5sum syslinux xz xz-devel
 
 ## Build script
 
