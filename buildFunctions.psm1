@@ -15,10 +15,10 @@ function Get-Python {
             $installCHoco = Read-Host -Prompt "Install choco and python with choco? (Y/N)"
             if ($installCHoco -eq "Y") {
                 if (!(Get-Command 'choco' -ea 0)) {
-                    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+                    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
                 }
                 choco upgrade python -y --no-progress;
-                ipmo C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1;
+                Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1;
                 Update-SessionEnvironment
             } else {
                 Write-Warning "Python not detected in path! Attempting to Install with winget via msstore or winget version and adding to the path"

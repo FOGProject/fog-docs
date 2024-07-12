@@ -87,8 +87,8 @@ markdown_extensions:
   - nl2br
   - pymdownx.tasklist
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - tables # see also https://squidfunk.github.io/mkdocs-material/reference/data-tables/
   - toc:
       permalink: true
@@ -138,6 +138,7 @@ nav:
   - Development: development
   - Tags: tags.md
   - Release Notes: https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD
+  - Security Advisories: https://forums.fogproject.org/category/25/security-advisories
   
 # getting started/intro section (quick intro to what fog is vs isn't, links to install instructions, image capture/deploy instructions, etc.)
 # install/update/migrate section

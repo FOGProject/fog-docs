@@ -6,5 +6,5 @@ docs/.obsidian
 docs/.obsidian/*
 .obsidian/*
 .obsidian
-__pycache__/hook.cpython-311.pyc
 debug.log
+__pycache__
