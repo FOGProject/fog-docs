@@ -11,10 +11,9 @@
 # Requirements for core
 jinja2
 markdown
-mkdocs==1.5.2 #after 10-3-2023 remove the pinned version to ensure we are always on the latest version of mkdocs
+mkdocs
 mkdocs-material
-mkdocs-material-extensions
-
+# mkdocs-material-extensions
 # mkdocs-macros-plugin
 pygments
 pymdown-extensions
