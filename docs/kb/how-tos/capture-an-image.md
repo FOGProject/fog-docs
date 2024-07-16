@@ -79,7 +79,7 @@ For capturing an image, you need the host to be registered, so choose
 You'll see some text scrolling on the screen as Fog registeres the
 host:
 
-![image](/assets/img/tasks/capture_fog_registration.png)
+![[capture_fog_registration.png]]
 
 Then the client is rebooted. Shut down the computer.
 
@@ -88,7 +88,7 @@ Then the client is rebooted. Shut down the computer.
 Log in on the Fog Web UI and go to 'Image Management' :octicons-arrow-right-24: 'Create New
 Image':
 
-![image](/assets/img/tasks/capture_image_management.png)
+![[capture_image_management.png]]
 
 Give the new image a name and leave the chosen options as they are, and
 clik on 'Add'.
@@ -103,12 +103,12 @@ and deployed.
 Now to go 'Host Management' :octicons-arrow-right-24: 'List All Hosts' and click on the
 machine you just have registered:
 
-![image](/assets/img/tasks/capture_host_management_1.png)
+![[capture_host_management_1.png]]
 
 For now, the machine name is it's MAC address. Don't worry about that
 now as we will only use this host for capturing an image.
 
-![image](/assets/img/tasks/capture_host_management_2.png)
+![[capture_host_management_2.png]]
 
 For the 'Host Image' drop-down box, choose the image you've just
 created. Then click on 'Update' in on the bottom of the screen.
@@ -125,13 +125,13 @@ contents of the harddisk must be captured and stored as the 'Windows
 While still in the Host Management of this machine, go to 'Basic
 Tasks' and choose 'Capture':
 
-![image](/assets/img/tasks/capture_host_capture_1.png)
+![[capture_host_capture_1.png]]
 
 Here you can change settings of the imaging task.
 
 Leave the options as they are and clik on 'Task':
 
-![image](/assets/img/tasks/capture_host_capture_2.png)
+![[capture_host_capture_2.png]]
 
 A capture task is now created.
 
@@ -146,7 +146,7 @@ will be captured:
 On the console of your machine you will first see that FOG is doing some
 actions like resizing partitions and then Partclone will be executed:
 
-![image](/assets/img/tasks/capture_partclone.png)
+![[capture_partclone.png]]
 
 The contents of the harddisk will be read and via the network written as
 a compressed image file on the Fog server. Depending on the speed of

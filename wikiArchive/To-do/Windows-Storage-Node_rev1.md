@@ -32,7 +32,7 @@
 -   **Set Sharing** (you may not have kerberos enable do not worry about
     this)
 
-![image](NFS_Sharing1.png)
+![[NFS_Sharing1.png]]
 
 -   **Set Permissions**: Set proper permissions for All Machines
 
