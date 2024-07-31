@@ -52,13 +52,13 @@ FOG has different versions available at any given time that are
 developed within branches of our git repository. The dev-branch 'dev'
 version is typically a stable option since much testing still occurs
 before changes are committed, but not as much testing as is done for the
-longer-term "stable" version in the master branch.
+longer-term "stable" version in the stable branch.
 
 > [!warning]
-> Be aware that you should **not** consider switching back to the master branch without thorough consideration.
+> Be aware that you should **not** consider switching back to the stable branch without thorough consideration.
 > This is due to the database schema changes that are introduced over time.
-> For example when FOG was installed using the master branch (currently version 1.5.10) you can move forward to newer dev-branch versions like 1.5.10.53 with no problem.
-> But if you want to switch back to the master branch, it's possible that the schema changes will cause issues when you revert and you may need to wait until the next official release, i.e. 1.5.11, to revert to the master branch version.
+> For example when FOG was installed using the stable branch you can move forward to newer dev-branch versions like 1.5.10.53 with no problem.
+> But if you want to switch back to the stable branch, it's possible that the schema changes will cause issues when you revert and you may need to wait until the next official release, i.e. 1.6.0, to revert to the stable branch version.
 > Doing otherwise is at your own risk! (Though to be fair, these types of issues have been rare, this is just a disclaimer)
 
 If you want the latest and greatest, would like to contribute to testing
@@ -80,7 +80,7 @@ You can switch back to the master/stable branch with:
 
     cd /root/fogproject
     git fetch --all
-    git checkout master
+    git checkout stable
 
 You can see a list of current branches here:
 <https://github.com/FOGProject/fogproject/branches>
@@ -91,9 +91,9 @@ If you have issues or good reasons for not using Git, you can just
 download the FOG installer bundle as ZIP or tar.gz archive.
 
 -   latest stable:
-    [ZIP](<https://github.com/FOGProject/fogproject/archive/master.zip>)
+    [ZIP](<https://github.com/FOGProject/fogproject/archive/stable.zip>)
     or
-    [tar.gz](<https://github.com/FOGProject/fogproject/archive/master.tar.gz>)
+    [tar.gz](<https://github.com/FOGProject/fogproject/archive/stable.tar.gz>)
 -   latest dev:
     [ZIP](<https://github.com/FOGProject/fogproject/archive/dev-branch.zip>)
     or
