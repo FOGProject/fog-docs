@@ -50,4 +50,4 @@ change the default PXE boot file or web root directory.
         -X    --exitFail        Do not exit if item fails
         -T    --no-tftpbuild    Do not rebuild the tftpd config file
         -F    --no-vhost        Do not overwrite vhost file
-        -l    --list-packages		List of the basic packages FOG needs for install or is currently installed for FOG
+        -l    --list-packages   List of the basic packages FOG needs for install or is currently installed for FOG
