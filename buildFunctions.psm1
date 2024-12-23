@@ -17,17 +17,17 @@ function Get-Python {
                 if (!(Get-Command 'choco' -ea 0)) {
                     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
                 }
-                choco upgrade python -y --no-progress;
-                Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1;
+                choco upgrade python312 -y --no-progress;
+                Import-Module C:\ProgramData\chocolatey\helpers\chocolateyInstaller.psm1 -force -ea 0;
                 Update-SessionEnvironment
             } else {
                 Write-Warning "Python not detected in path! Attempting to Install with winget via msstore or winget version and adding to the path"
                 if (Get-Command "winget" -ea 0) {
                     try {
-                        winget.exe install "Python 3.11" -s msstore
+                        winget.exe install "Python 3.12" -s msstore
                     }  catch {
                         "There was an error with winget install, trying winget source" | Out-Host
-                        winget.exe install "Python 3.11" -s winget
+                        winget.exe install "Python 3.12" -s winget
                     }
                 } else {
                     Write-Error "Please manually install python and add it to the environment path then re-run this build/make script";
@@ -50,7 +50,7 @@ function Get-Python {
                 "python found at $($pythonPth), adding parent folder to path, and scripts folder to path" | out-host;
                 $ENV:PATH += ";$(Split-Path $($pythonPth[0]) -Parent)"
                 $ENV:PATH += ";$(Split-Path $($pythonPth[0]) -Parent)\Scripts"
-                Update-SessionEnvVariables;
+                Update-SessionEnvironment
             }
         }
         
