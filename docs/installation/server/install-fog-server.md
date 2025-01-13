@@ -59,7 +59,10 @@ longer-term "stable" version in the stable branch.
 > This is due to the database schema changes that are introduced over time.
 > For example when FOG was installed using the stable branch you can move forward to newer dev-branch versions like 1.5.10.53 with no problem.
 > But if you want to switch back to the stable branch, it's possible that the schema changes will cause issues when you revert and you may need to wait until the next official release, i.e. 1.6.0, to revert to the stable branch version.
-> Doing otherwise is at your own risk! (Though to be fair, these types of issues have been rare, this is just a disclaimer)
+> Doing otherwise is at your own risk! (Though to be fair, these types of issues have been rare, this is just a disclaimer, there's also a database change that can be made to force a revert of the schema, though there's still some potential risk, we haven't seen such issues, but there's still risk)
+
+> [!note]
+> If you choose to upgrade to the working-1.6 branch to test out the beta (THANK YOU by the way! We hope you love it!), see [[tags#1_6-changes]] for pages related to config changes that may be required in some instances. We are striving to catch everything in the installer universally, but as we find gotchas, even if they get fixed, we're trying to notate those for all.
 
 If you want the latest and greatest, would like to contribute to testing
 new features, or were instructed to install the dev-branch version to
