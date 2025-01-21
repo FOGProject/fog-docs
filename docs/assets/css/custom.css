@@ -1,17 +1,17 @@
 
-/* unsure if these role classes will be able to be recreated in mkdocs material, or rather if they even need to be as other methods of coloring text are provided, commenting them out for now*/
+/* these color classes can be added to markdown in mkdocs material by adding the class after bold or italic texts i.e. __Required__{ .red } will be bold and red, however this format is not supported in obsidian*/
 /* Class for red role */
-/* .red {
+.red {
     color: red;
-} */
+}
 /* Class for orange role */
-/* .orange {
+.orange {
     color: orange;
-} */
-/* Class for yeloowrole */
-/* .yellow {
+}
+/* Class for yelowrole */
+.yellow {
     color: yellow;
-} */
+}
 /* Override default theme max width of 800px so wide screens can view more content responsively
 .wy-nav-content {
     max-width: 1500px;

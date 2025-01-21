@@ -106,9 +106,9 @@ Tutorial](http://freeghost.sourceforge.net/videotutorials/addimghost.html)
 
 ------------------------------------------------------------------------
 
-#### [Required]{.red} Fields
+#### __Required__{ .red } Fields
 
-A host consists of the following [Required]{.red} Fields:
+A host consists of the following __Required__{ .red } Fields:
 
 ##### Hostname
 
@@ -120,6 +120,38 @@ A host consists of the following [Required]{.red} Fields:
 > This field is used in for for a unique identifier for the host. The
 > string must be separated by `:` (colon), in the format of
 > `00:11:22:33:44:55`.
+
+> [!NOTE]
+> The MAC Address has a description field. This can currently only be set via the api and can be whatever you want it to be. 
+> For example you could use the [FOGApi powershell module](https://github.com/darksidemilk/FogApi) to set the mac descriptions to the make/model of the adapter like so
+
+```
+$fogHost = Get-FogHost
+$fogHostMacs = Get-FogHostMacs -hostid $foghost.id;
+$fogHostMacs | ForEach-Object {
+    $fogmac = $_;
+    $netAdapter = Get-NetAdapter -IncludeHidden | Where-Object macaddress -eq $fogmac.mac.replace(":","-");
+    if ($Null -ne $netAdapter) {
+        $fogMac.description = "$($netAdapter.name) - $($netAdapter.InterfaceDescription)"
+        Update-FogObject -type object -coreObject macaddressassociation -jsonData ($fogMac | convertto-json) -IDofObject $fogmac.id -vb
+    }
+}
+```
+
+This does a POST to `{fogurl}/fog/macaddressassociation/{macID}/edit` with a json formatted like the following for each mac address on a windows machine that already exists in FOG.
+
+```
+{
+  "id": 6355,
+  "hostID": 1847,
+  "mac": "f4:a4:75:ab:93:d4",
+  "description": "Wi-Fi - Intel(R) Wi-Fi 6E AX210 160MHz",
+  "pending": "0",
+  "primary": "0",
+  "clientIgnore": "0",
+  "imageIgnore": "0"
+}
+```
 
 ------------------------------------------------------------------------
 
