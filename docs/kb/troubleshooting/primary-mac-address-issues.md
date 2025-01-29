@@ -19,7 +19,7 @@ The primary mac for a host is set in the macaddressassociation table. Each entry
 This article gives some insight on how you might fix a missing primary mac on a host.
 
 >[!note]
->This article gives examples of using the FogAPI powershell module. For more information on the setup of this module see https://fogapi.readthedocs.io
+>This article gives examples of using the FogAPI powershell module. For more information on the setup of this module see [[https://fogapi.readthedocs.io|FogAPI PS Module Documentation]]
 
 ## Host Primary Mac was removed
 
