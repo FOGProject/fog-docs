@@ -90,7 +90,15 @@ function Install-Requirements {
             }
             New-Item $log -ItemType File -force -Value "requirements last installed with pip on $(Get-date)`n`n$($results | out-string)";
         } else {
-            "Requirements already up to date" | out-host;
+            "Requirements already met, insuring they're up to date" | out-host;
+            $results = New-Object -TypeName 'System.collections.generic.List[System.Object]';
+            $result = & python.exe -m pip install --upgrade pip
+            $results.add(($result))
+            Get-Content $requirements | Where-Object { $_ -notmatch "#"} | ForEach-Object {
+                $result = pip install --upgrade $_;
+                $results.add(($result))
+            }
+            New-Item "$log-upgrades" -ItemType File -force -Value "requirements last installed with pip on $(Get-date)`n`n$($results | out-string)";
         }
         return (Get-Content $log)
     }
