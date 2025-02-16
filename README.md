@@ -23,6 +23,8 @@ You can then utilize graph view to see how all the documentation connects. This 
 
 ## General Style/Structure Rules
 
+While adhering to the style guide is appreciated, getting content into to docs (existing and new) is more important. So if you make a pull request with valid content we'll add style guide formatting and bring it in. 
+
 * Every Page should have front matter aka metadata that defines
 	* title (should match the title heading)
 	* description
