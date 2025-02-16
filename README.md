@@ -28,9 +28,12 @@ You can then utilize graph view to see how all the documentation connects. This 
 	* description
 	* aliases (for friendly link names, should include at least one that matches title)
 	* tags
+ * context_id (typically same as title, creates permanent link) 
 * Every md file should be named in all-lower-case-with-dashes-not-spaces
 * Every folder should have a `README.md` file with the above mentioned front matter that serves as the index page with a simple description of that's in that folder
-	* i.e. a simple inded page for a folder can look like this
+
+There's an obsidian compatible markdown template of this front matter available here https://github.com/FOGProject/fog-docs/blob/master/docs%2Fassets%2Ftemplates%2Fmetadata-template.md
+	* i.e. a simple index page for a folder can look like this
 ```
 ---
 title: Installation
