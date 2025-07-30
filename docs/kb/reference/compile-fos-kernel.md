@@ -59,6 +59,8 @@ or 32 bit or ARM 64 bit.
     make mrproper
     wget -O .config https://github.com/FOGProject/fos/raw/master/configs/kernelx64.config
     make oldconfig
+    #if you wish to customize the config further with different drivers or options uncomment this line and use the menu to adjust config options
+    #make menuconfig
     make -j $(nproc) bzImage
     cp arch/x86/boot/bzImage /var/www/html/fog/service/ipxe/bzImage
 
@@ -67,6 +69,8 @@ or 32 bit or ARM 64 bit.
     make mrproper
     wget -O .config https://github.com/FOGProject/fos/raw/master/configs/kernelx86.config
     make ARCH=i386 oldconfig
+    #if you wish to customize the config further with different drivers or options uncomment this line and use the menu to adjust config options
+    #make menuconfig
     make ARCH=i386 -j $(nproc) bzImage
     cp arch/x86/boot/bzImage /var/www/html/fog/service/ipxe/bzImage32
 
@@ -75,6 +79,8 @@ or 32 bit or ARM 64 bit.
     make mrproper
     wget -O .config https://raw.githubusercontent.com/FOGProject/fos/master/configs/kernelarm64.config
     make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- oldconfig
+    #if you wish to customize the config further with different drivers or options uncomment this line and use the menu to adjust config options
+    #make menuconfig
     make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j $(nproc) Image
     cp arch/arm64/boot/Image /var/www/html/fog/service/ipxe/arm_Image
 
