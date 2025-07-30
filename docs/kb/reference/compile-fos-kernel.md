@@ -62,6 +62,7 @@ or 32 bit or ARM 64 bit.
     #if you wish to customize the config further with different drivers or options uncomment this line and use the menu to adjust config options
     #make menuconfig
     make -j $(nproc) bzImage
+    #to not overwrite the default kernel, change the name of the destination file in the cp command
     cp arch/x86/boot/bzImage /var/www/html/fog/service/ipxe/bzImage
 
 ### Intel/AMD 32 bit
@@ -72,6 +73,7 @@ or 32 bit or ARM 64 bit.
     #if you wish to customize the config further with different drivers or options uncomment this line and use the menu to adjust config options
     #make menuconfig
     make ARCH=i386 -j $(nproc) bzImage
+    #to not overwrite the default kernel, change the name of the destination file in the cp command
     cp arch/x86/boot/bzImage /var/www/html/fog/service/ipxe/bzImage32
 
 ### ARM 64 bit
@@ -82,6 +84,7 @@ or 32 bit or ARM 64 bit.
     #if you wish to customize the config further with different drivers or options uncomment this line and use the menu to adjust config options
     #make menuconfig
     make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j $(nproc) Image
+    #to not overwrite the default kernel, change the name of the destination file in the cp command
     cp arch/arm64/boot/Image /var/www/html/fog/service/ipxe/arm_Image
 
 ## Additional patches
