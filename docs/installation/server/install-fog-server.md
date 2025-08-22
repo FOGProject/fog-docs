@@ -19,6 +19,7 @@ tags:
 
 Before rushing into installing FOG you want to make sure you check the [[requirements]] 
 The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
+Updating fog is essentially the same process, just instead of creating a fresh clone of the repo, you do a `git pull` and run the installer again.
 
 ## Prerequisite
 
@@ -75,11 +76,15 @@ dev-branch like so (just ignore the comment lines starting with '#'):
     git fetch --all
     #switch to dev-branch
     git checkout dev-branch
+    #or switch to working branch for latest features
+    #git checkout working-1.6
+    #if updating run make sure to pull the latest changes
+    git pull
 
 Then you can run the installer to perform an upgrade or new install as
 shown in the next section.
 
-You can switch back to the master/stable branch with:
+You can switch back to the stable branch with:
 
     cd /root/fogproject
     git fetch --all
@@ -87,6 +92,11 @@ You can switch back to the master/stable branch with:
 
 You can see a list of current branches here:
 <https://github.com/FOGProject/fogproject/branches>
+
+> [!tip]
+> If you have issues with `git pull` saying you have pending changes, use
+> `git reset --hard origin/{branchName}`
+>  to undo file changes within your repo folder that sometimes occur during the install then run `git pull` again to ensure your on the latest.
 
 ### Alternatives
 
