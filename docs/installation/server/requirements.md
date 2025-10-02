@@ -34,7 +34,7 @@ list is by no means an absolute list to follow, though.
 -   Ubuntu 16 or higher
 -   Debian 8 or higher
 -   CentOS 7 or higher
--   Red Hat 6 or higher
+-   Red Hat 6 or higher (RHEL 10+ requires separate DHCP server, See [ISC-DHCP is deprecated](https://github.com/FOGProject/fogproject/issues/730) )
 -   Fedora 22 or higher
 -   Any version of Arch.
 
