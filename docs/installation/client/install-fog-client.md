@@ -69,8 +69,8 @@ The following are the steps to install the client on a host
 > -   Click on the Smart Installer link to download and run the smart
 >     installer. This is a cross-platform installation that detects your
 >     operating system
-> -   The url to download this is
->     <http://fogserver/fog/client/download.php?smartinstaller>
+> -   The url to download this is (where `fogserver` is the name of your local fog server)
+>     `http://{fogserver}/fog/client/download.php?smartinstaller`
 
 ### Run The Installer
 
