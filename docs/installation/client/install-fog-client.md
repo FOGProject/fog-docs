@@ -61,8 +61,8 @@ The following are the steps to install the client on a host
 > -   Click on the link 'MSI \-- Network Installer' to run the MSI
 >     package (can also be used with gpo software deployment and other
 >     silent installs).
-> -   The url to download this is
->     <http://fogserver/fog/client/download.php?newclient>
+> -   The url to download this is ( where `fogserver` is the name of your fog server hostname)
+>     `http://fogserver/fog/client/download.php?newclient`
 
 #### Smart Installer
 
@@ -70,7 +70,7 @@ The following are the steps to install the client on a host
 >     installer. This is a cross-platform installation that detects your
 >     operating system
 > -   The url to download this is (where `fogserver` is the name of your local fog server)
->     `http://{fogserver}/fog/client/download.php?smartinstaller`
+>     `http://fogserver/fog/client/download.php?smartinstaller`
 
 ### Run The Installer
 
