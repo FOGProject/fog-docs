@@ -27,10 +27,10 @@ While adhering to the style guide is appreciated, getting content into to docs (
 
 * Every Page should have front matter aka metadata that defines
 	* title (should match the title heading)
+	* context_id (typically same as title, creates permanent link) 
 	* description
 	* aliases (for friendly link names, should include at least one that matches title)
 	* tags
- * context_id (typically same as title, creates permanent link) 
 * Every md file should be named in all-lower-case-with-dashes-not-spaces
 * Every folder should have a `README.md` file with the above mentioned front matter that serves as the index page with a simple description of that's in that folder
 
@@ -39,6 +39,7 @@ There's an obsidian compatible markdown template of this front matter available 
 ```
 ---
 title: Installation
+context_id: Installation
 aliases:
     - Installation
 description: index page for installation
