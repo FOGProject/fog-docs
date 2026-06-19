@@ -24,6 +24,7 @@ tags:
     Floor", it could also be a member of "Math Department", or "Dell
     PCs." Groups make using FOG possible for organizations with a very
     large number of PC's.
+    see also [[group-shared-state|Group Shared State]]
 
 ## Creating Groups
 
