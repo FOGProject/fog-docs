@@ -125,4 +125,4 @@ two methods is covered, including paths that don't fire the surrounding
 `*_NEW_SETTINGS` events — e.g. host tasking, the boot menu, the task queue, and
 the Capone/Location plugins.
 
-See [`packages/web/lib/fog/storagegroup.class.php`](../packages/web/lib/fog/storagegroup.class.php).
+See [`packages/web/lib/fog/storagegroup.class.php`](https://github.com/FOGProject/fogproject/blob/working-1.6/packages/web/lib/fog/storagegroup.class.php).
