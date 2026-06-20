@@ -7,12 +7,19 @@ aliases:
 tags:
     - development
     - release
-    - in-progress
-    - updating-content
 ---
 # FOG Release
 
-tbd
+A FOG release is built on top of the PXE boot environment known as FOS. The
+parts that make up FOS — the Linux kernel, the Buildroot-based init filesystem,
+and the iPXE binaries — each live in their own repository and are updated
+independently. Because these are the components most likely to affect hardware
+compatibility, the usual practice is to update them and let them bake on the
+`dev-branch` for a week or two so the community can test them before a release
+is cut.
+
+The sections below cover updating each of those components and the testing that
+validates a release.
 
 ## Updating dependencies
 
@@ -110,7 +117,32 @@ Now make sure all the changes are correct and commit to github.
 
 ### FOS init
 
-tbd
+The init is the Buildroot-based root filesystem — the "world" of tools
+(partclone and friends) that runs on the client alongside the kernel. It is
+built from the same `fos` repository, using the `-f` (filesystem-only) flag so
+the kernel is not rebuilt.
+
+The Buildroot version is pinned near the top of `build.sh`; bump it the same way
+the kernel version is bumped above, then build each architecture:
+
+    $ git clone https://github.com/FOGProject/fos
+    $ cd fos
+    $ sed -ri "s/BUILDROOT_VERSION='[0-9.]+'/BUILDROOT_VERSION='2026.02.1'/" build.sh
+    $ ./build.sh -f -a x64
+    $ ./build.sh -f -a x86
+    $ ./build.sh -f -a arm64
+
+Each run downloads and builds Buildroot, applies the FOG overlay, and copies the
+resulting root filesystem into the matching init file — `init.xz` (x64),
+`init_32.xz` (x86), and `arm_init.cpio.gz` (arm64) — alongside a `.sha256`
+checksum. The init version is stamped automatically with the build date.
+
+Review the changes and commit, mirroring the kernel update above:
+
+    $ git status
+    $ git diff
+    $ git commit -a -m "Update Buildroot/init to 2026.02.1"
+    $ git push origin master
 
 ### iPXE
 
