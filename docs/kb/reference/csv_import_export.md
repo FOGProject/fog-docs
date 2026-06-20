@@ -37,6 +37,7 @@ as CSV files from each object's **Import** / **Export** page.
 
 ## Table of contents
 
+- [Exporting](#exporting)
 - [Header row vs. positional](#header-row-vs-positional)
 - [General format rules](#general-format-rules)
 - [The associations column](#the-associations-column)
@@ -51,6 +52,32 @@ as CSV files from each object's **Import** / **Export** page.
   - [Storage Group](#storage-group)
   - [Storage Node](#storage-node)
 - [Plugin extensibility](#plugin-extensibility)
+
+---
+
+## Exporting
+
+Each object type has an **Export** page (for example *Hosts
+:octicons-arrow-right-24: Export Hosts*) with a row of buttons above the table:
+
+- **CSV (All)** — the recommended way to get a complete, import‑ready file. It
+  exports **every** item that matches the current search, server‑side, as a CSV
+  download — not just the rows visible on screen. The file always begins with a
+  header row of column names, so it re‑imports **by name** with no reordering.
+- **Copy**, **Excel**, **Print** — these act only on the rows **currently loaded
+  in the browser** (the on‑screen page, or what you have scrolled through). They
+  are handy for quick, partial grabs rather than a full export.
+- **Column Visibility** — show/hide columns in the on‑screen table. It does not
+  change the **CSV (All)** output, which always contains the full canonical
+  column set for the class (the per‑class layouts below).
+
+>[!tip]
+>Type in the table's **search box first** to scope the export. **CSV (All)**
+>honours the active search, so you can export just the matching subset — for
+>example, every host whose name contains `lab`.
+
+The exported columns — and the optional trailing `associations` column — are
+described per class below.
 
 ---
 
