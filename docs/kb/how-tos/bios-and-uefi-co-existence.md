@@ -376,11 +376,19 @@ or server options.
 
 # Using OS X DHCP
 
-osx dhcp tbd
+> [!note]
+> macOS Server's DHCP service (bootpd) has been deprecated by Apple and is not
+> available on current macOS. This section is kept for reference.
 
-### Steps Here
+macOS Server's DHCP can hand out a next-server (option 66) and a single boot file
+name (option 67), but it does **not** support the architecture-based conditional
+logic FOG needs to serve different boot files to BIOS and UEFI clients (the way
+ISC dhcpd, dnsmasq, and Windows DHCP do).
 
-Please list OS X steps here.\'
+If you must use macOS for DHCP in a mixed BIOS/UEFI environment, run a proxyDHCP
+helper such as dnsmasq alongside it to supply the boot file — see
+[[proxy-dhcp|Proxy DHCP with dnsmasq]]. Otherwise, use one of the other DHCP
+servers covered on this page.
 
 ## Building custom DHCP Classes for co-existence with FOG
 
