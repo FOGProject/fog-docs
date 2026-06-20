@@ -28,11 +28,25 @@ tags:
 
 ### Image Name and Path
 
-tbd
+-   **Image Name** is the friendly name used to identify the image
+    throughout the FOG UI — when assigning it to hosts, scheduling tasks,
+    and in reports. Use something descriptive (for example `win11-lab` or
+    `ubuntu-2404-base`).
+
+-   **Image Path** is the folder name, under the storage node's image
+    directory (`/images` by default), where the image's files are stored.
+    It must be unique. By convention it matches the image name, contains no
+    spaces, and is lower-case.
 
 ### Operating System
 
-tbd
+-   The **Operating System** tells FOG which OS the image contains. Select
+    the OS that matches the source machine.
+
+-   FOG uses this setting to apply the right handling during capture and
+    deploy (such as filesystem and bootloader fix-ups appropriate to that
+    OS). Setting it incorrectly can leave a deployed image unable to boot,
+    so make sure it matches the image's actual OS.
 
 ### Image Type
 
@@ -137,7 +151,15 @@ tbd
 
 ### Partition
 
-tbd
+-   The **Partition** setting controls how much of the disk this image
+    captures and deploys:
+    -   **Everything** (the default) — all partitions on the disk.
+    -   **Partition Table and MBR only** — just the partition table and
+        master boot record, none of the partition contents.
+    -   **Partition _N_ only** — a single specific partition (1 through 10).
+
+-   Most images use **Everything**; the other options are for special cases
+    where you only need part of a disk.
 
 ### Image Manager
 
