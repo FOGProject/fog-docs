@@ -157,6 +157,68 @@ sk-qwertz
 slovene
 ```
 
+## Settings Cache
+
+FOG reads its global settings constantly — on every page load, and inside the
+background services. To avoid asking the database for the same values over and
+over, FOG keeps a short-lived **cache** of those settings. You normally never
+need to think about it: settings you change in the web UI take effect as usual,
+and cached values are automatically re-read once the cache **TTL** expires
+(5 minutes by default).
+
+You can inspect and control the cache at the bottom of:
+
+> FOG Configuration :octicons-arrow-right-24: FOG Settings
+
+### Viewing the cache
+
+At the bottom of the **FOG Settings** page is a read-only cache readout:
+
+| Field | Meaning |
+| --- | --- |
+| **Keys cached** | How many distinct settings are currently held in the cache. |
+| **Hits / Misses / Queries** | For the page you are viewing: how many setting reads were served from the cache (hits) versus the database (misses), and how many database queries that took. A high hit rate means the cache is doing its job. |
+| **TTL** | How long, in seconds, a cached value is trusted before it is re-read from the database. |
+| **Last flush** | How long ago the cache was last flushed, across all FOG processes. |
+| **Cached keys** | The names of the settings currently cached. |
+
+!!! note
+    The Hits / Misses / Queries figures reflect the **page you are currently
+    viewing** — reload the page to take a fresh sample. Only setting **names**
+    are ever shown here; setting **values** (which can include passwords and API
+    tokens) are never exposed.
+
+### Flushing and refreshing
+
+Two buttons on the FOG Settings page let you control the cache by hand:
+
+- **Flush Settings Cache** — discards the cached values, so every setting is
+  re-read from the database the next time it is needed.
+- **Refresh Settings Cache** — reloads all settings from the database right away
+  and reports how many were loaded.
+
+Both actions raise a cross-process signal, so **every** FOG process — the web UI
+*and* the background services — picks up the change on its next read, not just
+the worker that handled your click.
+
+!!! tip
+    You rarely need these. The main reason to use them is when you have changed
+    a setting **outside** the web UI — for example directly in the database — and
+    want FOG to pick it up immediately instead of waiting up to the TTL
+    (5 minutes). Changes made through the web UI do not require a manual flush.
+
+### Automating with the API
+
+The same actions are available through the FOG API for scripting. Like any FOG
+API call, they require a valid `fog-api-token` and an API-enabled
+`fog-user-token`:
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/fog/settings/cache` | Return the cache stats shown above as JSON (names and counters only — never values). |
+| `POST` | `/fog/settings/cache/flush` | Flush the cache. Returns `{"status":"flushed"}`. |
+| `POST` | `/fog/settings/cache/refresh` | Reload all settings. Returns `{"status":"refreshed","count":N}`. |
+
 ## FOG Client Kernel
 
 ### Overview
