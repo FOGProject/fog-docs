@@ -143,7 +143,7 @@ Prompt  | Description
 **SELinux** | *this only applies to RedHat based installs* If SELinux is enabled on your system, then the installer asks you to disable SELinux. The current version of FOG will give problems when SELinux is enabled. Everyone is encouraged to come up with a properly tested SELinux policy we can add to the project and apply for everyone.
 **Local Firewall** | If a local firewall (iptables or firewalld) is enabled, then the installer asks you to disable it. You can leave it  enabled, but then you need to know how to manage the firewall and let all services pass. Currently, the best practice is to disable the firewall if you don't know how to set up rules yourself. As with SELinux, everyone is encouraged to develop a proper set of firewall rules.
 **OS Selection** | The installer tries to guess the distribution you're running. Just confirm the selection if it's correct, otherwise choose the apropriate option.
-**Installation mode** | With the same installer you can install a normal FOG server (called master node) or a FOG storage node. For the explanation of a storage node and how to install a storage node see *todo: install storage node*. As we're installing a FOG server here, choose N here.
+**Installation mode** | With the same installer you can install a normal FOG server (called master node) or a FOG storage node. A storage node uses this same installer — you would answer Y here to install one instead of a full server. For what a storage node is and how to manage one, see [[storage-node|Storage Node Management]]. As we're installing a full FOG server here, choose N here.
 **Default Network interface** | The installer needs to know which network interface will be used for hosting PXE booting as well as sending images via unicast and multicast. If the installer guessed the right interface, then choose n(o) to proceed, using the pre-selected network interface. Otherwise, choose y(es) and type in the name of the network interface (like eth0, ens192).
 **DHCP Service** | You have the option to run a DHCP service on the FOG server itself or, if you already have a DHCP server in your network, then you can answer n(o) to the following three questions. For more information on configuring an existing DHCP server to work with FOG, see [[dhcp-server-settings|DHCP Server Settings]]. The questions on DHCP are in reverse order; the settings first, and finally if you really want to enable DHCP on your FOG server. This order might be changed in future versions of the installer.
 **DHCP Router address** | If you're going to run a DHCP server on this FOG server, then type y(es) and type in the router (or default gateway) address that the DHCP server will advertise. If you have an existing DHCP server on your network, choose N here. (This question is irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
@@ -192,7 +192,9 @@ following information:
      Password: password
 
 Now your FOG Server is ready to use! Go ahead, login to the web UI and
-start using FOG (*todo: link to docs with first steps*) and have fun.
+start using FOG and have fun. A good first step is to
+[[capture-an-image|capture an image]] from a model machine, then
+[[deploy-an-image|deploy it]] to your other computers.
 
 
 ## Fog installation settings
@@ -208,4 +210,10 @@ For an overview of all settings in the .fogsettings file, see [[install-fogsetti
 
 ## Install errors
 
-Whenever the installer *TBD*\...
+If the installer fails or something doesn't look right, the full output of the
+run is captured in `error_logs/foginstall.log`, and more detailed errors are
+written to `error_logs/fog_error_<version>.log`. Both live in the directory you
+ran the installer from (the `bin/` directory of the cloned repo).
+
+When asking for help on the [FOG forums](https://forums.fogproject.org/), include
+the relevant portion of those logs — it's the fastest way to get a useful answer.
