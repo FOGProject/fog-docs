@@ -199,14 +199,23 @@ At the bottom of the **FOG Settings** page is a read-only cache readout:
 | **Keys cached** | How many distinct settings are currently held in the cache. |
 | **Hits / Misses / Queries** | For the page you are viewing: how many setting reads were served from the cache (hits) versus the database (misses), and how many database queries that took. A high hit rate means the cache is doing its job. |
 | **TTL** | How long, in seconds, a cached value is trusted before it is re-read from the database. |
+| **Persistent file** | Whether the shared, cross-request cache file exists and how old it is. While it is present and fresh, a page load is served entirely from it with **no database queries**. Shown as *disabled* for the background services, which keep their own in-memory cache instead. |
 | **Last flush** | How long ago the cache was last flushed, across all FOG processes. |
 | **Cached keys** | The names of the settings currently cached. |
 
 !!! note
     The Hits / Misses / Queries figures reflect the **page you are currently
-    viewing** — reload the page to take a fresh sample. Only setting **names**
-    are ever shown here; setting **values** (which can include passwords and API
-    tokens) are never exposed.
+    viewing** — reload the page to take a fresh sample. Thanks to the persistent
+    file, a normal reload is usually served entirely from cache, so you will
+    typically see **0 queries** even though the counters reset each page load.
+    Only setting **names** are ever shown here; setting **values** (which can
+    include passwords and API tokens) are never exposed.
+
+!!! warning "Sensitive settings"
+    Passwords, tokens and other secrets are **never written to the persistent
+    cache file** — they are always read straight from the database. So those
+    particular settings will always show as a query rather than a cache hit, by
+    design.
 
 ### Flushing and refreshing
 
