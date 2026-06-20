@@ -8,7 +8,7 @@ The latest version will be available at [https://docs.fogproject.org/](https://d
 
 See also for more discussion - [https://forums.fogproject.org/topic/14794/improve-documentation?_=1602258264683](https://forums.fogproject.org/topic/14794/improve-documentation?_=1602258264683)
 
-The documentation is written in Markdown (put a link here) and built with mkdocs (put a link here) and hosted via readthedocs (put a link here). We use the mkDocs material theme (put a link here) and try to be compatible with viewing and editing via obsidian (links here)
+The documentation is written in [Markdown](https://www.markdownguide.org/) and built with [MkDocs](https://www.mkdocs.org/) and hosted via [Read the Docs](https://readthedocs.org/). We use the [MkDocs Material theme](https://squidfunk.github.io/mkdocs-material/) and try to be compatible with viewing and editing via [Obsidian](https://obsidian.md).
 
 # Editing in Obsidian
 
