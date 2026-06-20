@@ -6,16 +6,11 @@ aliases:
     - System Requirements
 description: detail the hardware and os requirements
 tags:
-    - in-progress
-    - updating-content
     - system-requirements
     - dependencies
 ---
 
 # System Requirements
-
-<!-- Ideally this page will be a simple table of requirements and then more info for reference like the packages installed by the installer -->
-
 
 ## Operating System
 
@@ -59,9 +54,38 @@ packages to use and how to integrate with the FOG system.
 
 ## Hardware Requirements
 
-More info needed here, but the server is designed to be able to run on minimal resources. The only firm requirement is enough space for your images and at least a 1Gbps network card.
-<!-- There are no strict requirements for the hardware of your fog server. It's designed to run very well on minimal resources, but it can certainly still benefit from more power if you have it.
-Generally you need
+FOG is designed to run on modest hardware. The only firm requirements are
+**enough disk space for your images** and a **1 Gbps network card** — everything
+else can be quite minimal.
 
-* 2+ core cpu (more cores)
-* 2+ GB of Ram -->
+| Resource | Baseline |
+| --- | --- |
+| CPU | 2 cores |
+| RAM | 2 GB |
+| Network | 1 Gbps |
+
+More CPU and RAM are never wasted — they help with image compression, multicast,
+and running many tasks at once — but they are not required. These baselines are
+enough for a working server.
+
+### Disk space and partitioning
+
+Disk space for `/images` is the figure that actually matters. FOG captures only
+the *used* blocks of a disk (not its full size) and stores them compressed, so an
+image is far smaller than the source drive — but the size varies widely with the
+OS and how full the machine is.
+
+Plan your total as:
+
+    (images you'll keep) x (average image size) + headroom
+
+Keep the OS and `/images` on separate partitions or disks so that a full image
+store can't take down the host OS. `/images` is where every captured image lives,
+and you can grow it later by mounting a larger disk there.
+
+### Client (target machine) requirements
+
+The computers you image have one requirement worth noting: **at least 512 MB of
+RAM**. The FOS imaging environment's `init.xz` decompresses into memory on boot,
+so a machine with too little RAM won't load it. This is trivial on modern
+hardware but can trip up very old or low-spec machines.
