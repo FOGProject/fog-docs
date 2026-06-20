@@ -199,7 +199,7 @@ At the bottom of the **FOG Settings** page is a read-only cache readout:
 | **Keys cached** | How many distinct settings are currently held in the cache. |
 | **Hits / Misses / Queries** | For the page you are viewing: how many setting reads were served from the cache (hits) versus the database (misses), and how many database queries that took. A high hit rate means the cache is doing its job. |
 | **TTL** | How long, in seconds, a cached value is trusted before it is re-read from the database. |
-| **Persistent file** | Whether the shared, cross-request cache file exists and how old it is. While it is present and fresh, a page load is served entirely from it with **no database queries**. Shown as *disabled* for the background services, which keep their own in-memory cache instead. |
+| **Persistent file** | Whether the shared, cross-request cache file exists and how old it is. While it is present and fresh, a page load is served entirely from it with **no database queries**. Shown as *disabled* only if the persistent file cache has been turned off. |
 | **Last flush** | How long ago the cache was last flushed, across all FOG processes. |
 | **Cached keys** | The names of the settings currently cached. |
 
