@@ -27,6 +27,26 @@ Legacy article:
 
 [[legacy-proxy-dhcp|Legacy proxy dhcp configuration]]
 
+> [!important] FOG 1.6 boot file changes
+> The way dnsmasq works as a proxyDHCP server is **unchanged** between FOG 1.5.x and
+> 1.6 — it still hands the client a next-server (your FOG server's IP) and a boot
+> file name over TFTP. What changed in 1.6 is **which** boot file FOG expects UEFI
+> clients to load. The table below lists the old and new file names; the examples
+> on this page already use the 1.6 names.
+
+| Client type | DHCP arch | FOG 1.5.x boot file | **FOG 1.6 boot file** |
+| --- | --- | --- | --- |
+| BIOS / legacy | `00000` | `undionly.kpxe` | `undionly.kkpxe` |
+| 32-bit UEFI | `00006` | `i386-efi/ipxe.efi` | `i386-efi/snponly.efi` |
+| 64-bit UEFI | `00007`/`00008`/`00009` | `ipxe.efi` | `snponly.efi` |
+| ARM64 UEFI | `00011` | — | `arm64-efi/snponly.efi` |
+
+FOG 1.6 standardized on the SNP-driver `snponly.efi` binaries, which are far more
+reliable on modern UEFI firmware than the older UNDI-driver `ipxe.efi`. These are
+the exact file names the FOG 1.6 installer configures for its own ISC/Kea DHCP
+server, so they are the correct values to put in your dnsmasq config too. All of
+these files ship in `/tftpboot` on a 1.6 server.
+
 ## dnsmasq's Roles in FOG
 
 **From the perspective of FOG**, dnsmasq is used when there is an existing DHCP service on the network that must continue to be used and cannot be altered to support FOG. dnsmasq is a form of Proxy DHCP. It listens for DHCP requests (from hosts) and responses (from dhcp service). When a request and response is heard, dnsmasq "adds to" the response. For it's role in fog, it adds the next-server and file name options. These are known in Windows as DHCP Options 066 and 067.
@@ -92,8 +112,8 @@ log-dhcp
 # Set the root directory for files available via FTP.
 tftp-root=/tftpboot
 
-# The boot filename, Server name, Server Ip Address
-dhcp-boot=undionly.kpxe,,<fog_server_IP>
+# The default boot filename (BIOS / legacy), Server name, Server Ip Address
+dhcp-boot=undionly.kkpxe,,<fog_server_IP>
 
 # Disable re-use of the DHCP servername and filename fields as extra
 # option space. That's to avoid confusing some old or broken DHCP clients.
@@ -105,10 +125,11 @@ dhcp-vendorclass=UEFI32,PXEClient:Arch:00006
 dhcp-vendorclass=UEFI,PXEClient:Arch:00007
 dhcp-vendorclass=UEFI64,PXEClient:Arch:00009
 
-# Set the boot file name based on the matching tag from the vendor class (above)
-dhcp-boot=net:UEFI32,i386-efi/ipxe.efi,,<fog_server_IP>
-dhcp-boot=net:UEFI,ipxe.efi,,<fog_server_IP>
-dhcp-boot=net:UEFI64,ipxe.efi,,<fog_server_IP>
+# Set the boot file name based on the matching tag from the vendor class (above).
+# FOG 1.6 uses the snponly.efi (SNP driver) binaries for UEFI.
+dhcp-boot=net:UEFI32,i386-efi/snponly.efi,,<fog_server_IP>
+dhcp-boot=net:UEFI,snponly.efi,,<fog_server_IP>
+dhcp-boot=net:UEFI64,snponly.efi,,<fog_server_IP>
 
 # PXE menu.  The first part is the text displayed to the user. 
 # The second is the timeout, in seconds.
@@ -117,9 +138,9 @@ pxe-prompt="Booting FOG Client", 1
 # The known types are x86PC, PC98, IA64_EFI, Alpha, Arc_x86,
 # Intel_Lean_Client, IA32_EFI, BC_EFI, Xscale_EFI and X86-64_EFI
 # This option is first and will be the default if there is no input from the user.
-pxe-service=X86PC, "Boot to FOG", undionly.kpxe
-pxe-service=X86-64_EFI, "Boot to FOG UEFI", ipxe.efi
-pxe-service=BC_EFI, "Boot to FOG UEFI PXE-BC", ipxe.efi
+pxe-service=X86PC, "Boot to FOG", undionly.kkpxe
+pxe-service=X86-64_EFI, "Boot to FOG UEFI", snponly.efi
+pxe-service=BC_EFI, "Boot to FOG UEFI PXE-BC", snponly.efi
 
 dhcp-range=<fog_server_ip>,proxy
 ```
@@ -147,11 +168,30 @@ systemctl restart  dnsmasq.service
 systemctl enable dnsmasq.service
 ```
 
+## The client downloads iPXE but then fails to reach FOG
+
+dnsmasq's only job is to get the client to TFTP-download the iPXE binary
+(`undionly.kkpxe` / `snponly.efi`). After that, the iPXE binary chainloads
+`tftp://<fog_server_IP>/default.ipxe`, which in turn chainloads your FOG
+server's boot script over HTTP/HTTPS. If the client loads iPXE but then hangs
+or errors when contacting FOG, the dnsmasq config is usually fine and the
+problem is downstream:
+
+> [!note] FOG 1.6 + HTTPS
+> If you answered **yes** to enabling HTTPS during the FOG 1.6 install, the web
+> server is configured to redirect all HTTP traffic to HTTPS (plus HSTS). The
+> installer rebuilds the iPXE binaries to trust your server's certificate so the
+> HTTPS chainload works, but this only happens for the binaries served from that
+> server's own `/tftpboot`. Make sure dnsmasq's `tftp-root` points at the FOG
+> server's `/tftpboot` (or that the files are copied from it), not an older or
+> hand-built set of binaries — otherwise the HTTPS chainload will fail with a
+> certificate error after iPXE loads.
+
 ## Advanced dnsmasq techniques
 
 Reference: [https://forums.fogproject.org/topic/8726/advanced-dnsmasq-techniques](https://forums.fogproject.org/topic/8726/advanced-dnsmasq-techniques)
 
-Now lets say we have a computer that will not boot with the default ipxe.efi file, but instead we need the alternate intel.efi boot kernel. We'll add some dynamics to our above script so that for all computers except for our specific model ipxe.efi is sent to the client and when we pxe boot our specific client intel.efi is sent to just that computer.
+Now lets say we have a computer that will not boot with the default snponly.efi file, but instead we need the alternate intel.efi boot kernel. We'll add some dynamics to our above script so that for all computers except for our specific model snponly.efi is sent to the client and when we pxe boot our specific client intel.efi is sent to just that computer.
 
 I do have to post a caveat here. The uuid field "should" represent the device type for the model and not the unique and individual device (we could use the mac address for that). I have not tested like model computers to see if the uuid is an exact match. I do see references to that this field contains two parts the uuid and guid bits. We may need to parse those if I find that these numbers are not model specific.
 
@@ -211,15 +251,15 @@ dhcp-vendorclass=UEFI64,PXEClient:Arch:00009
 dhcp-match=set:e6230,97,00:44:45:4c:4c:38:00:10:36:80:4e:c4:c0:4f:4a:58:31
 
 # Set the boot file name based on the matching tag from the vendor class (above)
-dhcp-boot=net:UEFI32,i386-efi/ipxe.efi,,192.168.112.24
-dhcp-boot=net:UEFI,ipxe.efi,,192.168.112.24
-dhcp-boot=net:UEFI64,ipxe.efi,,192.168.112.24
+dhcp-boot=net:UEFI32,i386-efi/snponly.efi,,192.168.112.24
+dhcp-boot=net:UEFI,snponly.efi,,192.168.112.24
+dhcp-boot=net:UEFI64,snponly.efi,,192.168.112.24
 
 # Our test to ensure both the UEFI and e6230 tags are set. 
 dhcp-boot=tag:UEFI,tag:e6230, intel.efi, 192.168.112.24, 192.168.112.24
 
-# The boot filename, Server name, Server Ip Address
-dhcp-boot=undionly.kpxe,,192.168.112.24
+# The default boot filename (BIOS / legacy), Server name, Server Ip Address
+dhcp-boot=undionly.kkpxe,,192.168.112.24
 
 # PXE menu.  The first part is the text displayed to the user.  The second is the timeout, in seconds.
 pxe-prompt="Booting FOG Client", 1
