@@ -64,4 +64,4 @@ External Video Link:
 
 Video:
 
-`<embedvideo service="youtube">`{=html}<https://www.youtube.com/watch?v=1konvzseurI>`</embedvideo>`{=html}
+[Watch on YouTube](https://www.youtube.com/watch?v=1konvzseurI)

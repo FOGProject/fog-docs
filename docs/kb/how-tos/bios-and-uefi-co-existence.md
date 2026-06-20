@@ -283,7 +283,7 @@ this, exactly, because it\'s case sensitive:
 As you type this in, the ID and Binary fields will auto-update. When
 done, click Ok, ok, ok to finish this part of the procedure.
 
-`<font color="red">`{=html}**NOTE:**`</font>`{=html} There are many
+<font color="red">**NOTE:**</font> There are many
 other UEFI architectures besides just \"PXEClient:Arch:00007\".
 
 \"PXEClient:Arch:00002\" and \"PXEClient:Arch:00006\" both should get
@@ -418,14 +418,14 @@ For example, This line would (incorrectly) match the below IP Phone\'s
 option 060:
 
 match if substring(option vendor-class-identifier, 19, 1) =
-\"`<font color="red">`{=html}**0**`</font>`{=html}\";
+\"<font color="red">**0**</font>\";
 
 \"Cisco VOIP phone
-00`<font color="red">`{=html}**0**`</font>`{=html}562\"
+00<font color="red">**0**</font>562\"
 
 It would also match this string:
 
-\"PXEClient:Arch:0000`<font color="red">`{=html}**0**`</font>`{=html}\"
+\"PXEClient:Arch:0000<font color="red">**0**</font>\"
 
 Because the 20th character is a zero, this IP phone using the above
 configuration would be matched and given the defined options instead of

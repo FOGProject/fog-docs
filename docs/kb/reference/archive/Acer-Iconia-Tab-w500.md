@@ -11,7 +11,7 @@ tags:
 
 # Acer Iconia Tab w500
 
-`<font color="red">`{=html}Note:`</font>`{=html} This article is older
+<font color="red">Note:</font> This article is older
 (year 2012), and has only had it\'s terminology updated to reflect
 current FOG terminology.
 

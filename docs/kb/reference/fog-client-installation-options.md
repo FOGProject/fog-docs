@@ -42,16 +42,16 @@ download the client from the FOG Web UI:
 > -   Click on the link 'MSI \-- Network Installer' to run the MSI
 >     package (can also be used with gpo software deployment and other
 >     silent installs).
-> -   The url to download this is
->     <http://fogserver/fog/client/download.php?newclient>
+> -   The url to download this is (where `fogserver` is the name of your fog server hostname)
+>     `http://fogserver/fog/client/download.php?newclient`
 
 ### Smart Installer
 
 > -   Click on the Smart Installer link to download and run the smart
 >     installer. This is a cross-platform installation that detects your
 >     operating system
-> -   The url to download this is
->     <http://fogserver/fog/client/download.php?smartinstaller>
+> -   The url to download this is (where `fogserver` is the name of your local fog server)
+>     `http://fogserver/fog/client/download.php?smartinstaller`
 
 ### Run The Installer
 
@@ -161,16 +161,12 @@ There are various ways to uninstall the client:
 -   Uninstall via 'Programs and Features' or 'Apps & Features'
 -   Uninstall via MSI. Example:
 
-```{=html}
 <!-- -->
-```
     msiexec /i FOGService.msi /quiet
 
 -   Uninstall using the SmartInstaller. Example:
 
-```{=html}
 <!-- -->
-```
     SmartInstaller.exe uninstall 
 
 ## Linux client
@@ -252,9 +248,7 @@ download the client from the FOG Web UI:
 -   Select the SmartInstaller and download it
 -   Run the installer with mono:
 
-```{=html}
 <!-- -->
-```
     sudo mono SmartInstaller.exe
 
 The client will install to /opt/fog-service.
@@ -311,9 +305,7 @@ download the client from the FOG Web UI:
 -   Select the SmartInstaller.
 -   Install the SmartInstaller with mono:
 
-```{=html}
 <!-- -->
-```
     sudo mono SmartInstaller.exe
 
 -   Reboot the system to complete the installation.

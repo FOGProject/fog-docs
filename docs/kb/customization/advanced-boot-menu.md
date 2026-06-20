@@ -208,7 +208,3 @@ menu generation part of the advanced menu setup.
 
 additional information about ipxe boot menu creation can be found at
 <http://ipxe.org/>
-
-```{=html}
-<hr>
-```

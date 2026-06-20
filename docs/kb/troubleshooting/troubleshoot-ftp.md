@@ -57,9 +57,7 @@ Linux machine (this example uses Fedora).
 -   Delete the file.
 -   Exit ftp.
 
-```{=html}
 <!-- -->
-```
     [administrator@D620 ~]$ echo 'some text here to send later' > test.txt
     [administrator@D620 ~]$ ftp
     ftp> open 10.0.0.3
@@ -125,9 +123,7 @@ Linux machine (this example uses Fedora).
 -   Close connection
 -   Close FTP.
 
-```{=html}
 <!-- -->
-```
     c:\SomeFolder>echo This is a bit of text to throw into a file > text.txt
 
     c:\SomeFolder>ftp
@@ -166,18 +162,14 @@ Linux machine (this example uses Fedora).
 
 -   Check the status of FTP with
 
-```{=html}
 <!-- -->
-```
     systemctl status vsftpd.service
 
 (Should be on and green, no errors, and enabled)
 
 -   stop, start, disable and enable FTP service.
 
-```{=html}
 <!-- -->
-```
     systemctl stop vsftpd.service
     systemctl start vsftpd.service
     systemctl disable vsftpd.service
@@ -187,9 +179,7 @@ Linux machine (this example uses Fedora).
     top of this article additionally, if you open a web browser and go
     to
 
-```{=html}
 <!-- -->
-```
     ftp://x.x.x.x
 
 -   Use fog / your-fog-account-Password for the credentials
@@ -199,9 +189,7 @@ Linux machine (this example uses Fedora).
 
 -   Restart FTP service.
 
-```{=html}
 <!-- -->
-```
     service vsftpd restart
 
 -   Enable and disable are not available due to this service being in
@@ -210,9 +198,7 @@ Linux machine (this example uses Fedora).
     top of this article additionally, if you open a web browser and go
     to
 
-```{=html}
 <!-- -->
-```
     ftp://x.x.x.x
 
 -   Use fog / your-fog-account-Password for the credentials (Since v.
