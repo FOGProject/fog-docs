@@ -1,5 +1,0 @@
-------------
-Fog Security
-------------
-
-Placeholder
