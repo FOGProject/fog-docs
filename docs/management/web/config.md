@@ -19,6 +19,26 @@ much more content is needed here
 
 ## Other Settings
 
+## Table display mode (infinite scroll vs. paging)
+
+The management list and export tables (Hosts, Images, Snapins, and so on) can
+page through records in one of two ways, controlled by a single install‑wide
+setting:
+
+> Other Settings :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: FOG View Settings :octicons-arrow-right-24: FOG_TABLE_SCROLL_MODE
+
+- **infinite** *(default)* — virtual scroll: rows load in chunks as you scroll
+  and there is no page‑number bar. Best for quickly skimming large lists.
+- **paged** — the classic page‑number pager with a per‑page length selector.
+
+The setting applies to every management table on the next page load. Choose
+**paged** if you prefer page numbers, or if infinite scroll doesn't suit your
+browser or workflow.
+
+>[!note]
+>A few tables — such as the FOG Settings table itself — always use paging
+>regardless of this setting, because they are grouped and search‑driven.
+
 ## Boot Image Key Map
 
 It is possible to change the keymap or keyboard layout of the linux boot
