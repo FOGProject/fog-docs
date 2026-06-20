@@ -20,6 +20,8 @@ Fog has the ability to run bash scripts to add various automations after an imag
 
 There is lots of information on this topic in the forums that will be organized and moved into this page and maybe some sub-pages
 
+For a worked example, see [[uefi-boot-entries|Managing UEFI Boot Entries (efibootmgr)]], which uses a post-download script to recreate UEFI boot entries after a deploy.
+
 See these posts for some more examples
 
 * *[The magical, mystical FOG post download script | FOG Project](https://forums.fogproject.org/topic/7740/the-magical-mystical-fog-post-download-script)

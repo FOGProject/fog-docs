@@ -24,16 +24,19 @@ To Fix this you should create a post-install script to handle it
 See also
 <https://forums.fogproject.org/topic/16703/dual-boot-2-disks-unable-to-boot-grub>
 
-## Post-Install Script
+## Post-Download Script
 
-Post install scripts can be added on the fog server at
-/images/post-install
+Post-download scripts live on the FOG server at `/images/postdownloadscripts/`.
 
-You need to use efibootmgr in a post script to configure the efi boot
-entries and maintain your dual boot config
+You need to use `efibootmgr` in a post-download script to configure the EFI boot
+entries and maintain your dual-boot config. This is an example of a line in a
+post-download script that adds a Debian boot entry:
 
-This is an example of a line in a post install script that would add a debian boot entry 
+```bash
+efibootmgr -c -d /dev/nvme0n1 -p 1 -L "Debian" -l "\EFI\debian\shimx64.efi"
+```
 
-`` ` efibootmgr -c -d /dev/nvme0n1 -p 1 -L "Debian" -l "\EFI\debian\shimx64.efi" ``\`
-
-See also [[post-download-scripts|Post Download Scripts]]
+For what each flag means, how to inspect and reorder entries, and how to wire the
+script into `fog.postdownload`, see
+[[uefi-boot-entries|Managing UEFI Boot Entries (efibootmgr)]] and
+[[post-download-scripts|Post Download Scripts]].
