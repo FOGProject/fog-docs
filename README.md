@@ -93,6 +93,7 @@ This adds tags and titles that work in both obsidian and mkdocs. In obsidian, be
 --- 
 title: Can and should match first title heading
 description: brief description of the page
+context-id: this-should-match-file-name-without-extension-to-create-a-permalink
 aliases:
 	- These are searchable alias titles
 	- They autofill as the link display text when selected
