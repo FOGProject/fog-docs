@@ -12,6 +12,8 @@ The documentation is written in [Markdown](https://www.markdownguide.org/) and b
 
 # Editing in Obsidian
 
+NOTE: Editing in obsidian is not required, it is just where a lot of our style rules derive from for compatibility and to provide a WYSIWYG option for a simpler entry point for anyone wanting to contribute. You can edit/write markdown in any editor and do a pull request, even right in the github web editor. 
+
 [Obsidian](https://obsidian.md) is a markdown note taking app that makes linking pages and images super simple. We've designed this repo to be able to be edited and viewed in obsidian or the mkdocs based website hosted on read the docs.
 
 To open in obsidian, simply clone the repo or download and extract the zip. Then open the `docs` folder as a vault in obsidian.
