@@ -201,7 +201,7 @@ only **unescaped** delimiters split the cell. Labels (`groups`, `printers`,
 
 | Class | Labels | Resolves against |
 |-------|--------|------------------|
-| Host | `groups`, `snapins`, `printers`, `modules`, `location`¹ | Group, Snapin, Printer, Module, Location — by name |
+| Host | `groups`, `snapins`, `printers`, `modules`, `location`¹, `site`² | Group, Snapin, Printer, Module, Location, Site — by name |
 | Image | `storagegroups` | Storage Group — by name |
 | Snapin | `storagegroups` | Storage Group — by name |
 | Group | `hosts` | Host — by name (the group's members) |
@@ -211,6 +211,9 @@ only **unescaped** delimiters split the cell. Labels (`groups`, `printers`,
 ¹ `location` is provided by the **Location** plugin and only appears when that
 plugin is installed. A host has a single location, so only the first value is
 used.
+
+² `site` is provided by the **Site** plugin and only appears when that plugin
+is installed. A host has a single site, so only the first value is used.
 
 > **Note:** because `;`, `:` and `|` are structural, an object **name** that
 > literally contains one of those characters must be **escaped** with a
@@ -247,7 +250,7 @@ exactly. `associations` is always the optional final column where supported.
 | 14 | `ADPassLegacy` | 30 | `tokenlock` |
 | 15 | `productKey` | 31 | `associations` *(optional)* |
 
-Associations: `groups`, `snapins`, `printers`, `modules`, `location`¹.
+Associations: `groups`, `snapins`, `printers`, `modules`, `location`¹, `site`².
 
 ### Image
 
@@ -352,7 +355,9 @@ import and export, without patching core:
   receives the `parts` array (by reference) for last‑mile tweaks.
 
 The Location plugin (`addlocationimport.hook.php`) is the reference
-implementation, registering a single‑valued `location` type for hosts.
+implementation, registering a single‑valued `location` type for hosts. The
+Site plugin (`addsiteimport.hook.php`) follows the same pattern for a host's
+`site`.
 
 See issue [#828](https://github.com/FOGProject/fogproject/issues/828) for the
 design discussion and history.
