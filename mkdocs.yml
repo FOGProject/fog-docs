@@ -112,6 +112,7 @@ nav:
       - management/web/README.md
       - Dashboard: management/web/dashboard.md
       - User Management: management/web/users.md
+      - Roles & Permissions: management/web/roles.md
       - Host Management: management/web/hosts.md
       - Group Management: management/web/groups.md
       - Image Management: management/web/images.md
