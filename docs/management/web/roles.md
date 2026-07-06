@@ -95,6 +95,21 @@ assign them a role or leave them as an intentional administrator.
   their user record (editing users requires the Users **Edit**
   permission — and would otherwise let a user change their own roles).
 
+## Narrowing a role to specific sites
+
+Roles decide **what** a user can do; they do not decide **which**
+objects those actions apply to. A role that grants Host edit lets that
+user edit every host on the server.
+
+If you need to restrict a user to only the hosts, users and groups of
+their own location or team, install the **Site** plugin. It layers an
+object boundary on top of the role: a site-scoped user keeps their
+role's actions but only ever sees the objects in their site(s), in both
+the web UI and the API. Role-less users and full-access roles are never
+scoped.
+
+See [Site Scoping](site-scoping.md) for the full workflow.
+
 ## API tokens follow roles
 
 A user API token inherits that user's role permissions: API requests
