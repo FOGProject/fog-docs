@@ -147,17 +147,27 @@ Two caveats:
   extra space is left unallocated after the PV partition — you can expand
   into it manually (`growpart`/`pvresize`/`lvextend`) after deploy.
 
-## Multicast is not supported yet
+## Multicast
 
-The multicast sender does not yet know about per-LV image files, so a
-multicast deploy of an LVM image stops with:
+Multicast deploy of LVM images works, but it needs **both** sides current:
+a FOS build with multicast LVM support *and* a FOG server (1.6+) whose
+multicast sender knows about per-LV image files. Multicast synchronizes
+streams purely by order — each receiver joins the next file the server
+sends — so the client checks the server before touching the disk and
+refuses against a server that would send the wrong files:
 
 ```
-Multicast deploy of LVM images is not supported yet, deploy unicast
+The FOG server does not support multicast deploy of LVM images; update the server or deploy unicast
 ```
 
-Deploy LVM images with **unicast** tasks (or group deploys, which are
-unicast per host).
+If you see that message, update the FOG server, or deploy with **unicast**
+tasks (group deploys are unicast per host). A refused host leaves its disk
+untouched, but note the multicast session itself keeps waiting for that
+receiver until its max-wait timeout — the same as any client-side abort in
+a multicast task.
+
+Split-file images (a non-default capture option) are not multicast-capable
+for any image type; that limitation is unchanged.
 
 ## Reverting to the old behavior: `skiplvm=1`
 
