@@ -83,6 +83,11 @@ tags:
         -   When the partitions are laid onto the destination drive, all
             resized partitions are intelligently expanded to utilize the
             entire drive.
+        -   On FOS builds with [[lvm-imaging|LVM resize support]], Linux
+            LVM setups resize too — the logical volumes inside the
+            volume group are shrunk and expanded to fit the target disk,
+            so an all-LVM disk (EFI + LVM physical volume) works with
+            this image type.
 
 #### Multiple Partition Image - Single Disk (Not Resizable)
 
