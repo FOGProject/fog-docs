@@ -37,7 +37,22 @@ partition-table and filesystem geometry between the two, so it refuses rather
 than write a disk that won't boot. **Nothing was written** — the target disk is
 untouched.
 
-For the full explanation of why this happens, see
+On newer FOS builds the message also includes a line about the target's device
+type, for example:
+
+```
+   /dev/mmcblk0 is an eMMC/SD device; its 512-byte logical sector size is fixed
+   by the MMC/SD specification and cannot be changed. Only an image captured on
+   512-byte-sector hardware can deploy to it.
+```
+
+That line tells you which side of the mismatch can be fixed: if the target's
+sector size is **fixed** (eMMC/SD, UFS), recapturing on matching hardware is
+the only remedy; if the target is a **virtual disk**, you can change its sector
+size in the VM's disk configuration instead.
+
+For the full explanation of why this happens — and what each device type can
+and can't do — see
 [[sector-size-imaging|Sector Sizes and Imaging]].
 
 ## How to fix it
@@ -56,7 +71,14 @@ Pick whichever fits your situation:
    supports the image's sector size, FOS offers to low-level reformat it to match
    after a 60-second cancel window. See
    [[sector-size-imaging#nvme-targets-can-be-reformatted-to-match|NVMe targets can be reformatted to match]].
-   This does not work for SATA/SAS drives, nor for NVMe drives that are 4Kn-only.
+   NVMe is the only device type this works for — not SATA/SAS, eMMC/SD, UFS, or
+   USB targets, and not NVMe drives that are 4Kn-only. See
+   [[sector-size-imaging#sector-sizes-by-device-type|Sector sizes by device type]]
+   for the per-type breakdown.
+
+4. **Virtual machine target?** The disk's logical sector size is set by the
+   hypervisor, not the virtual disk itself. Change the disk's
+   `logical_block_size` (QEMU/libvirt/Proxmox) to match the image and redeploy.
 
 ## Checking a disk's sector size
 
