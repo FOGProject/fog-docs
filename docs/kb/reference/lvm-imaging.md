@@ -39,14 +39,20 @@ When capture finds a partition holding an LVM physical volume (detected by
 content, so it works regardless of the partition's type ID), it:
 
 1. Activates the volume group and checks the layout is supported (see
-   below). Capture never writes to the source machine.
-2. Records the PV/VG/LV layout — names, UUIDs, sizes — in two small metadata
-   files stored with the image (`dNpM.lvm` and `dNpM.lvm.vgcfg`).
-3. Captures **each logical volume individually** with the partclone type
+   below).
+2. With a resizable image type, shrinks each ext logical volume's
+   filesystem before capture — the same "Resizing filesystem" step flat
+   partitions get — and expands it back on the source machine afterwards.
+   This is what lets the image deploy to smaller disks (see
+   [Sizing](#sizing-deploying-to-different-disk-sizes) below).
+3. Records the PV/VG/LV layout — names, UUIDs, sizes, and how small each
+   volume can go — in two small metadata files stored with the image
+   (`dNpM.lvm` and `dNpM.lvm.vgcfg`).
+4. Captures **each logical volume individually** with the partclone type
    matching its filesystem, used blocks only — the same way a plain
    partition is captured. Each LV becomes its own file in the image
    (`dNpM.<lvname>.img`).
-4. Swap LVs are not imaged at all; only their UUID is recorded, exactly like
+5. Swap LVs are not imaged at all; only their UUID is recorded, exactly like
    swap partitions.
 
 Image size and capture time become proportional to the **data in the logical
@@ -54,12 +60,14 @@ volumes**, not the size of the PV partition.
 
 ## What deploy does
 
-Deploy recreates the partition at its original size, rebuilds the PV and VG
-from the recorded metadata, restores each logical volume's filesystem, and
-regenerates swap LVs. **Every UUID is preserved** — physical volume, volume
-group, logical volumes, filesystems, and swap — so `/etc/fstab`, GRUB
-configs, and initramfs references in the deployed OS keep working without
-modification.
+Deploy recreates the partition, rebuilds the PV and VG from the recorded
+metadata, restores each logical volume's filesystem, and regenerates swap
+LVs. On a target the same size as (or larger than) the original, **every
+UUID is preserved** — physical volume, volume group, logical volumes,
+filesystems, and swap — so `/etc/fstab`, GRUB configs, and initramfs
+references in the deployed OS keep working without modification. What
+happens on other target sizes is covered in
+[Sizing](#sizing-deploying-to-different-disk-sizes) below.
 
 Deploy failures are treated as fatal: the task stops with a message rather
 than leaving a half-restored volume group that might appear to boot.
@@ -101,23 +109,43 @@ Two more cases worth knowing:
 - **Whole-disk PVs** (a PV created directly on `/dev/sdb` with no partition
   table) are not detected and not captured. This is unchanged from before.
 
-## Sizing: the PV partition is fixed-size
+## Sizing: deploying to different disk sizes
 
-Phase 1 of LVM support restores the volume group **at its original size**.
-The PV partition is automatically treated as a fixed-size partition by the
-resize engine, so:
+With the *Single Disk - Resizable* image type, LVM images resize to fit
+the target disk, the same way flat partitions do. What happens depends on
+the target's size relative to the source:
 
-- Deploy to a disk **the same size or larger** than the source. On a larger
-  disk, the extra space is left unallocated after the PV partition — you can
-  expand into it manually (`growpart`/`pvresize`/`lvextend`) after deploy.
-- With the *Single Disk - Resizable* image type, the disk still needs **at
-  least one resizable non-LVM partition** (standard installs satisfy this
-  with the ext4 `/boot` partition). A disk that is only EFI + PV should use
-  one of the *Multiple Partition* image types.
+- **Same size** — the volume group is restored exactly as it was, every
+  UUID preserved.
+- **Larger** — the volume group is restored from its original metadata,
+  then the PV partition and physical volume grow into the extra space,
+  which is distributed among the non-swap logical volumes **proportionally
+  to their original sizes**. Swap LVs stay their original size. Every UUID
+  is preserved here too.
+- **Smaller** — the volume group is rebuilt with the standard LVM tools at
+  each volume's recorded minimum size plus a proportional share of whatever
+  room the target has beyond that. The VG and LV **names**, the PV UUID,
+  the filesystem UUIDs, and swap UUIDs are all preserved, so `/etc/fstab`,
+  GRUB, and initramfs references keep working; the VG and LV UUIDs
+  themselves are regenerated (nothing in a standard install references
+  those).
+- **Smaller than the recorded minimum** — the deploy refuses with a message
+  stating the minimum, before anything is written to the disk.
 
-Shrinking and expanding the logical volumes themselves to fit the target
-disk is planned as a follow-up; the metadata this phase records is the
-foundation for it.
+Because a per-LV-captured PV is itself resizable, *Single Disk - Resizable*
+no longer needs a separate resizable non-LVM partition on the disk — a
+disk that is only EFI + PV works.
+
+Two caveats:
+
+- **Images captured before resize support** (or on a FOS build without it)
+  record no minimum sizes, so they deploy to same-size-or-larger disks
+  only; a smaller target is refused with a message saying to recapture.
+  Recapturing with a current FOS makes the image shrinkable.
+- **With the *Multiple Partition* image types** nothing is resized: the
+  volume group is restored at its original size and, on a larger disk, the
+  extra space is left unallocated after the PV partition — you can expand
+  into it manually (`growpart`/`pvresize`/`lvextend`) after deploy.
 
 ## Multicast is not supported yet
 
@@ -151,7 +179,7 @@ get per-LV behavior back.
   by a **newer** FOS than the one deploying:
 
 ```
-Image was captured with a newer LVM format (LVMFORMAT 2), update FOS
+Image was captured with a newer LVM format (LVMFORMAT 3), update FOS
 ```
 
 ## See also
