@@ -106,7 +106,9 @@ tags:
     It is possible to capture Linux systems with this type of image given the following criteria
 
     :   -   There is a Grub boot loader present.
-        -   LVM is not used.
+        -   LVM setups are supported on FOS builds that include
+            [[lvm-imaging|per-LV LVM imaging]]; on older FOS builds LVM
+            must not be used.
         -   The partitions include **ext2**, **ext3**, **ext4**,
             **reiserfs**, and/or **swap**.
         -   The swap partition should be moved out of the extended
