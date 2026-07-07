@@ -110,11 +110,40 @@ sector size, FOS reformats it to match instead of simply refusing:
   overwrites the disk anyway — but it does mean there is no "undo."
 
 > [!note]
-> This only applies to **NVMe**. SATA and SAS drives cannot be re-sectored by
-> FOG: a 4Kn SATA/SAS disk can only receive a 4Kn image, and a 512-byte disk can
-> only receive a 512-byte image. Some NVMe drives are **4Kn-only** and expose no
-> 512-byte LBA format; those can only receive 4Kn images. In every case where the
+> This only applies to **NVMe**. Some NVMe drives are **4Kn-only** and expose no
+> 512-byte LBA format; those can only receive 4Kn images. No other device type
+> can be re-sectored — see the per-type breakdown below. In every case where the
 > geometry can't be matched, FOS refuses rather than produce a bad disk.
+
+## Sector sizes by device type
+
+"Can't FOG just reformat it like NVMe?" is a fair question for every kind of
+disk, so here is the whole landscape. The short answer: **NVMe is the only
+device type with a safe, standard way to switch its logical sector size**, which
+is why it's the only one FOS reformats automatically.
+
+| Target type | Logical sector size | Can it be changed? |
+|---|---|---|
+| **NVMe** (`/dev/nvmeXnY`) | 512 or 4096, per LBA format | **Yes** — if the drive exposes an LBA format at the needed size, FOS reformats it automatically (see above) |
+| **eMMC / SD** (`/dev/mmcblkX`) | 512, always | No — fixed by the MMC/SD specification |
+| **UFS** (appears as `/dev/sdX`) | 4096 on most modules | No — set when the module is provisioned at the factory and not changeable in the field |
+| **SATA / SAS** (`/dev/sdX`) | 512 on most drives (512n/512e), 4096 on 4Kn drives | No — a small number of enterprise drives support vendor "FastFormat" re-sectoring, but it generally needs a power cycle to take effect, so FOG does not attempt it |
+| **USB-attached** (`/dev/sdX`) | whatever the enclosure's bridge chip reports | No — the bridge decides, not the drive or FOG |
+| **Virtual disk** (`/dev/vdX`, or `sdX` in a VM) | set by the hypervisor | Not from inside FOS — but you can change it yourself in the VM's disk configuration (e.g. the `logical_block_size` disk property in QEMU/libvirt/Proxmox) |
+
+Two practical consequences of that table:
+
+- **eMMC and SD targets** (tablets, thin clients, some mini PCs) can only ever
+  receive images captured on **512-byte-logical** hardware. A 4Kn image will
+  never deploy to them; recapture on 512-byte hardware is the only fix.
+- **UFS-based machines** (many recent thin-and-light laptops and tablets)
+  capture **4096-byte** images. Those deploy fine to 4Kn disks and to NVMe
+  targets (the automatic reformat above handles NVMe) — but never to 512-byte
+  SATA, eMMC, or USB targets.
+
+When FOS refuses a mismatch on one of these device types, the refusal message
+names the device type and says whether its sector size is fixed, so you know
+which side of the mismatch can actually be fixed.
 
 ## When the check does and doesn't apply
 
