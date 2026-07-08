@@ -15,6 +15,9 @@ tags:
     - option-67
     - network
     - network-config
+    - kea
+    - isc-dhcp
+    - linux
 ---
 
 # DHCP Server Settings
@@ -57,6 +60,111 @@ You can find other pxe boot files in you `/tftpboot` directory on your fogserver
 
 The below are some examples with screen shots on how to configure these settings in some servers.
 The screenshots are a bit old but the general idea is still the same on modern versions
+
+### Dedicated Linux DHCP server (Kea)
+
+If you run a **dedicated [Kea DHCP](https://kea.readthedocs.io/) server** (separate from your FOG server), you can serve the right boot file to each client architecture (legacy BIOS vs. UEFI vs. ARM64) by classifying clients on the PXE vendor-class string. This is the same approach FOG uses when it hosts DHCP itself, so it is the most-tested configuration.
+
+> [!tip]
+> When you run the FOG installer and answer **No** to "Would you like to use the FOG server for DHCP service", FOG now writes a ready-to-copy sample to `kea-dhcp4.conf.fog-sample` in the FOG web root (e.g. `/var/www/html/fog/kea-dhcp4.conf.fog-sample`) with `next-server` already set to your FOG server. Copy that file to your Kea server as `/etc/kea/kea-dhcp4.conf` and edit the network-specific values below.
+
+A complete `kea-dhcp4.conf` for a dedicated Kea server:
+
+```json
+{
+    "Dhcp4": {
+        "interfaces-config": { "interfaces": [ "eth0" ] },
+        "lease-database": { "type": "memfile", "lfc-interval": 3600 },
+        "valid-lifetime": 21600,
+        "max-valid-lifetime": 43200,
+
+        "next-server": "10.0.0.10",
+        "option-data": [
+            { "name": "tftp-server-name", "data": "10.0.0.10" }
+        ],
+
+        "subnet4": [
+            {
+                "id": 1,
+                "subnet": "10.0.0.0/24",
+                "pools": [ { "pool": "10.0.0.100 - 10.0.0.250" } ],
+                "option-data": [
+                    { "name": "subnet-mask", "data": "255.255.255.0" },
+                    { "name": "routers", "data": "10.0.0.1" },
+                    { "name": "domain-name-servers", "data": "10.0.0.2" }
+                ]
+            }
+        ],
+
+        "client-classes": [
+            {
+                "name": "FOG-Legacy-BIOS",
+                "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00000'",
+                "boot-file-name": "undionly.kkpxe"
+            },
+            {
+                "name": "FOG-UEFI-32-2",
+                "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00002'",
+                "boot-file-name": "i386-efi/snponly.efi"
+            },
+            {
+                "name": "FOG-UEFI-32-1",
+                "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00006'",
+                "boot-file-name": "i386-efi/snponly.efi"
+            },
+            {
+                "name": "FOG-UEFI-64-1",
+                "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00007'",
+                "boot-file-name": "snponly.efi"
+            },
+            {
+                "name": "FOG-UEFI-64-2",
+                "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00008'",
+                "boot-file-name": "snponly.efi"
+            },
+            {
+                "name": "FOG-UEFI-64-3",
+                "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00009'",
+                "boot-file-name": "snponly.efi"
+            },
+            {
+                "name": "FOG-UEFI-ARM64",
+                "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00011'",
+                "boot-file-name": "arm64-efi/snponly.efi"
+            },
+            {
+                "name": "FOG-Surface-Pro-4",
+                "test": "substring(option[60].hex,0,32) == 'PXEClient:Arch:00007:UNDI:003016'",
+                "boot-file-name": "snponly.efi"
+            }
+        ]
+    }
+}
+```
+
+**What to change for your network** (everything else can stay as-is):
+
+| Value | Set it to |
+| --- | --- |
+| `interfaces` (`eth0`) | The NIC your Kea server listens on (or `"*"` for all) |
+| `next-server` and `tftp-server-name` (`10.0.0.10`) | The IP address of your **FOG server** |
+| `subnet` / `pools` (`10.0.0.0/24`, pool range) | The network and lease range you are serving |
+| `routers` (`10.0.0.1`) | Your network's gateway |
+| `domain-name-servers` (`10.0.0.2`) | Your DNS server(s) |
+
+The `boot-file-name` values (`undionly.kkpxe`, `snponly.efi`, `i386-efi/snponly.efi`, `arm64-efi/snponly.efi`) are the standard iPXE binaries FOG ships in `/tftpboot` — leave them as-is. The `client-classes` match on DHCP option 60 (the PXE `PXEClient:Arch:NNNNN` vendor-class string) so each architecture is handed the correct binary automatically.
+
+> [!note]
+> Apple Intel netboot (BSDP) is **not** supported by Kea. If you must netboot Intel Macs, keep those on an ISC-DHCP server (FOG's ISC config still includes the BSDP class).
+
+After editing, validate the file before starting the service:
+
+```bash
+kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
+```
+
+> [!tip]
+> Prefer ISC-DHCP or already run it? A dedicated ISC `dhcpd.conf` uses the same idea with `class`/`filename` blocks (`match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00007"`). The easiest reference is the `/etc/dhcp/dhcpd.conf` FOG generates when it hosts DHCP — copy its `subnet` and `class` blocks to your dedicated server and change `next-server` to your FOG server's IP.
 
 ### Windows Server DHCP
 
