@@ -128,6 +128,17 @@ If the snapin file is a .vb script you must perform these additional steps:
 <!-- (http://www.fogproject.org/wiki/index.php?title=Supported_Snapin%27s_and_Command_Line_Switches)]  -->
 There are MANY more supported applications that can be installed via command line arguments. You might have better luck installing them directly via .EXE / .MSI / or scripting them via .VBS . For more info on this consult the forums --[Ssx4life](https://wiki.fogproject.org/wiki/index.php?title=User:Ssx4life&action=edit&redlink=1 "User:Ssx4life (page does not exist)") 09:04, 8 October 2009 (MST)
 
+## Snapin Types: Normal vs Snapin Pack
+
+When you create a snapin, the **Snapin Type** field offers two choices:
+
+-   **Normal** runs a single uploaded file (an installer, script, or command).
+-   **Snapin Pack** unzips an uploaded archive on the client, then runs a file from *inside* it. Use this when your install needs more than one file (for example a setup executable plus its configuration or MST files).
+
+For a Snapin Pack, use the `[FOG_SNAPIN_PATH]` token in the argument fields to point at the folder where the archive is unzipped on the client. FOG replaces that token with the real extraction path at run time, so your command can reference the unpacked files regardless of where they land.
+
+The optional **Template** drop-down on the create form is a convenience only: pick a type (MSI, PowerShell, etc.) to pre-fill the command fields with a sensible starting point, then edit them as needed. It does not change what is stored — only what the fields are seeded with.
+
 ## Linking the Snapin to Hosts
 
 In order for a snapin to be deployed it must be linked with a host. To do this perform the following:
