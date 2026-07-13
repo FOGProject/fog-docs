@@ -39,24 +39,31 @@ All examples assume the API is enabled and you are sending the
 ## Pagination
 
 List endpoints (`/fog/host`, `/fog/image`, `/fog/snapin`, `/fog/user`, …) are
-backed by FOG's DataTables server-side processor. They accept the standard
-DataTables parameters and return a DataTables-shaped envelope.
-
-!!! warning "List parameters go in the request BODY, not the query string"
-    Because of the internal web-server rewrite that fronts the API, list
-    endpoints read their parameters (`start`, `length`, `search`, `order`,
-    `draw`) from the **request body**, not from the URL query string. With
-    `curl` you pass them with `--data`. The request is still a `GET`.
+backed by FOG's DataTables server-side processor. Ask for a page with `length`
+(and optionally `start`) and the response tells you both how big the full
+result set is and how to reach the next page.
 
 ### Parameters
 
-| Parameter | Meaning                                                        | Default |
-|-----------|----------------------------------------------------------------|---------|
-| `start`   | Zero-based offset of the first row to return.                  | `0`     |
-| `length`  | Maximum number of rows to return.                              | all     |
-| `search`  | Free-text filter (DataTables global search value).             | none    |
-| `order`   | DataTables ordering array.                                     | by name |
-| `draw`    | Echoed back verbatim; useful for correlating async responses.  | `0`     |
+| Parameter | Meaning                                                        | Default | Where |
+|-----------|----------------------------------------------------------------|---------|-------|
+| `length`  | Maximum number of rows to return.                              | all     | query string **or** body |
+| `start`   | Zero-based offset of the first row to return.                  | `0`     | query string **or** body |
+| `search`  | Free-text filter (DataTables global search value).             | none    | body only |
+| `order`   | DataTables ordering array.                                     | by name | body only |
+| `draw`    | Echoed back verbatim; useful for correlating async responses.  | `0`     | body only |
+
+!!! tip "The easy way: `?length` on the URL"
+    `length` and `start` work directly as query-string parameters, so a plain
+    `GET .../fog/host?length=3` returns the first three hosts. This is the
+    simplest way to page and is what the examples below use. (If you omit
+    `start`, it defaults to `0`.)
+
+!!! note "search / order / draw still go in the request body"
+    The full DataTables parameters (`search`, `order`, `draw`) are read from the
+    **request body** because of the internal web-server rewrite that fronts the
+    API. Pass them with `curl --data`; the request is still a `GET`. Only
+    `length` and `start` may be sent either way.
 
 ### Response envelope
 
@@ -65,7 +72,12 @@ DataTables parameters and return a DataTables-shaped envelope.
   "draw": 0,
   "recordsTotal": 85,
   "recordsFiltered": 85,
+  "recordsReturned": 3,
   "data": [ { "id": 1, "name": "..." }, ... ],
+  "firstUrl": "/fog/host?length=3&start=0",
+  "prevUrl": null,
+  "nextUrl": "/fog/host?length=3&start=3",
+  "lastUrl": "/fog/host?length=3&start=84",
   "_lang": "host"
 }
 ```
@@ -73,7 +85,35 @@ DataTables parameters and return a DataTables-shaped envelope.
 * `recordsTotal` — total rows in the table before filtering.
 * `recordsFiltered` — rows matching the current `search` (equals
   `recordsTotal` when no search is applied).
+* `recordsReturned` — how many rows are in **this** response (the size of
+  `data`). Always present on a list response.
 * `data` — the current page of rows.
+* `firstUrl` / `prevUrl` / `nextUrl` / `lastUrl` — request-relative URLs for the
+  first, previous, next and last pages. Present only when you asked for a
+  bounded page (`length`) against a non-empty result set; each is `null` when it
+  does not apply (`prevUrl` on the first page, `nextUrl` on the last). They
+  echo the path you requested and preserve every other query parameter,
+  including `?expand=…`.
+
+!!! info "The full counts never shrink to the page"
+    `recordsTotal` and `recordsFiltered` always describe the **whole** result
+    set, not the current page — the web UI depends on that. Use
+    `recordsReturned` to see how big the page you got back actually is.
+
+### The `Link` header
+
+The same first/previous/next/last pointers are also emitted as a standard
+[RFC 5988](https://www.rfc-editor.org/rfc/rfc5988) `Link` response header, so a
+client can page without reading the body:
+
+```
+Link: </fog/host?length=3&start=0>; rel="first",
+      </fog/host?length=3&start=3>; rel="next",
+      </fog/host?length=3&start=84>; rel="last"
+```
+
+`rel="prev"` is omitted on the first page and `rel="next"` on the last, so you
+can stop as soon as there is no `next`.
 
 ### Examples
 
@@ -82,8 +122,7 @@ First three hosts:
 ```bash
 curl -H 'fog-api-token: yourapitoken' \
      -H 'fog-user-token: yourusertoken' \
-     -X GET --data 'start=0&length=3' \
-     http://fogserver/fog/host
+     'http://fogserver/fog/host?length=3'
 ```
 
 The next page (rows 4–5):
@@ -91,8 +130,77 @@ The next page (rows 4–5):
 ```bash
 curl -H 'fog-api-token: yourapitoken' \
      -H 'fog-user-token: yourusertoken' \
-     -X GET --data 'start=3&length=2' \
-     http://fogserver/fog/host
+     'http://fogserver/fog/host?length=2&start=3'
+```
+
+### Walking every page automatically
+
+Because each response hands back `nextUrl` (and the same pointer in the `Link`
+header), a client can loop until there is nothing left — you never have to track
+offsets yourself. Start from any `?length=…` URL and follow `nextUrl` until it
+is `null`.
+
+**Bash (`curl` + `jq`):**
+
+```bash
+#!/usr/bin/env bash
+base='http://fogserver'
+next='/fog/host?length=50'
+while [ -n "$next" ] && [ "$next" != "null" ]; do
+  page="$(curl -s \
+    -H 'fog-api-token: yourapitoken' \
+    -H 'fog-user-token: yourusertoken' \
+    "${base}${next}")"
+  echo "$page" | jq -c '.data[] | {id, name}'
+  next="$(echo "$page" | jq -r '.nextUrl')"   # "null" when done
+done
+```
+
+**Python (`requests`):**
+
+```python
+import requests
+
+base = "http://fogserver"
+headers = {
+    "fog-api-token": "yourapitoken",
+    "fog-user-token": "yourusertoken",
+}
+
+url = "/fog/host?length=50"
+hosts = []
+while url:
+    body = requests.get(base + url, headers=headers).json()
+    hosts.extend(body["data"])
+    print(f"got {body['recordsReturned']} of {body['recordsFiltered']}")
+    url = body.get("nextUrl")   # None on the last page -> loop ends
+
+print(f"total collected: {len(hosts)}")
+```
+
+**Ruby (`net/http`):**
+
+```ruby
+require "net/http"
+require "json"
+
+base = "http://fogserver"
+headers = {
+  "fog-api-token"  => "yourapitoken",
+  "fog-user-token" => "yourusertoken",
+}
+
+url = "/fog/host?length=50"
+hosts = []
+until url.nil?
+  res  = Net::HTTP.get_response(URI(base + url), headers)
+  body = JSON.parse(res.body)
+  hosts.concat(body["data"])
+  puts "got #{body['recordsReturned']} of #{body['recordsFiltered']}"
+  url = body["nextUrl"]   # nil on the last page -> loop ends
+end
+
+puts "total collected: #{hosts.length}"
 ```
 
 ---
@@ -192,9 +300,11 @@ So to page through an expanded list, always send an explicit
 ```bash
 curl -H 'fog-api-token: yourapitoken' \
      -H 'fog-user-token: yourusertoken' \
-     -X GET --data 'start=0&length=100' \
-     'http://fogserver/fog/host?expand=snapins'
+     'http://fogserver/fog/host?expand=snapins&length=100'
 ```
+
+The `nextUrl`/`Link` pointers returned by an expanded list keep the `?expand=…`
+token, so the page-walking loops above work unchanged against expanded lists.
 
 ### Sensitive fields are never exposed by expansion
 
@@ -289,7 +399,9 @@ sensitive fields stripped.
 
 | Goal                                   | How                                                            |
 |----------------------------------------|---------------------------------------------------------------|
-| Page a list                            | Send `start` / `length` in the request **body**.              |
+| Page a list                            | `?length=<n>` (and optional `?start=<n>`) on the URL.         |
+| Follow pages automatically             | Loop on `nextUrl` (or the `Link` header) until it is `null`.  |
+| See how many rows a page returned      | Read `recordsReturned`.                                       |
 | Inline one relation                    | `?expand=<token>`                                             |
 | Inline several relations               | `?expand=a,b,c`                                               |
 | Inline everything                      | `?expand=all`                                                |
