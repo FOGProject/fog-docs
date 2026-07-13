@@ -118,3 +118,10 @@ If the api call is correct you'll get the following response: `""`\`
 ### PUT
 
 Edit a host: `/fog/host/id/edit` Example body: `{"imageID": "1"}`
+
+## Pagination, expansion & plugin items
+
+FOG 1.6 adds opt-in query features for working with the API: paging large list
+results, inlining related objects with `?expand=…`, and reading plugin-injected
+associations from the `pluginItems` envelope. See
+[API Pagination, Expansion & Plugin Items](api-expansion-and-pagination.md).
