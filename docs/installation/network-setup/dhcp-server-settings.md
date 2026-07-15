@@ -28,6 +28,10 @@ If you do not use FOG to provide DHCP services in your network (which is a very 
 > If you do not have access to your DHCP server, or are using a device that isn't capable of specifying option 066 and 067 (next server and file name) you can use ProxyDHCP instead
 > The most popular ProxyDHCP method with fog is dnsmasq. This article will walk you through that: [[proxy-dhcp|Proxy DHCP with DNSMasq]]
 
+> [!tip]
+> When using Palo Alto Networks firewalls as the DHCP server for PXE/iPXE booting, you may need to configure DHCP Option 150 with the FOG server IP address as the TFTP/next-server address. In some Palo Alto configurations, Option 66 is treated as a TFTP server name/FQDN and may not be enough for PXE clients. Keep Option 67 set to the boot file, such as `snp.efi` for UEFI clients. 
+
+
 These two DHCP options must be set:
 
 ## Option 66
