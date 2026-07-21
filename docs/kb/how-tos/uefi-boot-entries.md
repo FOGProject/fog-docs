@@ -106,7 +106,7 @@ command(s), then enable it by adding this line to `fog.postdownload`:
 
 Inside the script the deployed disks are available as the usual block devices
 (for example `/dev/nvme0n1`), so the same `efibootmgr -c …` command shown above
-works there. FOS exports variables such as `$hostname` and `$imagename`, so you
+works there. FOS exports variables such as `$hostname` and `$img`, so you
 can branch on the host or image if a fix-up should only apply to certain
 machines.
 
