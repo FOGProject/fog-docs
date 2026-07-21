@@ -72,7 +72,8 @@ include:
 
 | Variable | Meaning |
 | --- | --- |
-| `$disk` | the disk that was imaged (for example `/dev/sda` or `/dev/nvme0n1`) |
+| `$hd` | the disk that was imaged (for example `/dev/sda` or `/dev/nvme0n1`) |
+| `$disks` | space-separated list of all target disks, for multi-disk images |
 | `$hostname` | the host's name as registered in FOG |
 | `$mac` | the host's primary MAC address |
 | `$img` | the name of the image that was deployed |
@@ -104,7 +105,7 @@ A minimal skeleton that only acts on one image looks like this:
 case "$img" in
     win11-lab)
         # mount the deployed Windows partition and do something
-        mount /dev/${disk#/dev/}2 /mnt 2>/dev/null
+        mount /dev/${hd#/dev/}2 /mnt 2>/dev/null
         # ... your changes here ...
         umount /mnt 2>/dev/null
         ;;
