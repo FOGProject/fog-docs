@@ -75,7 +75,7 @@ include:
 | `$disk` | the disk that was imaged (for example `/dev/sda` or `/dev/nvme0n1`) |
 | `$hostname` | the host's name as registered in FOG |
 | `$mac` | the host's primary MAC address |
-| `$imagename` | the name of the image that was deployed |
+| `$img` | the name of the image that was deployed |
 | `$osid` | the numeric OS ID set on the image |
 | `${postdownpath}` | path to the post-download scripts directory |
 
@@ -101,7 +101,7 @@ A minimal skeleton that only acts on one image looks like this:
 ```bash
 #!/bin/bash
 # /images/postdownloadscripts/example.sh
-case "$imagename" in
+case "$img" in
     win11-lab)
         # mount the deployed Windows partition and do something
         mount /dev/${disk#/dev/}2 /mnt 2>/dev/null
