@@ -60,5 +60,5 @@ FOG accounts can be modified from within the users section.
 
 Starting with FOG 1.6, each user account has a **Roles** tab where you
 can assign one or more roles to limit what the account can see and do.
-A user with no role has full administrator access. See
-[Roles & Permissions](roles.md) for details.
+A user with no role has no access at all, so every account needs at
+least one. See [Roles & Permissions](roles.md) for details.

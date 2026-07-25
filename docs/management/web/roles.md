@@ -25,7 +25,7 @@ Starting with FOG 1.6, role-based access control is built into FOG
 itself. A **role** is a named set of permissions that you assign to one
 or more user accounts. Once a user holds a role, they can only see and
 do what that role's permissions allow — both in the web UI and through
-the [REST API](../../kb/reference/api.md).
+the [REST API](../../kb/integrations/api.md).
 
 This replaces the old **Access Control plugin**, which could define
 roles but never actually enforced anything. See
@@ -76,14 +76,30 @@ You can assign roles from either direction:
 
 ## Users without a role
 
-A user with **no role at all has full administrator access**. This is
-deliberate: it means upgrading to 1.6 changes nobody's access until you
-actually start assigning roles.
+A user with **no role at all has no access**. Access in FOG is granted,
+never assumed: an account can only do what some role it holds says it
+can do, and an account holding nothing can do nothing.
 
-Once at least one user on the system holds a role, any role-less user
-sees a warning banner after logging in ("this account has no role and
-therefore has full administrator access") as a reminder to either
-assign them a role or leave them as an intentional administrator.
+Such a user can still log in, and sees a warning banner explaining that
+the account has no role and therefore no access to any management page,
+along with a suggestion to ask an administrator to assign one. They keep
+the handful of pages that belong to any signed-in user regardless —
+their dashboard, the client-facing pages, and log out.
+
+!!! warning "This changed during the 1.6 beta"
+
+    Early 1.6 builds did the opposite: a role-less account was treated
+    as a full administrator, so that adopting roles could not lock an
+    existing server out before anyone had been assigned one.
+
+    That was a trap. It made removing a user's last role a **promotion**
+    rather than a restriction, and it meant any account created by an
+    authentication plugin arrived with unlimited access simply by virtue
+    of arriving without a role.
+
+    The upgrade converts every account that was relying on the old
+    behaviour into an explicit role, so nobody's access changes silently
+    — see [What the upgrade does to existing users](#what-the-upgrade-does-to-existing-users).
 
 ## What restricted users see
 
@@ -105,7 +121,7 @@ If you need to restrict a user to only the hosts, users and groups of
 their own location or team, install the **Site** plugin. It layers an
 object boundary on top of the role: a site-scoped user keeps their
 role's actions but only ever sees the objects in their site(s), in both
-the web UI and the API. Role-less users and full-access roles are never
+the web UI and the API. Users holding a full-access role are never
 scoped.
 
 See [Site Scoping](site-scoping.md) for the full workflow.
@@ -114,8 +130,9 @@ See [Site Scoping](site-scoping.md) for the full workflow.
 
 A user API token inherits that user's role permissions: API requests
 made with the token can only do what the user could do in the web UI.
-Scripts and integrations that need unrestricted access should
-authenticate with a user that is an administrator (or has no role).
+Scripts and integrations that need unrestricted access must authenticate
+as a user holding a full-access role — a token belonging to a role-less
+account can do nothing at all.
 
 ## Lockout protection
 
@@ -123,6 +140,39 @@ FOG will refuse any change that would leave the system with **no
 effective administrator** — deleting the last admin role, removing its
 last member, unticking its full access, or deleting the last admin
 user account. You cannot accidentally lock everyone out.
+
+## What the upgrade does to existing users
+
+Because a role-less account now has no access, upgrading has to give
+every existing account a role that says what it could already do.
+The database upgrade does this for you, in one pass, for **local
+accounts that hold no role at all**:
+
+| Existing account | Role it receives |
+|---|---|
+| A normal FOG administrator | **Administrator** — full access, exactly as before |
+| A "mobile" account (the restricted tier whose separate UI was removed back in 2017) | **Legacy Restricted** — a new role created by the upgrade |
+
+**Legacy Restricted** grants what that old tier could actually do:
+view hosts and images, start imaging tasks, watch tasks, and read
+reports. It grants nothing that edits or deletes. It is deliberately
+*not* the seeded **Technician** role, which is broader.
+
+Accounts that **already hold a role** are left alone. Those were scoped
+on purpose, and quietly widening them would undo your work.
+
+**Accounts that came from an external directory are also left alone** —
+see [LDAP Authentication](ldap.md). Their role is decided by the LDAP
+plugin every time they log in, so the upgrade has nothing useful to say
+about them, and copying their old account type across would hand every
+directory account the administrator role.
+
+!!! tip "After upgrading"
+
+    Review **Roles → Administrator → Users**. Any account that was an
+    administrator only because nobody had ever restricted it is now an
+    administrator explicitly, and this is a good moment to move it to
+    something narrower.
 
 ## Upgrading from the Access Control plugin
 
