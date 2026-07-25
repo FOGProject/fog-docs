@@ -78,10 +78,26 @@ Log in as a FOG administrator, then click **Install/Update**. Logging in
 anywhere in the web interface will bring you back to this page for as long as
 the schema is out of date.
 
-Only full administrators can apply a schema update; mobile-only accounts
-cannot. Directory-sourced administrators work normally — an LDAP account that
-the LDAP plugin maps to the administrator type is treated as an administrator
-here too.
+Only a **full administrator** can apply a schema update — specifically, an
+account holding a role with **Administrator (full access)** ticked. A role
+that grants a great deal but not everything is still not enough: a schema
+update rewrites the whole database, so nothing narrower qualifies. See
+[Roles & Permissions](../../management/web/roles.md).
+
+Directory-sourced administrators work normally. An LDAP account that lands on
+a full-access role is an administrator here too.
+
+!!! note "Upgrading from a version before roles existed"
+
+    Roles arrived in FOG 1.6, and the schema update itself is what creates
+    them. On a server still running an older schema there are no roles to
+    check yet, so FOG falls back to the old account type — meaning your
+    existing administrator can log in and apply the update exactly as
+    before. Once that update finishes, roles are in place and the fallback
+    is gone for good.
+
+    The upgrade gives every existing administrator account a role granting
+    full access, so nobody loses the ability to run future updates.
 
 ### If you cannot log in
 
@@ -129,8 +145,9 @@ used a tokenized URL on a server that already has users — that form is only
 accepted on a server with no users yet. Log in as an administrator instead, as
 described above.
 
-It can also mean you are logged in as a non-administrator. Check the account
-type under **Users** in the web interface.
+It can also mean you are logged in as an account that is not a full
+administrator. Open the account under **Users → Roles** and confirm it holds
+a role with **Administrator (full access)** ticked.
 
 ### The schema page says the database is not available
 
