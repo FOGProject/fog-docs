@@ -114,10 +114,10 @@ Leave it at `0` (the default) to let FOG pick a port for each session
 automatically.
 
 !!! warning
-    Before FOG 1.6 this setting was a single port, and every session was forced onto
-    it — so setting it meant only one multicast session could ever really run, and a
-    second would silently collide with the first. If you have a single port set
-    today it keeps working: it is simply a pool of one. Add more ports to allow more
+    This setting used to be a single port, and every session was forced onto it — so
+    setting it meant only one multicast session could ever really run, and a second
+    would silently collide with the first. If you have a single port set today it
+    keeps working: it is simply a pool of one. Add more ports to allow more
     concurrent sessions.
 
 ### FOG_MULTICAST_MAX_SESSIONS
@@ -127,8 +127,8 @@ create one beyond the limit fails with a message rather than starting a session
 that cannot run.
 
 !!! note
-    In earlier versions this limit was only checked when creating a session from
-    Image Management — sessions created from a host, a group, or a booting machine
+    This limit used to be checked only when creating a session from Image
+    Management — sessions created from a host, a group, or a booting machine
     ignored it. It now applies to every path, so a server that was quietly running
     more sessions than this number may start refusing them. Raise the value if that
     is not what you want.
