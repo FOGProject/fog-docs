@@ -17,6 +17,20 @@ tags:
 
 much more content is needed here
 
+## Multicast Settings
+
+The settings under **FOG Settings :octicons-arrow-right-24: Multicast Settings**
+control how many multicast sessions may run at the same time, which ports and
+addresses they use, and how long a session waits for its clients before it starts
+transmitting.
+
+`FOG_MULTICAST_PORT_OVERRIDE` in particular changed in FOG 1.6: it is now a comma
+separated pool of base ports, and **each port in the list is one session that can
+run concurrently**. A single port still works and behaves as a pool of one.
+
+These are documented in full, with their upgrade implications, on the
+[Multicast Sessions](multicast.md) page.
+
 ## Other Settings
 
 ## Table display mode (infinite scroll vs. paging)

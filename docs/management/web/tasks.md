@@ -57,7 +57,9 @@ For a video demonstration of an image capture, please see: [http://www.youtube.
 
 To perform a simple image send, click on the downward facing arrow next to the host. An image send can be done on a host or a group. When sending an image to multiple computers FOG works in queue mode, which means that it will only send to 10 (by default) computers at one time. This is done to keep the server from being overworked. As soon as the a machine finishes, another from the queue joins.
 
-To perform a multicast image send you must search for a group of hosts on the "Task Management" page. Multicast tasks can only be performed on a group of hosts. Multicast tasks will send to all the computers in the group at once, and the task will not start sending until all members of the group have connected with the server. After starting a multicast task, status can be view by clicking on [ctl]+[alt]+f2. A log is also kept for multicast transfers which is stored at /opt/fog/log.
+A multicast image send transmits one image to many machines at once. It can be started from a group of hosts on the "Task Management" page, from Image Management as a named session that machines join by name, or from a machine sitting at the boot menu. Multicast sends to all the participating computers at the same time, and does not begin transmitting until either every expected client has joined or the configured wait period expires — whichever happens first. Once it starts, the session is closed and no further machines can join it. After starting a multicast task, status can be viewed by clicking on [ctl]+[alt]+f2. A log is also kept for multicast transfers which is stored at /opt/fog/log.
+
+See [Multicast Sessions](multicast.md) for how sessions are created and joined, and for the settings that control how many can run at once.
 
 ## Advanced Tasks
 

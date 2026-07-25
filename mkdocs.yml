@@ -122,6 +122,7 @@ nav:
       - Printer Management: management/web/printers.md
       - Service Management: management/web/service.md
       - Task Management: management/web/tasks.md
+      - Multicast Sessions: management/web/multicast.md
       - Report Management: management/web/reports.md
       - Fog Configuration: management/web/config.md
       - AD Config: management/web/ad-integration.md
