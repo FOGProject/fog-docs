@@ -51,6 +51,32 @@ Although this type of authentication is allowed and will work, the user-token
 system is still recommended, as a token cannot be decoded back into a valid
 username/password pair capable of managing your FOG server.
 
+Basic auth replaces the **user** token, not the global one. The
+`fog-api-token` header is still required, and a request without it is rejected
+with `403 Forbidden` before the username and password are ever looked at:
+
+```bash
+curl -H 'fog-api-token: yourapitoken' \
+     -u 'youruser:yourpassword' \
+     -X GET http://fogserver/fog/host
+```
+
+The account signs in exactly as it would in the web UI, so its roles apply the
+same way. A user whose roles do not include `user.view` gets `403 Forbidden`
+from `/fog/user` whether they authenticated by token or by password. Accounts
+from an external directory (LDAP) can authenticate this way too, provided
+**Allow API** is enabled on the LDAP server.
+
+!!! warning "Upgrading an existing server: re-run the installer"
+    Basic auth depends on the `Authorization` header reaching PHP, and under
+    FastCGI it does not arrive on its own &mdash; nginx forwards only a fixed
+    parameter list, and Apache strips it before `proxy_fcgi`. The FOG installer
+    emits the necessary web server configuration, but a server installed before
+    this was fixed still has the old configuration on disk. If basic auth
+    returns `401 Unauthorized` with credentials you know are correct, re-run the
+    installer to refresh the web server configuration. Token authentication is
+    unaffected and needs no reinstall.
+
 ### Example
 
 While many different tools can be used to make API calls, `curl` is one of the
