@@ -47,18 +47,125 @@ automatically, and refreshes it on every later login.
     directory password in FOG. Those rows are cleaned up automatically
     on each user's first login after upgrading.
 
-## Which role a directory user gets
+## Connecting over LDAPS
+
+Tick **Use LDAP SSL** on the server and FOG connects with `ldaps://`
+instead of `ldap://`, on whichever port you have set — normally 636.
+Two fields on the server's **General** tab then decide how hard FOG
+checks the certificate the directory presents.
+
+| **Certificate Verification** | What FOG does |
+|---|---|
+| **Inherit - use the system ldap.conf setting** | Whatever `TLS_REQCERT` says on the FOG server itself. The default. |
+| **Hard - require a valid certificate** | The certificate must be trusted *and* must match the address FOG connects to, or the sign-in fails. |
+| **Never - do not verify (insecure)** | The connection is encrypted, but the certificate is not checked at all. |
+
+**CA Certificate Path** is the absolute path to a PEM file holding the
+CA that signed your directory's certificate. Leave it blank when that CA
+is already in the server's system trust store — which is the case for
+any publicly issued certificate, and for a private CA you have installed
+system-wide.
+
+Both fields are ignored on a server with **Use LDAP SSL** off, because
+there is no certificate to check. There is no StartTLS option — a
+connection is either LDAPS or plain LDAP.
+
+### "Inherit" means the operating system, not FOG
+
+**Inherit** does not inherit anything from FOG. It means *make no demand
+of my own*, which leaves the decision to the OpenLDAP client library on
+the FOG server. That library resolves it from configuration, in this
+order:
+
+1. the `LDAPTLS_REQCERT` environment variable, if it is set;
+2. `TLS_REQCERT` in `$LDAPCONF`, `/etc/openldap/ldap.conf` or
+   `/etc/ldap/ldap.conf`, whichever exists;
+3. `demand` — verify, and refuse the connection if verification fails —
+   when none of those say anything.
+
+So on an untouched server, **Inherit** verifies. If someone has
+previously relaxed `TLS_REQCERT` there to get an internal CA working,
+**Inherit** keeps that arrangement running — which is exactly why it is
+the default. The plugin asserted no TLS setting of its own before these
+fields existed, so `ldap.conf` governed, and defaulting to **Hard** on
+upgrade would have broken every install that depended on it.
+
+### Both fields are per server, deliberately
+
+One FOG install can have an Active Directory and an OpenLDAP configured
+at the same time, and whether verification can succeed is a property of
+the *directory*, not of FOG. Putting a server on **Hard** with its own
+CA leaves every other server's setting alone.
+
+!!! warning "Never is a diagnostic, not a fix"
+
+    **Never** encrypts the traffic but accepts any certificate at all,
+    including one presented by a machine that is not your directory
+    server. Use it to confirm that a connection problem really is
+    certificate-related, then fix the certificate and move back off it.
+
+### Getting Hard to work with a private CA
+
+Two things have to be true, and only the first one is obvious:
+
+- **FOG has to trust the CA.** Point **CA Certificate Path** at the CA's
+  PEM file, or install that CA into the server's system trust store.
+- **The certificate has to name the address FOG connects to.** A
+  certificate issued as `CN=dc1.example.local` with no subjectAltName
+  will not verify when the server's address in FOG is an IP address, no
+  matter how correctly the CA is trusted. The failure reads *hostname
+  does not match name in peer certificate*. Fix it by entering the name
+  the certificate carries in **LDAP Server Address**, or by reissuing
+  the certificate with the address you actually use as a
+  subjectAltName.
+
+!!! note "The path must be absolute, and readable by PHP"
+
+    A relative path is resolved against the PHP process's working
+    directory, which is not where you would expect — always give a full
+    path beginning with `/`.
+
+    The file is opened by the **PHP-FPM pool user**, which is not
+    necessarily the account that owns your web root (on RedHat with
+    nginx, PHP runs as `apache` while nginx runs as `nginx`). If FOG
+    cannot read the file, it writes a line to the web server's error log
+    and carries on **without** it — so a private CA quietly stops being
+    trusted and **Hard** starts failing until the permissions are fixed.
+
+    FOG deliberately does not reject an unreadable path when you save
+    it. Administrators routinely configure a server before its
+    certificate is in place, and refusing the save would make that
+    impossible.
+
+!!! note "Settable outside the web UI too"
+
+    Both fields are part of the LDAP server CSV export and import, and
+    both are readable and writable on `/fog/ldap/<id>` through the
+    [REST API](../../kb/integrations/api.md). An illegal verification
+    level, or a CA path that is relative or too long, is refused there
+    with a **406** naming the value it rejected — the same rule the form
+    applies.
+
+## What a directory user gets
 
 Directory users are subject to [roles](roles.md) exactly like anyone
 else, and — like anyone else — **a directory user with no role has no
-access**. The plugin decides which role each login earns.
+access**. The plugin decides what each login earns.
 
-You map **each directory group to whatever roles it should grant**. Open
-the server, go to its **LDAP Groups** tab, add the directory group by
-name, then attach roles to it.
+You map **each directory group to whatever it should grant**. On the
+server's **General** tab, click **Create New LDAP Group**, enter the
+directory group's name, and pick the server it belongs to. Then open
+that group and use its **Role Association** and **User Group
+Association** tabs to say which [roles](roles.md) and which FOG user
+groups it hands out.
+
+The server's own **Grants** tab is a read-only summary of that: one
+table listing every directory group on the server and the roles it
+grants, another listing the user groups. The grants themselves are
+always edited on the group, not here.
 
 Group mappings are **additive**. A user in three mapped groups receives
-the roles from all three; there is no ranking and no "highest wins".
+everything all three grant; there is no ranking and no "highest wins".
 Directory groups you have not mapped grant nothing.
 
 One setting in **LDAP → Global Options** covers the case where there are
@@ -89,16 +196,16 @@ access.
     targets — which is all those two settings are still for. Nobody's
     access changes as a result of the conversion.
 
-### Roles are re-evaluated on every login
+### Grants are re-evaluated on every login
 
-The roles above are recomputed from the directory each time the user
-signs in. Remove someone from a mapped group in your directory and their
-next FOG login drops the roles that group granted.
+The roles and user groups above are recomputed from the directory each
+time the user signs in. Remove someone from a mapped group in your
+directory and their next FOG login drops whatever that group granted.
 
-Any **other** role an administrator attached to that user by hand is
-left alone. That carve-out is deliberate: without it the sync would
-silently revoke grants you made on purpose, and you would have no way
-to give a directory user anything extra.
+Anything an administrator attached to that user **by hand** is left
+alone. That carve-out is deliberate: without it the sync would silently
+revoke grants you made on purpose, and you would have no way to give a
+directory user anything extra.
 
 ## Nested groups
 
@@ -217,15 +324,15 @@ cost nothing here, and revoking a token is immediate.
 ## Multiple LDAP servers
 
 If more than one LDAP server is configured, FOG tries them **all** and
-combines the result. Every role earned on every server is granted, the
-same way multiple group mappings on one server combine.
+combines the result. Every role and user group earned on every server is
+granted, the same way multiple group mappings on one server combine.
 
 A server where the account does not exist contributes nothing and never
 takes away a match found on another server.
 
 Group mappings belong to the server they were created on, so the same
 directory group name on two different servers is two separate mappings
-and can grant different roles.
+and can grant different things.
 
 The display name and the **allow API** setting are taken from the first
 server that accepted the credential, rather than combined — otherwise a
@@ -250,3 +357,7 @@ still carries only their role's permissions — see
 - Before roles existed, every account this plugin created was in effect
   a full administrator. If that is not what you want, the role mapping
   is where you fix it.
+- **Certificate verification does not change on upgrade.** Existing
+  servers come through set to **Inherit**, which is the behaviour they
+  already had — whatever `TLS_REQCERT` on the FOG server says. Nothing
+  starts failing because the setting arrived.

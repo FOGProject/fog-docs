@@ -456,12 +456,18 @@ Plugins enhance FOG's functionality. See \[Plugins\](Plugins
 
 ### LDAP Plugin
 
--   Allows you to link with a LDAP server to add an user validation
--   You can add mulitple LDAP servers
--   You can config the DN base and the port of the LDAP Server
--   If FOG can not connect with the LDAP Server, FOG tries to do a local
-    validation
--   If the user does not exist, FOG create one with the mobile profile
+-   Lets people sign in to FOG with their directory account instead of a
+    password stored in FOG
+-   You can add multiple LDAP servers, and a user is authenticated
+    against all of them
+-   You configure each server's address, port, search base DN and
+    whether it uses SSL
+-   A local FOG account is never taken over by the plugin, so an
+    existing FOG login keeps working
+-   The first time a directory user signs in successfully, FOG creates
+    their account automatically. What that account can do comes from the
+    roles you map to their directory groups — see
+    [LDAP Authentication](../../management/web/ldap.md)
 
 ### Location Plugin
 
