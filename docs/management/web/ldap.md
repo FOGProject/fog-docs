@@ -27,6 +27,14 @@ The **LDAP** plugin lets people sign in to FOG with their directory
 account — Active Directory, OpenLDAP, FreeIPA, or any generic LDAP
 server — instead of a password stored in FOG.
 
+!!! note "This page describes FOG 1.6"
+
+    Two things work differently on 1.5, and both are covered where they
+    come up below: what a directory login is granted
+    ([roles and user groups](#what-a-directory-user-gets), where 1.5 has
+    a single admin group and a single user group), and
+    [nested groups](#nested-groups).
+
 You do not create these users by hand. The first time someone signs in
 successfully, FOG creates a matching user account for them
 automatically, and refreshes it on every later login.
@@ -168,6 +176,15 @@ Group mappings are **additive**. A user in three mapped groups receives
 everything all three grant; there is no ranking and no "highest wins".
 Directory groups you have not mapped grant nothing.
 
+!!! note "On FOG 1.5 this is two groups and two tiers"
+
+    1.5 has one **admin group** and one **user group** per server, and a
+    login lands in whichever it matches — administrator, or the
+    restricted "mobile" tier. There are no per-group mappings, no roles,
+    and no user group grants. Upgrading converts those two lists into
+    mappings; see the note below about what the two surviving role
+    settings are for.
+
 One setting in **LDAP → Global Options** covers the case where there are
 no groups to look at:
 
@@ -293,6 +310,27 @@ If you see it, raise the depth.
 Cycles are handled automatically. A group that contains a group that
 contains the first one resolves correctly and does not consume the depth
 limit.
+
+!!! warning "Nesting on FOG 1.5 is not this feature"
+
+    1.5 has a single **nested group** checkbox instead of the three
+    strategies above, and it is `LDAP_MATCHING_RULE_IN_CHAIN` only. On
+    OpenLDAP, FreeIPA or anything else that rule matches nobody, and 1.5
+    does not check whether the directory supports it — so the box ticks,
+    saves, and silently grants nothing.
+
+    It is also unreachable on most installs. The setting needs a column
+    that was added to the plugin's table in February 2026, and 1.5 has
+    no mechanism to add a column to a *plugin* table on an install that
+    already exists — the core schema updater only ever touches core
+    tables. If your LDAP plugin was installed before that date, the
+    column is simply not there and the setting has nowhere to go.
+
+    Reinstalling the plugin would create the column, and would also drop
+    every LDAP server you have configured along with the FOG accounts
+    the plugin created, so it is not a workaround. Upgrading to 1.6 is
+    the fix — see
+    [issue #892](https://github.com/FOGProject/fogproject/issues/892).
 
 !!! note "posixGroup / memberUid groups cannot nest"
 
