@@ -4,7 +4,7 @@ aliases:
     - Multicast
     - Multicast Sessions
     - Multicast Deploy
-description: How FOG multicast sessions work, how clients join them, and how to configure concurrent sessions
+description: How FOG multicast sessions work, how clients join them, how to configure concurrent sessions, and how to run multicast across multiple sites
 context_id: multicast
 tags:
     - 1_6-changes
@@ -92,6 +92,51 @@ normal for host and group sessions.
 More detail is available on the client itself with [ctl]+[alt]+f2, and the
 server keeps a per-session log under `/opt/fog/log`.
 
+## Multicast across multiple sites
+
+A session is served by exactly **one** `udp-sender`, and that process runs on the
+master node of the session's storage group. Multicast traffic also does not
+ordinarily cross a router, a WAN link or a site-to-site VPN.
+
+Put those two facts together and the rule falls out: **the stream reaches only
+the machines that share a network with the group's master node.** Hosts at any
+other site reach the gparted screen and wait there for a transmission that
+cannot arrive, until the wait period expires.
+
+Having a storage node at each site is not by itself enough. Nodes that are not
+the master do not transmit — they hold a replica of the image, which is what
+makes *unicast* imaging work locally, and that is why unicast can look fine while
+multicast hangs.
+
+### What to configure
+
+Give each site **its own storage group**:
+
+1. Create a storage group per site.
+2. Make that site's node the **master** of its own group.
+3. Associate the image with **every** group. Each site's node must physically
+   hold the image file, or its sender has nothing to transmit.
+4. Install the **Location** plugin, create a location per site pointing at that
+   site's group, and assign each host to its location.
+5. Confirm `FOGMulticastManager` is running on every node.
+
+Each site's hosts then get their own session — its own port, its own local
+sender — and each site images at local network speed.
+
+!!! note
+    Start multicast **per site** rather than as one task spanning sites. A session
+    holds until its expected client count arrives, so a single session covering
+    every site would make each site's sender wait for machines at the other sites
+    before starting.
+
+!!! warning "Before FOG 1.6"
+    Cross-site multicast could not be made to work by configuration alone. A
+    session was always stamped with the image's *primary* storage group no matter
+    where the host was, so only that group's master ever transmitted, and the
+    Location plugin was not consulted when tasking. Rearranging storage groups on
+    an older release will not help. If you are on 1.5 or earlier, keep multicast
+    within the site holding the master and use unicast elsewhere.
+
 ## Settings
 
 All of these live under **FOG Configuration :octicons-arrow-right-24: FOG
@@ -168,8 +213,27 @@ host or group have no name to join.
 `FOG_MULTICAST_PORT_OVERRIDE`. If it holds a single port, only one session can
 run; add more ports to the list.
 
+**Machines at one site image fine, machines at another sit at gparted.** The
+sender runs only on the master node of the session's storage group, and its
+traffic does not cross the link between sites. See
+[Multicast across multiple sites](#multicast-across-multiple-sites). Unicast
+working at the remote site does not rule this out — it only shows the image is
+replicated there, not that anything is transmitting it.
+
+**The client shows the wrong node's IP.** The host is being pointed at the
+master of the image's storage group rather than at its local node. Check the host
+is assigned to a location, and that the location points at a group whose master
+is the local node.
+
+**The multicast log says a session is already being sent by another node.** Two
+nodes can reach the same session and only one may transmit it. This is the
+server declining to start a second sender, not an error. If the session never
+starts anywhere, the node that holds it is either offline or missing the image
+file.
+
 ## See also
 
 - [Task Management](tasks.md)
 - [Image Management](images.md)
+- [Storage Node Management](storage-node.md)
 - [Roles & Permissions](roles.md)
