@@ -81,7 +81,11 @@ markdown_extensions:
   - footnotes
   - md_in_html
   - pymdownx.highlight
-  - pymdownx.superfences
+  - pymdownx.superfences: # also enables native Material mermaid diagram rendering, see https://squidfunk.github.io/mkdocs-material/reference/diagrams/
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.details
   - pymdownx.magiclink
   - nl2br
