@@ -6,12 +6,10 @@ aliases:
 description: how to run FOG in a Virtual environment
 context_id: virtualization
 tags:
-    - in-progress
     - virtualization
     - hyperv
     - vmware
     - kvm
-    - convert-Wiki2MD
 ---
 
 
