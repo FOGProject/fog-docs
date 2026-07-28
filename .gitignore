@@ -8,3 +8,10 @@ docs/.obsidian/*
 .obsidian
 debug.log
 __pycache__
+
+# Quartz spike (spike/quartz-docs branch)
+quartz/node_modules
+quartz/public
+quartz/.quartz-cache
+quartz/.quartz
+quartz/.turbo

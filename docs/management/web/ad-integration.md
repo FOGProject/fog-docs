@@ -3,7 +3,7 @@ title: Active Directory Integration
 description: Overview of the Active Directory settings management
 context_id: ad-integration
 aliases:
-	- Active Directory Integration
+    - Active Directory Integration
 tags:
     - management
     - active-directory
