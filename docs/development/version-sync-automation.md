@@ -21,11 +21,10 @@ a different way changes land on it.
 
 ## 1. The local pre-commit hook
 
-`.githooks/fogproject/pre-commit` is the source of truth for the version
-formula. Every local commit on `working-1.6`, `dev-branch`, `rc-*`, and
-`feature-*` branches recomputes `FOG_VERSION`/`FOG_CHANNEL` and stages the
-change as part of that commit. This is what most contributors experience
-day-to-day.
+`.githooks/pre-commit` is the source of truth for the version formula. Every
+local commit on `working-1.6`, `dev-branch`, `rc-*`, and `feature-*` branches
+recomputes `FOG_VERSION`/`FOG_CHANNEL` and stages the change as part of that
+commit. This is what most contributors experience day-to-day.
 
 ## 2. The fog-workflows backstop
 
