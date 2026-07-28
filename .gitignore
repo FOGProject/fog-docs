@@ -1,5 +1,6 @@
 _build
 .vscode
+.claude
 site
 .lastprereqrun
 docs/.obsidian
