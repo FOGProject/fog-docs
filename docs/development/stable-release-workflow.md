@@ -65,7 +65,9 @@ happens once a release is actually cut.
   it never recomputes it. `stable`'s version is entirely the one already
   computed on `dev-branch` by the mechanisms in
   [Version Sync Automation](version-sync-automation.md); this workflow just
-  decides when to promote it.
+  decides when to promote it. That's also why the version-sync daily sweep
+  runs at 10:10 UTC, just over an hour before this workflow's 11:11 UTC
+  slot — a release day always reads a version that's current.
 - **Tests gate the merge, not the version**: nothing here is a
   `pull_request`-triggered CI check. The install-validation suite runs
   *after* the release PR is opened, and only a passing run causes the merge
