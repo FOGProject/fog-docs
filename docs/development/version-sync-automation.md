@@ -118,7 +118,9 @@ still there in `git log` for anyone who needs to look.
 ## 3. stable-releases.yml
 
 `stable`'s version is owned entirely by fog-workflows'
-[`stable-releases.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/stable-releases.yml),
+[`stable-releases.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/stable-releases.yml)
+(see [Stable Release Workflow](stable-release-workflow.md) for how that
+pipeline works end to end),
 which drives the whole release flow (validation, tagging, release notes,
 syncing `stable` back into `dev-branch`). The hourly sweep above deliberately
 excludes `stable` so the two mechanisms never fight over the same branch.

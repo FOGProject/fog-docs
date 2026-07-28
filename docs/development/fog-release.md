@@ -21,7 +21,8 @@ is cut.
 The sections below cover updating each of those components and the testing that
 validates a release. See [Version Sync Automation](version-sync-automation.md)
 for how `FOG_VERSION`/`FOG_CHANNEL` itself is kept in sync separately from
-this manual release process.
+this manual release process, and [Stable Release Workflow](stable-release-workflow.md)
+for how a `dev-branch` release actually gets tagged and published to `stable`.
 
 ## Updating dependencies
 
