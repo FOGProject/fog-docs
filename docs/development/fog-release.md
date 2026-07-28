@@ -19,7 +19,9 @@ compatibility, the usual practice is to update them and let them bake on the
 is cut.
 
 The sections below cover updating each of those components and the testing that
-validates a release.
+validates a release. See [Version Sync Automation](version-sync-automation.md)
+for how `FOG_VERSION`/`FOG_CHANNEL` itself is kept in sync separately from
+this manual release process.
 
 ## Updating dependencies
 
