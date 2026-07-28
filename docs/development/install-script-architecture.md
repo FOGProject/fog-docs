@@ -43,34 +43,42 @@ documented for end users:
 
 ## High-level install flow
 
+Read this as five rows, top to bottom — each row itself flows left to right:
+
 ```mermaid
 flowchart TD
-    A[Root / EUID checks] --> B[Parse CLI flags]
-    B --> C[Detect OS release]
-    C --> D["source lib/common/functions.sh"]
-    D --> E["source lib/common/config.sh"]
-    E --> F{"Upgrading with a prior<br/>.fogsettings?"}
-    F -->|yes| G["source .fogsettings<br/>doOSSpecificIncludes()"]
-    F -->|no| H
-    G --> H{"fogupdateloaded<br/>already set?"}
-    H -->|no, fresh install| I["source lib/common/input.sh<br/>(incl. displayOSChoices →<br/>doOSSpecificIncludes)"]
-    I --> J["source lib/common/newinput.sh"]
-    H -->|yes, already populated| J
-    J --> K["Print summary, confirm y/N"]
-    K --> L[checkInternetConnection]
-    L --> M[installPackages]
-    M --> N[confirmPackageInstallation]
-    N --> O[configureUsers]
-    O --> P{installtype}
-    P -->|Normal server| Q["configureMySql → configureHttpd<br/>→ checkWebTier → backupDB → updateDB"]
-    P -->|Storage node| R["checkDatabaseConnection<br/>→ backupReports → configureMinHttpd"]
-    Q --> S["configureStorage → configureDHCP → configureTFTPandPXE<br/>→ configureFTP → configureSnapins → configureUDPCast"]
-    R --> S
-    S --> T["installInitScript → installFOGServices<br/>→ configureFOGService → configureNFS"]
-    T --> U["writeUpdateFile → linkOptFogDir"]
-    U --> V{installtype}
-    V -->|Normal server| W["updateStorageNodeCredentials<br/>→ setupFogReporting"]
-    V -->|Storage node| X["registerStorageNode<br/>→ updateStorageNodeCredentials"]
+    subgraph S1["1 · Bootstrap"]
+        direction LR
+        A[Root / EUID checks] --> B[Parse CLI flags] --> C[Detect OS release] --> D["source functions.sh"] --> E["source config.sh"]
+    end
+    subgraph S2["2 · Gather settings"]
+        direction LR
+        F{"Upgrading with a prior<br/>.fogsettings?"} -->|yes| G["source .fogsettings<br/>+ doOSSpecificIncludes()"]
+        F -->|no| H
+        G --> H{"fogupdateloaded<br/>already set?"}
+        H -->|no, fresh install| I["input.sh<br/>(incl. OS choice)"]
+        I --> J["newinput.sh"]
+        H -->|yes, already populated| J
+        J --> K["Print summary,<br/>confirm y/N"]
+    end
+    subgraph S3["3 · Base setup"]
+        direction LR
+        L[checkInternetConnection] --> M[installPackages] --> N[confirmPackageInstallation] --> O[configureUsers]
+    end
+    subgraph S4["4 · Install-type branch + shared services"]
+        direction LR
+        P{installtype} -->|Normal server| Q["configureMySql → configureHttpd<br/>→ checkWebTier → backupDB → updateDB"]
+        P -->|Storage node| R["checkDatabaseConnection<br/>→ backupReports → configureMinHttpd"]
+        Q --> Sn["storage / DHCP / TFTP / FTP<br/>/ snapin / UDPCast setup"]
+        R --> Sn
+    end
+    subgraph S5["5 · Services + finish"]
+        direction LR
+        T["init scripts + FOG<br/>services + NFS"] --> U["writeUpdateFile<br/>→ linkOptFogDir"] --> V{installtype}
+        V -->|Normal server| W["updateStorageNodeCredentials<br/>→ setupFogReporting"]
+        V -->|Storage node| X["registerStorageNode<br/>→ updateStorageNodeCredentials"]
+    end
+    S1 --> S2 --> S3 --> S4 --> S5
 ```
 
 The two `installtype` branches diverge for a reason: a **Normal server**
