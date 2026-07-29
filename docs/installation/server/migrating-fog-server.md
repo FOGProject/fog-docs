@@ -1,10 +1,11 @@
 ---
 title: Migrating FOG Server
-description: Instructions for migrating 
+description: How to move FOG settings, database, images, and SSL trust from an old server to a new one
 aliases:
     - Migrating FOG Server
     - FOG Server Migration
     - Moving FOG To A New Server
+context_id: migrating-fog-server
 tags:
     - install
     - migrating
@@ -16,233 +17,379 @@ tags:
     - configuration
     - database
     - cli-switches
+    - ssl
+    - storage-node
+    - dhcp
 ---
 # Overview
 
->[!note]
->Under Construction, doc is being migrated from the wiki and updated with new content
+This article explains how to move a FOG server's settings, database, and
+images from an old box to a new one. This is safer and more predictable than
+attempting an in-place OS upgrade: you know exactly what's being moved and
+how, and your old server stays intact as a fallback the whole time. An OS
+upgrade, by contrast, can leave FOG in a broken state with no clear path back
+if something goes wrong partway through.
 
-This article explains how to move FOG Settings & images from an old box to a new box. This is more safe and sure than attempting an OS upgrade, which is risky and might leave you with a broken server. It's more safe and more sure because we know exactly what to move over and how to do it. An OS upgrade is risky because if you upgrade and it doesn't work or leaves fog in an unusable state, we have no idea what broke or how to fix it without exhaustive troubleshooting that may or may not lead to a solution. Migrating from an old box to a new box also leaves your old box intact, which is another safety net in this method.
+We'll cover:
 
-We are going to address the key spots:
+-   Deciding whether the new server keeps the old one's IP/hostname or gets
+    its own (this decision affects almost everything else below).
+-   Building the new server.
+-   Migrating images and the database from the old server to the new one.
+-   Migrating SSL/CA trust so existing FOG clients and PXE-embedded images
+    keep working.
+-   Automating all of the above with a sample script, if you'd rather not
+    run it step by step.
+-   Reconciling IP-dependent settings, if the new server isn't reusing the
+    old one's IP/hostname.
+-   Adjusting DHCP if you aren't running DHCP on the new server.
+-   Cutting over and retiring the old server.
 
--   Building a new server - general guidelines.
--   Migrating the database from the old server to the new one.
--   Migrating the images from the old server to the new one.
--   Migrating SSL information from the old server to the new one.
--   Adjusting a few places in the new web interface after migration to use the new IP.
--   Adjusting your DHCP settings if you aren't running DHCP on the new server.
+# Decide: same IP/hostname, or a new one?
+
+Before you start, decide how the new server will be identified on the
+network, because it's the single biggest fork in how much work the rest of
+this migration takes.
+
+-   **Reuse the old server's IP and/or hostname (recommended when possible).**
+    Stage the new server on a temporary IP, do the migration, then at cutover
+    point DNS (and the old IP, if anything boots by IP rather than name) at
+    the new box and retire the old one. If you also carry over the SSL/CA
+    directory (see below), existing FOG clients and already-imaged machines
+    need **no changes at all** — they keep talking to "the same" server.
+-   **Give the new server its own permanent IP/hostname.** Simpler to stage
+    since both servers can run side-by-side indefinitely, but because the
+    database import brings the *old* server's IP and passwords with it,
+    you'll need to walk through
+    [[change-fog-server-ip-address|reconciling IP-dependent settings]]
+    afterward, and update any DHCP/DNS configuration that pointed at the old
+    address.
+
+Either way, the old and new FOG servers do not need to be the same version —
+you can go from an older version to a newer one, but not the reverse, so
+don't install an older FOG version on the new box than the old one is
+running.
 
 # Building the new server
 
-The first step in this process is building a new FOG server using the latest version of your chosen Linux distribution. The chosen distribution does not need to be the same as the old server. For example you can go from Ubuntu to CentOS, or from CentOS to Debian, or any other combination. I would recommend the latest Debian release. Go through the normal steps of setting up the OS.
-
-Do not create a user called fog - it will cause you nothing but pain later on. If you're installing Debian or Ubuntu, name the user "tech" or "Administrator" or whatever your first name is, like "Bob". If you're using CentOS or Fedora or RHEL, no extra user is necessary, just set a good root password.
-
-Name the server fogserver if possible. You can name the server during OS installation for most distributions. Ubuntu & Debian explicitly ask you what to name the server. In the installer for CentOS 7, RHEL, and Fedora you would set the server name in the network area, bottom left.
-
-Set a static IP or create a DHCP reservation for the server. You can set a static IP in the installer for Fedora, RHEL, and CentOS in the network area. Ubuntu & Debian only ask for a manual configuration if DHCP fails.
-
-After an IP is set, use your DNS server and create an 'A' record for the server's name and IP, [Google search DNS A record](http://lmgtfy.com/?q=DNS+A+record) if you're unsure how to do that.
-
-To install FOG, follow an appropriate [installation manual](https://wiki.fogproject.org/wiki/index.php?title=Installation#Installation_manuals) or the [Upgrade to trunk](https://wiki.fogproject.org/wiki/index.php?title=Upgrade_to_trunk "Upgrade to trunk") article. The old and new fog servers do not need to be the same version of fog. The only restriction here is that you cannot downgrade. You can go from older to newer, but not from newer to older.
-
-  
-CentOS and Fedora have security related settings that need set before installation. For Ubuntu Server or Debian, it would be worth your time to see how to setup your server's partitions optimally via the example configuration videos in their installation manuals, the same applies for RHEL, CentOS, and Fedora. How the partitions are laid out for FOG can make the difference between a healthy server and a crashed server a year from now.
-
-# Migrating images & database
-
-The entire point of migrating is usually saving your host registrations, group configurations, image assignments, and your images. There are a great number of ways to move these, but for inexperienced or beginner Linux users I would recommend leveraging NFS on the new FOG Server.
-
-Related articles:
-
--   [Migrate images manually](https://wiki.fogproject.org/wiki/index.php?title=Migrate_images_manually "Migrate images manually")
-
--   [Troubleshoot_MySQL#Manually_export_.2F_import_Fog_database](https://wiki.fogproject.org/wiki/index.php?title=Troubleshoot_MySQL#Manually_export_.2F_import_Fog_database "Troubleshoot MySQL")
-
-Because the new FOG Server provides an NFS share, this is the easiest approach. This method is also uniform across the different distributions. This approach also works whether the old FOG Server's web interface is functional or not.
-
-### Mounting
-
-Via Terminal or SSH on the **old** FOG server, mount the new fog server's /images/dev directory to a local directory on the old server called /new. Where x.x.x.x is the new fog server's IP address.
-
-mkdir /new 
-mount x.x.x.x:/images/dev /new
-
-### Export DB
-
-We will export the database and move the export to the new server. This is performed on the **old** FOG Server. There are a few different examples of how to do this below, depending on if you're using a password or not, and how MySQL is configured. One of them will work for you.
-
-#No password.
-mysqldump -B fog > /new/fogdb.sql
-
-#Password with root user.
-mysqldump -B fog -u root -p > /new/fogdb.sql
-
-#No password, localhost.
-mysqldump -B fog -h localhost > /new/fogdb.sql
-
-#No password, local loopback.
-mysqldump -B fog -h 127.0.0.1 > /new/fogdb.sql
-
-#Password with localhost.
-mysqldump -B fog -h localhost -u root -p > /new/fogdb.sql
-
-#Password with local loopback.
-mysqldump -B fog -h 127.0.0.1 -u root -p > /new/fogdb.sql
-
-### Export Images
-
-Now to move over the images. Again, this is performed on the **old** FOG server. The more images you have, the longer the below command will take to execute.
-
-cp -R /images/* /new
-
-### Importing DB
-
-Via Terminal or SSH on the **new** FOG server, we now need to import the database. Assuming you followed the above steps for exporting exactly, one of the below methods will work for you.
-
-#No password.
-mysql -D fog < /images/dev/fogdb.sql
-
-#Password with root user.
-mysql -D fog -u root -p < /images/dev/fogdb.sql
-
-#No password, localhost.
-mysql -D fog -h localhost < /images/dev/fogdb.sql
-
-#No password, local loopback.
-mysql -D fog -h 127.0.0.1 < /images/dev/fogdb.sql
-
-#Password with localhost.
-mysql -D fog -h localhost -u root -p < /images/dev/fogdb.sql
-
-#Password with local loopback.
-mysql -D fog -h 127.0.0.1 -u root -p < /images/dev/fogdb.sql
-
-After the database is successfully imported, you should delete the old file or move it. This is done on the **new** server. Here's the command to delete it:
-
-rm -f /images/dev/fogdb.sql
-
-It's important to note that this step will make the new server's web interface credentials the same as whatever the old server's was. If you don't know what the password is, you can follow steps here to reset the default web interface password: [Password_Central#Web_Interface](https://wiki.fogproject.org/wiki/index.php?title=Password_Central#Web_Interface "Password Central")
-
-### Arranging Images
-
-This step is performed on the **new** FOG server. In this step we're simply moving the images to where they are supposed to be and setting the correct permissions. We are getting rid of the "dev" directory we brought over before the move happens. Also eliminating the new server's "postdownloadscripts" directory before the move. This step assumes that your new server's images directory is in the default location and you followed the above steps for moving them over exactly.
-
-rm -f /images/dev/.mntcheck
-rm -rf /images/dev/dev > /dev/null 2>&1
-rm -rf /images/postdownloadscripts > /dev/null 2>&1
-mv /images/dev/* /images
-touch /images/dev/.mntcheck
-chown -R fogproject:root /images
-chmod -R 777 /images
-
-## If old server was FOG 1.3.0+
-
-Related article: [FOG_Client#Maintain_Control_Of_Hosts_When_Building_New_Server](https://wiki.fogproject.org/wiki/index.php?title=FOG_Client#Maintain_Control_Of_Hosts_When_Building_New_Server "FOG Client")
-
-Because of the security model of FOG 1.3.0+ and the new FOG Client, without the proper CA and ssl certificates present on the new fog server, any currently deployed hosts with the new FOG Client installed will ignore the new server and not accept commands from it. This is by design.
-
-In order to maintain control of existing hosts that have existing new FOG Clients installed or existing images that have the new FOG Client built into them, you must copy this directory from the old server to the new server: /opt/fog/snapins/ssl
-
-  
-On the **old** FOG server, copy the ssl directory to the new server.
-
-cp -R /opt/fog/snapins/ssl /new
-
-On the **new** FOG Server, delete the existing ssl directory and then move the old ssl directory to the proper location, and then set permissions.
-
-rm -rf /opt/fog/snapins/ssl
-mv /images/dev/ssl /opt/fog/snapins
-
-#Fedora, CentOS, and RHEL users should use this command to set permissions:
-chown -R fogproject:apache /opt/fog/snapins/ssl
-
-#Debian, Ubuntu, and Ubuntu variant users should use this command to set permissions:
-chown -R fogproject:www-data /opt/fog/snapins/ssl
-
-IMPORTANT: To complete the ssl migration, on the **new** FOG Server, re-run the fog installer that you used for installing fog.
-
-# Fix IP Addresses, Passwords, and Interface on new server
-
-Related articles:
-
--   [Change FOG Server IP Address](https://wiki.fogproject.org/wiki/index.php?title=Change_FOG_Server_IP_Address "Change FOG Server IP Address")
-
--   [.fogsettings](https://wiki.fogproject.org/wiki/index.php?title=.fogsettings ".fogsettings")
-
--   [Password Central](https://wiki.fogproject.org/wiki/index.php?title=Password_Central "Password Central")
-
--   [Troubleshoot FTP](https://wiki.fogproject.org/wiki/index.php?title=Troubleshoot_FTP "Troubleshoot FTP")
-
-Related tool: [https://github.com/FOGProject/fog-community-scripts/tree/master/updateIP](https://github.com/FOGProject/fog-community-scripts/tree/master/updateIP)
-
-  
-Because we have imported the old database into the new server in order to preserve all of the host data, image definitions, group definitions, image assignments, and so on, we also imported all of the old server's IP Addresses and passwords along with it. This can't be helped using the approach we took - which is the approach to take if your web interface on the old server was just completely not working. Because of this, we need to change just a few places in the FOG Web GUI, and change the old FOG Server's IP address to the new FOG Server's IP Address, and update a few passwords.
-
-First, we must find out what the new FOG Password and new interface is. On the **new** FOG Server, run this command and note the outputted lines that begin with password= and interface=
-
-cat /opt/fog/.fogsettings
-
-You'll want to copy/paste the password because of it's length.
-
-Paste the password into the below fields in the **new** FOG Server's web interface:
-
--   Web Interface -> Storage Management -> [click node name] -> Password and update the Interface field with the new interface name also.
--   Web Interface -> FOG Configuration -> FOG Settings -> TFTP Server -> FOG_TFTP_FTP_PASSWORD
-
-Update the IP Address in the below fields in the **new** FOG Server's web interface:
-
--   Web Interface -> Storage Management -> [click node name] -> IP Address
--   Web Interface -> FOG Configuration -> FOG Settings -> Web Server -> FOG_WEB_HOST
--   Web Interface -> FOG Configuration -> FOG Settings -> TFTP Server -> FOG_TFTP_HOST
+Build the new server using the latest release of whatever Linux distribution
+you prefer — it does not need to match the old server's distribution (Ubuntu
+to Rocky, Debian to Fedora, etc. are all fine).
+
+Do not create a Linux user called `fog` — FOG creates its own `fog`/`fogproject`
+service account, and a pre-existing user of that name will conflict with it.
+
+Set a static IP or a DHCP reservation for the server (this can be a
+temporary staging address per the decision above), and create a DNS record
+for it once the address is settled.
+
+To install FOG itself, follow [[install-fog-server|Install FOG Server]] —
+check [[requirements|System Requirements]] first. Installing FOG here is no
+different than any other fresh install; nothing about it changes because
+you're migrating.
+
+# Migrating images
+
+FOG's installer already sets up an NFS export you can use to move images
+between servers: `/images` (read-only) and `/images/dev` (read-write). The
+easiest, most uniform way to migrate is to mount the **old** server's
+read-only export on the **new** server and `rsync` from it — this works
+whether or not the old server's web interface is currently functional.
+
+On the **new** server:
+
+```bash
+mkdir /mnt/oldfog
+mount OLD_SERVER_IP:/images /mnt/oldfog
+rsync -av /mnt/oldfog/ /images/
+```
+
+`rsync` is preferred over a plain `cp -R`: it's resumable, and you can safely
+re-run the exact same command close to cutover to pick up anything captured
+on the old server in the meantime (only the changed/new files transfer).
+Because drivers and postdownload scripts already live under `/images` on the
+old server, they come along automatically — there's nothing extra to copy
+for them.
+
+Once the copy finishes, unmount the share:
+
+```bash
+umount /mnt/oldfog
+```
+
+> [!note]
+> The larger your image store, the longer the initial `rsync` takes — plan
+> for this, especially if you're staging over a WAN link. A same-subnet
+> gigabit link is far more pleasant for a first sync of 100+ GB of images.
+
+# Migrating the database
+
+The entire point of migrating is usually preserving your host registrations,
+group configurations, image assignments, and snapin links, along with your
+images — all of that lives in the database.
+
+**Recommended: let the installer produce the backup.** FOG's installer
+automatically backs up the database every time it runs an update, dropping a
+timestamped dump in `$backupPath/fogDBbackups/` (`$backupPath` defaults to
+`/home/`, and is recorded in [[install-fogsettings|.fogsettings]]). On the
+**old** server, re-run the installer (or just answer through an update) to
+produce a fresh dump, then copy the resulting `fog_sql_*.sql` file to the
+**new** server (over the same NFS mount used for images, or with `scp`), and
+import it:
+
+```bash
+mysql -u root -p fog < fog_sql_<version>_<timestamp>.sql
+```
+
+**Fallback: manual `mysqldump`.** If the old server's web interface itself
+isn't functioning (so the installer can't produce its own backup), dump the
+database directly instead:
+
+```bash
+# on the OLD server
+mysqldump -u root -p -B fog > fogdb.sql
+
+# on the NEW server
+mysql -u root -p fog < fogdb.sql
+```
+
+Adjust the `-u`/`-p`/`-h` flags to match however your MySQL/MariaDB
+installation is actually secured (no root password, a different host, etc.).
+
+> [!note]
+> Because this import brings the old server's IP address and generated
+> passwords with it, the new server's web interface login will be whatever
+> the old server's was. If you don't know it, see
+> [[install-fogsettings|.fogsettings]] for where FOG stores it, or reset it
+> from a shell on the new server.
+
+# Migrating SSL / preserving client trust
+
+FOG generates its own self-signed CA at install time and uses it for three
+things: the web server's HTTPS certificate, the iPXE binaries (which are
+compiled to trust that CA), and the **fog-client**, which pins the CA and
+validates the server against it before acting on any task. See
+[[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]] for the
+full model.
+
+Because of that pinning, if the new server generates a **new** CA (the
+default for any fresh install), every already-deployed fog-client — and any
+image with the client baked in — will not trust the new server until it
+re-pins (reinstalling the client, or rebuilding affected images).
+
+To avoid that, copy the CA over **before** you (re-)run the installer on the
+new server:
+
+```bash
+# on the OLD server
+cp -R /opt/fog/snapins/ssl /mnt/oldfog/   # or scp directly to the new server
+```
+
+```bash
+# on the NEW server, with the old ssl dir now in place at /opt/fog/snapins/ssl
+```
+
+The installer only regenerates the CA when one isn't already present (or
+when you explicitly pass `-C`/`--recreate-CA` — see
+[[command-line-options]]), so once the old `ssl` directory is in place, a
+normal installer run leaves it alone and every existing client keeps
+trusting the server without any client-side changes.
+
+If you'd rather run your own CA going forward — for example to integrate
+with your organization's PKI — the installer's `--external-ca` option lets
+you supply your own intermediate CA at install time instead of using FOG's
+generated one. This is currently only available on the working-1.6 branch,
+not yet in stable/dev-branch releases; see
+[[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]] for
+details and the caveats of switching an existing server's CA.
+
+# Migrating other snapin files
+
+The SSL directory above lives under `/opt/fog/snapins`, alongside any snapin
+files you've actually uploaded (installers, scripts, etc. — see
+[[snapins|Snapin Management]]). Copy the rest of that directory over the same
+way if you want existing snapin assignments to keep working without
+re-uploading them:
+
+```bash
+# on the OLD server
+cp -R /opt/fog/snapins/* /mnt/oldfog/snapins-backup/   # excluding ssl/, already handled above
+```
+
+# Automating it with a script
+
+Everything above — images, SSL/CA, snapins, the database, and installing FOG
+itself — can be scripted into a single pass once the new server is up and
+reachable. The script below **pulls** everything from the old server over
+SSH rather than pushing from it, so the old (still-production) server needs
+no setup beyond allowing the SSH connection — nothing is installed or
+changed on it.
+
+### Set up SSH access first
+
+On the **new** server, generate a key (skip this if you already have one)
+and copy it to the old server so the script can reach it without a password
+prompt for every single command:
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""
+ssh-copy-id root@OLD_FOG_HOST
+
+# confirm it works before running the script:
+ssh root@OLD_FOG_HOST true && echo OK
+```
+
+> [!note]
+> If root SSH login is disabled on the old server (`PermitRootLogin no`),
+> either enable it temporarily for the migration (and turn it back off
+> afterward), or use a sudo-capable account instead and adjust the `ssh`
+> calls in the script below to `sudo` their remote commands.
+
+### The script
+
+Run this **on the new server**, as root, once it has a static IP/hostname
+and can reach the old server's SSH, HTTP, and MySQL ports. It takes the old
+server's hostname as a required argument and the new server's hostname as an
+optional one (used only to label the confirmation prompt below — the script
+always acts on the machine it's run on):
+
+```bash
+#!/usr/bin/env bash
+# migrate-fog.sh — pulls images, SSL/CA trust, snapins, and the database
+# from an existing FOG server onto this one, then installs FOG here.
+#
+# Usage: ./migrate-fog.sh <old-fog-host> [new-fog-host]
+set -euo pipefail
+
+OLD_HOST="${1:?Usage: $0 <old-fog-host> [new-fog-host]}"
+NEW_HOST="${2:-$(hostname -f 2>/dev/null || hostname)}"
+
+FOG_REPO_DIR="/root/fogproject"
+FOG_BRANCH="stable"   # match or exceed the old server's branch/version — never go older
+IMAGES_DIR="/images"
+SNAPINS_DIR="/opt/fog/snapins"
+DB_DUMP="/root/fog_migrate_$(date +%Y%m%d_%H%M%S).sql"
+
+ssh_old() { ssh -o BatchMode=yes "root@${OLD_HOST}" "$@"; }
+
+echo "This will pull images, SSL/snapins, and the database from:"
+echo "  OLD server: ${OLD_HOST}"
+echo "and install/overwrite FOG on this machine:"
+echo "  NEW server: ${NEW_HOST}"
+echo
+read -r -p "Continue? [y/N] " confirm
+[[ "${confirm}" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
+
+echo "==> Checking SSH access to ${OLD_HOST}"
+ssh_old true
+
+echo "==> Syncing images from ${OLD_HOST}:${IMAGES_DIR} (this can take a while)"
+rsync -az --info=progress2 -e ssh "root@${OLD_HOST}:${IMAGES_DIR}/" "${IMAGES_DIR}/"
+
+echo "==> Copying SSL/CA and snapins from ${OLD_HOST}:${SNAPINS_DIR}"
+mkdir -p "${SNAPINS_DIR}"
+rsync -az -e ssh "root@${OLD_HOST}:${SNAPINS_DIR}/" "${SNAPINS_DIR}/"
+
+echo "==> Fetching FOG source (${FOG_BRANCH})"
+if [[ -d "${FOG_REPO_DIR}" ]]; then
+    git -C "${FOG_REPO_DIR}" fetch --all
+    git -C "${FOG_REPO_DIR}" checkout "${FOG_BRANCH}"
+    git -C "${FOG_REPO_DIR}" pull
+else
+    git clone --branch "${FOG_BRANCH}" https://github.com/FOGProject/fogproject.git "${FOG_REPO_DIR}"
+fi
+
+echo "==> Installing FOG (the ssl/ dir copied above means the existing CA is kept)"
+( cd "${FOG_REPO_DIR}/bin" && ./installfog.sh -Y )
+
+echo "==> Dumping the fog database on ${OLD_HOST} (enter ITS MySQL root password if prompted)"
+ssh -t "root@${OLD_HOST}" "mysqldump -u root -p -B fog" > "${DB_DUMP}"
+
+echo "==> Importing it here (enter THIS server's MySQL root password if prompted)"
+mysql -u root -p fog < "${DB_DUMP}"
+
+cat <<EOF
+
+==> Done.
+
+Remaining manual steps:
+  - If this server didn't inherit the old one's IP/hostname, work through
+    "Reconciling IP-dependent settings" below.
+  - Update DHCP/DNS to point at this server — see "If FOG isn't doing DHCP".
+  - Test a PXE boot and a live capture/deploy before retiring ${OLD_HOST}.
+EOF
+```
+
+> [!warning]
+> Treat this as a starting point, not a turnkey tool. Review it against your
+> own environment before running it: `-Y` auto-accepts the installer's
+> *guessed* defaults (network interface, DHCP, HTTPS, hostname), which is
+> usually fine but worth confirming against the prompts documented in
+> [[install-fog-server#Installer Prompts|Install FOG Server]]; the `mysqldump`/`mysql`
+> steps assume interactive, password-based MySQL auth and will need
+> adjusting if your servers use passwordless/socket auth or an external
+> database; and `-B fog` faithfully drops and recreates every table FOG
+> installed by default on the new server, replacing it with the old
+> server's data — expected here, but worth knowing before you run it a
+> second time by accident.
+
+# Reconciling IP-dependent settings
+
+Skip this section entirely if the new server ended up with the **same** IP
+and hostname as the old one — there's nothing to reconcile.
+
+If the new server has a different IP, the database import above brought the
+**old** server's IP address and passwords with it, which will now conflict
+with the new server. Follow [[change-fog-server-ip-address|Change FOG Server IP Address]]
+to update the storage node's IP, `FOG_WEB_HOST`, `FOG_TFTP_HOST`, and the
+iPXE default file to point at the new server.
+
+You'll also want to confirm the FTP/TFTP credentials line up across the
+places FOG expects them to match — see
+[[troubleshoot-ftp#Credentials / Passwords|Troubleshooting FTP: Credentials / Passwords]].
 
 # If FOG isn't doing DHCP
 
-Related articles:
+If you have an existing dedicated DHCP server (rather than letting FOG serve
+DHCP itself), point it at the new server:
 
--   [Modifying existing DHCP server to work with FOG](https://wiki.fogproject.org/wiki/index.php?title=Modifying_existing_DHCP_server_to_work_with_FOG "Modifying existing DHCP server to work with FOG")
+-   Update DHCP option 66 to the new server's IP or DNS name — see
+    [[dhcp-server-settings|DHCP Server Settings]] for the current
+    configuration examples (Kea, ISC, Windows Server).
+-   If you don't control the DHCP server, or it can't set options 66/67,
+    use [[proxy-dhcp|Proxy DHCP with dnsmasq]] instead.
+-   If you support both legacy BIOS and UEFI clients, see
+    [[bios-and-uefi-co-existence|BIOS and UEFI Co-Existence]].
 
--   [BIOS and UEFI Co-Existence](https://wiki.fogproject.org/wiki/index.php?title=BIOS_and_UEFI_Co-Existence "BIOS and UEFI Co-Existence")
+If the new server reused the old one's IP and DNS name, there is usually
+nothing to change here at all.
 
--   [ProxyDHCP with dnsmasq](https://wiki.fogproject.org/wiki/index.php?title=ProxyDHCP_with_dnsmasq "ProxyDHCP with dnsmasq")
+# Cut over and clean up
 
-If you have an existing dedicated DHCP server, you'll need to update it. Completing this step will make the new FOG Server "live". You can make the old FOG Server "live" again by rolling back this step.
+Once images, the database, and SSL trust are migrated:
 
-## Windows Server DHCP
+1.  Do a final `rsync` pass for any images captured on the old server since
+    your first sync.
+2.  If you staged the new server on a temporary IP, flip DNS (and the IP
+    itself, if anything boots by address) to the new server now.
+3.  Test a PXE boot and a live image capture/deploy against the new server
+    before retiring the old one.
+4.  Keep the old server powered off (rather than immediately destroyed) for
+    a while as a rollback option, then decommission it on your own schedule
+    once you're confident the new server is stable.
 
-Use Remote Desktop to connect to the DHCP Server. Open the Run Dialog with the hotkeys Windows+R and type dhcpmgmt.msc and press enter or click run. The DHCP Management GUI should open.
+# Related articles
 
-Navigate through the left-most menus to IPv4 -> subnet -> Scope Options. Look for options 066 and 067, they should be plainly visible.
-
-Change option 066 from the old FOG Server's IP address to the new FOG Server's IP Address.
-
-Check option 067, if it's set to anything besides undionly.kpxe or undionly.kkpxe then you should change it to one of the previously mentioned values in red.
-
-## Linux / ISC-DHCP
-
-Open Terminal on your DHCP Server, or SSH to the server.
-
-If you're not already root, become root with sudo -i
-
-Use your favorite editor to edit this file: /etc/dhcp/dhcpd.conf
-
-I like to use [Vi](https://wiki.fogproject.org/wiki/index.php?title=Vi "Vi"). Using Vi as your editor:
-
-vi /etc/dhcp/dhcpd.conf
-
-Look for these two lines throughout the document:
-
--   next-server
-
--   filename
-
-Change the value of next-server to the new FOG Server's IP Address. If you have just a simple DHCP configuration and filename only appears one time in the configuration, you will likely want this to be set to undionly.kpxe or undionly.kkpxe
-
-After making changes and saving them, restart the DHCP service. On new Linux distributions this can typically be accomplished with:
-
-systemctl restart dhcpd
-
-If you have issues with restarting DHCP, get the full status of it with:
-
-systemctl status dhcpd -l
+-   [[install-fog-server|Install FOG Server]]
+-   [[requirements|System Requirements]]
+-   [[command-line-options|Fog installer command line options]]
+-   [[change-fog-server-ip-address|Change FOG Server IP Address]]
+-   [[install-fogsettings|The .fogsettings file]]
+-   [[storage-node|Storage Node Management]]
+-   [[snapins|Snapin Management]]
+-   [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
+-   [[fog-security|FOG Security]]
+-   [[troubleshoot-ftp|Troubleshooting FTP]]
+-   [[dhcp-server-settings|DHCP Server Settings]]
+-   [[proxy-dhcp|Proxy DHCP with dnsmasq]]
+-   [[bios-and-uefi-co-existence|BIOS and UEFI Co-Existence]]
