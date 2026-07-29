@@ -183,6 +183,15 @@ plugins:
       priority: 50
   - source: "@quartz-community/graph"
     enabled: true
+    options:
+      # Default (1) only shows a page's direct neighbors, so the graph never
+      # reads as a tree -- from the home page it's just a flat star of its
+      # immediate links with no further branching. 2 levels shows each
+      # top-level section's own subsections too (e.g. home -> installation ->
+      # installation/server), which is what actually makes the site's
+      # structure visible from the home page.
+      localGraph:
+        depth: 2
     layout:
       position: right
       priority: 10
