@@ -1,28 +1,25 @@
 # .readthedocs.yml
-# Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+# Read the Docs configuration file — Quartz build, quartz-docs branch only.
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html
+# and https://docs.readthedocs.io/en/stable/build-customization.html
+#
+# This branch is the Quartz spike (see quartz/README.md). Read the Docs has
+# no native Quartz/Node-based-generator support, so this fully overrides the
+# default build via build.commands: install Node, run Quartz, drop the
+# result in $READTHEDOCS_OUTPUT/html for RTD to host. The `master` branch's
+# `.readthedocs.yml` is unaffected — it still builds MkDocs independently,
+# since each branch carries its own copy of this file.
+#
+# This is intended to be built by a separate "fog-docs-quartz-test" RTD
+# project pointed at this branch, not the main fog-docs RTD project.
 
-# Required
 version: 2
 
-# Build documentation in the docs/ directory with Sphinx
-# sphinx:
-#   configuration: conf.py
-
-# Build documentation with MkDocs
-mkdocs:
- configuration: mkdocs.yml
-
-# Optionally build your docs in additional formats such as PDF and ePub
-formats: all
-
-# Optionally set the version of Python and requirements required to build your docs
-
 build:
-  os: ubuntu-22.04
+  os: ubuntu-24.04
   tools:
-    python: "3.11"
-
-python:
-  install:
-    - requirements: requirements.txt
+    nodejs: "22"
+  commands:
+    - cd quartz && npm ci
+    - cd quartz && npm run install-plugins
+    - cd quartz && node quartz/bootstrap-cli.mjs build --directory ../docs -o "$READTHEDOCS_OUTPUT/html"
