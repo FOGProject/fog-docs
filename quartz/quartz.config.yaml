@@ -137,6 +137,10 @@ plugins:
     options:
       # Order top-level folders to mirror the current mkdocs nav section order
       # (installation, management, kb, development); alphabetical otherwise.
+      # Also applies an explicit per-directory order for sections where plain
+      # alphabetical sort contradicts the docs' own recommended reading order
+      # or buries beginner content behind advanced/legacy pages. Keep this in
+      # sync with mkdocs.yml's nav for the same directories.
       sortFn: |
         (a, b) => {
           const topOrder = ["installation", "management", "kb", "development"]
@@ -144,6 +148,27 @@ plugins:
             const idx = topOrder.indexOf(n.slugSegment)
             return idx === -1 ? topOrder.length : idx
           }
+
+          const explicitOrder = {
+            "installation/server": ["requirements", "install-fog-server", "command-line-options", "virtualization", "migrating-fog-server"],
+            "installation/network-setup": ["dhcp-server-settings", "proxy-dhcp"],
+            "kb/how-tos": ["capture-an-image", "deploy-an-image", "fog-client-example-tasks", "change-fog-server-ip-address", "bios-and-uefi-co-existence", "uefi-boot-entries", "deploy-dual-boot-multi-disk-image", "add-extend-a-2nd-virtual-hdd", "post-download-scripts"],
+            "management/web": ["users", "roles", "site-scoping", "ldap", "ad-integration", "hosts", "groups", "images", "storage-node", "snapins", "printers", "tasks", "multicast", "reports", "dashboard", "service", "config", "plugins"],
+          }
+
+          if (!a.isFolder && !b.isFolder) {
+            const parentA = a.slugSegments.slice(0, -1).join("/")
+            const parentB = b.slugSegments.slice(0, -1).join("/")
+            if (parentA === parentB && explicitOrder[parentA]) {
+              const order = explicitOrder[parentA]
+              const ra2 = order.indexOf(a.slugSegment)
+              const rb2 = order.indexOf(b.slugSegment)
+              const rankA = ra2 === -1 ? order.length : ra2
+              const rankB = rb2 === -1 ? order.length : rb2
+              if (rankA !== rankB) return rankA - rankB
+            }
+          }
+
           if (a.isFolder && b.isFolder) {
             const ra = rank(a)
             const rb = rank(b)

@@ -18,6 +18,9 @@ tags:
 
 # Using the FOG Boot Menu
 
+See [[ipxe|Customizing FOG iPXE Settings]] for adding your own custom boot
+entries and background on top of the built-in commands below.
+
 ## Overview
 
 -   FOG attempts to keep management centralized, but in an attempt to

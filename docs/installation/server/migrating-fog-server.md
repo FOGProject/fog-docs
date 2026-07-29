@@ -1,6 +1,7 @@
 ---
 title: Migrating FOG Server
 description: Instructions for migrating 
+context_id: migrating-fog-server
 aliases:
     - Migrating FOG Server
     - FOG Server Migration

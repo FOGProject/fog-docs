@@ -94,49 +94,67 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - Home/Getting Started: 
+  - Home/Getting Started:
     - Home: index.md
     - What is Fog?: introduction.md
-    - System Requirements: installation/server/requirements.md
-    - Install Fog: installation/server/install-fog-server.md
-    - Capture an Image: kb/how-tos/capture-an-image.md
-    - Deploy an Image: kb/how-tos/deploy-an-image.md
   - Installing/Updating:
-    - installation/README.md 
-    - Network Setup: installation/network-setup
-    - Server Install: installation/server
+    - installation/index.md
+    - Server Install:
+      - installation/server/index.md
+      - Requirements: installation/server/requirements.md
+      - Install Fog Server: installation/server/install-fog-server.md
+      - Command Line Options: installation/server/command-line-options.md
+      - Virtualization: installation/server/virtualization.md
+      - Migrating Fog Server: installation/server/migrating-fog-server.md
+    - Network Setup:
+      - installation/network-setup/index.md
+      - DHCP Server Settings: installation/network-setup/dhcp-server-settings.md
+      - Proxy DHCP with dnsmasq: installation/network-setup/proxy-dhcp.md
     - Client Install: installation/client
-  - Management: 
-    - management/README.md
-    - Web Management: 
-      - management/web/README.md
-      - Dashboard: management/web/dashboard.md
-      - User Management: management/web/users.md
-      - Roles & Permissions: management/web/roles.md
-      - Site Scoping: management/web/site-scoping.md
-      - LDAP Authentication: management/web/ldap.md
-      - Host Management: management/web/hosts.md
-      - Group Management: management/web/groups.md
-      - Image Management: management/web/images.md
-      - Storage Node Management: management/web/storage-node.md
-      - Snapin Management: management/web/snapins.md
-      - Printer Management: management/web/printers.md
-      - Service Management: management/web/service.md
-      - Task Management: management/web/tasks.md
-      - Multicast Sessions: management/web/multicast.md
-      - Report Management: management/web/reports.md
-      - Fog Configuration: management/web/config.md
-      - AD Config: management/web/ad-integration.md
-      - Plugin Management: management/web/plugins.md
+  - Management:
+    - management/index.md
+    - Web Management:
+      - management/web/index.md
+      - Access & Security:
+        - User Management: management/web/users.md
+        - Roles & Permissions: management/web/roles.md
+        - Site Scoping: management/web/site-scoping.md
+        - LDAP Authentication: management/web/ldap.md
+        - AD Config: management/web/ad-integration.md
+      - Imaging Objects:
+        - Host Management: management/web/hosts.md
+        - Group Management: management/web/groups.md
+        - Image Management: management/web/images.md
+        - Storage Node Management: management/web/storage-node.md
+        - Snapin Management: management/web/snapins.md
+        - Printer Management: management/web/printers.md
+      - Operations:
+        - Task Management: management/web/tasks.md
+        - Multicast Sessions: management/web/multicast.md
+        - Report Management: management/web/reports.md
+      - System:
+        - Dashboard: management/web/dashboard.md
+        - Service Management: management/web/service.md
+        - Fog Configuration: management/web/config.md
+        - Plugin Management: management/web/plugins.md
     - Server Management: management/server
     - FOS Management: management/fos
 
-  - Knowledge Base: 
-    - kb/README.md
-    - FAQ: kb/faqs
+  - Knowledge Base:
+    - kb/index.md
+    - How-To Guides:
+      - kb/how-tos/index.md
+      - Capture an Image: kb/how-tos/capture-an-image.md
+      - Deploy an Image: kb/how-tos/deploy-an-image.md
+      - Fog Client Example Tasks: kb/how-tos/fog-client-example-tasks.md
+      - Change FOG Server IP Address: kb/how-tos/change-fog-server-ip-address.md
+      - BIOS and UEFI Co-Existence: kb/how-tos/bios-and-uefi-co-existence.md
+      - Managing UEFI Boot Entries: kb/how-tos/uefi-boot-entries.md
+      - Deploying a Dual-Boot Multi-Disk Image: kb/how-tos/deploy-dual-boot-multi-disk-image.md
+      - Add & Extend a 2nd Virtual HDD: kb/how-tos/add-extend-a-2nd-virtual-hdd.md
+      - Post Download Scripts: kb/how-tos/post-download-scripts.md
     - Customization: kb/customization
     - Integrations: kb/integrations
-    - How-To Guides: kb/how-tos
     - Troubleshooting: kb/troubleshooting
     - Reference: kb/reference
   - Development: development

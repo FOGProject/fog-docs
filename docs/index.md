@@ -33,41 +33,43 @@ tags:
 
 Below you'll find basic descriptions of each section
 
-> [!tip] 
-> ### Getting Started
-> An introduction to what fog is and some common first questions
-> - [[introduction| What is FOG?]]
-> - [[requirements|System Requirements]]
+> [!tip]
+> ### Getting Started — standing up your first server
+> Follow these in order for a first install:
+> 1. [[introduction|What is FOG?]]
+> 2. [[requirements|System Requirements]]
+> 3. [[install-fog-server|Install Fog Server]]
+> 4. [[install-fog-client|Install Fog Client]]
+> 5. [[installation/network-setup/index|Network Setup]] (if FOG isn't hosting your DHCP)
+> 6. [[capture-an-image|Capture an Image]]
+> 7. [[deploy-an-image|Deploy an Image]]
 
 > [!tip]
 > ### Installation, Updating, and Migrating
 >Documentation on the installation, updating, and migrating of a Fog Server
-> - [[installation/network-setup/README|Network Setup]]
-> - [[install-fog-server|Install Fog Server]]
-> - [[install-fog-client|Install Fog Client]]
+> - [[installation/index|Installing/Updating overview]]
 > - [[virtualization|Running in a Virtual Environment]]
 
 >[!tip]
 >### Management
 >Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
 >These sections explain what can be done in each of the fog ui menus
->- [[management/web/README|Web UI Management]]
+>- [[management/web/index|Web UI Management]]
 
 >[!tip]
 >### Knowledge Base
->Documentation on important references, integrations, customizations, FAQs, and troubleshooting
-> - [Customization](knowledge-base\customization)
-> - [[kb/faqs/README|FAQs]]
-> - [[kb/integrations/README|Integrations]]
-> - [[kb/how-tos/README|How To Guides]]
-> - [[kb/reference/README| Reference]]
-> - [[kb/troubleshooting/README|Troubleshooting]]
+>Documentation on important references, integrations, customizations, how-tos, and troubleshooting
+> - [[kb/how-tos/index|How To Guides]]
+> - [[kb/customization/index|Customization]]
+> - [[kb/integrations/index|Integrations]]
+> - [[kb/reference/index|Reference]]
+> - [[kb/troubleshooting/index|Troubleshooting]]
 
 
 >[!tip]
 >### Development
 >Resources and documentation related to contributing to the development of FOG
->- [Development](development\fog_release)
+>- [[development/fog-release|Development]]
 
 >[!tip]
 >### Release Notes

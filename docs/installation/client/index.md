@@ -10,4 +10,6 @@ tags:
 ---
 # Client Installation
 
-These are pages related to installing the client on hosts and any other initial configuration
+These are pages related to installing the client on hosts and any other initial configuration.
+
+- [[install-fog-client|Install Fog Client]]

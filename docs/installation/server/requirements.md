@@ -12,6 +12,10 @@ tags:
 
 # System Requirements
 
+This page covers OS, hardware, and disk requirements for the server itself. For
+the ports and firewall rules FOG needs to actually talk to clients, see
+[[network-and-firewall-requirements|Network and firewall requirements]].
+
 ## Operating System
 
 Before diving right into the installation of FOG you need to decide

@@ -205,37 +205,14 @@ Hosts can also include, but are not required:
     be a long difficult process, so in order to make this process easier
     we created a page that allows you to import most of the host
     information from a CSV file.
--   The CSV file that is imported to FOG must be in the following
-    format, and the file should not have a header row.
 
-`MAC Address,Host name,Description,OSID,ImageID`
-
--   The **MAC Address** [required]{.red} is the NIC's MAC address
-    seperated by `:` (colon).
--   The **Host name** [required]{.red} is the computer's Host name
-    (must be less than 15 characters, should not include underscores,
-    according to \[<http://tools.ietf.org/html/rfc952> \| Network
-    Working Group \]).
--   The **'Description** [Can be Left as Blank]{.orange} is any text
-    description you would like associated with the computer.
--   The **OSID** [required]{.red} is the number representing the
-    operating system. It can be found in the table "supportedOS" in
-    the field osID.
--   The **ImageID**[required]{.red} is the number representing the
-    images file linked to this image. The image definition must already
-    exist and this number can be found in the table "images" in the
-    field imageID.
-
-!!! warning
-
-    The file must be saved as a CSV **without** a header row.
-
-
-Sample:
-
-    00:00:02:AF:00:E0:01:0F,adminoff1,10.0.1.150,Main admin office computer,5,14
-    00:00:02:AF:00:E0:01:04,adminoff2,,admin office 2 computer,5,13
-    00:00:02:AF:00:E0:01:02,adminoff3,,,5,12
+>[!note]
+>The CSV format changed significantly in FOG 1.6 (headered **or**
+>positional columns, an `associations` column for groups/snapins/printers,
+>and name-resolved foreign keys). See [[csv_import_export|CSV Import / Export]]
+>for the full, current column layout and format rules — the safest workflow
+>is **Export → edit → Import**, so you always start from a file FOG already
+>considers valid.
 
 #### Importing the File
 

@@ -20,6 +20,10 @@ In order for Active Directory integration to function, you need the
 following:
 
 -   The image will need to have the FOG service installed.
+-   The FOG client's **HostNameChanger** module must be enabled — during
+    install or reconfiguration of the FOG client on the host, make sure
+    this module is set active or the host will never attempt to join the
+    domain, regardless of what's configured below.
 -   Before capturing your image, the computer is NOT a member of any
     domain
 -   In order to add a computer to a domain, FOG requires a username and
@@ -38,9 +42,23 @@ following:
 >hard and only need to be done one time. Please see the documentation below.
    
 
-## Set up
+## Configuring at different levels
 
-To set up a host to use AD, do the following:
+The same set of fields (domain, username, password, OU) below can be set at
+three different levels, applied in order of most to least specific:
+
+-   **Global defaults** — Web UI: FOG Configuration → HostNameChanger. Sets
+    the domain-wide default used to populate the fields below when a host
+    or group doesn't override them.
+-   **Group** — Web UI: Group Management → select a group → Active
+    Directory. Applies the settings in a batch to every host currently in
+    the group when saved. This is a one-time batch apply — it is **not**
+    stored on the group permanently, and isn't applied automatically to
+    hosts added to the group later.
+-   **Individual host** — Web UI: Host Management → select a host →
+    Active Directory. See below for the field-by-field walkthrough.
+
+To set up a single host to use AD:
 
 -   Navigate to the hosts section of the FOG management portal and
     select the host you want to join AD
@@ -72,6 +90,12 @@ You get the following options:
 
     If you leave this fiels blank, the computer object will be created
     in the default OU for new PC's, normally 'Computers'.
+
+    > [!note]
+    > Some users have reported a blank OU field producing
+    > `HostnameChanger The parameter is incorrect, code = 87` in the
+    > client log. If you hit this, try setting an explicit OU (e.g.
+    > `OU=Computers,DC=yourdomain,DC=com`) instead of leaving it blank.
 
 -   **Domain Username**
 
@@ -111,3 +135,28 @@ You get the following options:
         and reboot immediately
     -   If no users are logged, then the client will join the domain and
         reboot.
+
+## Troubleshooting with netdom
+
+If a host won't join the domain, you can test the same domain
+join/removal directly from a Windows command line, bypassing FOG
+entirely, to narrow down whether the problem is FOG's configuration or
+the domain credentials/permissions themselves. The password is **not**
+encrypted for this command-line test — run it, don't paste it into
+scripts or share the output.
+
+Join a domain:
+
+```
+netdom JOIN mypcHostname /Domain:yourdomain /OU:yourOU /UserD:FOGUser /PasswordD:FOGPassword /reboot:35
+```
+
+Remove from a domain:
+
+```
+netdom REMOVE mypcHostname /domain:yourdomain /UserD:FOGUser /PasswordD:FOGPassword
+```
+
+If these succeed but FOG's own AD join still fails, the issue is more likely
+in FOG's configuration (HostNameChanger module not active, wrong OU syntax,
+stale encrypted password) than in the domain account's permissions.

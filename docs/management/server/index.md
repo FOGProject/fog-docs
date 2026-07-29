@@ -11,4 +11,6 @@ tags:
 
 # FOG Linux Server Management
 
-Articles related to managing FOG linux server services and its dependent services via the linux shell
+Articles related to managing FOG linux server services and its dependent services via the linux shell.
+
+- [[install-fogsettings|The .fogsettings file]]
