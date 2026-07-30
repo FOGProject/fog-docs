@@ -1,0 +1,29 @@
+{
+  "name": "section-shortcuts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "quartz": {
+    "name": "section-shortcuts",
+    "displayName": "Section Shortcuts",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultEnabled": true,
+    "components": {
+      "SectionShortcuts": {
+        "displayName": "Section Shortcuts",
+        "defaultPosition": "left",
+        "defaultPriority": 40
+      }
+    }
+  }
+}

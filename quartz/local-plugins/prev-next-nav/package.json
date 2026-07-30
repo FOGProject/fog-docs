@@ -1,0 +1,29 @@
+{
+  "name": "prev-next-nav",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "quartz": {
+    "name": "prev-next-nav",
+    "displayName": "Previous/Next Navigation",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultEnabled": true,
+    "components": {
+      "PrevNextNav": {
+        "displayName": "Previous/Next Navigation",
+        "defaultPosition": "afterBody",
+        "defaultPriority": 10
+      }
+    }
+  }
+}

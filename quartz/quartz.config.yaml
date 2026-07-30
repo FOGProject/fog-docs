@@ -132,6 +132,29 @@ plugins:
     enabled: true
   - source: "@quartz-community/tag-page"
     enabled: true
+  # Quartz has no top-tab-bar equivalent to mkdocs-material's navigation.tabs
+  # (no full-width region above the 3-column layout exists to put one in).
+  # This pins the same top-level sections as a row of pill links directly
+  # above the Explorer tree in the left sidebar -- the closest persistent,
+  # always-visible surface available -- so they're reachable without
+  # expanding the tree, and highlights the section the current page is in.
+  - source: "./local-plugins/section-shortcuts"
+    enabled: true
+    options:
+      links:
+        - text: Installation
+          target: installation/index
+        - text: Management
+          target: management/index
+        - text: Knowledge Base
+          target: kb/index
+        - text: Development
+          target: development/index
+        - text: Tags
+          target: tags/index
+    layout:
+      position: left
+      priority: 40
   - source: "@quartz-community/explorer"
     enabled: true
     options:
@@ -246,6 +269,14 @@ plugins:
       position: beforeBody
       priority: 5
       condition: not-index
+  # Mirrors mkdocs-material's navigation.footer feature (enabled in mkdocs.yml),
+  # which renders Previous/Next links at the bottom of the page based on nav
+  # order. No @quartz-community plugin does this.
+  - source: "./local-plugins/prev-next-nav"
+    enabled: true
+    layout:
+      position: afterBody
+      priority: 8
   - source: "@quartz-community/comments"
     enabled: false
     options:
@@ -258,8 +289,9 @@ plugins:
     enabled: true
     options:
       links:
-        GitHub: https://github.com/jackyzha0/quartz
-        Discord Community: https://discord.gg/cRFFHYye7t
+        FOG Project GitHub: https://github.com/FOGProject/fog-docs
+        Release Notes: https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD
+        Security Advisories: https://forums.fogproject.org/category/25/security-advisories
     layout:
       position: footer
       priority: 50
