@@ -1,8 +1,5 @@
 ---
 title: Knowledge Base
-aliases:
-    - kb
-    - Knowledge Base
 description: index page for kb
 context_id: kb-home
 tags:

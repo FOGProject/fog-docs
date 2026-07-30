@@ -1,3 +1,8 @@
+---
+title: Images
+unlisted: true
+---
+
 # Images
 
 Images are stored and organized by relatable sections at `/assets/img`

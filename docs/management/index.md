@@ -1,7 +1,5 @@
 ---
 title: Management
-aliases:
-    - Management
 description: index page for Management
 context_id: management-home
 tags:
