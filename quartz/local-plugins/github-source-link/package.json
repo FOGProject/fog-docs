@@ -1,0 +1,29 @@
+{
+  "name": "github-source-link",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "quartz": {
+    "name": "github-source-link",
+    "displayName": "GitHub Source Link",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultEnabled": true,
+    "components": {
+      "GithubSourceLink": {
+        "displayName": "GitHub Source Link",
+        "defaultPosition": "beforeBody",
+        "defaultPriority": 26
+      }
+    }
+  }
+}

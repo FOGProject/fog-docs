@@ -323,6 +323,17 @@ plugins:
     layout:
       position: beforeBody
       priority: 25
+  # Mirrors mkdocs-material's content.action.edit/content.action.view
+  # (theme.features in mkdocs.yml) — no @quartz-community equivalent exists.
+  - source: "./local-plugins/github-source-link"
+    enabled: true
+    options:
+      repoUrl: https://github.com/FOGProject/fog-docs
+      branch: quartz-docs
+      contentDir: docs
+    layout:
+      position: beforeBody
+      priority: 26
 layout:
   groups:
     toolbar:
