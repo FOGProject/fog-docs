@@ -183,9 +183,40 @@ curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/ipxe-shimx64.e
 curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/mmx64.efi
 ```
 
-and a signed `ipxe.efi` from the matching iPXE release, placed alongside them.
 Check <https://github.com/ipxe/shim/releases> for the current version rather
 than assuming `16.1` is still latest.
+
+The signed `ipxe.efi` is **not** published as a standalone release asset. It
+ships inside upstream's Secure Boot disk images, so you have to pull it out:
+
+```bash
+cd /tftpboot
+curl -LO https://github.com/ipxe/ipxe/releases/download/v2.0.0/ipxe-x86_64-sb.usb
+
+# EFI/BOOT/IPXE.EFI is the signed binary
+7z e -y ipxe-x86_64-sb.usb EFI/BOOT/IPXE.EFI
+mv IPXE.EFI ipxe.efi
+rm ipxe-x86_64-sb.usb
+```
+
+(`7z` comes from `p7zip`/`7zip`; `mcopy` from `mtools` works equally well.)
+
+You can confirm you have the right file before going any further — a signed
+binary has a non-empty certificate table, an unsigned one does not:
+
+```bash
+osslsigncode verify -in ipxe.efi 2>&1 | head -5
+```
+
+The signer should be **iPXE Secure Boot Intermediate G1A**. FOG's own
+`/tftpboot/ipxe.efi` and `/tftpboot/autoexec/snponly.efi` have no signature at
+all — if you see that, you have picked up a FOG binary by mistake.
+
+!!! note "Prefer the standalone shim over the one in the image"
+    The image also contains `EFI/BOOT/BOOTX64.EFI`, which is a shim — but it
+    carries only the Microsoft UEFI CA **2011** signature. The separate
+    `ipxe-shimx64.efi` download above is signed against **both 2011 and 2023**,
+    which matters on newer hardware that ships only the 2023 certificate.
 
 !!! note "Verify your FOS kernel has an EFI stub"
     Under Secure Boot the kernel is loaded by the firmware's own loader rather
