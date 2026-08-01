@@ -306,10 +306,35 @@ than `snponly.efi`, and make sure the signed upstream `ipxe.efi` sits beside it
 in `/tftpboot`. Nothing here needs signing by you — both binaries already carry
 signatures the firmware and shim trust.
 
-Because upstream's `ipxe.efi` has no boot script compiled in, it will fetch
-`autoexec.ipxe` over TFTP. FOG ships a suitable script at
-`/tftpboot/autoexec/autoexec.ipxe`; copy it next to `ipxe.efi` so the stock
-binary finds it.
+Because upstream's `ipxe.efi` has no boot script compiled in, it fetches one
+over TFTP — and **where it looks is not a fixed path**, which is the detail that
+catches people out.
+
+iPXE asks for the bare name `autoexec.ipxe` and resolves it against its *current
+working URI*: the TFTP directory the running `.efi` was itself downloaded from.
+So the script has to sit in the **same directory as the binary that is running**,
+whatever that directory happens to be.
+
+That is why FOG's own EMBED-less binaries live in `/tftpboot/autoexec/` with the
+script beside them — booting `autoexec/snponly.efi` makes iPXE ask for
+`autoexec/autoexec.ipxe`, and it is there.
+
+For the Secure Boot chain the binary is `/tftpboot/ipxe.efi`, so iPXE will ask
+for **`/tftpboot/autoexec.ipxe`** — a path FOG does not create. Put a copy there:
+
+```bash
+cp /tftpboot/autoexec/autoexec.ipxe /tftpboot/autoexec.ipxe
+```
+
+A copy rather than a symlink: symlinks work with most TFTP daemons but not all,
+and this is not the place to debug that.
+
+!!! tip "If the menu never appears"
+    Watch the TFTP server's log during a boot and see what filename the client
+    actually requests. That request tells you exactly which directory iPXE
+    resolved against, which is faster than guessing. With shim in the chain the
+    request may resolve relative to the shim's location rather than iPXE's —
+    if it does, put the copy wherever the log says it looked.
 
 Your existing clients are unaffected — leave `snponly.efi` in place and keep
 pointing non-Secure-Boot machines at it.
