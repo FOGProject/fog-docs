@@ -47,29 +47,32 @@ the operational discipline that implies, and get a shim through Microsoft's
 review process. Even then, a signature is only as meaningful as the key behind
 it — a signing key that ships to everyone protects nobody.
 
-There is a harder obstacle than key management, and it is worth understanding
-because it will not go away:
+**The iPXE project has already done exactly this.** Since iPXE 2.0, there is a
+dedicated iPXE shim — published at
+[ipxe/shim](https://github.com/ipxe/shim/releases), Microsoft-signed against
+both the 2011 and 2023 certificates — which carries iPXE's own code-signing
+certificate as its vendor certificate. Upstream then signs its released
+`ipxe.efi` with that key. So a **stock upstream iPXE** boots under Secure Boot
+with nothing for you to sign.
 
-**Neither Microsoft nor the shim maintainers will sign a loader that executes
-unsigned code, and that is precisely what iPXE is for.** Microsoft's UEFI
-signing policy excludes bootloaders that can load arbitrary code, because a
-signed one would be a universal Secure Boot bypass on every PC — boot it, chain
-anything. The shim review process applies the same rule from the other side: to
-get a shim signed, whatever it loads must verify signatures before executing.
-iPXE does not, and FOG depends on it not doing so.
+The catch is specific to FOG, and it is worth being precise about, because it
+is the whole reason this guide exists:
 
-iPXE's own source says this out loud. Its shim-handling code documents
-deliberately working *around* shim — not requiring a second-stage loader,
-stopping the PXE base code protocol so shim does not re-download over TFTP, and
-patching the `SbatLevel` variable — each with a note that there is no point
-trying to get a fix upstreamed. Those workarounds are what makes iPXE useful,
-and they are exactly what would fail a review.
+**FOG does not ship stock iPXE binaries.** FOG builds its own, with the boot
+script compiled in (`EMBED=ipxescript`) and — on HTTPS installs — the server's
+CA baked in (`CERT=`/`TRUST=`). Those are by definition custom binaries, they
+carry no signature, and iPXE's signed shim will refuse them, exactly as it
+should. A shim that loaded any binary calling itself iPXE would be worthless.
 
-So the missing signature on FOG's iPXE binaries is not an oversight or a
-to-do. Signing them with a FOG-held key would not help either: the signature is
-inert until someone enrols the certificate on each machine, which is the same
-physical visit this guide already asks for — it would only change who holds the
-key, while making a single key compromise everyone's problem at once.
+FOG could not fix this by signing its own builds either. The shim only trusts
+iPXE's vendor certificate, so a FOG-signed binary would need every machine to
+enrol FOG's key first — the same physical visit this guide already asks for,
+while making one key compromise everyone's problem at once.
+
+The way out is to stop needing a custom binary. FOG's embedded boot script is
+entirely generic, and iPXE 2.0 can fetch that script from the TFTP server
+instead (`autoexec.ipxe`). That lets you run **upstream's signed `ipxe.efi`**
+and still get FOG's boot behaviour — which is the approach this guide takes.
 
 The alternative the firmware already provides is **MOK** (Machine Owner Key):
 a per-machine list of extra certificates that *you*, as the physical owner of
@@ -89,7 +92,8 @@ Less than most people expect.
 
 | Component | Signed? | Why |
 | --- | --- | --- |
-| iPXE (`ipxe.efi`, `snponly.efi`, …) | **Yes — this is your job too** | FOG builds these itself; nothing signs them (see above) |
+| iPXE (`ipxe.efi`) | **No — use upstream's signed build** | Signed by the iPXE project; FOG's own builds are custom and unsigned |
+| shim (`ipxe-shimx64.efi`) | **No — Microsoft already signed it** | Published by the iPXE project |
 | FOS kernel (`bzImage`, `bzImage32`) | **Yes — this is your job** | The firmware refuses to load an unsigned kernel |
 | FOS init (`init.xz`, `init_32.xz`) | **No** | See below |
 | Your images, snapins, scripts | **No** | They are never executed by firmware |
@@ -113,11 +117,14 @@ The practical consequence for you: **you only ever need to sign `bzImage` and
 
 ```
 UEFI firmware  (trusts Microsoft's certificate, via `db`)
-  └─ shim                             ← Microsoft-signed; take one from a distro
-      └─ ipxe.efi                     ← YOU sign this; shim checks it against MOK
-          └─ bzImage                  ← YOU sign this; shim checks it against MOK
-              └─ init.xz              ← not verified, nothing to do
+  └─ ipxe-shimx64.efi   ← Microsoft-signed, published by the iPXE project
+      └─ ipxe.efi       ← signed by iPXE; use UPSTREAM's build, not FOG's
+          └─ bzImage    ← YOU sign this; shim checks it against MOK
+              └─ init.xz ← not verified, nothing to do
 ```
+
+Only the kernel is yours to sign. The two links above it are already signed by
+people whose certificates the firmware and the shim respectively trust.
 
 The first link is the one to understand. **MOK is shim's database, not the
 firmware's** — the firmware has never heard of it. Shim installs itself as the
@@ -126,22 +133,26 @@ your key.
 
 The consequence is easy to get wrong: **MOK cannot help the first binary in the
 chain.** When the firmware PXE-boots a file directly, it checks that file
-against `db` only, because nothing has loaded shim yet to consult MOK. So
-pointing DHCP straight at a MOK-signed `snponly.efi` fails no matter how
-carefully you signed it. Shim has to be the boot file, and iPXE has to be what
-shim loads.
+against `db` only, because nothing has loaded shim yet to consult MOK. That is
+why the shim — not iPXE — has to be your DHCP boot file. Point DHCP straight at
+an iPXE binary and no amount of signing or enrolling will save you.
 
-Shim looks for a fixed second-stage filename next to itself — `grubx64.efi` in
-a stock build — so the signed iPXE has to be published under that name for shim
-to pick it up.
+The iPXE shim loads **`ipxe.efi`** from the directory it was itself loaded from.
+That name is fixed, so the file has to be present under exactly that name.
+
+!!! warning "Use upstream's `ipxe.efi`, not FOG's"
+    FOG's own binaries in `/tftpboot` — including those in `autoexec/` — are
+    locally built and unsigned, so the shim will reject them. Download the
+    signed build from the iPXE project. FOG's boot logic reaches it through
+    `autoexec.ipxe` instead of being compiled in.
 
 !!! tip "The alternative: enrol into `db` instead"
     Many firmwares can be put into Custom or Setup mode, letting you add your
-    own certificate to `db` directly. That removes shim from the picture
-    entirely — sign `snponly.efi` with your key and the firmware loads it
-    itself. It is cleaner where the firmware supports it, but the menus vary
-    enormously between vendors and some do not expose `db` editing at all,
-    which is why this guide takes the MOK route.
+    own certificate to `db` directly. That removes shim from the picture — sign
+    whatever you like and the firmware loads it. It is the only route if you
+    need FOG's *custom* iPXE (embedded CA for HTTPS) under Secure Boot, but the
+    menus vary enormously between vendors and some do not expose `db` editing
+    at all.
 
 ---
 
@@ -160,10 +171,21 @@ dnf install sbsigntools openssl
 and on each client machine you intend to enrol, a way to run `mokutil` — most
 simply, boot it once from any Linux live USB.
 
-You will also need a Microsoft-signed **shim**, which you take from a
-distribution rather than from FOG — `shimx64.efi` out of Ubuntu's `shim-signed`
-package or Fedora's `shim-x64` is the usual choice. Copy it into `/tftpboot`
-and point your DHCP boot file at it instead of at `snponly.efi`.
+You will also need the iPXE project's signed shim and its signed `ipxe.efi`.
+Both come from upstream, not from FOG:
+
+```bash
+cd /tftpboot
+
+# Microsoft-signed shim, carrying iPXE's vendor certificate
+curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/ipxe-shimx64.efi
+# MokManager, used during enrolment
+curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/mmx64.efi
+```
+
+and a signed `ipxe.efi` from the matching iPXE release, placed alongside them.
+Check <https://github.com/ipxe/shim/releases> for the current version rather
+than assuming `16.1` is still latest.
 
 !!! note "Verify your FOS kernel has an EFI stub"
     Under Secure Boot the kernel is loaded by the firmware's own loader rather
@@ -244,35 +266,26 @@ mokutil --list-enrolled | grep -A2 "FOG imaging"
 
 ---
 
-## Step 3 — Sign iPXE and the FOS kernels
+## Step 3 — Point Secure Boot clients at the shim, and sign the FOS kernels
 
-### 3a — iPXE
+### 3a — Serve the signed chain
 
-Shim will only hand control to a binary it can verify, so iPXE has to carry your
-signature as well. Sign it into the second-stage filename shim looks for:
+Set the DHCP boot file for Secure Boot clients to **`ipxe-shimx64.efi`** rather
+than `snponly.efi`, and make sure the signed upstream `ipxe.efi` sits beside it
+in `/tftpboot`. Nothing here needs signing by you — both binaries already carry
+signatures the firmware and shim trust.
 
-```bash
-cd /tftpboot
+Because upstream's `ipxe.efi` has no boot script compiled in, it will fetch
+`autoexec.ipxe` over TFTP. FOG ships a suitable script at
+`/tftpboot/autoexec/autoexec.ipxe`; copy it next to `ipxe.efi` so the stock
+binary finds it.
 
-sbsign --key /root/fog-secureboot/MOK.priv \
-       --cert /root/fog-secureboot/MOK.der \
-       --output grubx64.efi snponly.efi
-
-sbverify --cert /root/fog-secureboot/MOK.der grubx64.efi
-# Signature verification OK
-```
-
-The name is not cosmetic — a stock shim loads `grubx64.efi` from the directory
-it was itself loaded from, whatever that binary actually is. Leave the original
-`snponly.efi` in place for your non-Secure-Boot clients; they keep using it
-unchanged.
-
-Your DHCP boot file for Secure Boot clients should now be `shimx64.efi`, not
-`snponly.efi`.
+Your existing clients are unaffected — leave `snponly.efi` in place and keep
+pointing non-Secure-Boot machines at it.
 
 ### 3b — The FOS kernels
 
-On the FOG server:
+This is the part that is genuinely yours to sign. On the FOG server:
 
 ```bash
 cd /var/www/fog/service/ipxe    # or /var/www/html/fog/service/ipxe
@@ -380,13 +393,16 @@ key accordingly.
   any distribution.
 - Signing covers *booting*. It says nothing about whether the image FOS then
   writes to disk is trustworthy.
-- **This chain has not yet been verified end to end by the FOG Project.** The
-  individual links are each standard practice — a distro shim as the boot file,
-  a MOK-signed second stage, a MOK-signed kernel — but FOG's own Secure Boot
-  testing is still outstanding. Treat the procedure as sound in principle and
-  worth reporting back on, rather than as something already proven on FOG's
-  test hardware. If shim rejects iPXE, check that your key is in MOK
-  (`mokutil --list-enrolled`) before suspecting the signature itself.
+- **HTTPS is not supported under Secure Boot.** FOG's HTTPS mode works because
+  the server's CA is compiled into FOG's own iPXE binaries. Upstream's signed
+  `ipxe.efi` has no such CA, and adding one would make it a custom binary again
+  — which the shim would then reject. Secure Boot clients need FOG in HTTP
+  mode, or a certificate chain the stock binary already trusts.
+- **This chain has not yet been verified end to end by the FOG Project.** Each
+  link is upstream-supported, but FOG's own Secure Boot testing is still
+  outstanding. Treat it as sound in principle and worth reporting back on
+  rather than as proven on FOG's hardware. If the shim rejects `ipxe.efi`,
+  confirm you are using upstream's signed build and not one of FOG's.
 
 ## See also
 
