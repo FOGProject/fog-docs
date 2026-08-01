@@ -59,6 +59,44 @@ For older legacy models, these are the boot files to set
 
 You can find other pxe boot files in you `/tftpboot` directory on your fogserver.
 
+### The `autoexec/` boot files (UEFI only)
+
+Alongside the files above, FOG ships a second set of UEFI binaries in
+`/tftpboot/autoexec/`. They are built from identical source, with one
+difference: the iPXE boot script is **not** compiled into the binary. Instead
+they download a plain text script — `autoexec.ipxe` — over TFTP from the same
+folder they were loaded from, and run that.
+
+The practical benefit is that the boot logic becomes a file you can edit on the
+server. Changing something like the menu timeout means editing
+`/tftpboot/autoexec/autoexec.ipxe`, not rebuilding binaries.
+
+To use them, prefix the file name in option 67 with `autoexec/`:
+
+* `autoexec/snponly.efi`
+* `autoexec/ipxe.efi`
+* `autoexec/i386-efi/snponly.efi`
+* `autoexec/arm64-efi/snponly.efi`
+
+Option 66 does not change.
+
+> [!warning]
+> **This works for UEFI clients only.** Legacy BIOS boot files
+> (`undionly.kpxe`, `undionly.kkpxe`, `ipxe.kpxe`, `ipxe.kkpxe`) cannot use it.
+> The mechanism that fetches `autoexec.ipxe` exists only in iPXE's EFI startup
+> path; there is no BIOS equivalent, so a BIOS binary would simply ignore the
+> file. This is why no BIOS boot files are shipped in `autoexec/` — a copy there
+> would boot, but only because it still has the script compiled in, which makes
+> it look like the mechanism works for BIOS when it does not.
+>
+> In a mixed environment, keep BIOS clients pointed at the root
+> (`undionly.kpxe`) and use `autoexec/` only for the UEFI classes.
+
+Both sets are installed and kept in step with each other. The files in the root
+of `/tftpboot` remain the default and are what every existing FOG install uses;
+`autoexec/` is opt-in and behaves identically otherwise. If you are not sure
+which you want, use the root files.
+
 ## Examples of DHCP server configurations
 
 The below are some examples with screen shots on how to configure these settings in some servers.
