@@ -174,13 +174,18 @@ simply, boot it once from any Linux live USB.
 You will also need the iPXE project's signed shim and its signed `ipxe.efi`.
 Both come from upstream, not from FOG:
 
+Put them in their own directory under the TFTP root. **Do not drop them in
+`/tftpboot` itself** — FOG already ships its own `ipxe.efi` there, and
+overwriting it breaks every non-Secure-Boot client that boots that file.
+
 ```bash
-cd /tftpboot
+sudo mkdir -p /tftpboot/secureboot
+cd /tftpboot/secureboot
 
 # Microsoft-signed shim, carrying iPXE's vendor certificate
-curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/ipxe-shimx64.efi
+sudo curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/ipxe-shimx64.efi
 # MokManager, used during enrolment
-curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/mmx64.efi
+sudo curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/mmx64.efi
 ```
 
 Check <https://github.com/ipxe/shim/releases> for the current version rather
@@ -190,14 +195,25 @@ The signed `ipxe.efi` is **not** published as a standalone release asset. It
 ships inside upstream's Secure Boot disk images, so you have to pull it out:
 
 ```bash
-cd /tftpboot
-curl -LO https://github.com/ipxe/ipxe/releases/download/v2.0.0/ipxe-x86_64-sb.usb
+cd /tftpboot/secureboot
+sudo curl -LO https://github.com/ipxe/ipxe/releases/download/v2.0.0/ipxe-x86_64-sb.usb
 
 # EFI/BOOT/IPXE.EFI is the signed binary
-7z e -y ipxe-x86_64-sb.usb EFI/BOOT/IPXE.EFI
-mv IPXE.EFI ipxe.efi
-rm ipxe-x86_64-sb.usb
+sudo 7z e -y ipxe-x86_64-sb.usb EFI/BOOT/IPXE.EFI
+sudo mv IPXE.EFI ipxe.efi
+sudo rm ipxe-x86_64-sb.usb
+
+# copy FOG's boot script in beside them, and fix ownership + SELinux labels
+sudo cp /tftpboot/autoexec/autoexec.ipxe /tftpboot/secureboot/
+sudo chown -R "$(stat -c %U /tftpboot)" /tftpboot/secureboot
+sudo restorecon -Rv /tftpboot
 ```
+
+!!! warning "The `restorecon` is not optional on SELinux systems"
+    Files created with `cp`/`curl` under `/tftpboot` get the `default_t`
+    context rather than `tftpdir_t`, and `in.tftpd` is then denied read on
+    them. The client sees a plain "file not found" with nothing obviously
+    wrong on the server, which is a genuinely confusing way to lose an hour.
 
 (`7z` comes from `p7zip`/`7zip`; `mcopy` from `mtools` works equally well.)
 
@@ -301,55 +317,61 @@ mokutil --list-enrolled | grep -A2 "FOG imaging"
 
 ### 3a — Serve the signed chain
 
-Set the DHCP boot file for Secure Boot clients to **`ipxe-shimx64.efi`** rather
-than `snponly.efi`, and make sure the signed upstream `ipxe.efi` sits beside it
-in `/tftpboot`. Nothing here needs signing by you — both binaries already carry
-signatures the firmware and shim trust.
+Set the DHCP boot file for Secure Boot clients to
+**`secureboot/ipxe-shimx64.efi`**. Nothing in this step needs signing by you —
+both binaries already carry signatures the firmware and shim trust.
 
 Because upstream's `ipxe.efi` has no boot script compiled in, it fetches one
-over TFTP — and **where it looks is not a fixed path**, which is the detail that
-catches people out.
+over TFTP, and **where it looks is not a single fixed path**. iPXE asks for the
+bare name `autoexec.ipxe` and tries two locations in order:
 
-iPXE asks for the bare name `autoexec.ipxe` and resolves it against its *current
-working URI*: the TFTP directory the running `.efi` was itself downloaded from.
-So the script has to sit in the **same directory as the binary that is running**,
-whatever that directory happens to be.
+1. relative to its *current working URI* — the TFTP directory the running
+   `.efi` was itself downloaded from, i.e. `secureboot/autoexec.ipxe`
+2. absolute at the TFTP root — `/autoexec.ipxe`
 
-That is why FOG's own EMBED-less binaries live in `/tftpboot/autoexec/` with the
-script beside them — booting `autoexec/snponly.efi` makes iPXE ask for
-`autoexec/autoexec.ipxe`, and it is there.
+You can watch both attempts on the client console:
 
-For the Secure Boot chain the binary is `/tftpboot/ipxe.efi`, so iPXE will ask
-for **`/tftpboot/autoexec.ipxe`**.
-
-Current installers create that for you, as a hard link to
-`/tftpboot/autoexec/autoexec.ipxe`, so both paths are the same file and editing
-either changes both. Confirm it is there:
-
-```bash
-ls -l /tftpboot/autoexec.ipxe
+```
+autoexec.ipxe...  Not found
+/autoexec.ipxe... Not found
 ```
 
-If it is missing — an older install, or the file was replaced by an editor that
-writes-and-renames — recreate it:
+The `sudo cp` in the previous step satisfies (1). Current FOG installers also
+satisfy (2) by hard-linking `/tftpboot/autoexec.ipxe` to
+`/tftpboot/autoexec/autoexec.ipxe`, so both paths are one file and editing
+either changes both. Either location works; having both is harmless.
+
+If the root link is missing — an older install, or the file was replaced by an
+editor that writes-and-renames — recreate it:
 
 ```bash
-ln -f /tftpboot/autoexec/autoexec.ipxe /tftpboot/autoexec.ipxe
+sudo ln -f /tftpboot/autoexec/autoexec.ipxe /tftpboot/autoexec.ipxe
 ```
 
 A hard link rather than a symlink because some TFTP daemons refuse to follow
 symlinks, while a hard link is indistinguishable from a regular file to all of
 them. A hard link rather than a copy so the two paths cannot drift apart.
 
-!!! tip "If the menu never appears"
-    Watch the TFTP server's log during a boot and see what filename the client
-    actually requests. That request tells you exactly which directory iPXE
-    resolved against, which is faster than guessing. With shim in the chain the
-    request may resolve relative to the shim's location rather than iPXE's —
-    if it does, put the copy wherever the log says it looked.
+!!! tip "If nothing seems to happen"
+    Watch the TFTP server's log during a boot — it tells you exactly which
+    filenames the client asked for and whether they were served, which beats
+    guessing every time.
 
 Your existing clients are unaffected — leave `snponly.efi` in place and keep
 pointing non-Secure-Boot machines at it.
+
+!!! warning "The only signed binary is an all-drivers build"
+    Upstream publishes exactly one signed x86-64 iPXE binary, and it is an
+    all-drivers build: it binds iPXE's own NIC drivers, disconnecting the
+    firmware's UEFI network driver. On hardware where that takeover does not
+    work, iPXE stops right after `initialising devices` — no banner, no DHCP —
+    and there is currently **no way out**, because the usual answer
+    (`snponly.efi`, which FOG ships as its default for exactly this reason)
+    has no signed equivalent. Building your own loses the signature.
+
+    This is what happens on VirtualBox's emulated Intel 82540EM, where the
+    signature chain verifies perfectly and iPXE then hangs. Requested upstream
+    as [ipxe/ipxe#1776](https://github.com/ipxe/ipxe/issues/1776).
 
 ### 3b — The FOS kernels
 
@@ -466,11 +488,15 @@ key accordingly.
   `ipxe.efi` has no such CA, and adding one would make it a custom binary again
   — which the shim would then reject. Secure Boot clients need FOG in HTTP
   mode, or a certificate chain the stock binary already trusts.
-- **This chain has not yet been verified end to end by the FOG Project.** Each
-  link is upstream-supported, but FOG's own Secure Boot testing is still
-  outstanding. Treat it as sound in principle and worth reporting back on
-  rather than as proven on FOG's hardware. If the shim rejects `ipxe.efi`,
-  confirm you are using upstream's signed build and not one of FOG's.
+- **The signature chain is verified; the device-init half is not.** FOG has
+  confirmed on VirtualBox that the firmware accepts the signed shim, the shim
+  accepts upstream's `ipxe.efi`, and iPXE loads `autoexec.ipxe` — and that
+  removing the shim makes the firmware reject the same binary, so the trust
+  boundary is real. What has *not* been confirmed anywhere is a MOK-signed
+  `bzImage` actually booting, because the all-drivers binary hangs during
+  device init on that hardware (see the warning in Step 3a). Reports from
+  physical hardware are very welcome — see
+  [fogproject#960](https://github.com/FOGProject/fogproject/issues/960).
 
 ## See also
 
