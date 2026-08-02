@@ -19,6 +19,10 @@ tags:
     for imaging, that remains far less work. Read [Why FOG cannot do this for
     you](#why-fog-cannot-do-this-for-you) before deciding.
 
+    The signing itself is automated once configured — the installer keeps the
+    kernels signed across upgrades — and the per-machine visit does **not**
+    require turning Secure Boot off. What you cannot avoid is the visit.
+
 FOG does not ship signed FOS kernels, and cannot. If your estate mandates UEFI
 Secure Boot and turning it off is not an option, this guide walks through
 becoming your own signing authority: you generate a key, you sign the FOS
@@ -174,6 +178,20 @@ simply, boot it once from any Linux live USB.
 You will also need the iPXE project's signed shim and its signed `ipxe.efi`.
 Both come from upstream, not from FOG:
 
+>[!tip] The installer can do all of this for you
+>Passing `--secure-boot-stage` downloads the shim and `mmx64.efi`, extracts
+>upstream's signed `ipxe.efi` out of the USB image, drops `autoexec.ipxe` in
+>beside them and fixes up SELinux labels — everything in the rest of this
+>section. It also writes a commented-out Secure Boot class into the generated
+>DHCP config for you to adapt.
+>
+>It is opt-in and never fatal: it pulls pinned third-party binaries over the
+>network, and an upstream hiccup should not be able to fail your install. If it
+>reports a failure, fall back to the manual steps below.
+>
+>The rest of this section is worth reading anyway, because it explains *why*
+>each file has to be where it is.
+
 Put them in their own directory under the TFTP root. **Do not drop them in
 `/tftpboot` itself** — FOG already ships its own `ipxe.efi` there, and
 overwriting it breaks every non-Secure-Boot client that boots that file.
@@ -273,30 +291,68 @@ to renew — an expired MOK stops machines booting.
     when someone is trying to work out what that key is for. `FOG imaging -
     fog.example.edu` beats `MOK`.
 
+>[!warning] Generate a fresh key — do not reuse the MOK you already have
+>If this machine has ever built a DKMS module, it already has a MOK, and it is
+>tempting to reuse it. It will not work.
+>
+>Since shim 15.4 (Ubuntu 21.04 and later), keys carrying the *Module-signing
+>only* KeyUsage OID `1.3.6.1.4.1.2312.16.1.2` are deliberately **ignored** by
+>both shim and GRUB when validating something to boot — they are only good for
+>signing kernel modules. Ubuntu's and Debian's automatically generated DKMS
+>MOK carries exactly that OID.
+>
+>The failure is a plain `Security Policy Violation` at boot with the key
+>showing up quite happily in `mokutil --list-enrolled`, which is a
+>memorably unhelpful combination. The `openssl req` command above produces a
+>key without the OID, so just use it.
+
 ---
 
 ## Step 2 — Enrol the certificate on a client
 
-Repeat per machine. Copy `MOK.der` to the client, then:
+Repeat per machine. **You do not need to turn Secure Boot off to do this**, and
+you should not: both routes below work with it left on.
 
-```bash
-mokutil --import MOK.der
-```
+Once the installer has been run with `--secure-boot-cert`, the FOG web UI grows
+a **FOG Configuration → Secure Boot** page. It shows your certificate's SHA-256
+fingerprint and offers a small **enrolment kit**:
 
-You will be asked for a password **twice**. This is a one-time password used
-only for the next reboot — it confirms that whoever is at the keyboard after
-the reboot is the same person who ran this command. It is not stored and does
-not need to be strong; it needs to be something you can retype in sixty
-seconds. Use the same one across a batch of machines and your life is easier.
+| File | What it is |
+| --- | --- |
+| `MOK.der` | your public certificate — this is the thing being enrolled |
+| `fog-enroll-mok.sh` | does the enrolment, checks the fingerprint first |
+| `fog-enroll-mok.desktop` | double-click launcher for the above |
 
-Reboot. The machine will stop in a blue **MOK Manager** screen instead of
-booting normally:
+Leave that page open on another screen — you are going to compare the
+fingerprint against it.
+
+### Route A — a stock Ubuntu or Debian live USB
+
+This is the reliable route. A stock live image already boots with Secure Boot
+**on**, using the distribution's own signed shim, GRUB and kernel, so there is
+nothing to sign and no firmware setting to change.
+
+1. Write a normal Ubuntu or Debian live image to a USB stick, however you
+   usually do it. **Do not remaster it** — the point is that stock media
+   already solves the Secure Boot problem.
+2. Copy all three kit files onto the stick, next to each other.
+3. Boot the client from it, with Secure Boot still on.
+4. Open the stick in the file manager and run `fog-enroll-mok.desktop`.
+
+The script prints the certificate's fingerprint and asks you to confirm it
+matches the web page before it does anything. Then it asks for a one-time
+password, twice — that password only exists to prove, after the reboot, that
+the person at the keyboard is the person who ran the script. It is not stored
+and does not need to be strong. Use the same one across a batch of machines and
+your life is easier.
+
+Reboot. The machine stops in a blue **MOK Manager** screen instead of booting:
 
 1. `Enroll MOK`
 2. `View key 0` — check the CN is yours before continuing
 3. `Continue`
 4. `Yes`
-5. Enter the password from `mokutil --import`
+5. Enter the password you just chose
 6. `Reboot`
 
 Confirm afterwards:
@@ -305,11 +361,20 @@ Confirm afterwards:
 mokutil --list-enrolled | grep -A2 "FOG imaging"
 ```
 
-!!! danger "If MokManager does not appear"
-    The machine booted something that is not shim. Check that Secure Boot is
-    actually enabled (`mokutil --sb-state`) and that the boot entry you are
-    using goes through a shim. A machine that boots straight past MokManager
-    has not enrolled anything.
+### Route B — no operating system at all
+
+MokManager can read a certificate straight off a FAT filesystem, so a Linux
+session is not strictly required: put `MOK.der` on a FAT32 stick, PXE-boot the
+shim, and use **`Enroll key from disk`** from the MokManager menu.
+
+Fewer moving parts, but `Enroll key from disk` is known to hang on some
+firmware, which is why Route A is the one to reach for first.
+
+>[!danger] If MokManager does not appear
+>The machine booted something that is not shim. Check that Secure Boot is
+>actually enabled (`mokutil --sb-state`) and that the boot entry you are using
+>goes through a shim. A machine that boots straight past MokManager has not
+>enrolled anything.
 
 ---
 
@@ -375,37 +440,45 @@ pointing non-Secure-Boot machines at it.
 
 ### 3b — The FOS kernels
 
-This is the part that is genuinely yours to sign. On the FOG server:
+This is the part that is genuinely yours to sign, and the installer will do it
+for you. Tell it where the key lives:
 
 ```bash
-cd /var/www/fog/service/ipxe    # or /var/www/html/fog/service/ipxe
-
-for k in bzImage bzImage32; do
-  cp -a "$k" "$k.unsigned"
-  sbsign --key /root/fog-secureboot/MOK.priv \
-         --cert /root/fog-secureboot/MOK.der \
-         --output "$k" "$k.unsigned"
-done
-
-chown $(stat -c %U .) bzImage bzImage32
+cd /path/to/fogproject/bin
+./installfog.sh \
+  --secure-boot-key  /root/fog-secureboot/MOK.priv \
+  --secure-boot-cert /root/fog-secureboot/MOK.der
 ```
 
-Verify:
+Both paths are stored in `.fogsettings`, so **every later upgrade re-signs the
+kernels automatically** — you do not have to pass them again. Verify:
 
 ```bash
-sbverify --cert /root/fog-secureboot/MOK.der bzImage
+sbverify --cert /root/fog-secureboot/MOK.der \
+  /var/www/fog/service/ipxe/bzImage
 # Signature verification OK
 ```
 
-Keeping the `.unsigned` copies matters — `sbsign` will not sign an
-already-signed image cleanly, so the next round needs the original.
+The installer keeps a `.unsigned` copy of each kernel beside the signed one,
+because `sbsign` will not cleanly re-sign an already-signed image. Leave them
+alone; they are refreshed on every download.
 
-!!! warning "This must be repeated after every FOG update"
-    A FOG upgrade replaces `bzImage` and `bzImage32` with fresh unsigned ones,
-    and Secure Boot clients will stop booting the moment it does. This is the
-    single most common way this setup breaks. Save the loop above as a script
-    and run it as the last step of every upgrade — see
-    [Automating the re-sign](#automating-the-re-sign).
+>[!note] The web Kernel Update page is covered too
+>Downloading a kernel from **FOG Configuration → Kernel Update** signs it
+>before it is sent to the TFTP server, so that route cannot leave you with an
+>unsigned kernel either. It signs through a small root-only helper
+>(`/opt/fog/bin/fog-sign-kernel`) rather than in the web server itself, so the
+>web server never gets read access to your private key. If signing fails the
+>update is refused outright rather than quietly installing a kernel your
+>clients will not boot.
+>
+>Be aware of the limit of that protection: anyone who can already run code as
+>your web server can ask the helper to sign a kernel of their choosing. What
+>they cannot do is walk off with the key.
+
+>[!warning] Install `sbsigntool` before you enable this
+>If `sbsign`/`sbverify` are missing the installer warns and carries on
+>unsigned rather than aborting the whole install. Read the installer output.
 
 ---
 
@@ -423,35 +496,27 @@ is not being accepted. In order of likelihood:
 | Symptom | Cause |
 | --- | --- |
 | `Security Policy Violation` | Key not enrolled on *this* machine, or you signed with a different key than you enrolled |
+| `Security Policy Violation`, but the key *is* listed by `mokutil --list-enrolled` | The key carries the Module-signing only OID — see [Step 1](#step-1-generate-a-signing-key) |
 | Fails on every machine, including enrolled ones | Shim is not in the boot chain — see [the chain](#the-chain-you-are-building) |
-| Worked yesterday, fails today | FOG was updated and the kernels were replaced unsigned |
+| Worked yesterday, fails today | FOG was updated *before* `--secure-boot-key` was configured, so the kernels were replaced unsigned. Re-run the installer with the key set and it will not happen again |
 | Complains about format, not signature | Kernel lacks `CONFIG_EFI_STUB` |
 
 ---
 
-## Automating the re-sign
+## Signing your own FOS builds
 
-Save as `/root/fog-secureboot/resign.sh`:
+If you build FOS yourself rather than using the released kernels, `build.sh`
+can sign as part of the build, so the published `.sha256` covers the signed
+image:
 
 ```bash
-#!/bin/bash
-# Re-sign FOS kernels after a FOG update. Secure Boot clients will not boot
-# until this has run.
-set -euo pipefail
-KEYDIR=/root/fog-secureboot
-IPXE=/var/www/fog/service/ipxe
-
-for k in bzImage bzImage32; do
-  [[ -f "$IPXE/$k.unsigned" ]] || cp -a "$IPXE/$k" "$IPXE/$k.unsigned"
-  sbverify --cert "$KEYDIR/MOK.der" "$IPXE/$k" &>/dev/null && continue
-  cp -a "$IPXE/$k" "$IPXE/$k.unsigned"
-  sbsign --key "$KEYDIR/MOK.priv" --cert "$KEYDIR/MOK.der" \
-         --output "$IPXE/$k" "$IPXE/$k.unsigned"
-  echo "re-signed $k"
-done
+./build.sh -nka x64 \
+  --sign-key  /root/fog-secureboot/MOK.priv \
+  --sign-cert /root/fog-secureboot/MOK.der
 ```
 
-It is safe to run when nothing has changed — already-signed kernels are skipped.
+`FOS_SIGN_KEY` and `FOS_SIGN_CERT` work too, which is easier in CI. With
+neither set the build is byte-for-byte what it always was.
 
 ---
 
@@ -477,7 +542,12 @@ key accordingly.
 - **EFI only.** Secure Boot is a UEFI feature; BIOS/legacy PXE clients are
   unaffected and need none of this.
 - **One visit per machine, always.** There is no supported way to enrol a MOK
-  without physical presence.
+  without physical presence — that is the security property, not an oversight.
+  The enrolment kit makes the visit short; it cannot remove it. Enrolling into
+  the firmware's own `db` instead would avoid the visit, but `db` updates must
+  be signed by a private PK or KEK, and on OEM hardware that key is
+  Microsoft's. In practice only Dell exposes a genuinely scriptable path, via
+  Custom Mode in Dell Command | Configure and iDRAC.
 - **The initrd is unverified**, as it is everywhere else. If your threat model
   requires a verified initramfs, Secure Boot alone does not give you that on
   any distribution.
