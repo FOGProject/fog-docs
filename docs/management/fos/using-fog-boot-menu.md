@@ -107,3 +107,23 @@ tags:
 >
 >             :   -   The image id will be in the Address/url bar in the
 >                     format of `&imageid=xx`.
+
+### Enroll Secure Boot Key
+
+> -   Added in FOG 1.6.0, and only relevant to clients booting with UEFI
+>     Secure Boot enabled.
+>
+> -   This command hands off to MokManager so you can enrol FOG's signing
+>     certificate on the client, which is what allows the machine to boot
+>     the FOS kernel with Secure Boot left on.
+>
+> -   You must have `MOK.der` on a FAT-formatted USB stick in the machine
+>     first — MokManager reads it from local media, not over the network.
+>     Get that file from **FOG Configuration → Secure Boot**.
+>
+> -   fog.enrollsecureboot is the command used to reference this action in
+>     pxe menu settings.
+>
+> -   The full procedure, including what to do if you would rather sign
+>     with your own key, is in
+>     [[kb/how-tos/secure-boot-signing| Secure Boot: signing FOS with your own key]].
