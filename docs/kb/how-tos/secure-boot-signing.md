@@ -56,8 +56,9 @@ dedicated iPXE shim — published at
 [ipxe/shim](https://github.com/ipxe/shim/releases), Microsoft-signed against
 both the 2011 and 2023 certificates — which carries iPXE's own code-signing
 certificate as its vendor certificate. Upstream then signs its released
-`ipxe.efi` with that key. So a **stock upstream iPXE** boots under Secure Boot
-with nothing for you to sign.
+binaries with that key — both the all-drivers `ipxe.efi` and the `snponly.efi`
+variant FOG already prefers, for x86_64 and arm64 alike. So a **stock upstream
+iPXE** boots under Secure Boot with nothing for you to sign.
 
 The catch is specific to FOG, and it is worth being precise about, because it
 is the whole reason this guide exists:
@@ -75,7 +76,7 @@ while making one key compromise everyone's problem at once.
 
 The way out is to stop needing a custom binary. FOG's embedded boot script is
 entirely generic, and iPXE 2.0 can fetch that script from the TFTP server
-instead (`autoexec.ipxe`). That lets you run **upstream's signed `ipxe.efi`**
+instead (`autoexec.ipxe`). That lets you run **upstream's signed `snponly.efi`**
 and still get FOG's boot behaviour — which is the approach this guide takes.
 
 The alternative the firmware already provides is **MOK** (Machine Owner Key):
@@ -96,8 +97,8 @@ Less than most people expect.
 
 | Component | Signed? | Why |
 | --- | --- | --- |
-| iPXE (`ipxe.efi`) | **No — use upstream's signed build** | Signed by the iPXE project; FOG's own builds are custom and unsigned |
-| shim (`ipxe-shimx64.efi`) | **No — Microsoft already signed it** | Published by the iPXE project |
+| iPXE (`snponly.efi`) | **No — use upstream's signed build** | Signed by the iPXE project; FOG's own builds are custom and unsigned |
+| shim (`snponly-shimx64.efi`) | **No — Microsoft already signed it** | Published by the iPXE project |
 | FOS kernel (`bzImage`, `bzImage32`) | **Yes — this is your job** | The firmware refuses to load an unsigned kernel |
 | FOS init (`init.xz`, `init_32.xz`) | **No** | See below |
 | Your images, snapins, scripts | **No** | They are never executed by firmware |
@@ -120,11 +121,11 @@ The practical consequence for you: **you only ever need to sign `bzImage` and
 ### The chain you are building
 
 ```
-UEFI firmware  (trusts Microsoft's certificate, via `db`)
-  └─ ipxe-shimx64.efi   ← Microsoft-signed, published by the iPXE project
-      └─ ipxe.efi       ← signed by iPXE; use UPSTREAM's build, not FOG's
-          └─ bzImage    ← YOU sign this; shim checks it against MOK
-              └─ init.xz ← not verified, nothing to do
+UEFI firmware        (trusts Microsoft's certificate, via `db`)
+  └─ snponly-shimx64.efi  ← Microsoft-signed, published by the iPXE project
+      └─ snponly.efi      ← signed by iPXE; UPSTREAM's build, not FOG's
+          └─ bzImage      ← YOU sign this; shim checks it against MOK
+              └─ init.xz  ← not verified, nothing to do
 ```
 
 Only the kernel is yours to sign. The two links above it are already signed by
@@ -141,14 +142,18 @@ against `db` only, because nothing has loaded shim yet to consult MOK. That is
 why the shim — not iPXE — has to be your DHCP boot file. Point DHCP straight at
 an iPXE binary and no amount of signing or enrolling will save you.
 
-The iPXE shim loads **`ipxe.efi`** from the directory it was itself loaded from.
-That name is fixed, so the file has to be present under exactly that name.
+The iPXE shim decides what to load next **from its own filename**, by stripping
+`-shim` out of it. Named `snponly-shimx64.efi`, it loads `snponly.efi` from the
+directory it was itself loaded from; named `ipxe-shimx64.efi`, it loads
+`ipxe.efi`. Whichever you pick, the second-stage file has to be sitting beside
+it under exactly that name.
 
-!!! warning "Use upstream's `ipxe.efi`, not FOG's"
+!!! warning "Use upstream's signed build, not FOG's"
     FOG's own binaries in `/tftpboot` — including those in `autoexec/` — are
-    locally built and unsigned, so the shim will reject them. Download the
-    signed build from the iPXE project. FOG's boot logic reaches it through
-    `autoexec.ipxe` instead of being compiled in.
+    locally built and unsigned, so the shim will reject them, even though one
+    of them is also called `snponly.efi`. Download the signed build from the
+    iPXE project. FOG's boot logic reaches it through `autoexec.ipxe` instead
+    of being compiled in.
 
 !!! tip "The alternative: enrol into `db` instead"
     Many firmwares can be put into Custom or Setup mode, letting you add your
@@ -175,15 +180,15 @@ dnf install sbsigntools openssl
 and on each client machine you intend to enrol, a way to run `mokutil` — most
 simply, boot it once from any Linux live USB.
 
-You will also need the iPXE project's signed shim and its signed `ipxe.efi`.
+You will also need the iPXE project's signed shim and its signed `snponly.efi`.
 Both come from upstream, not from FOG:
 
 >[!tip] The installer can do all of this for you
->Passing `--secure-boot-stage` downloads the shim and `mmx64.efi`, extracts
->upstream's signed `ipxe.efi` out of the USB image, drops `autoexec.ipxe` in
->beside them and fixes up SELinux labels — everything in the rest of this
->section. It also writes a commented-out Secure Boot class into the generated
->DHCP config for you to adapt.
+>Passing `--secure-boot-stage` downloads the shim and `mmx64.efi`, pulls
+>upstream's signed `snponly.efi` out of `ipxeboot.tar.gz`, links
+>`autoexec.ipxe` in beside them and fixes up SELinux labels — everything in the
+>rest of this section. It also writes a commented-out Secure Boot class into
+>the generated DHCP config for you to adapt.
 >
 >It is opt-in and never fatal: it pulls pinned third-party binaries over the
 >network, and an upstream hiccup should not be able to fail your install. If it
@@ -200,8 +205,10 @@ overwriting it breaks every non-Secure-Boot client that boots that file.
 sudo mkdir -p /tftpboot/secureboot
 cd /tftpboot/secureboot
 
-# Microsoft-signed shim, carrying iPXE's vendor certificate
-sudo curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/ipxe-shimx64.efi
+# Microsoft-signed shim, carrying iPXE's vendor certificate.
+# Saved under the snponly- name on purpose -- see the note below.
+sudo curl -Lo snponly-shimx64.efi \
+  https://github.com/ipxe/shim/releases/download/ipxe-16.1/ipxe-shimx64.efi
 # MokManager, used during enrolment
 sudo curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/mmx64.efi
 ```
@@ -209,23 +216,24 @@ sudo curl -LO https://github.com/ipxe/shim/releases/download/ipxe-16.1/mmx64.efi
 Check <https://github.com/ipxe/shim/releases> for the current version rather
 than assuming `16.1` is still latest.
 
-The signed `ipxe.efi` is **not** published as a standalone release asset. It
-ships inside upstream's Secure Boot disk images, so you have to pull it out:
+The signed iPXE binaries ship in `ipxeboot.tar.gz`, under a `<arch>-sb/`
+directory. Everything outside those directories is unsigned, so take only what
+you need:
 
 ```bash
 cd /tftpboot/secureboot
-sudo curl -LO https://github.com/ipxe/ipxe/releases/download/v2.0.0/ipxe-x86_64-sb.usb
+sudo curl -LO https://github.com/ipxe/ipxe/releases/download/v2.0.0/ipxeboot.tar.gz
 
-# EFI/BOOT/IPXE.EFI is the signed binary
-sudo 7z e -y ipxe-x86_64-sb.usb EFI/BOOT/IPXE.EFI
-sudo mv IPXE.EFI ipxe.efi
-sudo rm ipxe-x86_64-sb.usb
+sudo tar -xzf ipxeboot.tar.gz --strip-components=2 ipxeboot/x86_64-sb/snponly.efi
+sudo rm ipxeboot.tar.gz
 
-# copy FOG's boot script in beside them, and fix ownership + SELinux labels
-sudo cp /tftpboot/autoexec/autoexec.ipxe /tftpboot/secureboot/
+# link FOG's boot script in beside them, and fix ownership + SELinux labels
+sudo ln -f /tftpboot/autoexec/autoexec.ipxe /tftpboot/secureboot/autoexec.ipxe
 sudo chown -R "$(stat -c %U /tftpboot)" /tftpboot/secureboot
 sudo restorecon -Rv /tftpboot
 ```
+
+On arm64, substitute `arm64-sb/snponly.efi` and `shimaa64.efi`.
 
 !!! warning "The `restorecon` is not optional on SELinux systems"
     Files created with `cp`/`curl` under `/tftpboot` get the `default_t`
@@ -233,24 +241,36 @@ sudo restorecon -Rv /tftpboot
     them. The client sees a plain "file not found" with nothing obviously
     wrong on the server, which is a genuinely confusing way to lose an hour.
 
-(`7z` comes from `p7zip`/`7zip`; `mcopy` from `mtools` works equally well.)
-
 You can confirm you have the right file before going any further — a signed
 binary has a non-empty certificate table, an unsigned one does not:
 
 ```bash
-osslsigncode verify -in ipxe.efi 2>&1 | head -5
+osslsigncode verify -in snponly.efi 2>&1 | head -5
 ```
 
-The signer should be **iPXE Secure Boot Intermediate G1A**. FOG's own
-`/tftpboot/ipxe.efi` and `/tftpboot/autoexec/snponly.efi` have no signature at
-all — if you see that, you have picked up a FOG binary by mistake.
+The signer should be **iPXE Secure Boot Intermediate G1A**. The copies outside
+`<arch>-sb/` in the same tarball, and FOG's own `/tftpboot/ipxe.efi` and
+`/tftpboot/autoexec/snponly.efi`, have no signature at all — if you see that,
+you have picked up the wrong one.
 
-!!! note "Prefer the standalone shim over the one in the image"
-    The image also contains `EFI/BOOT/BOOTX64.EFI`, which is a shim — but it
-    carries only the Microsoft UEFI CA **2011** signature. The separate
-    `ipxe-shimx64.efi` download above is signed against **both 2011 and 2023**,
-    which matters on newer hardware that ships only the 2023 certificate.
+>[!note] Why the shim is renamed `snponly-shimx64.efi`
+>The shim decides what to load next by **stripping `-shim` out of its own
+>filename** — `ipxe-shimx64.efi` looks for `ipxe.efi`, and
+>`snponly-shimx64.efi` looks for `snponly.efi`. That is upstream's own
+>mechanism, not a trick: `ipxeboot.tar.gz` ships `ipxe-shim.efi` and
+>`snponly-shim.efi` as two symlinks to a single `shimx64.efi` for exactly this
+>reason. Renaming does not disturb the signature, which covers the file's
+>contents rather than its name.
+
+>[!note] Take the shim from the ipxe/shim release, not the tarball
+>`ipxeboot.tar.gz` contains a `shimx64.efi` too, but it carries only the
+>Microsoft UEFI CA **2011** signature. The standalone `ipxe-shimx64.efi`
+>downloaded above carries **two** signatures, 2011 and 2023, which matters on
+>newer hardware that ships only the 2023 certificate.
+>
+>Both facts were confirmed by reading the PE certificate tables directly: the
+>standalone shim has two `WIN_CERTIFICATE` entries, the bundled one has a
+>single 2011 entry.
 
 !!! note "Verify your FOS kernel has an EFI stub"
     Under Secure Boot the kernel is loaded by the firmware's own loader rather
@@ -383,10 +403,22 @@ firmware, which is why Route A is the one to reach for first.
 ### 3a — Serve the signed chain
 
 Set the DHCP boot file for Secure Boot clients to
-**`secureboot/ipxe-shimx64.efi`**. Nothing in this step needs signing by you —
+**`secureboot/snponly-shimx64.efi`**. Nothing in this step needs signing by you —
 both binaries already carry signatures the firmware and shim trust.
 
-Because upstream's `ipxe.efi` has no boot script compiled in, it fetches one
+>[!tip] This is the same driver model FOG already uses
+>`snponly` binds only the firmware's own UEFI network protocol instead of
+>replacing the NIC driver, which is exactly why FOG serves `snponly.efi` to
+>every other client. So a Secure Boot machine now behaves like the rest of your
+>estate rather than being a special case — the only difference is the shim in
+>front and the signature on the kernel.
+>
+>Upstream also publishes a signed all-drivers `ipxe.efi` in the same
+>`<arch>-sb/` directory, paired with `ipxe-shim.efi`. Use it only if you have a
+>NIC the firmware's own driver does not handle; it is the more invasive option,
+>and it is the one that hangs on hardware where the takeover fails.
+
+Because upstream's `snponly.efi` has no boot script compiled in, it fetches one
 over TFTP, and **where it looks is not a single fixed path**. iPXE asks for the
 bare name `autoexec.ipxe` and tries two locations in order:
 
@@ -401,7 +433,7 @@ autoexec.ipxe...  Not found
 /autoexec.ipxe... Not found
 ```
 
-The `sudo cp` in the previous step satisfies (1). Current FOG installers also
+The `sudo ln` in the previous step satisfies (1). Current FOG installers also
 satisfy (2) by hard-linking `/tftpboot/autoexec.ipxe` to
 `/tftpboot/autoexec/autoexec.ipxe`, so both paths are one file and editing
 either changes both. Either location works; having both is harmless.
@@ -422,21 +454,16 @@ them. A hard link rather than a copy so the two paths cannot drift apart.
     filenames the client asked for and whether they were served, which beats
     guessing every time.
 
-Your existing clients are unaffected — leave `snponly.efi` in place and keep
-pointing non-Secure-Boot machines at it.
+Your existing clients are unaffected — FOG's own unsigned `snponly.efi` stays
+at the TFTP root, and non-Secure-Boot machines keep booting it. The signed copy
+lives under `secureboot/` and is reached only by machines you point there.
 
-!!! warning "The only signed binary is an all-drivers build"
-    Upstream publishes exactly one signed x86-64 iPXE binary, and it is an
-    all-drivers build: it binds iPXE's own NIC drivers, disconnecting the
-    firmware's UEFI network driver. On hardware where that takeover does not
-    work, iPXE stops right after `initialising devices` — no banner, no DHCP —
-    and there is currently **no way out**, because the usual answer
-    (`snponly.efi`, which FOG ships as its default for exactly this reason)
-    has no signed equivalent. Building your own loses the signature.
-
-    This is what happens on VirtualBox's emulated Intel 82540EM, where the
-    signature chain verifies perfectly and iPXE then hangs. Requested upstream
-    as [ipxe/ipxe#1776](https://github.com/ipxe/ipxe/issues/1776).
+>[!note] Both files are called `snponly.efi`, and that is fine
+>`/tftpboot/snponly.efi` is FOG's own build — the boot script compiled in, no
+>signature. `/tftpboot/secureboot/snponly.efi` is upstream's signed build,
+>which reads its script from `autoexec.ipxe` instead. They are different
+>binaries doing the same job by different means, which is why the signed one
+>gets its own directory rather than replacing the other.
 
 ### 3b — The FOS kernels
 
@@ -486,7 +513,8 @@ alone; they are refreshed on every download.
 
 Take one enrolled machine and PXE boot it with Secure Boot **on**:
 
-- iPXE loads and shows its banner — the upstream signed binaries are working.
+- iPXE loads and shows its banner — the shim accepted `snponly.efi`, so the
+  upstream signed binaries are working.
 - The FOG menu appears — `autoexec.ipxe` is being served and read.
 - Selecting a task boots FOS rather than failing — your signature is accepted.
 
@@ -555,18 +583,22 @@ key accordingly.
   writes to disk is trustworthy.
 - **HTTPS is not supported under Secure Boot.** FOG's HTTPS mode works because
   the server's CA is compiled into FOG's own iPXE binaries. Upstream's signed
-  `ipxe.efi` has no such CA, and adding one would make it a custom binary again
-  — which the shim would then reject. Secure Boot clients need FOG in HTTP
-  mode, or a certificate chain the stock binary already trusts.
-- **The signature chain is verified; the device-init half is not.** FOG has
-  confirmed on VirtualBox that the firmware accepts the signed shim, the shim
-  accepts upstream's `ipxe.efi`, and iPXE loads `autoexec.ipxe` — and that
-  removing the shim makes the firmware reject the same binary, so the trust
-  boundary is real. What has *not* been confirmed anywhere is a MOK-signed
-  `bzImage` actually booting, because the all-drivers binary hangs during
-  device init on that hardware (see the warning in Step 3a). Reports from
+  `snponly.efi` has no such CA, and adding one would make it a custom binary
+  again — which the shim would then reject. Secure Boot clients need FOG in
+  HTTP mode, or a certificate chain the stock binary already trusts.
+- **Not yet confirmed end to end on physical hardware.** FOG has confirmed on
+  VirtualBox that the firmware accepts the signed shim, that the shim accepts
+  upstream's signed iPXE, and that removing the shim makes the firmware reject
+  the same binary — so the trust boundary is real. What has *not* been
+  confirmed anywhere is a MOK-signed `bzImage` actually booting. Reports from
   physical hardware are very welcome — see
   [fogproject#960](https://github.com/FOGProject/fogproject/issues/960).
+
+    An earlier revision of this page said there was no signed `snponly.efi` and
+    that the all-drivers binary's device-init hang left Secure Boot users with
+    nowhere to go. That was wrong: signed `snponly.efi` binaries ship in
+    `ipxeboot.tar.gz` for x86_64 and arm64, and switching to them removes that
+    problem entirely.
 
 ## See also
 
