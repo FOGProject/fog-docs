@@ -320,14 +320,26 @@ script beside them — booting `autoexec/snponly.efi` makes iPXE ask for
 `autoexec/autoexec.ipxe`, and it is there.
 
 For the Secure Boot chain the binary is `/tftpboot/ipxe.efi`, so iPXE will ask
-for **`/tftpboot/autoexec.ipxe`** — a path FOG does not create. Put a copy there:
+for **`/tftpboot/autoexec.ipxe`**.
+
+Current installers create that for you, as a hard link to
+`/tftpboot/autoexec/autoexec.ipxe`, so both paths are the same file and editing
+either changes both. Confirm it is there:
 
 ```bash
-cp /tftpboot/autoexec/autoexec.ipxe /tftpboot/autoexec.ipxe
+ls -l /tftpboot/autoexec.ipxe
 ```
 
-A copy rather than a symlink: symlinks work with most TFTP daemons but not all,
-and this is not the place to debug that.
+If it is missing — an older install, or the file was replaced by an editor that
+writes-and-renames — recreate it:
+
+```bash
+ln -f /tftpboot/autoexec/autoexec.ipxe /tftpboot/autoexec.ipxe
+```
+
+A hard link rather than a symlink because some TFTP daemons refuse to follow
+symlinks, while a hard link is indistinguishable from a regular file to all of
+them. A hard link rather than a copy so the two paths cannot drift apart.
 
 !!! tip "If the menu never appears"
     Watch the TFTP server's log during a boot and see what filename the client
