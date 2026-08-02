@@ -13,16 +13,16 @@ tags:
 
 # Secure Boot: signing FOS with your own key
 
-!!! warning "This is a hands-on procedure"
-    It requires **physically visiting each machine once**. If your site can
-    leave Secure Boot disabled for imaging, that remains far less work. Read
-    [Why FOG cannot do this for you](#why-fog-cannot-do-this-for-you) before
-    deciding.
-
-    The server side is automatic since FOG 1.6.0 — the installer generates a
-    signing key, signs the FOS kernels with it, and keeps them signed across
-    upgrades, with nothing to configure. The per-machine visit does **not**
-    require turning Secure Boot off. What you cannot avoid is the visit.
+>[!warning] This is a hands-on procedure
+>It requires **physically visiting each machine once**. If your site can
+>leave Secure Boot disabled for imaging, that remains far less work. Read
+>[Why FOG cannot do this for you](#why-fog-cannot-do-this-for-you) before
+>deciding.
+>
+>The server side is automatic since FOG 1.6.0 — the installer generates a
+>signing key, signs the FOS kernels with it, and keeps them signed across
+>upgrades, with nothing to configure. The per-machine visit does **not**
+>require turning Secure Boot off. What you cannot avoid is the visit.
 
 >[!info] What changed in FOG 1.6.0
 >Signing used to be opt-in, enabled by passing `--secure-boot-key` and
@@ -90,11 +90,11 @@ The alternative the firmware already provides is **MOK** (Machine Owner Key):
 a per-machine list of extra certificates that *you*, as the physical owner of
 the machine, choose to trust. That is the route this guide takes.
 
-!!! info "Why enrolment cannot be automated"
-    MOK enrolment requires a human at the physical console pressing keys. That
-    is not an oversight — it is the security property. If a remote process
-    could enrol a signing key, Secure Boot would be decorative. Budget for one
-    visit per machine, the same way you would for a firmware password.
+>[!info] Why enrolment cannot be automated
+>MOK enrolment requires a human at the physical console pressing keys. That
+>is not an oversight — it is the security property. If a remote process
+>could enrol a signing key, Secure Boot would be decorative. Budget for one
+>visit per machine, the same way you would for a firmware password.
 
 ---
 
@@ -155,20 +155,20 @@ directory it was itself loaded from; named `ipxe-shimx64.efi`, it loads
 `ipxe.efi`. Whichever you pick, the second-stage file has to be sitting beside
 it under exactly that name.
 
-!!! warning "Use upstream's signed build, not FOG's"
-    FOG's own binaries in `/tftpboot` — including those in `autoexec/` — are
-    locally built and unsigned, so the shim will reject them, even though one
-    of them is also called `snponly.efi`. Download the signed build from the
-    iPXE project. FOG's boot logic reaches it through `autoexec.ipxe` instead
-    of being compiled in.
+>[!warning] Use upstream's signed build, not FOG's
+>FOG's own binaries in `/tftpboot` — including those in `autoexec/` — are
+>locally built and unsigned, so the shim will reject them, even though one
+>of them is also called `snponly.efi`. Download the signed build from the
+>iPXE project. FOG's boot logic reaches it through `autoexec.ipxe` instead
+>of being compiled in.
 
-!!! tip "The alternative: enrol into `db` instead"
-    Many firmwares can be put into Custom or Setup mode, letting you add your
-    own certificate to `db` directly. That removes shim from the picture — sign
-    whatever you like and the firmware loads it. It is the only route if you
-    need FOG's *custom* iPXE (embedded CA for HTTPS) under Secure Boot, but the
-    menus vary enormously between vendors and some do not expose `db` editing
-    at all.
+>[!tip] The alternative: enrol into `db` instead
+>Many firmwares can be put into Custom or Setup mode, letting you add your
+>own certificate to `db` directly. That removes shim from the picture — sign
+>whatever you like and the firmware loads it. It is the only route if you
+>need FOG's *custom* iPXE (embedded CA for HTTPS) under Secure Boot, but the
+>menus vary enormously between vendors and some do not expose `db` editing
+>at all.
 
 ---
 
@@ -206,14 +206,14 @@ each file if you want to confirm that yourself.
 Nothing is served from this directory unless you point DHCP at it, so its
 presence changes nothing for your existing clients.
 
-!!! info "If the directory is missing"
-    Two reasons it would not be there. **HTTPS installs skip it** — these are
-    upstream's generic binaries, so they cannot carry your server's CA, and a
-    signed binary cannot be rebuilt without voiding the signature, which makes
-    Secure Boot and FOG's HTTPS mode mutually exclusive. See [the note on
-    enrolling into `db`](#the-chain-you-are-building) for the way round that.
-    Otherwise the download failed — it is deliberately not fatal — and the
-    installer will have said so. Re-run it.
+>[!info] If the directory is missing
+>Two reasons it would not be there. **HTTPS installs skip it** — these are
+>upstream's generic binaries, so they cannot carry your server's CA, and a
+>signed binary cannot be rebuilt without voiding the signature, which makes
+>Secure Boot and FOG's HTTPS mode mutually exclusive. See [the note on
+>enrolling into `db`](#the-chain-you-are-building) for the way round that.
+>Otherwise the download failed — it is deliberately not fatal — and the
+>installer will have said so. Re-run it.
 
 You can confirm you have a signed binary — a signed one has a non-empty
 certificate table, an unsigned one does not:
@@ -250,12 +250,12 @@ On arm64 the equivalents are `arm64-efi/snponly-shimaa64.efi` and
 >present, so a silent upstream regression to a 2011-only build fails the
 >release rather than stranding anyone on 2023-only firmware.
 
-!!! note "Verify your FOS kernel has an EFI stub"
-    Under Secure Boot the kernel is loaded by the firmware's own loader rather
-    than by iPXE's Linux loader, which requires `CONFIG_EFI_STUB=y`. Stock FOS
-    kernels are expected to have it; if boot fails immediately after signing
-    with a format complaint rather than a signature complaint, this is the
-    first thing to check.
+>[!note] Verify your FOS kernel has an EFI stub
+>Under Secure Boot the kernel is loaded by the firmware's own loader rather
+>than by iPXE's Linux loader, which requires `CONFIG_EFI_STUB=y`. Stock FOS
+>kernels are expected to have it; if boot fails immediately after signing
+>with a format complaint rather than a signature complaint, this is the
+>first thing to check.
 
 ---
 
@@ -349,10 +349,10 @@ The `-days 3650` gives ten years. Choose something you will actually remember
 to renew — an expired MOK stops machines booting. The installer-generated key
 uses the same ten years, with the CN `FOG Project Secure Boot Signing`.
 
-!!! tip "Use a descriptive CN"
-    It is shown in MokManager when someone enrols it, and again years later
-    when someone is trying to work out what that key is for. `FOG imaging -
-    fog.example.edu` beats `MOK`.
+>[!tip] Use a descriptive CN
+>It is shown in MokManager when someone enrols it, and again years later
+>when someone is trying to work out what that key is for. `FOG imaging -
+>fog.example.edu` beats `MOK`.
 
 >[!warning] Generate a fresh key — do not reuse the MOK you already have
 >If this machine has ever built a DKMS module, it already has a MOK, and it is
@@ -509,10 +509,10 @@ inode and a link count of 6.
 find /tftpboot -name autoexec.ipxe -printf '%i  links=%n  %p\n'
 ```
 
-!!! tip "If nothing seems to happen"
-    Watch the TFTP server's log during a boot — it tells you exactly which
-    filenames the client asked for and whether they were served, which beats
-    guessing every time.
+>[!tip] If nothing seems to happen
+>Watch the TFTP server's log during a boot — it tells you exactly which
+>filenames the client asked for and whether they were served, which beats
+>guessing every time.
 
 Your existing clients are unaffected — FOG's own unsigned `snponly.efi` stays
 at the TFTP root, and non-Secure-Boot machines keep booting it. The signed copy
