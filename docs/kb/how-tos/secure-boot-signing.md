@@ -13,15 +13,22 @@ tags:
 
 # Secure Boot: signing FOS with your own key
 
-!!! warning "This is an advanced, hands-on procedure"
-    It requires generating and looking after a signing key, and **physically
-    visiting each machine once**. If your site can leave Secure Boot disabled
-    for imaging, that remains far less work. Read [Why FOG cannot do this for
-    you](#why-fog-cannot-do-this-for-you) before deciding.
+>[!warning] This is a hands-on procedure
+>It requires **physically visiting each machine once**. If your site can
+>leave Secure Boot disabled for imaging, that remains far less work. Read
+>[Why FOG cannot do this for you](#why-fog-cannot-do-this-for-you) before
+>deciding.
+>
+>The server side is automatic since FOG 1.6.0 — the installer generates a
+>signing key, signs the FOS kernels with it, and keeps them signed across
+>upgrades, with nothing to configure. The per-machine visit does **not**
+>require turning Secure Boot off. What you cannot avoid is the visit.
 
-    The signing itself is automated once configured — the installer keeps the
-    kernels signed across upgrades — and the per-machine visit does **not**
-    require turning Secure Boot off. What you cannot avoid is the visit.
+>[!info] What changed in FOG 1.6.0
+>Signing used to be opt-in, enabled by passing `--secure-boot-key` and
+>`--secure-boot-cert`. It is now on by default and the key is generated for
+>you, so [Step 1](#step-1-the-signing-key) is reading rather than doing unless
+>you want to supply your own key. Use `--no-secure-boot` to turn it off.
 
 FOG does not ship signed FOS kernels, and cannot. If your estate mandates UEFI
 Secure Boot and turning it off is not an option, this guide walks through
@@ -83,11 +90,11 @@ The alternative the firmware already provides is **MOK** (Machine Owner Key):
 a per-machine list of extra certificates that *you*, as the physical owner of
 the machine, choose to trust. That is the route this guide takes.
 
-!!! info "Why enrolment cannot be automated"
-    MOK enrolment requires a human at the physical console pressing keys. That
-    is not an oversight — it is the security property. If a remote process
-    could enrol a signing key, Secure Boot would be decorative. Budget for one
-    visit per machine, the same way you would for a firmware password.
+>[!info] Why enrolment cannot be automated
+>MOK enrolment requires a human at the physical console pressing keys. That
+>is not an oversight — it is the security property. If a remote process
+>could enrol a signing key, Secure Boot would be decorative. Budget for one
+>visit per machine, the same way you would for a firmware password.
 
 ---
 
@@ -148,37 +155,33 @@ directory it was itself loaded from; named `ipxe-shimx64.efi`, it loads
 `ipxe.efi`. Whichever you pick, the second-stage file has to be sitting beside
 it under exactly that name.
 
-!!! warning "Use upstream's signed build, not FOG's"
-    FOG's own binaries in `/tftpboot` — including those in `autoexec/` — are
-    locally built and unsigned, so the shim will reject them, even though one
-    of them is also called `snponly.efi`. Download the signed build from the
-    iPXE project. FOG's boot logic reaches it through `autoexec.ipxe` instead
-    of being compiled in.
+>[!warning] Use upstream's signed build, not FOG's
+>FOG's own binaries in `/tftpboot` — including those in `autoexec/` — are
+>locally built and unsigned, so the shim will reject them, even though one
+>of them is also called `snponly.efi`. Download the signed build from the
+>iPXE project. FOG's boot logic reaches it through `autoexec.ipxe` instead
+>of being compiled in.
 
-!!! tip "The alternative: enrol into `db` instead"
-    Many firmwares can be put into Custom or Setup mode, letting you add your
-    own certificate to `db` directly. That removes shim from the picture — sign
-    whatever you like and the firmware loads it. It is the only route if you
-    need FOG's *custom* iPXE (embedded CA for HTTPS) under Secure Boot, but the
-    menus vary enormously between vendors and some do not expose `db` editing
-    at all.
+>[!tip] The alternative: enrol into `db` instead
+>Many firmwares can be put into Custom or Setup mode, letting you add your
+>own certificate to `db` directly. That removes shim from the picture — sign
+>whatever you like and the firmware loads it. It is the only route if you
+>need FOG's *custom* iPXE (embedded CA for HTTPS) under Secure Boot, but the
+>menus vary enormously between vendors and some do not expose `db` editing
+>at all.
 
 ---
 
 ## Before you start
 
-You will need, on the FOG server:
+On the FOG server, nothing. `sbsigntool` (`sbsigntools` on RHEL/Rocky/Alma/
+Fedora and Arch) is part of the installer's baseline package set since FOG
+1.6.0, alongside `openssl`. If your distribution ships neither name the
+installer says so and carries on, leaving the kernels unsigned — read the
+installer output rather than assuming.
 
-```bash
-# Debian / Ubuntu
-apt install sbsigntool openssl
-
-# RHEL / Rocky / Alma / Fedora
-dnf install sbsigntools openssl
-```
-
-and on each client machine you intend to enrol, a way to run `mokutil` — most
-simply, boot it once from any Linux live USB.
+On each client machine you intend to enrol, you need a way to run `mokutil` —
+most simply, boot it once from any Linux live USB.
 
 You do **not** need to download the signed shim or the signed `snponly.efi`.
 Since FOG 1.6.0, every install stages them at `/tftpboot/secureboot/`:
@@ -186,12 +189,24 @@ Since FOG 1.6.0, every install stages them at `/tftpboot/secureboot/`:
 ```
 /tftpboot/secureboot/
 ├── snponly-shimx64.efi   Microsoft-signed shim (2011 + 2023), from ipxe/shim
-├── snponly.efi           upstream's signed iPXE
+├── snponly.efi           upstream's signed iPXE — firmware's own NIC driver
+├── ipxe-shimx64.efi      the same shim again, under the name that loads ipxe.efi
+├── ipxe.efi              upstream's signed iPXE — iPXE's own NIC drivers
 ├── mmx64.efi             MokManager, used during enrolment
 ├── autoexec.ipxe         FOG's boot script
 ├── MANIFEST              where each file came from, with checksums
 └── arm64-efi/            the same set for arm64
 ```
+
+Two complete chains, so you can switch between them with nothing but a DHCP
+change. `snponly` is the default and the right first choice; `ipxe` is the
+fallback for firmware whose own network stack does not work. [Which to
+use](#3a-serve-the-signed-chain) is covered in step 3a.
+
+>[!info] Version note
+>The `ipxe.efi` pair arrived with **fog-ipxe v2.0.0-fog.3**. An install pinned
+>to an earlier release stages only the `snponly` pair — check `MANIFEST`, which
+>lists exactly what your install has.
 
 Everything but `autoexec.ipxe` is upstream's, republished byte for byte through
 the [fog-ipxe](https://github.com/FOGProject/fog-ipxe) release the installer
@@ -203,14 +218,14 @@ each file if you want to confirm that yourself.
 Nothing is served from this directory unless you point DHCP at it, so its
 presence changes nothing for your existing clients.
 
-!!! info "If the directory is missing"
-    Two reasons it would not be there. **HTTPS installs skip it** — these are
-    upstream's generic binaries, so they cannot carry your server's CA, and a
-    signed binary cannot be rebuilt without voiding the signature, which makes
-    Secure Boot and FOG's HTTPS mode mutually exclusive. See [the note on
-    enrolling into `db`](#the-chain-you-are-building) for the way round that.
-    Otherwise the download failed — it is deliberately not fatal — and the
-    installer will have said so. Re-run it.
+>[!info] If the directory is missing
+>Two reasons it would not be there. **HTTPS installs skip it** — these are
+>upstream's generic binaries, so they cannot carry your server's CA, and a
+>signed binary cannot be rebuilt without voiding the signature, which makes
+>Secure Boot and FOG's HTTPS mode mutually exclusive. See [the note on
+>enrolling into `db`](#the-chain-you-are-building) for the way round that.
+>Otherwise the download failed — it is deliberately not fatal — and the
+>installer will have said so. Re-run it.
 
 You can confirm you have a signed binary — a signed one has a non-empty
 certificate table, an unsigned one does not:
@@ -247,19 +262,50 @@ On arm64 the equivalents are `arm64-efi/snponly-shimaa64.efi` and
 >present, so a silent upstream regression to a 2011-only build fails the
 >release rather than stranding anyone on 2023-only firmware.
 
-!!! note "Verify your FOS kernel has an EFI stub"
-    Under Secure Boot the kernel is loaded by the firmware's own loader rather
-    than by iPXE's Linux loader, which requires `CONFIG_EFI_STUB=y`. Stock FOS
-    kernels are expected to have it; if boot fails immediately after signing
-    with a format complaint rather than a signature complaint, this is the
-    first thing to check.
+>[!note] Verify your FOS kernel has an EFI stub
+>Under Secure Boot the kernel is loaded by the firmware's own loader rather
+>than by iPXE's Linux loader, which requires `CONFIG_EFI_STUB=y`. Stock FOS
+>kernels are expected to have it; if boot fails immediately after signing
+>with a format complaint rather than a signature complaint, this is the
+>first thing to check.
 
 ---
 
-## Step 1 — Generate a signing key
+## Step 1 — The signing key
 
-Do this **once**, on the FOG server, and keep the result safe. Anyone with
-`MOK.priv` can produce something your machines will boot.
+**The installer already did this.** On first install it generates a signing
+key and signs the FOS kernels with it, so unless you want to supply your own
+key there is nothing to run here.
+
+```
+/opt/fog/secureboot/          0700, root:root
+├── MOK.key                   0600 — the private key
+├── MOK.pem                   0644 — the certificate, PEM (what sbsign reads)
+└── mok.cnf                   the openssl config used to generate the pair
+```
+
+The directory sits under `$fogprogramdir`, which is never inside the web root,
+so none of it is reachable over HTTP. **The web server cannot read the private
+key**: kernel downloads from the web UI are signed by a small root-only helper
+(`/opt/fog/bin/fog-sign-kernel`) that takes no arguments, rather than in the
+web server itself. Only the public certificate is published, as `MOK.der` in
+the enrolment kit.
+
+Back up `MOK.key` somewhere you would put a root password. Anyone holding it
+can produce something your machines will boot.
+
+>[!warning] The key is never regenerated, on purpose
+>Re-running the installer reuses the existing pair. A fresh key silently
+>invalidates enrolment on **every machine that already trusted the old one**,
+>and nothing surfaces that until a client fails to boot. `--recreate-keys` and
+>`--recreate-CA` deliberately do not reach it. To rotate on purpose, delete
+>`/opt/fog/secureboot/`, re-run the installer, and re-enrol every client — see
+>[Rotating or removing a key](#rotating-or-removing-a-key).
+
+### Bringing your own key
+
+If you already have a signing key — a site CA, or one shared with other
+tooling — pass it instead and the installer will never touch or overwrite it:
 
 ```bash
 mkdir -p /root/fog-secureboot && cd /root/fog-secureboot
@@ -275,6 +321,13 @@ openssl x509 -inform DER -in MOK.der -outform PEM -out MOK.pem
 chmod 600 MOK.priv
 ```
 
+```bash
+cd /path/to/fogproject/bin
+./installfog.sh \
+  --secure-boot-key  /root/fog-secureboot/MOK.priv \
+  --secure-boot-cert /root/fog-secureboot/MOK.der
+```
+
 - `MOK.priv` — the private key. **Never leaves this machine.** Back it up
   somewhere you would put a root password, not somewhere you would put a
   config file.
@@ -282,6 +335,11 @@ chmod 600 MOK.priv
   to clients and what `mokutil` enrols; it is not sensitive.
 - `MOK.pem` — the same certificate, PEM-encoded. This is what `sbsign` and
   `sbverify` read.
+
+Both paths are recorded in `.fogsettings`, so later upgrades keep using them
+without the flags being passed again. The two options are only meaningful
+together — the installer refuses half a pair rather than leaving kernels
+unsigned on a server whose admin believes they are signed.
 
 >[!warning] `sbsign` and `sbverify` cannot read a DER certificate
 >They load certificates with OpenSSL's `PEM_read_bio_X509`, which rejects DER
@@ -300,12 +358,13 @@ chmod 600 MOK.priv
 >by hand.
 
 The `-days 3650` gives ten years. Choose something you will actually remember
-to renew — an expired MOK stops machines booting.
+to renew — an expired MOK stops machines booting. The installer-generated key
+uses the same ten years, with the CN `FOG Project Secure Boot Signing`.
 
-!!! tip "Use a descriptive CN"
-    It is shown in MokManager when someone enrols it, and again years later
-    when someone is trying to work out what that key is for. `FOG imaging -
-    fog.example.edu` beats `MOK`.
+>[!tip] Use a descriptive CN
+>It is shown in MokManager when someone enrols it, and again years later
+>when someone is trying to work out what that key is for. `FOG imaging -
+>fog.example.edu` beats `MOK`.
 
 >[!tip] Using an internal CA instead of a fresh self-signed key
 >Nothing above requires the key to be self-signed. If your organisation
@@ -356,6 +415,15 @@ to renew — an expired MOK stops machines booting.
 >showing up quite happily in `mokutil --list-enrolled`, which is a
 >memorably unhelpful combination. The `openssl req` command above produces a
 >key without the OID, so just use it.
+>
+>The key the installer generates carries no such OID either, so this only
+>applies if you are supplying your own.
+
+### Turning signing off
+
+`--no-secure-boot` skips key generation entirely and leaves the FOS kernels
+unsigned. It is remembered in `.fogsettings`, so an upgrade will not hand back
+a key and a `sudoers` rule you deliberately declined.
 
 ---
 
@@ -364,9 +432,9 @@ to renew — an expired MOK stops machines booting.
 Repeat per machine. **You do not need to turn Secure Boot off to do this**, and
 you should not: both routes below work with it left on.
 
-Once the installer has been run with `--secure-boot-cert`, the FOG web UI grows
-a **FOG Configuration → Secure Boot** page. It shows your certificate's SHA-256
-fingerprint and offers a small **enrolment kit**:
+The FOG web UI has a **FOG Configuration → Secure Boot** page. It shows your
+certificate's SHA-256 fingerprint, offers a small **enrolment kit**, and
+repeats the per-client steps below as a checklist:
 
 | File | What it is |
 | --- | --- |
@@ -412,42 +480,75 @@ Confirm afterwards:
 mokutil --list-enrolled | grep -A2 "FOG imaging"
 ```
 
-### Route B — no operating system at all
+### Route B — from the FOG boot menu, no operating system at all
 
 MokManager can read a certificate straight off a FAT filesystem, so a Linux
-session is not strictly required — but reaching it needs one more thing than
-an earlier revision of this page said.
+session is not required at all. Since FOG 1.6.0 the boot menu carries an
+**Enroll Secure Boot Key** entry that takes you straight there.
 
-**A plain PXE boot through the shim never shows MokManager.** Shim only hands
-control to MokManager (`mmx64.efi`) when a *pending* MOK enrolment request
-already exists — normally staged by `mokutil --import`, which is what Route A
-does. With nothing staged, the shim boots straight through to `snponly.efi`
-and the blue MokManager screen never appears, however long you wait.
+>[!info] The entry appears on its own
+>It is added by the 1.6.0 schema upgrade and needs no configuration. It shows
+>for registered and unregistered hosts alike, because a machine that needs its
+>MOK enrolled has usually never been registered. If you do not see it, the
+>schema upgrade has not run — visit the web UI as an admin and complete the
+>upgrade prompt. Like any menu entry it can be edited or removed under
+>**FOG Configuration → PXE Boot Menu**.
 
-The FOG PXE menu's **`Enroll Secure Boot Key`** item does this the easy way:
-it chains directly to `secureboot/mmx64.efi`, deliberately bypassing the
-shim's normal gate — which is the only way to reach `Enroll key from disk`
-with nothing pre-staged. Pick it from the menu on any client; no DHCP or
-firmware change is needed, and nothing needs switching back afterward.
+>[!warning] Why the menu item exists, rather than "just PXE-boot the shim"
+>**A plain PXE boot through the shim never shows MokManager.** Shim only hands
+>control to MokManager when a *pending* MOK enrolment request already exists —
+>normally staged by `mokutil --import`, which is what Route A does. With
+>nothing staged, the shim boots straight through to `snponly.efi` and the blue
+>MokManager screen never appears, however long you wait.
+>
+>The menu item chains directly to `secureboot/mmx64.efi`, deliberately
+>bypassing that gate, which is what makes `Enroll key from disk` reachable
+>with nothing pre-staged.
+>
+>Nor can you point DHCP straight at `mmx64.efi` to get the same effect. It is
+>signed by iPXE, not Microsoft, so the firmware — which checks the first binary
+>against `db` alone, as described [above](#the-chain-you-are-building) — will
+>refuse to launch it. It boots here only because iPXE loads it *through shim's
+>verification protocol*, and shim trusts iPXE's certificate. On FOG versions
+>predating the menu item there is no PXE route to MokManager at all; use
+>Route A.
 
-If your FOG version predates that menu item, the equivalent by hand is to
-point that one client's DHCP boot file straight at `secureboot/mmx64.efi`
-(`secureboot/arm64-efi/mmx64.efi` on arm64), boot it, enrol, then point DHCP
-back at `secureboot/snponly-shimx64.efi` for normal imaging afterward.
+You still need `MOK.der` on local media. This is not a FOG limitation and there
+is no way around it: MokManager reads the certificate through the firmware's
+own filesystem support, and it has no network stack of its own.
 
-Either way, put `MOK.der` on a FAT32 stick first, then use
-**`Enroll key from disk`** from the MokManager menu.
+1. Put `MOK.der` — just that one file, from the enrolment kit — at the root of
+   a FAT-formatted USB stick. Any small stick will do; it does not need to be
+   bootable.
+2. Plug it into the client and PXE-boot as normal, with Secure Boot left on.
+3. Choose **Enroll Secure Boot Key**. FOG reminds you about the stick, then
+   hands off to MokManager.
+4. `Enroll key from disk`
+5. Pick the USB stick from the list of filesystems, then `MOK.der`.
+6. `Continue` → `Yes`. Check the CN is yours when it shows you the key.
+7. `Reboot`, with the stick removed.
 
-Fewer moving parts than Route A, but `Enroll key from disk` is known to hang
-on some firmware, which is why Route A is the one to reach for first.
+The client now trusts your key and will boot the signed FOS kernel on its next
+PXE boot. Unlike Route A there is no one-time password step, because you are
+already standing at the machine when the enrolment happens.
+
+>[!tip] Which route to reach for
+>Route B has far fewer moving parts and does not need a live image, so try it
+>first if you are standing at the machine anyway. Route A is the fallback:
+>`Enroll key from disk` is reported to hang on some firmware, and a stock live
+>USB sidesteps that entirely by using the distribution's own shim.
+
+>[!note] arm64 clients
+>The menu entry serves the matching MokManager automatically — `mmx64.efi` for
+>x86-64 and `arm64-efi/mmaa64.efi` for arm64 — based on the architecture the
+>client reported at boot. There is nothing to select.
 
 >[!danger] If MokManager does not appear
->Confirm you actually reached `secureboot/mmx64.efi` — via the
->`Enroll Secure Boot Key` menu item, or a boot file pointed straight at it —
->rather than `secureboot/snponly-shimx64.efi`. Booting through the shim
->normally will not show MokManager; that needs a *pending* MOK request
->staged first, and this route does not stage one. Also check that Secure
->Boot is actually enabled (`mokutil --sb-state`).
+>Confirm you picked **`Enroll Secure Boot Key`** and not an ordinary boot
+>entry. Booting through the shim normally will not show MokManager: that
+>needs a *pending* MOK request staged first, and this route does not stage
+>one. Also check that Secure Boot is actually enabled
+>(`mokutil --sb-state`).
 
 ---
 
@@ -465,11 +566,6 @@ both binaries already carry signatures the firmware and shim trust.
 >every other client. So a Secure Boot machine now behaves like the rest of your
 >estate rather than being a special case — the only difference is the shim in
 >front and the signature on the kernel.
->
->Upstream also publishes a signed all-drivers `ipxe.efi` in the same
->`<arch>-sb/` directory, paired with `ipxe-shim.efi`. Use it only if you have a
->NIC the firmware's own driver does not handle; it is the more invasive option,
->and it is the one that hangs on hardware where the takeover fails.
 
 Because upstream's `snponly.efi` has no boot script compiled in, it fetches one
 over TFTP, and **where it looks is not a single fixed path**. iPXE asks for the
@@ -510,10 +606,10 @@ inode and a link count of 6.
 find /tftpboot -name autoexec.ipxe -printf '%i  links=%n  %p\n'
 ```
 
-!!! tip "If nothing seems to happen"
-    Watch the TFTP server's log during a boot — it tells you exactly which
-    filenames the client asked for and whether they were served, which beats
-    guessing every time.
+>[!tip] If nothing seems to happen
+>Watch the TFTP server's log during a boot — it tells you exactly which
+>filenames the client asked for and whether they were served, which beats
+>guessing every time.
 
 Your existing clients are unaffected — FOG's own unsigned `snponly.efi` stays
 at the TFTP root, and non-Secure-Boot machines keep booting it. The signed copy
@@ -526,29 +622,49 @@ lives under `secureboot/` and is reached only by machines you point there.
 >binaries doing the same job by different means, which is why the signed one
 >gets its own directory rather than replacing the other.
 
+#### If the chain loads but the network never comes up
+
+Shim runs, iPXE starts, and then there is no link or no DHCP. That points at
+the firmware's own UEFI network stack, not at anything you signed. Set the DHCP
+boot file to **`secureboot/ipxe-shimx64.efi`** instead — on arm64,
+`secureboot/arm64-efi/ipxe-shimaa64.efi`.
+
+That chain runs the all-drivers `ipxe.efi`, which replaces the firmware's NIC
+driver with iPXE's own rather than binding the firmware's UEFI network
+protocol. It recovers machines whose firmware SNP is broken or absent, and it
+is the more invasive option — on hardware where the takeover fails, it hangs
+instead. So try `snponly` first and move to this only on the symptom above.
+
+Everything about the rest of this step is unchanged: both binaries are staged
+for you, both are already signed, and `autoexec.ipxe` is hard-linked into
+`secureboot/` for either one. **Nothing needs renaming server-side** — the shim
+picks its second stage from its own filename, so the two chains sit side by
+side in one directory and DHCP alone decides which runs.
+
 ### 3b — The FOS kernels
 
-This is the part that is genuinely yours to sign, and the installer will do it
-for you. Tell it where the key lives:
+This is the part that is genuinely yours to sign, and **the installer has
+already done it** — there is no step here unless you supplied your own key,
+in which case [Step 1](#bringing-your-own-key) covers passing it.
 
-```bash
-cd /path/to/fogproject/bin
-./installfog.sh \
-  --secure-boot-key  /root/fog-secureboot/MOK.priv \
-  --secure-boot-cert /root/fog-secureboot/MOK.der
-```
+Every install and upgrade re-signs the kernels, and it has to: the FOS
+binaries are re-copied into place unsigned on every run, so the signature is
+removed and immediately re-applied in the same pass. That is what stops an
+upgrade silently leaving you with kernels your clients will not boot — which
+is the single most common way this setup breaks.
 
-`--secure-boot-cert` takes either `MOK.der` or `MOK.pem`; the installer
-converts as needed. Both paths are stored in `.fogsettings`, so **every later
-upgrade re-signs the kernels automatically** — you do not have to pass them
-again. Verify — and note this one must be the **PEM**, because `sbverify` will
+Verify — and note the certificate must be the **PEM**, because `sbverify` will
 not read DER:
 
 ```bash
-sbverify --cert /root/fog-secureboot/MOK.pem \
+sbverify --cert /opt/fog/secureboot/MOK.pem \
   /var/www/fog/service/ipxe/bzImage
 # Signature verification OK
 ```
+
+The signer shown should match the fingerprint on the **FOG Configuration →
+Secure Boot** page; that page's SHA-256 is the digest of the same certificate
+your clients enrol.
 
 The installer keeps a `.unsigned` copy of each kernel beside the signed one,
 because `sbsign` will not cleanly re-sign an already-signed image. Leave them
@@ -568,9 +684,12 @@ alone; they are refreshed on every download.
 >your web server can ask the helper to sign a kernel of their choosing. What
 >they cannot do is walk off with the key.
 
->[!warning] Install `sbsigntool` before you enable this
->If `sbsign`/`sbverify` are missing the installer warns and carries on
->unsigned rather than aborting the whole install. Read the installer output.
+>[!warning] If `sbsigntool` could not be installed
+>The installer adds `sbsigntool` (`sbsigntools` on RHEL/Arch) to its baseline
+>package set, but if neither name exists in your distribution's repositories
+>it skips the package, then warns and carries on **unsigned** rather than
+>aborting the whole install. Read the installer output — an unsigned kernel
+>only announces itself at a client, as a `Security Policy Violation`.
 
 ---
 
@@ -589,9 +708,10 @@ is not being accepted. In order of likelihood:
 | Symptom | Cause |
 | --- | --- |
 | `Security Policy Violation` | Key not enrolled on *this* machine, or you signed with a different key than you enrolled |
-| `Security Policy Violation`, but the key *is* listed by `mokutil --list-enrolled` | The key carries the Module-signing only OID — see [Step 1](#step-1-generate-a-signing-key) |
+| `Security Policy Violation`, but the key *is* listed by `mokutil --list-enrolled` | The key carries the Module-signing only OID — see [Step 1](#step-1-the-signing-key) |
 | Fails on every machine, including enrolled ones | Shim is not in the boot chain — see [the chain](#the-chain-you-are-building) |
-| Worked yesterday, fails today | FOG was updated *before* `--secure-boot-key` was configured, so the kernels were replaced unsigned. Re-run the installer with the key set and it will not happen again |
+| Worked yesterday, fails today | Something replaced the kernels without re-signing them. On FOG 1.6.0+ the installer always re-signs, so suspect anything that copies into `service/ipxe/` outside it — check with `sbverify` and re-run the installer |
+| Every machine stops working after a key change | The signing key was regenerated. Enrolment is per-key, so all clients need re-enrolling — see [Rotating or removing a key](#rotating-or-removing-a-key) |
 | Complains about format, not signature | Kernel lacks `CONFIG_EFI_STUB` |
 
 ---
@@ -607,6 +727,9 @@ image:
   --sign-key  /root/fog-secureboot/MOK.priv \
   --sign-cert /root/fog-secureboot/MOK.pem
 ```
+
+If you are using the key the installer generated, that is
+`--sign-key /opt/fog/secureboot/MOK.key --sign-cert /opt/fog/secureboot/MOK.pem`.
 
 `--sign-cert` must be the **PEM** here — `build.sh` hands it straight to
 `sbsign`, which cannot read DER.
@@ -626,10 +749,22 @@ mokutil --delete MOK.der
 
 then reboot and confirm in MokManager, exactly as for enrolment.
 
-**There is no remote revocation.** If `MOK.priv` is compromised, every machine
-that enrolled it needs a physical visit to remove it. That is the trade you
-accept in exchange for not needing anyone else's permission — treat the private
-key accordingly.
+To rotate the **installer-generated** key, delete the directory and re-run the
+installer — it only generates when no pair is present:
+
+```bash
+rm -rf /opt/fog/secureboot
+cd /path/to/fogproject/bin && ./installfog.sh
+```
+
+That produces a new key and re-signs the kernels with it. **Every already-
+enrolled client stops booting at that moment** and needs re-enrolling by hand,
+so treat it as a deliberate estate-wide operation, not a troubleshooting step.
+
+**There is no remote revocation.** If the private key is compromised, every
+machine that enrolled it needs a physical visit to remove it. That is the trade
+you accept in exchange for not needing anyone else's permission — treat the
+private key accordingly.
 
 ---
 
@@ -655,6 +790,23 @@ check goes against MokList rather than falling back to the firmware's `db`.
 That assumption is what the whole MOK approach rests on, and it holds.
 
 The signed binaries FOG stages are byte-for-byte the ones used in that run.
+
+**Route B has since been run end to end as well**, on a client whose firmware
+trusted nothing but the Microsoft certificates — no MOK enrolled at all, which
+is the state a machine is in before it has ever met your FOG server:
+
+```
+PXE boot → FOG menu → Enroll Secure Boot Key
+  └─ secureboot/mmx64.efi          ← chained through shim, not the firmware
+      └─ Enroll key from disk → MOK.der on a FAT stick → reboot
+          └─ PXE boot again → bzImage now accepted → FOS
+```
+
+The detail worth knowing is that MokManager is loaded *through shim*, not by
+the firmware. `mmx64.efi` carries iPXE's signature, not Microsoft's, so the
+firmware would refuse to launch it directly — but shim's verification protocol
+is what the load actually goes through, and shim trusts it. This is the same
+mechanism that lets a MOK-signed kernel boot, so if one works the other does.
 
 ---
 
