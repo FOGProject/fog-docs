@@ -445,14 +445,49 @@ Confirm afterwards:
 mokutil --list-enrolled | grep -A2 "FOG imaging"
 ```
 
-### Route B — no operating system at all
+### Route B — from the FOG boot menu, no operating system at all
 
 MokManager can read a certificate straight off a FAT filesystem, so a Linux
-session is not strictly required: put `MOK.der` on a FAT32 stick, PXE-boot the
-shim, and use **`Enroll key from disk`** from the MokManager menu.
+session is not required at all. Since FOG 1.6.0 the boot menu carries an
+**Enroll Secure Boot Key** entry that takes you straight there.
 
-Fewer moving parts, but `Enroll key from disk` is known to hang on some
-firmware, which is why Route A is the one to reach for first.
+>[!info] The entry appears on its own
+>It is added by the 1.6.0 schema upgrade and needs no configuration. It shows
+>for registered and unregistered hosts alike, because a machine that needs its
+>MOK enrolled has usually never been registered. If you do not see it, the
+>schema upgrade has not run — visit the web UI as an admin and complete the
+>upgrade prompt. Like any menu entry it can be edited or removed under
+>**FOG Configuration → PXE Boot Menu**.
+
+You still need `MOK.der` on local media. This is not a FOG limitation and there
+is no way around it: MokManager reads the certificate through the firmware's
+own filesystem support, and it has no network stack of its own.
+
+1. Put `MOK.der` — just that one file, from the enrolment kit — at the root of
+   a FAT-formatted USB stick. Any small stick will do; it does not need to be
+   bootable.
+2. Plug it into the client and PXE-boot as normal, with Secure Boot left on.
+3. Choose **Enroll Secure Boot Key**. FOG reminds you about the stick, then
+   hands off to MokManager.
+4. `Enroll key from disk`
+5. Pick the USB stick from the list of filesystems, then `MOK.der`.
+6. `Continue` → `Yes`. Check the CN is yours when it shows you the key.
+7. `Reboot`, with the stick removed.
+
+The client now trusts your key and will boot the signed FOS kernel on its next
+PXE boot. Unlike Route A there is no one-time password step, because you are
+already standing at the machine when the enrolment happens.
+
+>[!tip] Which route to reach for
+>Route B has far fewer moving parts and does not need a live image, so try it
+>first if you are standing at the machine anyway. Route A is the fallback:
+>`Enroll key from disk` is reported to hang on some firmware, and a stock live
+>USB sidesteps that entirely by using the distribution's own shim.
+
+>[!note] arm64 clients
+>The menu entry serves the matching MokManager automatically — `mmx64.efi` for
+>x86-64 and `arm64-efi/mmaa64.efi` for arm64 — based on the architecture the
+>client reported at boot. There is nothing to select.
 
 >[!danger] If MokManager does not appear
 >The machine booted something that is not shim. Check that Secure Boot is
@@ -700,6 +735,23 @@ check goes against MokList rather than falling back to the firmware's `db`.
 That assumption is what the whole MOK approach rests on, and it holds.
 
 The signed binaries FOG stages are byte-for-byte the ones used in that run.
+
+**Route B has since been run end to end as well**, on a client whose firmware
+trusted nothing but the Microsoft certificates — no MOK enrolled at all, which
+is the state a machine is in before it has ever met your FOG server:
+
+```
+PXE boot → FOG menu → Enroll Secure Boot Key
+  └─ secureboot/mmx64.efi          ← chained through shim, not the firmware
+      └─ Enroll key from disk → MOK.der on a FAT stick → reboot
+          └─ PXE boot again → bzImage now accepted → FOS
+```
+
+The detail worth knowing is that MokManager is loaded *through shim*, not by
+the firmware. `mmx64.efi` carries iPXE's signature, not Microsoft's, so the
+firmware would refuse to launch it directly — but shim's verification protocol
+is what the load actually goes through, and shim trusts it. This is the same
+mechanism that lets a MOK-signed kernel boot, so if one works the other does.
 
 ---
 
