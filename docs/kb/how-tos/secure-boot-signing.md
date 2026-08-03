@@ -189,12 +189,24 @@ Since FOG 1.6.0, every install stages them at `/tftpboot/secureboot/`:
 ```
 /tftpboot/secureboot/
 ├── snponly-shimx64.efi   Microsoft-signed shim (2011 + 2023), from ipxe/shim
-├── snponly.efi           upstream's signed iPXE
+├── snponly.efi           upstream's signed iPXE — firmware's own NIC driver
+├── ipxe-shimx64.efi      the same shim again, under the name that loads ipxe.efi
+├── ipxe.efi              upstream's signed iPXE — iPXE's own NIC drivers
 ├── mmx64.efi             MokManager, used during enrolment
 ├── autoexec.ipxe         FOG's boot script
 ├── MANIFEST              where each file came from, with checksums
 └── arm64-efi/            the same set for arm64
 ```
+
+Two complete chains, so you can switch between them with nothing but a DHCP
+change. `snponly` is the default and the right first choice; `ipxe` is the
+fallback for firmware whose own network stack does not work. [Which to
+use](#3a-serve-the-signed-chain) is covered in step 3a.
+
+>[!info] Version note
+>The `ipxe.efi` pair arrived with **fog-ipxe v2.0.0-fog.3**. An install pinned
+>to an earlier release stages only the `snponly` pair — check `MANIFEST`, which
+>lists exactly what your install has.
 
 Everything but `autoexec.ipxe` is upstream's, republished byte for byte through
 the [fog-ipxe](https://github.com/FOGProject/fog-ipxe) release the installer
@@ -464,11 +476,6 @@ both binaries already carry signatures the firmware and shim trust.
 >every other client. So a Secure Boot machine now behaves like the rest of your
 >estate rather than being a special case — the only difference is the shim in
 >front and the signature on the kernel.
->
->Upstream also publishes a signed all-drivers `ipxe.efi` in the same
->`<arch>-sb/` directory, paired with `ipxe-shim.efi`. Use it only if you have a
->NIC the firmware's own driver does not handle; it is the more invasive option,
->and it is the one that hangs on hardware where the takeover fails.
 
 Because upstream's `snponly.efi` has no boot script compiled in, it fetches one
 over TFTP, and **where it looks is not a single fixed path**. iPXE asks for the
@@ -524,6 +531,25 @@ lives under `secureboot/` and is reached only by machines you point there.
 >which reads its script from `autoexec.ipxe` instead. They are different
 >binaries doing the same job by different means, which is why the signed one
 >gets its own directory rather than replacing the other.
+
+#### If the chain loads but the network never comes up
+
+Shim runs, iPXE starts, and then there is no link or no DHCP. That points at
+the firmware's own UEFI network stack, not at anything you signed. Set the DHCP
+boot file to **`secureboot/ipxe-shimx64.efi`** instead — on arm64,
+`secureboot/arm64-efi/ipxe-shimaa64.efi`.
+
+That chain runs the all-drivers `ipxe.efi`, which replaces the firmware's NIC
+driver with iPXE's own rather than binding the firmware's UEFI network
+protocol. It recovers machines whose firmware SNP is broken or absent, and it
+is the more invasive option — on hardware where the takeover fails, it hangs
+instead. So try `snponly` first and move to this only on the symptom above.
+
+Everything about the rest of this step is unchanged: both binaries are staged
+for you, both are already signed, and `autoexec.ipxe` is hard-linked into
+`secureboot/` for either one. **Nothing needs renaming server-side** — the shim
+picks its second stage from its own filename, so the two chains sit side by
+side in one directory and DHCP alone decides which runs.
 
 ### 3b — The FOS kernels
 
