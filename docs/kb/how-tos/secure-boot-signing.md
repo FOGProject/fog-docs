@@ -78,7 +78,7 @@ should. A shim that loaded any binary calling itself iPXE would be worthless.
 
 FOG could not fix this by signing its own builds either. The shim only trusts
 iPXE's vendor certificate, so a FOG-signed binary would need every machine to
-enrol FOG's key first — the same physical visit this guide already asks for,
+enroll FOG's key first — the same physical visit this guide already asks for,
 while making one key compromise everyone's problem at once.
 
 The way out is to stop needing a custom binary. FOG's embedded boot script is
@@ -93,7 +93,7 @@ the machine, choose to trust. That is the route this guide takes.
 >[!info] Why enrolment cannot be automated
 >MOK enrolment requires a human at the physical console pressing keys. That
 >is not an oversight — it is the security property. If a remote process
->could enrol a signing key, Secure Boot would be decorative. Budget for one
+>could enroll a signing key, Secure Boot would be decorative. Budget for one
 >visit per machine, the same way you would for a firmware password.
 
 ---
@@ -162,7 +162,7 @@ it under exactly that name.
 >iPXE project. FOG's boot logic reaches it through `autoexec.ipxe` instead
 >of being compiled in.
 
->[!tip] The alternative: enrol into `db` instead
+>[!tip] The alternative: enroll into `db` instead
 >Many firmwares can be put into Custom or Setup mode, letting you add your
 >own certificate to `db` directly. That removes shim from the picture — sign
 >whatever you like and the firmware loads it. It is the only route if you
@@ -299,7 +299,7 @@ can produce something your machines will boot.
 >invalidates enrolment on **every machine that already trusted the old one**,
 >and nothing surfaces that until a client fails to boot. `--recreate-keys` and
 >`--recreate-CA` deliberately do not reach it. To rotate on purpose, delete
->`/opt/fog/secureboot/`, re-run the installer, and re-enrol every client — see
+>`/opt/fog/secureboot/`, re-run the installer, and re-enroll every client — see
 >[Rotating or removing a key](#rotating-or-removing-a-key).
 
 ### Bringing your own key
@@ -371,7 +371,7 @@ uses the same ten years, with the CN `FOG Project Secure Boot Signing`.
 >already runs an internal CA (AD Certificate Services or similar) and can
 >issue a code-signing certificate, `--secure-boot-key`/`--secure-boot-cert`
 >(or `--sign-key`/`--sign-cert` in `fos/build.sh`) accept that leaf
->certificate and its key exactly the same way — enrol that same leaf as the
+>certificate and its key exactly the same way — enroll that same leaf as the
 >MOK and nothing else changes. Standard code-signing templates do not carry
 >the Module-signing-only OID above, so this does not run into that trap.
 >
@@ -386,7 +386,7 @@ uses the same ten years, with the CN `FOG Project Secure Boot Signing`.
 >with is also the one to publish for MOK enrolment, so handing them a chain
 >would publish the leaf instead of the CA. Doing it today means signing and
 >publishing by hand: follow Step 3b with `--addcert` added to the `sbsign`
->call, and enrol the CA's certificate rather than a leaf.
+>call, and enroll the CA's certificate rather than a leaf.
 >
 >One thing this does **not** get you: a way to skip enrolment entirely by
 >piggybacking on infrastructure your fleet might already have. There is no
@@ -427,7 +427,7 @@ a key and a `sudoers` rule you deliberately declined.
 
 ---
 
-## Step 2 — Enrol the certificate on a client
+## Step 2 — enroll the certificate on a client
 
 Repeat per machine. **You do not need to turn Secure Boot off to do this**, and
 you should not: both routes below work with it left on.
@@ -524,7 +524,9 @@ afterward, with no difference in behaviour either way. MokManager's enrolment
 does not depend on the firmware currently enforcing anything, only on shim
 having loaded it. That means you can stage enrolment across a fleet before
 ever flipping Secure Boot on: run this while it is still off, and every
-machine already trusts your key by the time enforcement begins.
+machine already trusts your key by the time enforcement begins. 
+Or you can leave secure boot on for a new machine, enroll it then register it 
+and you're off without needing to touch secure boot settings.
 
 1. PXE-boot the client as normal — Secure Boot on or off, it makes no
    difference to this step.
@@ -875,7 +877,7 @@ on throughout.
 
 - **EFI only.** Secure Boot is a UEFI feature; BIOS/legacy PXE clients are
   unaffected and need none of this.
-- **One visit per machine, always.** There is no supported way to enrol a MOK
+- **One visit per machine, always.** There is no supported way to enroll a MOK
   without physical presence — that is the security property, not an oversight.
   The enrolment kit makes the visit short; it cannot remove it. Enrolling into
   the firmware's own `db` instead would avoid the visit, but `db` updates must
