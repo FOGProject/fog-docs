@@ -174,6 +174,18 @@ it under exactly that name.
 
 ## Before you start
 
+>[!tip] Planning to migrate this server soon? Do that first
+>If a server migration (moving FOG to new hardware, per
+>[[migrating-fog-server|Migrating FOG Server]]) is already on your roadmap,
+>do it **before** setting up Secure Boot here, not after. Migrating an
+>already-enrolled Secure Boot setup is a viable, well-understood path — copy
+>the signing key directory forward, per
+>[[migrating-fog-server#migrating-the-secure-boot-signing-key|that guide's
+>Secure Boot section]] — but it is still one more thing to get right, and
+>getting it wrong means every already-enrolled client needs re-enrolling a
+>second time for no reason. Enrolling once, on the server you intend to keep,
+>is strictly less work than enrolling now and potentially again later.
+
 On the FOG server, nothing. `sbsigntool` (`sbsigntools` on RHEL/Rocky/Alma/
 Fedora and Arch) is part of the installer's baseline package set since FOG
 1.6.0, alongside `openssl`. If your distribution ships neither name the
@@ -797,7 +809,56 @@ neither set the build is byte-for-byte what it always was.
 
 ## Rotating or removing a key
 
-To withdraw a key from a machine:
+### Switching to a key you supply
+
+Nothing needs deleting for this one — an admin-supplied key/cert always
+takes over immediately, whether or not an installer-generated pair already
+exists at `/opt/fog/secureboot/`:
+
+```bash
+cd /path/to/fogproject/bin
+./installfog.sh \
+  --secure-boot-key  /path/to/your/MOK.priv \
+  --secure-boot-cert /path/to/your/MOK.der
+```
+
+That one run re-signs the FOS kernels with your key and republishes the
+enrolment kit — `MOK.der` and the fingerprint on the **Secure Boot** page —
+from your certificate, in the same pass. The paths are recorded in
+`.fogsettings`, so every later upgrade keeps using them without the flags
+being passed again; see [Bringing your own key](#bringing-your-own-key).
+
+>[!warning] Keep the files where you pointed the installer
+>The installer never copies your key or certificate in anywhere — it only
+>remembers the paths you gave it. Moving or deleting those files afterward
+>breaks signing on the next install or upgrade run, the same way losing any
+>other private key would.
+
+### Rotating the installer-generated key
+
+If you are not switching to your own key and just want a fresh
+installer-generated pair, delete the directory first — the installer only
+generates a new one when none is present:
+
+```bash
+rm -rf /opt/fog/secureboot
+cd /path/to/fogproject/bin && ./installfog.sh
+```
+
+That produces a new key and re-signs the kernels with it.
+
+>[!danger] Every already-enrolled client stops booting at that moment
+>Enrolment is per-key. Either path above — switching to your own key, or
+>rotating to a fresh generated one — invalidates every client's existing
+>trust at once, and nothing surfaces that until a client fails to boot.
+>Treat it as a deliberate, planned, estate-wide operation with every
+>machine's new fingerprint re-enrolled in the same window, not a routine
+>step or something to do mid-troubleshooting.
+
+### Withdrawing a key from one machine
+
+To remove trust for a key from a single machine, without touching the server
+at all:
 
 ```bash
 mokutil --delete MOK.der
@@ -805,22 +866,16 @@ mokutil --delete MOK.der
 
 then reboot and confirm in MokManager, exactly as for enrolment.
 
-To rotate the **installer-generated** key, delete the directory and re-run the
-installer — it only generates when no pair is present:
+### If the private key is compromised
 
-```bash
-rm -rf /opt/fog/secureboot
-cd /path/to/fogproject/bin && ./installfog.sh
-```
-
-That produces a new key and re-signs the kernels with it. **Every already-
-enrolled client stops booting at that moment** and needs re-enrolling by hand,
-so treat it as a deliberate estate-wide operation, not a troubleshooting step.
-
-**There is no remote revocation.** If the private key is compromised, every
-machine that enrolled it needs a physical visit to remove it. That is the trade
-you accept in exchange for not needing anyone else's permission — treat the
-private key accordingly.
+**There is no remote revocation.** Whichever remediation you choose —
+rotating to a fresh installer-generated key, or switching to a new key of
+your own, both above — every machine that enrolled the compromised key still
+needs a physical visit to remove it and enrol the replacement's fingerprint,
+exactly like a planned rotation, just unplanned. That per-machine visit is
+the trade you accept for not needing anyone else's permission to sign your
+own kernels — treat the private key accordingly, and back it up somewhere
+you would put a root password; see [Step 1](#step-1-the-signing-key).
 
 ---
 

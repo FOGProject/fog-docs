@@ -38,6 +38,8 @@ We'll cover:
 -   Migrating images and the database from the old server to the new one.
 -   Migrating SSL/CA trust so existing FOG clients and PXE-embedded images
     keep working.
+-   Migrating the Secure Boot signing key, if you sign FOS kernels for UEFI
+    Secure Boot, so already-enrolled clients don't need re-enrolling.
 -   Automating all of the above with a sample script, if you'd rather not
     run it step by step.
 -   Reconciling IP-dependent settings, if the new server isn't reusing the
@@ -203,6 +205,71 @@ not yet in stable/dev-branch releases; see
 [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]] for
 details and the caveats of switching an existing server's CA.
 
+# Migrating the Secure Boot signing key
+
+Skip this entirely if you are not signing FOS kernels for UEFI Secure Boot —
+check whether the old server's **FOG Configuration → Secure Boot** page shows
+a certificate fingerprint, or whether `/opt/fog/secureboot/` exists there.
+
+If it is configured, this key is **not** covered by the SSL/CA copy above —
+`/opt/fog/secureboot/` is a sibling of `/opt/fog/snapins`, not inside it, and
+needs its own step.
+
+>[!danger] Skipping this silently re-enrols your whole fleet
+>The installer only generates a Secure Boot signing key when none is present.
+>If you do not carry the old key forward, a fresh install on the new server
+>generates a **new** one automatically, signs the FOS kernels with it, and
+>nothing tells you this happened until a Secure Boot client fails to boot.
+>Every already-enrolled client then needs a physical visit to re-enrol the
+>new fingerprint — exactly the repeated work this section exists to avoid.
+>See [[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a
+>key]] for what that involves if it does happen.
+
+**Using the installer-generated key (the default):** copy the whole
+directory to the **same path** on the new server, before you (re-)run the
+installer there — the same trick as the SSL/CA directory above, and for the
+same reason: the installer only generates a key when
+`/opt/fog/secureboot/MOK.key` and `MOK.pem` are not already present.
+
+```bash
+# on the OLD server
+cp -R /opt/fog/secureboot /mnt/oldfog/   # or scp directly to the new server
+```
+
+```bash
+# on the NEW server, before running the installer
+mkdir -p /opt/fog
+cp -R /mnt/oldfog/secureboot /opt/fog/secureboot
+chown -R root:root /opt/fog/secureboot
+chmod 0700 /opt/fog/secureboot
+chmod 0600 /opt/fog/secureboot/MOK.key
+chmod 0644 /opt/fog/secureboot/MOK.pem
+```
+
+A normal installer run then finds the pair already there, signs the FOS
+kernels with it, and republishes the same certificate — and the same
+fingerprint — in the enrolment kit. Every existing client keeps trusting the
+new server exactly as it trusted the old one; nothing needs re-enrolling.
+
+**Using a key of your own** (installed originally with
+`--secure-boot-key`/`--secure-boot-cert`): make those same key/cert files
+available to the new server — copied to the same path, or anywhere else —
+and pass the same flags (or equivalent paths) when installing it:
+
+```bash
+cd /path/to/fogproject/bin
+./installfog.sh \
+  --secure-boot-key  /path/to/your/MOK.priv \
+  --secure-boot-cert /path/to/your/MOK.der
+```
+
+See [[secure-boot-signing#switching-to-a-key-you-supply|Switching to a key
+you supply]] for what that run does.
+
+After either path, confirm the fingerprint on the new server's **Secure
+Boot** page matches what the old server showed, before decommissioning it —
+that comparison is the whole check that the key really carried over.
+
 # Migrating other snapin files
 
 The SSL directory above lives under `/opt/fog/snapins`, alongside any snapin
@@ -268,6 +335,7 @@ FOG_REPO_DIR="/root/fogproject"
 FOG_BRANCH="stable"   # match or exceed the old server's branch/version — never go older
 IMAGES_DIR="/images"
 SNAPINS_DIR="/opt/fog/snapins"
+SECUREBOOT_DIR="/opt/fog/secureboot"   # only present if Secure Boot signing is configured
 DB_DUMP="/root/fog_migrate_$(date +%Y%m%d_%H%M%S).sql"
 
 ssh_old() { ssh -o BatchMode=yes "root@${OLD_HOST}" "$@"; }
@@ -290,6 +358,19 @@ echo "==> Copying SSL/CA and snapins from ${OLD_HOST}:${SNAPINS_DIR}"
 mkdir -p "${SNAPINS_DIR}"
 rsync -az -e ssh "root@${OLD_HOST}:${SNAPINS_DIR}/" "${SNAPINS_DIR}/"
 
+if ssh_old "[[ -d '${SECUREBOOT_DIR}' ]]"; then
+    echo "==> Secure Boot signing key found on ${OLD_HOST}, copying it forward"
+    echo "    so already-enrolled clients don't need re-enrolling"
+    mkdir -p "${SECUREBOOT_DIR}"
+    rsync -az -e ssh "root@${OLD_HOST}:${SECUREBOOT_DIR}/" "${SECUREBOOT_DIR}/"
+    chown -R root:root "${SECUREBOOT_DIR}"
+    chmod 0700 "${SECUREBOOT_DIR}"
+    [[ -f "${SECUREBOOT_DIR}/MOK.key" ]] && chmod 0600 "${SECUREBOOT_DIR}/MOK.key"
+    [[ -f "${SECUREBOOT_DIR}/MOK.pem" ]] && chmod 0644 "${SECUREBOOT_DIR}/MOK.pem"
+else
+    echo "==> No Secure Boot signing key on ${OLD_HOST}, nothing to copy"
+fi
+
 echo "==> Fetching FOG source (${FOG_BRANCH})"
 if [[ -d "${FOG_REPO_DIR}" ]]; then
     git -C "${FOG_REPO_DIR}" fetch --all
@@ -299,7 +380,8 @@ else
     git clone --branch "${FOG_BRANCH}" https://github.com/FOGProject/fogproject.git "${FOG_REPO_DIR}"
 fi
 
-echo "==> Installing FOG (the ssl/ dir copied above means the existing CA is kept)"
+echo "==> Installing FOG (the ssl/ and secureboot/ dirs copied above mean the"
+echo "    existing CA and Secure Boot key, if any, are both kept)"
 ( cd "${FOG_REPO_DIR}/bin" && ./installfog.sh -Y )
 
 echo "==> Dumping the fog database on ${OLD_HOST} (enter ITS MySQL root password if prompted)"
@@ -316,6 +398,9 @@ Remaining manual steps:
   - If this server didn't inherit the old one's IP/hostname, work through
     "Reconciling IP-dependent settings" below.
   - Update DHCP/DNS to point at this server — see "If FOG isn't doing DHCP".
+  - If a Secure Boot key was copied above, confirm the fingerprint on this
+    server's FOG Configuration -> Secure Boot page matches what the old
+    server showed.
   - Test a PXE boot and a live capture/deploy before retiring ${OLD_HOST}.
 EOF
 ```
@@ -388,6 +473,7 @@ Once images, the database, and SSL trust are migrated:
 -   [[storage-node|Storage Node Management]]
 -   [[snapins|Snapin Management]]
 -   [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
+-   [[secure-boot-signing|Secure Boot: signing FOS with your own key]]
 -   [[fog-security|FOG Security]]
 -   [[troubleshoot-ftp|Troubleshooting FTP]]
 -   [[dhcp-server-settings|DHCP Server Settings]]
