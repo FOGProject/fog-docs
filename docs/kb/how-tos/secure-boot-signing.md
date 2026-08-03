@@ -366,6 +366,41 @@ uses the same ten years, with the CN `FOG Project Secure Boot Signing`.
 >when someone is trying to work out what that key is for. `FOG imaging -
 >fog.example.edu` beats `MOK`.
 
+>[!tip] Using an internal CA instead of a fresh self-signed key
+>Nothing above requires the key to be self-signed. If your organisation
+>already runs an internal CA (AD Certificate Services or similar) and can
+>issue a code-signing certificate, `--secure-boot-key`/`--secure-boot-cert`
+>(or `--sign-key`/`--sign-cert` in `fos/build.sh`) accept that leaf
+>certificate and its key exactly the same way — enrol that same leaf as the
+>MOK and nothing else changes. Standard code-signing templates do not carry
+>the Module-signing-only OID above, so this does not run into that trap.
+>
+>A CA can do more than substitute for the leaf, if you want it to. shim does
+>not just exact-match the enrolled certificate — it validates the embedded
+>PKCS#7 signature's certificate chain against whatever is enrolled
+>(`sbsign --cert <leaf> --addcert <intermediate>` is what embeds that chain).
+>That means enrolling your CA's root or intermediate **once**, then signing
+>with any leaf issued under it afterward: reissue or rotate the leaf and no
+>machine needs to be touched again. FOG's automation does not do this today —
+>`_resignKernels` and `build.sh --sign-cert` assume the certificate you sign
+>with is also the one to publish for MOK enrolment, so handing them a chain
+>would publish the leaf instead of the CA. Doing it today means signing and
+>publishing by hand: follow Step 3b with `--addcert` added to the `sbsign`
+>call, and enrol the CA's certificate rather than a leaf.
+>
+>One thing this does **not** get you: a way to skip enrolment entirely by
+>piggybacking on infrastructure your fleet might already have. There is no
+>generic Intune/GPO mechanism to push an arbitrary org CA into UEFI `db` —
+>what exists there is only Microsoft's own certificate rollover. If your CA
+>is not already enrolled fleet-wide by some other means (vendor BIOS tooling,
+>or manual Setup Mode), the one-time-per-machine visit still applies — it
+>just becomes permanent once done.
+>
+>Nor does any of this extend to HTTPS. Kernel/shim trust and iPXE's TLS root
+>store are two unrelated mechanisms — enrolling a CA here changes nothing
+>about which HTTPS servers a Secure Boot client will fetch from. See
+>Known limits below.
+
 >[!warning] Generate a fresh key — do not reuse the MOK you already have
 >If this machine has ever built a DKMS module, it already has a MOK, and it is
 >tempting to reuse it. It will not work.
@@ -459,6 +494,25 @@ session is not required at all. Since FOG 1.6.0 the boot menu carries an
 >upgrade prompt. Like any menu entry it can be edited or removed under
 >**FOG Configuration → PXE Boot Menu**.
 
+>[!warning] Why the menu item exists, rather than "just PXE-boot the shim"
+>**A plain PXE boot through the shim never shows MokManager.** Shim only hands
+>control to MokManager when a *pending* MOK enrolment request already exists —
+>normally staged by `mokutil --import`, which is what Route A does. With
+>nothing staged, the shim boots straight through to `snponly.efi` and the blue
+>MokManager screen never appears, however long you wait.
+>
+>The menu item chains directly to `secureboot/mmx64.efi`, deliberately
+>bypassing that gate, which is what makes `Enroll key from disk` reachable
+>with nothing pre-staged.
+>
+>Nor can you point DHCP straight at `mmx64.efi` to get the same effect. It is
+>signed by iPXE, not Microsoft, so the firmware — which checks the first binary
+>against `db` alone, as described [above](#the-chain-you-are-building) — will
+>refuse to launch it. It boots here only because iPXE loads it *through shim's
+>verification protocol*, and shim trusts iPXE's certificate. On FOG versions
+>predating the menu item there is no PXE route to MokManager at all; use
+>Route A.
+
 You still need `MOK.der` on local media. This is not a FOG limitation and there
 is no way around it: MokManager reads the certificate through the firmware's
 own filesystem support, and it has no network stack of its own.
@@ -490,10 +544,11 @@ already standing at the machine when the enrolment happens.
 >client reported at boot. There is nothing to select.
 
 >[!danger] If MokManager does not appear
->The machine booted something that is not shim. Check that Secure Boot is
->actually enabled (`mokutil --sb-state`) and that the boot entry you are using
->goes through a shim. A machine that boots straight past MokManager has not
->enrolled anything.
+>Confirm you picked **`Enroll Secure Boot Key`** and not an ordinary boot
+>entry. Booting through the shim normally will not show MokManager: that
+>needs a *pending* MOK request staged first, and this route does not stage
+>one. Also check that Secure Boot is actually enabled
+>(`mokutil --sb-state`).
 
 ---
 
@@ -771,11 +826,41 @@ mechanism that lets a MOK-signed kernel boot, so if one works the other does.
   any distribution.
 - Signing covers *booting*. It says nothing about whether the image FOS then
   writes to disk is trustworthy.
-- **HTTPS is not supported under Secure Boot.** FOG's HTTPS mode works because
-  the server's CA is compiled into FOG's own iPXE binaries. Upstream's signed
-  `snponly.efi` has no such CA, and adding one would make it a custom binary
-  again — which the shim would then reject. Secure Boot clients need FOG in
-  HTTP mode, or a certificate chain the stock binary already trusts.
+- **HTTPS still does not work for FOG's typical setup, but there is an
+  unverified exception worth testing.** FOG's usual HTTPS mode compiles the
+  server's own CA into its iPXE binaries — normally a self-signed one, since
+  most FOG deployments never expose imaging infrastructure with a
+  publicly-trusted certificate. Upstream's signed `snponly.efi` has no such CA
+  baked in, and adding one would make it a custom binary again, which the shim
+  would reject. That part is unchanged.
+
+    What is worth knowing: the signed binary is not trust-empty. It ships with
+    a single pinned "iPXE root CA" fingerprint (`src/crypto/rootcert.c`) that
+    is used to **cross-sign the standard public CA list at connect time** —
+    when it meets a server certificate chained to a public root it does not
+    have locally (e.g. Let's Encrypt's ISRG Root X1), it fetches a
+    cross-signature for that root from `http://ca.ipxe.org/auto/<hash>.der`
+    and validates through it. This is documented behaviour, not speculation —
+    see [ipxe/ipxe#606](https://github.com/ipxe/ipxe/issues/606) for a log
+    excerpt of it happening against a real Let's Encrypt certificate.
+
+    So a FOG server with a **publicly-trusted** certificate — not FOG's usual
+    self-signed one — might validate over HTTPS with the stock signed binary,
+    provided: the imaging network has outbound HTTP reachability to
+    `ca.ipxe.org` at boot time (many isolated PXE VLANs deliberately do not),
+    and the certificate uses an algorithm the pinned release supports (RSA is
+    fine; ECDSA support timing relative to this specific v2.0.0 release is
+    unverified). **This has not been tested end to end** against FOG's actual
+    signed binaries or on real hardware — treat it as something to try, not a
+    supported configuration, and report results on
+    [fogproject#960](https://github.com/FOGProject/fogproject/issues/960)
+    alongside the rest of the physical-hardware verification that issue
+    already tracks.
+
+    Either way, enrolling your MOK for kernel signing does nothing for this:
+    Secure Boot/MOK trust (which binaries may execute) and iPXE's TLS root
+    store (which HTTPS servers are trusted) are two entirely separate
+    mechanisms.
 - **A Secure Boot USB stick does not work the same way.** The filename trick
   the shim uses to find its second stage — `automatic_next_path()` — is called
   only from shim's network and HTTP boot paths. There is no local-filesystem
