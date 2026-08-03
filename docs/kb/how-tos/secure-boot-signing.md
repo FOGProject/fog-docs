@@ -936,6 +936,39 @@ on throughout.
     `ipxeboot.tar.gz` for x86_64 and arm64, and switching to them removes that
     problem entirely.
 
+>[!warning] Turning Secure Boot on can break existing Windows Hello for Business sign-in
+>If a machine already has users signed in with Windows Hello for Business
+>(PIN or biometric) from before Secure Boot was enabled, those sign-in
+>methods typically stop working once it is turned on -- WHfB's local key
+>container is sealed against the machine's boot security state, and enabling
+>Secure Boot changes it. This is a Windows Hello/Entra ID consequence of
+>changing Secure Boot state, not a FOG or MOK issue; it happens the same way
+>no matter what enables Secure Boot.
+>
+>To fix it per affected user:
+>
+>1. In the Entra admin center: **Users → *(the user)* → Authentication
+>   methods → remove Windows Hello for Business.**
+>2. Log the user in with their password.
+>3. As that user, run:
+>   ```
+>   certutil.exe -DeleteHelloContainer
+>   ```
+>4. If Group Policy enables/enforces Windows Hello for Business, also run:
+>   ```
+>   gpupdate /force
+>   ```
+>5. Restart the computer. The user signs in with their password and can then
+>   re-create their PIN and biometric sign-in.
+
+>[!note] Clearing the TPM does not touch enrolled keys
+>Separately from the above: clearing a machine's TPM removes what is sealed
+>*to* the TPM (BitLocker keys, the Windows Hello for Business container,
+>etc.), but MOK enrolment is not TPM-backed at all — MokList lives in
+>ordinary UEFI (NVRAM) variables that shim reads directly. Clearing the TPM
+>neither enrols nor un-enrols a MOK, and does not interact with anything else
+>in this guide.
+
 ## See also
 
 - [BIOS and UEFI co-existence](bios-and-uefi-co-existence.md)
