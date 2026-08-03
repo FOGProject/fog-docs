@@ -78,7 +78,7 @@ should. A shim that loaded any binary calling itself iPXE would be worthless.
 
 FOG could not fix this by signing its own builds either. The shim only trusts
 iPXE's vendor certificate, so a FOG-signed binary would need every machine to
-enrol FOG's key first — the same physical visit this guide already asks for,
+enroll FOG's key first — the same physical visit this guide already asks for,
 while making one key compromise everyone's problem at once.
 
 The way out is to stop needing a custom binary. FOG's embedded boot script is
@@ -93,7 +93,7 @@ the machine, choose to trust. That is the route this guide takes.
 >[!info] Why enrolment cannot be automated
 >MOK enrolment requires a human at the physical console pressing keys. That
 >is not an oversight — it is the security property. If a remote process
->could enrol a signing key, Secure Boot would be decorative. Budget for one
+>could enroll a signing key, Secure Boot would be decorative. Budget for one
 >visit per machine, the same way you would for a firmware password.
 
 ---
@@ -162,7 +162,7 @@ it under exactly that name.
 >iPXE project. FOG's boot logic reaches it through `autoexec.ipxe` instead
 >of being compiled in.
 
->[!tip] The alternative: enrol into `db` instead
+>[!tip] The alternative: enroll into `db` instead
 >Many firmwares can be put into Custom or Setup mode, letting you add your
 >own certificate to `db` directly. That removes shim from the picture — sign
 >whatever you like and the firmware loads it. It is the only route if you
@@ -173,6 +173,18 @@ it under exactly that name.
 ---
 
 ## Before you start
+
+>[!tip] Planning to migrate this server soon? Do that first
+>If a server migration (moving FOG to new hardware, per
+>[[migrating-fog-server|Migrating FOG Server]]) is already on your roadmap,
+>do it **before** setting up Secure Boot here, not after. Migrating an
+>already-enrolled Secure Boot setup is a viable, well-understood path — copy
+>the signing key directory forward, per
+>[[migrating-fog-server#migrating-the-secure-boot-signing-key|that guide's
+>Secure Boot section]] — but it is still one more thing to get right, and
+>getting it wrong means every already-enrolled client needs re-enrolling a
+>second time for no reason. Enrolling once, on the server you intend to keep,
+>is strictly less work than enrolling now and potentially again later.
 
 On the FOG server, nothing. `sbsigntool` (`sbsigntools` on RHEL/Rocky/Alma/
 Fedora and Arch) is part of the installer's baseline package set since FOG
@@ -299,7 +311,7 @@ can produce something your machines will boot.
 >invalidates enrolment on **every machine that already trusted the old one**,
 >and nothing surfaces that until a client fails to boot. `--recreate-keys` and
 >`--recreate-CA` deliberately do not reach it. To rotate on purpose, delete
->`/opt/fog/secureboot/`, re-run the installer, and re-enrol every client — see
+>`/opt/fog/secureboot/`, re-run the installer, and re-enroll every client — see
 >[Rotating or removing a key](#rotating-or-removing-a-key).
 
 ### Bringing your own key
@@ -371,7 +383,7 @@ uses the same ten years, with the CN `FOG Project Secure Boot Signing`.
 >already runs an internal CA (AD Certificate Services or similar) and can
 >issue a code-signing certificate, `--secure-boot-key`/`--secure-boot-cert`
 >(or `--sign-key`/`--sign-cert` in `fos/build.sh`) accept that leaf
->certificate and its key exactly the same way — enrol that same leaf as the
+>certificate and its key exactly the same way — enroll that same leaf as the
 >MOK and nothing else changes. Standard code-signing templates do not carry
 >the Module-signing-only OID above, so this does not run into that trap.
 >
@@ -386,7 +398,7 @@ uses the same ten years, with the CN `FOG Project Secure Boot Signing`.
 >with is also the one to publish for MOK enrolment, so handing them a chain
 >would publish the leaf instead of the CA. Doing it today means signing and
 >publishing by hand: follow Step 3b with `--addcert` added to the `sbsign`
->call, and enrol the CA's certificate rather than a leaf.
+>call, and enroll the CA's certificate rather than a leaf.
 >
 >One thing this does **not** get you: a way to skip enrolment entirely by
 >piggybacking on infrastructure your fleet might already have. There is no
@@ -427,14 +439,14 @@ a key and a `sudoers` rule you deliberately declined.
 
 ---
 
-## Step 2 — Enrol the certificate on a client
+## Step 2 — enroll the certificate on a client
 
 Repeat per machine. **You do not need to turn Secure Boot off to do this**, and
 you should not: both routes below work with it left on.
 
 The FOG web UI has a **FOG Configuration → Secure Boot** page. It shows your
-certificate's SHA-256 fingerprint, offers a small **enrolment kit**, and
-repeats the per-client steps below as a checklist:
+certificate's SHA-256 fingerprint, offers a small **enrolment kit**, and links
+back to this guide for the full per-client steps below:
 
 | File | What it is |
 | --- | --- |
@@ -480,11 +492,16 @@ Confirm afterwards:
 mokutil --list-enrolled | grep -A2 "FOG imaging"
 ```
 
-### Route B — from the FOG boot menu, no operating system at all
+### Route B — from the FOG boot menu, no operating system and no USB stick
 
 MokManager can read a certificate straight off a FAT filesystem, so a Linux
 session is not required at all. Since FOG 1.6.0 the boot menu carries an
-**Enroll Secure Boot Key** entry that takes you straight there.
+**Enroll Secure Boot Key** entry that takes you straight there — and the boot
+menu now fetches `MOK.der` into iPXE's memory before chaining to MokManager,
+the same way a normal netboot already puts the FOS kernel and initrd there.
+MokManager's own file browser walks that same in-memory image list, so the
+certificate shows up in `Enroll key from disk` without you carrying anything
+to the machine. **Confirmed on physical hardware.**
 
 >[!info] The entry appears on its own
 >It is added by the 1.6.0 schema upgrade and needs no configuration. It shows
@@ -513,30 +530,78 @@ session is not required at all. Since FOG 1.6.0 the boot menu carries an
 >predating the menu item there is no PXE route to MokManager at all; use
 >Route A.
 
-You still need `MOK.der` on local media. This is not a FOG limitation and there
-is no way around it: MokManager reads the certificate through the firmware's
-own filesystem support, and it has no network stack of its own.
+You do **not** need Secure Boot currently enabled to do this, either — tested
+on physical hardware with Secure Boot off, enrolled, then switched back on
+afterward, with no difference in behaviour either way. MokManager's enrolment
+does not depend on the firmware currently enforcing anything, only on shim
+having loaded it. That means you can stage enrolment across a fleet before
+ever flipping Secure Boot on: run this while it is still off, and every
+machine already trusts your key by the time enforcement begins. 
+Or you can leave secure boot on for a new machine, enroll it then register it 
+and you're off without needing to touch secure boot settings.
 
-1. Put `MOK.der` — just that one file, from the enrolment kit — at the root of
-   a FAT-formatted USB stick. Any small stick will do; it does not need to be
-   bootable.
-2. Plug it into the client and PXE-boot as normal, with Secure Boot left on.
-3. Choose **Enroll Secure Boot Key**. FOG reminds you about the stick, then
-   hands off to MokManager.
-4. `Enroll key from disk`
-5. Pick the USB stick from the list of filesystems, then `MOK.der`.
-6. `Continue` → `Yes`. Check the CN is yours when it shows you the key.
-7. `Reboot`, with the stick removed.
+1. PXE-boot the client as normal — Secure Boot on or off, it makes no
+   difference to this step.
+2. Choose **Enroll Secure Boot Key** — from the boot menu, or from a task
+   scheduled against the host or a group from **Task Scheduling**, which
+   chains into the exact same flow without you having to find the menu item
+   on each machine (see the tip below). FOG fetches `MOK.der` into memory,
+   then hands off to MokManager.
+3. `Enroll key from disk`.
+4. Pick `MOK.der` from the list — it is already there.
+   >[!warning] If it is not listed
+   >Not every firmware/MokManager combination is confirmed to expose a plain
+   >`imgfetch`ed file the same way it exposes a kernel/initrd. Fall back to a
+   >FAT-formatted USB stick with `MOK.der` on it (from the enrolment kit) —
+   >it will appear in the same browser, the same way Route A's stick does.
+5. `Continue` → `Yes`. Check the CN is yours, **and compare the fingerprint
+   MokManager shows against the FOG Secure Boot page before confirming** —
+   automatic delivery removes the "you personally carried this file"
+   assurance Route A's USB stick still gives you, so this comparison matters
+   more here, not less.
+6. `Reboot`. No stick to remove.
 
-The client now trusts your key and will boot the signed FOS kernel on its next
-PXE boot. Unlike Route A there is no one-time password step, because you are
-already standing at the machine when the enrolment happens.
+>[!warning] MokManager times out on its own — twice
+>Neither timer is something FOG controls or can change:
+>
+>- If you do not press a key within roughly **10 seconds** of the screen
+>  appearing, MokManager gives up waiting and continues booting normally —
+>  silently skipping enrolment. Be at the console before you select the
+>  menu item or schedule the task, not after.
+>- Once you are inside the tool, an **idle timeout of a couple of minutes**
+>  reboots the machine if you stop responding partway through. Finish the
+>  walkthrough once you start it; do not step away mid-enrolment.
+
+>[!note] Why the fingerprint isn't checked automatically
+>iPXE could in principle hash the file it just fetched and compare it
+>against a value the same server also serves — but that value would travel
+>over the exact same unauthenticated network path as the file itself, so
+>anyone able to substitute one can substitute the other just as easily. The
+>fingerprint on the FOG Secure Boot page is the actual check: you read it on
+>a separate, already-trusted screen before confirming in MokManager. That
+>manual comparison is the security boundary here, not something iPXE can do
+>for you.
+
+The client now trusts your key and will boot the signed FOS kernel on its
+next PXE boot. Unlike Route A there is no one-time password step, because you
+are already standing at the machine when the enrolment happens.
+
+>[!tip] Push it as a task instead of hunting for the menu item
+>"Enroll Secure Boot Key" is also a task type, schedulable from **Task
+>Scheduling** against a single host or a whole group, the same way you would
+>schedule a Deploy or a Capture. A host with this task pending skips the
+>interactive boot menu entirely and chains straight into the flow above on
+>its next PXE boot — useful for pushing enrolment across many machines
+>without walking a tech through which menu item to pick on each one. The
+>final `Enroll key from disk` → `Yes` step still has to happen at the
+>console; nothing removes that.
 
 >[!tip] Which route to reach for
->Route B has far fewer moving parts and does not need a live image, so try it
->first if you are standing at the machine anyway. Route A is the fallback:
->`Enroll key from disk` is reported to hang on some firmware, and a stock live
->USB sidesteps that entirely by using the distribution's own shim.
+>Route B has far fewer moving parts and, since the network-delivery change
+>above, needs neither a live image nor a USB stick — try it first if you are
+>standing at the machine anyway. Route A is the fallback: `Enroll key from
+>disk` is reported to hang on some firmware, and a stock live USB sidesteps
+>that entirely by using the distribution's own shim.
 
 >[!note] arm64 clients
 >The menu entry serves the matching MokManager automatically — `mmx64.efi` for
@@ -547,8 +612,11 @@ already standing at the machine when the enrolment happens.
 >Confirm you picked **`Enroll Secure Boot Key`** and not an ordinary boot
 >entry. Booting through the shim normally will not show MokManager: that
 >needs a *pending* MOK request staged first, and this route does not stage
->one. Also check that Secure Boot is actually enabled
->(`mokutil --sb-state`).
+>one. Secure Boot being on or off is not the cause either way — this route
+>chains to MokManager directly and has been confirmed working with it in
+>both states. If the screen appeared and was gone by the time you looked,
+>you likely missed MokManager's own ~10-second startup timeout — see the
+>warning above — rather than anything being misconfigured.
 
 ---
 
@@ -741,7 +809,56 @@ neither set the build is byte-for-byte what it always was.
 
 ## Rotating or removing a key
 
-To withdraw a key from a machine:
+### Switching to a key you supply
+
+Nothing needs deleting for this one — an admin-supplied key/cert always
+takes over immediately, whether or not an installer-generated pair already
+exists at `/opt/fog/secureboot/`:
+
+```bash
+cd /path/to/fogproject/bin
+./installfog.sh \
+  --secure-boot-key  /path/to/your/MOK.priv \
+  --secure-boot-cert /path/to/your/MOK.der
+```
+
+That one run re-signs the FOS kernels with your key and republishes the
+enrolment kit — `MOK.der` and the fingerprint on the **Secure Boot** page —
+from your certificate, in the same pass. The paths are recorded in
+`.fogsettings`, so every later upgrade keeps using them without the flags
+being passed again; see [Bringing your own key](#bringing-your-own-key).
+
+>[!warning] Keep the files where you pointed the installer
+>The installer never copies your key or certificate in anywhere — it only
+>remembers the paths you gave it. Moving or deleting those files afterward
+>breaks signing on the next install or upgrade run, the same way losing any
+>other private key would.
+
+### Rotating the installer-generated key
+
+If you are not switching to your own key and just want a fresh
+installer-generated pair, delete the directory first — the installer only
+generates a new one when none is present:
+
+```bash
+rm -rf /opt/fog/secureboot
+cd /path/to/fogproject/bin && ./installfog.sh
+```
+
+That produces a new key and re-signs the kernels with it.
+
+>[!danger] Every already-enrolled client stops booting at that moment
+>Enrolment is per-key. Either path above — switching to your own key, or
+>rotating to a fresh generated one — invalidates every client's existing
+>trust at once, and nothing surfaces that until a client fails to boot.
+>Treat it as a deliberate, planned, estate-wide operation with every
+>machine's new fingerprint re-enrolled in the same window, not a routine
+>step or something to do mid-troubleshooting.
+
+### Withdrawing a key from one machine
+
+To remove trust for a key from a single machine, without touching the server
+at all:
 
 ```bash
 mokutil --delete MOK.der
@@ -749,29 +866,23 @@ mokutil --delete MOK.der
 
 then reboot and confirm in MokManager, exactly as for enrolment.
 
-To rotate the **installer-generated** key, delete the directory and re-run the
-installer — it only generates when no pair is present:
+### If the private key is compromised
 
-```bash
-rm -rf /opt/fog/secureboot
-cd /path/to/fogproject/bin && ./installfog.sh
-```
-
-That produces a new key and re-signs the kernels with it. **Every already-
-enrolled client stops booting at that moment** and needs re-enrolling by hand,
-so treat it as a deliberate estate-wide operation, not a troubleshooting step.
-
-**There is no remote revocation.** If the private key is compromised, every
-machine that enrolled it needs a physical visit to remove it. That is the trade
-you accept in exchange for not needing anyone else's permission — treat the
-private key accordingly.
+**There is no remote revocation.** Whichever remediation you choose —
+rotating to a fresh installer-generated key, or switching to a new key of
+your own, both above — every machine that enrolled the compromised key still
+needs a physical visit to remove it and enrol the replacement's fingerprint,
+exactly like a planned rotation, just unplanned. That per-machine visit is
+the trade you accept for not needing anyone else's permission to sign your
+own kernels — treat the private key accordingly, and back it up somewhere
+you would put a root password; see [Step 1](#step-1-the-signing-key).
 
 ---
 
 ## Verified
 
 These steps have been run end to end with Secure Boot enforcing, through to a
-completed deploy:
+completed deploy — **confirmed on physical hardware**:
 
 ```
 firmware (Secure Boot on, Microsoft certificates in db)
@@ -793,13 +904,15 @@ The signed binaries FOG stages are byte-for-byte the ones used in that run.
 
 **Route B has since been run end to end as well**, on a client whose firmware
 trusted nothing but the Microsoft certificates — no MOK enrolled at all, which
-is the state a machine is in before it has ever met your FOG server:
+is the state a machine is in before it has ever met your FOG server. This run
+also confirmed the network-delivery change above, **on physical hardware**:
 
 ```
 PXE boot → FOG menu → Enroll Secure Boot Key
-  └─ secureboot/mmx64.efi          ← chained through shim, not the firmware
-      └─ Enroll key from disk → MOK.der on a FAT stick → reboot
-          └─ PXE boot again → bzImage now accepted → FOS
+  └─ imgfetch MOK.der over the network into iPXE's memory
+      └─ secureboot/mmx64.efi          ← chained through shim, not the firmware
+          └─ Enroll key from disk → MOK.der already listed → reboot
+              └─ PXE boot again → bzImage now accepted → FOS
 ```
 
 The detail worth knowing is that MokManager is loaded *through shim*, not by
@@ -808,13 +921,18 @@ firmware would refuse to launch it directly — but shim's verification protocol
 is what the load actually goes through, and shim trusts it. This is the same
 mechanism that lets a MOK-signed kernel boot, so if one works the other does.
 
+The same client also confirmed that enrolment does not require Secure Boot to
+be currently enabled: enrolling with it off, then switching Secure Boot back
+on afterward, produced no difference in behaviour from enrolling with it left
+on throughout.
+
 ---
 
 ## Known limits
 
 - **EFI only.** Secure Boot is a UEFI feature; BIOS/legacy PXE clients are
   unaffected and need none of this.
-- **One visit per machine, always.** There is no supported way to enrol a MOK
+- **One visit per machine, always.** There is no supported way to enroll a MOK
   without physical presence — that is the security property, not an oversight.
   The enrolment kit makes the visit short; it cannot remove it. Enrolling into
   the firmware's own `db` instead would avoid the visit, but `db` updates must
@@ -868,16 +986,45 @@ mechanism that lets a MOK-signed kernel boot, so if one works the other does.
   rename entirely and falls back to its compiled-in default, `ipxe.efi`. If you
   build a Secure Boot USB from these instructions, name the second stage
   `ipxe.efi` or it will not be found.
-- **Not confirmed on physical hardware.** The whole chain has been confirmed
-  end to end in a VM — see [Verified](#verified) above — but nobody has yet
-  reported it from real hardware. Reports very welcome; see
-  [fogproject#960](https://github.com/FOGProject/fogproject/issues/960).
 
     An earlier revision of this page said there was no signed `snponly.efi` and
     that the all-drivers binary's device-init hang left Secure Boot users with
     nowhere to go. That was wrong: signed `snponly.efi` binaries ship in
     `ipxeboot.tar.gz` for x86_64 and arm64, and switching to them removes that
     problem entirely.
+
+>[!warning] Turning Secure Boot on can break existing Windows Hello for Business sign-in
+>If a machine already has users signed in with Windows Hello for Business
+>(PIN or biometric) from before Secure Boot was enabled, those sign-in
+>methods typically stop working once it is turned on -- WHfB's local key
+>container is sealed against the machine's boot security state, and enabling
+>Secure Boot changes it. This is a Windows Hello/Entra ID consequence of
+>changing Secure Boot state, not a FOG or MOK issue; it happens the same way
+>no matter what enables Secure Boot.
+>
+>To fix it per affected user:
+>
+>1. In the Entra admin center: **Users → *(the user)* → Authentication
+>   methods → remove Windows Hello for Business.**
+>2. Log the user in with their password.
+>3. As that user, run:
+>   ```
+>   certutil.exe -DeleteHelloContainer
+>   ```
+>4. If Group Policy enables/enforces Windows Hello for Business, also run:
+>   ```
+>   gpupdate /force
+>   ```
+>5. Restart the computer. The user signs in with their password and can then
+>   re-create their PIN and biometric sign-in.
+
+>[!note] Clearing the TPM does not touch enrolled keys
+>Separately from the above: clearing a machine's TPM removes what is sealed
+>*to* the TPM (BitLocker keys, the Windows Hello for Business container,
+>etc.), but MOK enrolment is not TPM-backed at all — MokList lives in
+>ordinary UEFI (NVRAM) variables that shim reads directly. Clearing the TPM
+>neither enrols nor un-enrols a MOK, and does not interact with anything else
+>in this guide.
 
 ## See also
 
