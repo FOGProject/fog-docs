@@ -112,23 +112,32 @@ same steps into one command:
     ./updatefog.sh
 
 It fetches and checks out the branch mapped from the update channel this
-server is configured to track (`stable`, `dev`, or `beta` — mapping to the
-`stable`, `dev-branch`, and `working-1.6` branches respectively), backs up the
-PXE background, kernel set, and rEFInd files that the installer's asset sync
-can overwrite, re-runs `installfog.sh` for you, and automatically reverts the
-git checkout and those backed-up files (then re-installs) if anything fails
+server is configured to track (`stable`, `staging`, or `dev` — mapping to the
+`stable`, `dev-branch`, and `working-1.6` branches respectively, matching the
+Channel table in the [project README](https://github.com/FOGProject/fogproject#versioning-and-branches)),
+backs up the PXE background, kernel set, and rEFInd files that the installer's
+asset sync can overwrite, leaves an existing web server vhost alone (see
+below), re-runs `installfog.sh` for you, and automatically reverts the git
+checkout and those backed-up files (then re-installs) if anything fails
 partway through.
 
 Options:
 
     ./updatefog.sh --help
-    Usage: ./updatefog.sh [-h?y] [--channel stable|dev|beta] [--git-path </path>] [--no-revert]
+    Usage: ./updatefog.sh [-h?y] [--channel stable|staging|dev] [--branch <name>] [--git-path </path>]
+                     [--no-revert] [--overwrite-vhost]
         -h -? --help       Display this info
-              --channel    Update channel to track: stable, dev, or beta
+              --channel    Update channel to track: stable, staging, or dev
                             defaults to whatever this server already tracks
+              --branch     Check out an arbitrary branch instead of a channel
+                            (e.g. to test a PR/feature branch). One-off: does
+                            not change the tracked channel for future runs
               --git-path   Override the git checkout path this server records
               --no-revert  On failure, leave the system as-is instead of
                             automatically reverting to the previous commit
+              --overwrite-vhost  Let installfog.sh regenerate the web server
+                            vhost from scratch instead of leaving the
+                            existing one (with any customizations) alone
         -y    --yes        Skip the confirmation prompt (for cron/GUI use)
 
 The channel you choose is remembered for next time, the same way `.fogsettings`
@@ -139,6 +148,16 @@ category on the Settings page in the web UI, so you can see which checkout and
 channel a server is tracking without SSHing in. That copy is informational
 only — editing it there has no effect on the next update; change the channel
 with `--channel` instead.
+
+By default, an update leaves your web server vhost (`fog.conf` or the nginx
+equivalent) completely alone, since by definition one already exists and may
+carry customizations (a custom certificate path, extra server blocks, and so
+on) that `installfog.sh` would otherwise regenerate away. Pass
+`--overwrite-vhost` if you actually want it regenerated from FOG's defaults. A
+plain `./installfog.sh` run (not through `updatefog.sh`) still regenerates the
+vhost as before, but now backs up the previous version first and tells you if
+your customizations were overwritten — the same "Changed configurations"
+notice already used for a couple of other FOG-managed files.
 
 ### Alternatives
 
