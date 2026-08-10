@@ -76,13 +76,15 @@ warning.
 ```mermaid
 graph TD
     Root["FOG Server CA<br/>self-signed · the existing CA<br/>published as ca.cert.der"]
+
     Root --> WebCA["FOG Web CA<br/>serverAuth · name-constrained"]
-    Root --> SBCA["FOG Secure Boot CA<br/>codeSigning · name-constrained"]
-    Root --> Comm["srvpublic.crt + .srvprivate.key<br/>encrypts client check-ins"]
+    Root --> SBCA["FOG Secure Boot CA<br/>codeSigning · name-constrained<br/>published as MOK.der · enrolled in firmware ONCE"]
+    Root -.->|leaf, no intermediate| Comm["srvpublic.crt + .srvprivate.key<br/>encrypts client check-ins"]
 
     WebCA --> WebLeaf["web server certificate<br/>served by Apache/nginx"]
-    SBCA --> MOK["MOK.der<br/>enrolled in firmware ONCE"]
     SBCA --> Sign["code-signing leaf<br/>rotatable without re-enrollment"]
+
+    WebCA ~~~ Comm
 ```
 
 The anchor is the CA your server already has — nothing above it is created,
@@ -97,19 +99,16 @@ Under `$fogprogramdir/pki/` (default `/opt/fog/pki/`), one subfolder per
 zone, each split into `ca/` (the zone's own CA material) and `leaf/` (what
 that CA issues day to day):
 
-```
-root/ca/.fogCA.{key,pem}          the anchor. Key never regenerated, 0400 root:root.
-root/leaf/.srvprivate.key         symlink -> $sslpath/.srvprivate.key
-root/leaf/.srvpublic.crt          symlink -> $sslpath/.srvpublic.crt
-                                   (the comm leaf's real files stay at
-                                   $sslpath -- see "Why they were separated")
-web/ca/.fogWebCA.{key,pem}        signs the vhost's certificate
-web/ca/.fogWebCAchain.pem         CA + web intermediate
-web/leaf/.webLeaf.{key,pem}       what the web server actually serves
-secureboot/ca/.fogSBCA.{key,pem,der}  signs the code-signing leaf; .der is
-                                  the same certificate MOK.der publishes
-secureboot/leaf/sign.{key,pem}    what sbsign actually signs with
-```
+| Path | What it is |
+|---|---|
+| `root/ca/.fogCA.{key,pem}` | The anchor. Key never regenerated, `0400 root:root`. |
+| `root/leaf/.srvprivate.key` | Symlink → `$sslpath/.srvprivate.key` |
+| `root/leaf/.srvpublic.crt` | Symlink → `$sslpath/.srvpublic.crt` |
+| `web/ca/.fogWebCA.{key,pem}` | Signs the vhost's certificate |
+| `web/ca/.fogWebCAchain.pem` | CA + web intermediate |
+| `web/leaf/.webLeaf.{key,pem}` | What the web server actually serves |
+| `secureboot/ca/.fogSBCA.{key,pem,der}` | Signs the code-signing leaf; `.der` is the same certificate `MOK.der` publishes |
+| `secureboot/leaf/sign.{key,pem}` | What `sbsign` actually signs with |
 
 `.srvprivate.key`/`.srvpublic.crt` stay exactly where they've always been —
 `root/leaf/` only adds discoverability symlinks to them.
