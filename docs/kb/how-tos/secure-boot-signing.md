@@ -2,7 +2,7 @@
 title: Secure Boot - signing FOS with your own key
 aliases:
     - Secure Boot - signing FOS with your own key
-description: How to run FOG on machines with UEFI Secure Boot enabled by signing the FOS kernel with a key you control and enrolling it as a MOK
+description: How to run FOG on machines with UEFI Secure Boot enabled by signing the FOS kernel with a key you control and enrolling it as a MOK, or unattended into db on platforms in Setup Mode
 context_id: secure-boot-signing
 tags:
     - how-to
@@ -549,8 +549,26 @@ constraints]]) if a fleet rejects the chain.
 
 ## Step 2 — enroll the certificate on a client
 
-Repeat per machine. **You do not need to turn Secure Boot off to do this**, and
-you should not: both routes below work with it left on.
+Repeat per machine. There are three routes, and the right one depends on what
+you can get at: whether you can stand at the machine, and whether its firmware
+can be put into Setup Mode.
+
+```mermaid
+flowchart TD
+    S{Can the firmware be<br/>put into Setup Mode?<br/><em>clear the PK — often scriptable<br/>via Dell cctk / Redfish</em>}
+    S -- Yes --> C["<b>Route C</b> — Setup Mode<br/>Schedule the task; FOS writes db/KEK/PK<br/><b>nobody at the console</b>"]
+    S -- No --> H{Standing at<br/>the machine?}
+    H -- Yes --> B["<b>Route B</b> — FOG boot menu<br/>No USB stick, no live image<br/>Keypresses at MokManager"]
+    H -- No --> A["<b>Route A</b> — Ubuntu/Debian live USB<br/>The reliable fallback when<br/>'Enroll key from disk' hangs"]
+    C --> D["Turn Secure Boot back <b>on</b><br/>in firmware — always manual"]
+    B --> D
+    A --> D
+```
+
+**Routes A and B do not require you to turn Secure Boot off**, and you should
+not: both work with it left on. Route C is different — it needs the platform in
+Setup Mode, which is not the same thing as Secure Boot being switched off (see
+that section).
 
 The FOG web UI has a **FOG Configuration → Secure Boot** page. It shows your
 certificate's fingerprint (SHA-256, and SHA-1 for MokManager's own "view key"
@@ -703,13 +721,15 @@ are already standing at the machine when the enrolment happens.
 >console; nothing removes that.
 
 >[!tip] Which route to reach for
->Route B has far fewer moving parts, needs neither a live image nor a USB
->stick, and has the least effort — it's the default choice for most users.
->Route A is the fallback for other scenarios: `Enroll key from disk` is
->reported to hang on some firmware, and a stock live USB sidesteps that
->entirely by using the distribution's own shim. If you need to enroll before
->a machine can reach the FOG server at all, Route A also works with nothing
->but a USB stick.
+>If the firmware can be put into Setup Mode, **Route C is the one that
+>scales** — it is the only route that does not end with a human pressing keys
+>on every machine; see
+>[[secure-boot-setup-mode-enrollment|Setup Mode enrollment]]. Where it is not
+>available, Route B has far fewer moving parts and, since the network-delivery
+>change above, needs neither a live image nor a USB stick — try it first if
+>you are standing at the machine anyway. Route A is the fallback: `Enroll key
+>from disk` is reported to hang on some firmware, and a stock live USB
+>sidesteps that entirely by using the distribution's own shim.
 
 >[!note] arm64 clients
 >The menu entry serves the matching MokManager automatically — `mmx64.efi` for
@@ -725,6 +745,86 @@ are already standing at the machine when the enrolment happens.
 >both states. If the screen appeared and was gone by the time you looked,
 >you likely missed MokManager's own ~10-second startup timeout — see the
 >warning above — rather than anything being misconfigured.
+
+### Route C — Setup Mode, with nobody at the console
+
+Routes A and B both end at a human pressing keys, because MOK enrolment is
+*designed* to require one. Route C sidesteps that by not using MOK at all: if
+the platform is in **Setup Mode**, the running OS can write the real Secure Boot
+databases directly, and FOS does it unattended.
+
+Schedule the **Enroll Secure Boot Key** task exactly as in Route B. FOS decides
+which route to take by itself — it reads the firmware state at boot, and only
+takes this path if it finds Setup Mode. Anything else falls back to staging a
+MOK request, so scheduling the task against a mixed fleet is safe.
+
+What it writes, in this order and no other:
+
+| Variable | Contents |
+| --- | --- |
+| `db` | Microsoft's five published CAs **plus** your `CN=FOG Project Secure Boot Signing` certificate |
+| `KEK` | Microsoft's two KEK CAs plus this server's Key Exchange Key |
+| `PK` | this server's Platform Key, alone |
+
+The order is load-bearing. Writing `PK` is what takes the platform *out* of
+Setup Mode, and every write after it must carry a signature the firmware
+checks — so `PK` goes last. FOS also fetches all three blobs before writing any
+of them, so a web server hiccup cannot leave a machine half-enrolled, and it
+aborts on the first failure rather than pressing on to the write that closes the
+door. A run that fails partway leaves the platform still in Setup Mode, still
+booting anything, exactly as it was found.
+
+Success is confirmed by `SetupMode` flipping 1 → 0 — the firmware accepting the
+`PK`. Note that `SecureBoot` stays 0 until the next boot regardless, because the
+firmware computes it during POST.
+
+>[!warning] Microsoft's certificates are in that `db` on purpose
+>It is tempting to read "your own trusted `db`" as "only your certificate".
+>Removing Microsoft's CAs breaks Windows — and it breaks FOG, because the shim
+>at the head of your own boot chain is Microsoft-signed. A `db` without them is
+>a machine that no longer PXE boots.
+
+>[!note] What still needs a human
+>*Getting into* Setup Mode means clearing the `PK` at the firmware screen, and
+>turning Secure Boot back **on** afterwards is a firmware toggle too. Neither is
+>reachable from a running OS by design. So Route C trades "a visit with a live
+>USB, or keypresses at MokManager" for "a firmware visit" — the win is that the
+>firmware half is scriptable through vendor tooling (Dell `cctk`, Redfish) where
+>Routes A and B never were, and that once done it is permanent.
+
+>[!danger] The task cannot run on a machine already enforcing Secure Boot
+>iPXE 2.0.0 verifies both the kernel *and* the initrd through shim. On a machine
+>with Secure Boot enforcing and your certificate not yet trusted, both are
+>refused — `Verification failed: Security Policy Violation` — so FOS never
+>starts and no task of any kind runs. This is a property of the boot chain, not
+>of the enrolment task. Secure Boot must be off, or the platform in Setup Mode,
+>for the machine to get far enough to enroll.
+
+#### Requirements
+
+- **FOS release `20260804` or newer.** Earlier inits have no `fog.enrollsb`.
+- **`efitools` on the server.** The installer installs it and builds the signed
+  variable updates automatically. If it is missing the installer says so and
+  skips building them — enrolment then falls back to the MOK routes rather than
+  failing silently.
+- **FOG 1.6.** The blobs are published at
+  `<web-root>/service/secureboot/{db,KEK,PK}.auth` by the 1.6 installer only.
+  FOS is shared between 1.5 and 1.6, so a 1.5 server ships an init that *has*
+  `fog.enrollsb` — the MOK staging path still works there, but Route C cannot,
+  because there are no `.auth` blobs to fetch.
+
+The server's `PK`, `KEK` and signing keys are generated once and **never
+regenerate** on later installs. The `.auth` blobs are rebuilt every install, but
+from those same keys, so re-running the installer does not invalidate machines
+you have already enrolled.
+
+>[!note] Validation status
+>Route C has been validated end to end in VirtualBox: Setup Mode → task
+>completes unattended → firmware holds exactly the certificates in the table
+>above → Secure Boot switched on → the same machine PXE boots FOG's signed chain
+>and images normally. Per-model validation on *physical* firmware is still
+>outstanding, and a mistake there is not reversible from the OS — it needs a
+>firmware trip. Treat the first machine of any model as a test.
 
 ---
 

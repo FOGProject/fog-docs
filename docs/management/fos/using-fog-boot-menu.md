@@ -113,13 +113,31 @@ tags:
 > -   Added in FOG 1.6.0, and only relevant to clients booting with UEFI
 >     Secure Boot enabled.
 >
-> -   This command hands off to MokManager so you can enrol FOG's signing
->     certificate on the client, which is what allows the machine to boot
->     the FOS kernel with Secure Boot left on.
+> -   This command enrols FOG's signing certificate on the client, which is
+>     what allows the machine to boot the FOS kernel with Secure Boot left
+>     on.
 >
-> -   You must have `MOK.der` on a FAT-formatted USB stick in the machine
->     first — MokManager reads it from local media, not over the network.
->     Get that file from **FOG Configuration → Secure Boot**.
+> -   **No USB stick is needed.** `MOK.der` is delivered over the network,
+>     so the certificate no longer has to be staged on local media before
+>     you start. You can still get the file from **FOG Configuration →
+>     Secure Boot** if you want it by hand.
+>
+> -   It also does not have to be driven from this menu. **Enroll Secure
+>     Boot Key** is a task type, schedulable from **Task Scheduling**
+>     against one host or a whole group — a host with it pending skips the
+>     menu and runs it on the next PXE boot.
+>
+> -   What happens next depends on the client's firmware state, and FOS
+>     decides by itself:
+>
+>     :   -   **Setup Mode** — FOS writes the real Secure Boot databases
+>             (`db`, `KEK`, `PK`) directly and finishes **unattended**.
+>             Added in FOG 1.6; requires FOS release `20260804` or newer.
+>
+>         -   **Anything else** — FOS stages a MOK request and hands off to
+>             MokManager, which needs someone at the console to confirm it.
+>             MOK enrolment is designed to require physical presence and
+>             there is no way around that.
 >
 > -   fog.enrollsecureboot is the command used to reference this action in
 >     pxe menu settings.
