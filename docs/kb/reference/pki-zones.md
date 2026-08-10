@@ -1,6 +1,7 @@
 ---
-title: FOG's Certificate Zones
+title: FOG PKI Infrastructure
 aliases:
+    - FOG PKI Infrastructure
     - FOG's Certificate Zones
     - PKI Zones
     - Certificate Zones
@@ -15,7 +16,7 @@ tags:
     - secure-boot
 ---
 
-# FOG's certificate zones
+# FOG PKI infrastructure
 
 FOG uses certificates for three unrelated jobs. This page describes how
 they're kept separate, what that buys you, and how to replace any of them
@@ -37,9 +38,12 @@ page is the reference the other two link back to.
 
 | Zone | What it protects | Lifetime | Cost of changing it |
 |---|---|---|---|
-| **Web TLS** | The browser/API connection to the FOG web UI | 5 years by default | None. Browsers just need the issuer trusted. |
-| **Client Communication** | fog-client's encrypted check-in with the server | 3 – 10 years | Medium. Every registered client must re-pin. |
-| **Secure Boot** | The signature on the FOS kernels | 10 – 20 years | High. Firmware re-enrollment on every machine. |
+| **Web TLS** | The browser/API connection to the FOG web UI | Leaf: 5 years fixed (Web CA: 30 years) | None. Browsers just need the issuer trusted. |
+| **Client Communication** | fog-client's encrypted check-in with the server | 10 years fixed | Medium. Every registered client must re-pin. |
+| **Secure Boot** | The signature on the FOS kernels | CA (what's enrolled): 30 years · leaf: 5 years | High. Firmware re-enrollment on every machine. |
+
+The root "FOG Server CA" itself is fixed at 30 years too, same as both
+intermediates — only the two leaf types (web, Secure Boot) default shorter.
 
 They have nothing in common except that FOG generates all three, and their
 costs differ by orders of magnitude — which is exactly why they don't share
