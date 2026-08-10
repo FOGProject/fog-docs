@@ -240,45 +240,20 @@ not a re-enrollment of every machine.
 
 >[!info] FOG 1.6
 >Per-zone bring-your-own-CA is a FOG 1.6 addition. On earlier releases, only
->[[secure-boot-signing#bringing-your-own-key|bringing your own Secure Boot
->signing key/cert]] (a leaf, not a CA) is available — see the note below
->about how that differs.
+>bringing your own Secure Boot signing key/cert (a leaf, not a CA) is
+>available.
 
-Each zone is independently replaceable:
-
-```bash
-# Web zone -- your PKI issues the web certificate, FOG keeps the rest
-./installfog.sh --web-ca-cert /etc/pki/web-int.pem \
-                --web-ca-key  /etc/pki/web-int.key \
-                --web-ca-root /etc/pki/root.pem
-
-# Secure Boot zone -- your own intermediate is what firmware enrolls
-./installfog.sh --secureboot-ca-cert /etc/pki/sb-int.pem \
-                --secure-boot-key    /etc/pki/sb-leaf.key \
-                --secure-boot-cert   /etc/pki/sb-leaf.pem
-```
-
-`--external-ca`/`--ca-cert`/`--ca-key`/`--ca-root` predate this and target
-the Web zone specifically — that's what they've always effectively meant.
-Whether they remain a separate mechanism alongside the flags above, or get
-folded into them, isn't settled yet; treat `--web-ca-*` as the current
-recommended form.
-
->[!warning] On earlier releases, `--secure-boot-key`/`--secure-boot-cert` means something narrower
->Without `--secureboot-ca-cert`, an admin-supplied Secure Boot key/cert
->becomes **both** the signer and the enrolled certificate — the flat model,
->exactly as before — rather than being split into a CA and a rotatable leaf
->underneath it. You can still get the split by hand: sign your leaf with
->`sbsign --addcert`, embedding your own CA, and enroll your CA's certificate
->rather than the leaf. See
->[[secure-boot-signing#bringing-your-own-key|the Secure Boot guide]] for the
->full recipe.
-
-**The Client Communication zone is not replaceable this way, deliberately.**
-It's anchored at the certificate every fog-client has already pinned, so
-replacing it means re-deploying trust to every registered machine by some
-other means (GPO, client reinstall) — there's no built-in path for it,
-because there's no way to do it without touching every endpoint.
+Each zone is independently replaceable with a CA or key you already
+run — the Web zone (`--web-ca-*`, or the legacy `--external-ca`) and the
+Secure Boot zone (`--secureboot-ca-cert`, or a flat leaf via
+`--secure-boot-key`/`--secure-boot-cert` on earlier releases) each have
+their own flags and their own gotchas. **The Client Communication zone is
+not replaceable this way, deliberately** — it's anchored at the certificate
+every fog-client has already pinned, so replacing it means re-deploying
+trust to every registered machine by some other means (GPO, client
+reinstall); there's no built-in path for it. Full detail, commands, and
+the flat-vs-CA distinction for Secure Boot: see
+[[bringing-your-own-ca|Bringing your own CA]].
 
 **If your CA carries `pathlen:0`** — an ordinary thing for an enterprise to
 issue — it can't anchor an intermediate. The installer detects this, says
@@ -386,9 +361,11 @@ The point is rotation. Under the old flat model the enrolled certificate
 to every machine. Enrolling the issuer instead means leaves can be rotated
 or reissued while the fleet keeps booting.
 
-Full enrollment walkthrough, the three supported routes, and rotating or
-removing a key: see [[secure-boot-signing|Secure Boot: signing FOS with your
-own key]].
+Start at [[secure-boot-signing|Secure Boot: signing FOS with your own key]]
+for the concepts and rotating/removing a key; enrollment itself is split
+into [[secure-boot-mok-enrollment|MOK enrollment]] (any release) and
+[[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] (FOG 1.6,
+unattended).
 
 >[!warning] Servers that already enrolled a flat MOK
 >A server that generated a self-signed MOK under an earlier build is moved

@@ -389,6 +389,7 @@ netboot, reboot PXE clients so they pull the rebuilt binary too.
 ## See also
 
 - [[pki-zones|FOG's Certificate Zones]]
+- [[bringing-your-own-ca|Bringing your own CA]]
 - [[pki-glossary|PKI & Secure Boot Glossary]]
 - [[secure-boot-signing|Secure Boot signing]]
 

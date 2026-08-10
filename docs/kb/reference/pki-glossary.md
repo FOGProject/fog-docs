@@ -124,4 +124,4 @@ A firmware state that lets you write new certificates directly into UEFI's
 own trust database (`PK`/`KEK`/`db`), bypassing Microsoft's shim chain
 entirely. FOG 1.6 can enroll a Secure Boot CA this way instead of (or
 alongside) MOK/MokManager enrollment — see
-[[secure-boot-signing#setup-mode|the Secure Boot guide]].
+[[secure-boot-setup-mode-enrollment|Setup Mode enrollment]].
