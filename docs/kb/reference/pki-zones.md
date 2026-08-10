@@ -1,0 +1,412 @@
+---
+title: FOG's Certificate Zones
+aliases:
+    - FOG's Certificate Zones
+    - PKI Zones
+    - Certificate Zones
+description: How FOG separates its certificates into independent zones, what changes on the endpoints, and how to bring your own CA for each one
+context_id: pki-zones
+tags:
+    - reference
+    - security
+    - certificates
+    - pki
+    - https
+    - secure-boot
+---
+
+# FOG's certificate zones
+
+FOG uses certificates for three unrelated jobs. This page describes how
+they're kept separate, what that buys you, and how to replace any of them
+with your own CA. For the Secure Boot signing workflow specifically (client
+enrollment, rotating keys, Setup Mode), see
+[[secure-boot-signing|Secure Boot: signing FOS with your own key]]. For
+Let's Encrypt/ACME and fog-client's certificate pinning, see
+[[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]. This
+page is the reference the other two link back to.
+
+>[!info] Availability
+>The zone split described here applies to every server, generated
+>automatically — there's no opt-in flag and no second layout to choose
+>between. **Per-zone bring-your-own-CA, storage node certificate issuance,
+>and Setup Mode firmware enrollment are FOG 1.6 additions**, flagged inline
+>below as they come up.
+
+## The three zones
+
+| Zone | What it protects | Lifetime | Cost of changing it |
+|---|---|---|---|
+| **Web TLS** | The browser/API connection to the FOG web UI | 5 years by default | None. Browsers just need the issuer trusted. |
+| **Client Communication** | fog-client's encrypted check-in with the server | 3 – 10 years | Medium. Every registered client must re-pin. |
+| **Secure Boot** | The signature on the FOS kernels | 10 – 20 years | High. Firmware re-enrollment on every machine. |
+
+They have nothing in common except that FOG generates all three, and their
+costs differ by orders of magnitude — which is exactly why they don't share
+key material.
+
+## Why they were separated
+
+In the historic layout, one self-signed CA did the first two jobs, and one
+self-signed leaf did the third. That produced two problems with the same
+shape:
+
+**`.srvprivate.key` was the web server's TLS key *and* the key that decrypts
+every fog-client handshake.** `FOGBase::certDecrypt()` opens that exact path
+on every `authorize()` call. So an ACME renewal, a purchased certificate
+dropped in place, or `--recreate-keys` installed a perfectly valid
+certificate and silently broke client authentication, with nothing in the
+logs connecting the two.
+
+**The enrolled Secure Boot key was the signing certificate itself.** Because
+the thing in the firmware was a leaf that can issue nothing, rotating or
+revoking the signing key meant a physical MokManager trip to every machine.
+
+Both are the same mistake: one file serving as both a *trust anchor* and an
+*operational key* — the thing you must never change, and the thing you want
+to change routinely, were the same object. Separating them is also the fix
+for a real advisory
+([GHSA-94p8-jg9j-99v4](https://github.com/FOGProject/fogproject/security/advisories/GHSA-94p8-jg9j-99v4)):
+an unconstrained root CA key let anyone who could read it mint trusted certs
+for arbitrary domains, or sign arbitrary binaries Windows would run without
+warning.
+
+## The layout
+
+```mermaid
+graph TD
+    Root["FOG Server CA<br/>self-signed · the existing CA<br/>published as ca.cert.der"]
+    Root --> WebCA["FOG Web CA<br/>serverAuth · name-constrained"]
+    Root --> SBCA["FOG Secure Boot CA<br/>codeSigning · name-constrained"]
+    Root --> Comm["srvpublic.crt + .srvprivate.key<br/>encrypts client check-ins"]
+
+    WebCA --> WebLeaf["web server certificate<br/>served by Apache/nginx"]
+    SBCA --> MOK["MOK.der<br/>enrolled in firmware ONCE"]
+    SBCA --> Sign["code-signing leaf<br/>rotatable without re-enrollment"]
+```
+
+The anchor is the CA your server already has — nothing above it is created,
+so `ca.cert.der` doesn't change and no fog-client re-pins.
+
+>[!tip] A useful consequence
+>Because the certificate fog-client pins **is** the root, the Web CA sits
+>beneath something every client already trusts. Trusting `ca.cert.der` once
+>also validates the web certificate the Web CA later issues.
+
+Under `$fogprogramdir/pki/` (default `/opt/fog/pki/`), one subfolder per
+zone, each split into `ca/` (the zone's own CA material) and `leaf/` (what
+that CA issues day to day):
+
+```
+root/ca/.fogCA.{key,pem}          the anchor. Key never regenerated, 0400 root:root.
+root/leaf/.srvprivate.key         symlink -> $sslpath/.srvprivate.key
+root/leaf/.srvpublic.crt          symlink -> $sslpath/.srvpublic.crt
+                                   (the comm leaf's real files stay at
+                                   $sslpath -- see "Why they were separated")
+web/ca/.fogWebCA.{key,pem}        signs the vhost's certificate
+web/ca/.fogWebCAchain.pem         CA + web intermediate
+web/leaf/.webLeaf.{key,pem}       what the web server actually serves
+secureboot/ca/.fogSBCA.{key,pem,der}  signs the code-signing leaf; .der is
+                                  the same certificate MOK.der publishes
+secureboot/leaf/sign.{key,pem}    what sbsign actually signs with
+```
+
+`.srvprivate.key`/`.srvpublic.crt` stay exactly where they've always been —
+`root/leaf/` only adds discoverability symlinks to them.
+
+An install that already ran an earlier layout migrates its existing
+key/cert material into this tree in place — nothing is re-issued, and old
+paths keep resolving via symlink where anything might still reference them
+directly.
+
+## What an upgrade does and does not change
+
+| | |
+|---|---|
+| `pki/root/ca/.fogCA.pem` | **unchanged**, byte for byte |
+| `ca.cert.der` | **unchanged** — no client re-pins |
+| `.srvprivate.key` | **unchanged** — client authentication is unaffected |
+| the web certificate | **new**, issued by the Web CA, on its own keypair |
+| the Secure Boot MOK | **new** — see [[secure-boot-signing|the Secure Boot guide]], this one needs action |
+
+The only endpoint-visible change is Secure Boot.
+
+## Private key protection
+
+The CA private key used to be readable by the web user — a remote code
+execution in the PHP application could read the key the entire installation
+trusts. `_hardenPkiPermissions` now locks each zone's CA key down after
+generation:
+
+| File | Mode | Why |
+|---|---|---|
+| `pki/root/ca/.fogCA.key` | `0400 root:root` | nothing on a running server needs it |
+| `pki/secureboot/ca/.fogSBCA.key` | `0400 root:root` | same |
+| `pki/web/ca/.fogWebCA.key` | `0600 root:root` | used only by root, through the sudo helper |
+| `.srvprivate.key` | `0640 root:<apache>` | `certDecrypt()` must read this one |
+
+>[!warning] This is pseudo-offline
+>It protects the keys from a compromise of the web application, not from a
+>compromise of the machine itself.
+
+## Taking a key offline
+
+```bash
+/opt/fog/pki/fog-offline-ca-key /mnt/vault                  # the CA key
+/opt/fog/pki/fog-offline-ca-key /mnt/vault --zone secureboot
+```
+
+The helper copies the key, verifies the copy still matches the certificate
+that stays behind, and only then shreds the original.
+
+>[!warning] Leave the certificate in place
+>Everything chains to it, and the installer uses its presence to recognize
+>that a CA already exists. Removing the *certificate* is what makes the next
+>run mint a brand new CA, orphaning every intermediate beneath it.
+
+Day to day nothing needs the key — only issuing a **new** intermediate does.
+The installer detects an offlined key and says what to restore rather than
+failing inside openssl.
+
+## Leaf renewal
+
+The web leaf and the Secure Boot signing leaf default to 5 years — short
+enough that a compromised leaf key ages out on its own, long enough that
+nothing renews them automatically. To rotate either one sooner:
+
+```bash
+/opt/fog/pki/renewal-helper --zone web
+/opt/fog/pki/renewal-helper --zone secureboot
+```
+
+The web leaf re-issues from the online Web CA and reloads the web server.
+The Secure Boot leaf re-issues from the Secure Boot CA and needs no
+reload — nothing has to be re-enrolled in firmware, because it's the
+intermediate that's enrolled, not the leaf. See
+[[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]]
+for the fleet-wide implications of that.
+
+Either invocation refuses, and tells you the exact path to restore, if the
+signing CA's private key isn't on this server. The web leaf invocation also
+refuses on an ACME-managed leaf (`acmeLeaf=yes`) — renew that one through
+your ACME client instead; see
+[[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]].
+
+Nothing here runs on a timer — wire it into your own cron if you want
+unattended renewal.
+
+## Name constraints
+
+Both intermediates carry `nameConstraints` and an `extendedKeyUsage`, so
+neither can issue outside its zone or outside your network:
+
+```
+Web CA:          extendedKeyUsage = serverAuth
+Secure Boot CA:  extendedKeyUsage = codeSigning
+both:            permitted DNS: this server's hostname and domain
+                 permitted IP:  all RFC1918 ranges, plus this server's own
+```
+
+Extend or narrow with:
+
+```bash
+./installfog.sh --internal-domain branch.example.local   # repeatable
+./installfog.sh --internal-subnet 10.20.30.0/24          # repeatable; REPLACES
+                                                          # the RFC1918 default
+```
+
+>[!warning] Constraints are fixed when the CA is issued, and a CA is never re-issued
+>Renaming the server, or adding an `--extra-server-name` outside the
+>permitted domains, produces a valid certificate that nothing accepts. The
+>installer verifies the leaf against its issuer after signing and names the
+>`rm -rf` that lets the CA be re-created with the new constraints.
+
+**On the Secure Boot CA the constraints are opt-out**, via
+`--no-sb-name-constraints`. They don't constrain anything that matters for
+code signing — a code-signing leaf carries no names anyone resolves — and
+they sit in the one certificate UEFI and shim actually parse. The flag
+exists so a fleet that rejects the chain is a re-issue of one intermediate,
+not a re-enrollment of every machine.
+
+>[!note] A related trap, measured rather than assumed
+>OpenSSL applies DNS constraints to the subject **CN** when a certificate
+>carries no DNS SAN. A CN of `evil.example.com` under a `corp.local`
+>constraint is rejected; the Secure Boot signing CN passes only because
+>"FOG Project Secure Boot Signing" isn't hostname-shaped. Depending on that
+>would mean a rename of that CN stops the fleet booting, so the signing leaf
+>carries a permitted DNS SAN instead.
+
+## Bringing your own CA
+
+>[!info] FOG 1.6
+>Per-zone bring-your-own-CA is a FOG 1.6 addition. On earlier releases, only
+>[[secure-boot-signing#bringing-your-own-key|bringing your own Secure Boot
+>signing key/cert]] (a leaf, not a CA) is available — see the note below
+>about how that differs.
+
+Each zone is independently replaceable:
+
+```bash
+# Web zone -- your PKI issues the web certificate, FOG keeps the rest
+./installfog.sh --web-ca-cert /etc/pki/web-int.pem \
+                --web-ca-key  /etc/pki/web-int.key \
+                --web-ca-root /etc/pki/root.pem
+
+# Secure Boot zone -- your own intermediate is what firmware enrolls
+./installfog.sh --secureboot-ca-cert /etc/pki/sb-int.pem \
+                --secure-boot-key    /etc/pki/sb-leaf.key \
+                --secure-boot-cert   /etc/pki/sb-leaf.pem
+```
+
+`--external-ca`/`--ca-cert`/`--ca-key`/`--ca-root` predate this and target
+the Web zone specifically — that's what they've always effectively meant.
+Whether they remain a separate mechanism alongside the flags above, or get
+folded into them, isn't settled yet; treat `--web-ca-*` as the current
+recommended form.
+
+>[!warning] On earlier releases, `--secure-boot-key`/`--secure-boot-cert` means something narrower
+>Without `--secureboot-ca-cert`, an admin-supplied Secure Boot key/cert
+>becomes **both** the signer and the enrolled certificate — the flat model,
+>exactly as before — rather than being split into a CA and a rotatable leaf
+>underneath it. You can still get the split by hand: sign your leaf with
+>`sbsign --addcert`, embedding your own CA, and enroll your CA's certificate
+>rather than the leaf. See
+>[[secure-boot-signing#bringing-your-own-key|the Secure Boot guide]] for the
+>full recipe.
+
+**The Client Communication zone is not replaceable this way, deliberately.**
+It's anchored at the certificate every fog-client has already pinned, so
+replacing it means re-deploying trust to every registered machine by some
+other means (GPO, client reinstall) — there's no built-in path for it,
+because there's no way to do it without touching every endpoint.
+
+**If your CA carries `pathlen:0`** — an ordinary thing for an enterprise to
+issue — it can't anchor an intermediate. The installer detects this, says
+so, signs the web certificate directly from it instead, and leaves Secure
+Boot on its self-signed key. Nothing is silently broken.
+
+## Storage nodes
+
+>[!info] FOG 1.6
+>Storage node certificate issuance is a FOG 1.6 addition.
+
+A storage node used to generate its own independent self-signed
+`FOG Server CA`, so a fleet of five nodes had six unrelated CAs. Nodes now
+ask the master for a certificate from the Web CA instead — authenticating
+with the fogstorage database password they already hold, so nothing new
+has to be distributed.
+
+Two consequences worth knowing:
+
+- **The node must be registered first.** A node the master doesn't know is
+  refused, by design.
+- **Any failure falls back to a self-signed certificate**, exactly as
+  before, with an explanation — a node install must not break against a
+  master that hasn't been updated yet.
+
+## Certificate paths
+
+>[!info] FOG 1.6
+>Canonical-path symlink indirection is a FOG 1.6 addition.
+
+FOG's own consumers — the vhost, `sbsign`, `certDecrypt()` — only ever
+reference fixed canonical paths. Those paths may be symlinks, so the real
+files can live wherever you keep certificates:
+
+```bash
+sed -i "s|^sslprivkey=.*|sslprivkey='/etc/pki/fog/server.key'|" /opt/fog/.fogsettings
+./installfog.sh -Y
+```
+
+Relocating a certificate then never means editing the vhost.
+
+>[!note]
+>SELinux labels follow the symlink **target**, so a certificate outside the
+>expected directories may need `restorecon` or `semanage fcontext` on the
+>real path. And a private key relocated into a world-readable directory
+>silently defeats the separation the Secure Boot signing helper depends on.
+
+## HTTPS and netboot
+
+iPXE's netboot fetches (`boot.php`, the kernel, the initrd) are not tied to
+FOG's own CA the way fog-client is:
+
+| Web certificate issued by | Web UI / API / fog-client | iPXE netboot |
+|---|---|---|
+| Public CA (Let's Encrypt) | HTTPS, trusted natively | **HTTPS works**, FQDN only |
+| FOG's own PKI (this page) | HTTPS once `ca.cert.der` is trusted | HTTP |
+| Your internal PKI | HTTPS once your root is trusted | HTTP |
+
+Stock iPXE ships an unconditional public-CA fallback
+(`ca.ipxe.org`) that cross-signs real-world public roots — Let's Encrypt
+included — at connect time, independent of whether FOG rebuilt the binary
+with its own CA baked in, and independent of Secure Boot enrollment status.
+So a web certificate from a public CA on an FQDN gets you HTTPS netboot with
+**no rebuild, and no loss of the signed Secure Boot shim.** That only fails
+on a fully air-gapped network with no route to `ca.ipxe.org`.
+
+Getting HTTPS netboot to work with FOG's own or your internal (non-publicly
+trusted) CA instead means rebuilding iPXE with that CA baked in
+(`TRUST=`) — and that rebuilt binary is not upstream's signed one, so it
+forfeits the signed Secure Boot shim. The only way to get HTTPS netboot,
+Secure Boot, and an internal CA all at once is enrolling that CA directly
+into UEFI firmware (`db`/`KEK`/`PK`, "Setup Mode" — see
+[[secure-boot-signing|the Secure Boot guide]]), bypassing shim entirely.
+There is no mechanism for signing a custom-rebuilt iPXE binary with FOG's
+own Secure Boot signing certificate — the signed chain only ever covers
+upstream's unmodified binaries.
+
+On a **fresh** install with HTTPS enabled and FOG's own PKI, netboot stays
+on HTTP automatically while everything else is HTTPS, avoiding that trade
+by default. An **existing** server keeps whatever it's already doing.
+Override either way with `--netboot-proto http|https`.
+
+>[!note]
+>Public Let's Encrypt for netboot works only on an FQDN in a domain you
+>control — it doesn't need to be publicly reachable, DNS-01 is enough — and
+>only on that exact FQDN, not a short hostname and not an IP. Set
+>`FOG_WEB_HOST` to that FQDN or the generated boot URLs won't match the
+>certificate.
+
+>[!info] FOG 1.6
+>The web/API-vs-netboot protocol split described above (`netbootproto`,
+>`--netboot-proto`) is a FOG 1.6 addition, and its Nginx support is
+>unverified — see [Still unverified](#still-unverified).
+
+## Secure Boot
+
+The Secure Boot zone follows the same shape as the web zone: the CA issues a
+**FOG Secure Boot CA**, that intermediate is what gets enrolled in firmware
+(`MOK.der`), and it issues a short-lived **code-signing leaf** that actually
+signs the FOS kernels. `sbsign --addcert` embeds the intermediate in the
+signature so shim can chain the leaf back to what was enrolled.
+
+The point is rotation. Under the old flat model the enrolled certificate
+*is* the signer, so replacing a signing key means a physical MokManager trip
+to every machine. Enrolling the issuer instead means leaves can be rotated
+or reissued while the fleet keeps booting.
+
+Full enrollment walkthrough, the three supported routes, and rotating or
+removing a key: see [[secure-boot-signing|Secure Boot: signing FOS with your
+own key]].
+
+>[!warning] Servers that already enrolled a flat MOK
+>A server that generated a self-signed MOK under an earlier build is moved
+>onto the intermediate, and any machine that enrolled the old key must
+>enroll once more. This only affects very early testers of the redesign —
+>see [[secure-boot-signing#the-old-flat-mok|the note in the Secure Boot
+>guide]].
+
+## Still unverified
+
+- **Nginx.** Vhost changes for this redesign (the managed-block splice, the
+  `netbootproto` redirect exclusion) have been exercised on Apache only.
+- **Secure Boot with name constraints, on hardware.**
+- **Node certificate issuance against a real second machine.** The endpoint
+  and the signing helper are each verified in isolation; the two halves
+  haven't been run against each other across a network.
+
+If you've tested one of these and can confirm it working (or not), please
+open a pull request against this page — an inline edit on GitHub is enough —
+or post on the [FOG forums](https://forums.fogproject.org/) so this page can
+be updated with a confirmed result instead of a caveat.
