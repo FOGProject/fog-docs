@@ -109,24 +109,57 @@ that server will actually ask for, and refuses to produce a CA that would
 reject it. A wrong hostname fails here, on the hub, instead of on the far
 server as a web server that will not start.
 
-Each run writes `/root/fog-web-cas/<name>-webca.tar.gz` holding three files.
+Each run writes `/root/fog-web-cas/<name>-webca.tar.gz` holding three files:
+`webca.pem` (the CA), `webca.key` (its private key) and `fog-root.pem` (the
+hub's root, for the far server to verify the chain against).
 
-### Step 2 — install it on that server
+Repeat this for every server before moving on — the hub's root key has to be
+present to sign, so if you keep it offline this is the one sitting where it
+needs to be available.
+
+### Step 2 — copy the bundle to that server
+
+The bundle is under `/root` on the hub, and it contains a private key, which is
+why. Most sites do not permit direct root SSH, so **push** it from the hub
+rather than pulling it — staging it through your own account for exactly as
+long as the copy takes:
 
 ```bash
-scp root@<hub>:/root/fog-web-cas/<name>-webca.tar.gz /root/
-cd /root && tar -xzf <name>-webca.tar.gz
-
-cd ~/fogproject/bin
-sudo ./installfog.sh --web-ca-cert /root/webca.pem \
-                     --web-ca-key  /root/webca.key \
-                     --web-ca-root /root/fog-root.pem
+# On the hub
+sudo cp /root/fog-web-cas/<name>-webca.tar.gz ~/
+sudo chown $USER: ~/<name>-webca.tar.gz
+scp ~/<name>-webca.tar.gz <you>@<far-server>:~/
+rm -f ~/<name>-webca.tar.gz
 ```
 
-You pass these **once**. The files are imported and later upgrades reuse them
-without the options.
+>[!warning] `scp root@hub:/root/... /root/` will not work
+>Neither end cooperates: `sshd` ships with `PermitRootLogin prohibit-password`
+>on most distributions, and your unprivileged local account cannot write to
+>`/root` either. Both failures read simply `Permission denied`, which is easy
+>to misread as the file not existing.
 
-### Step 3 — trust the hub's CA wherever you need it
+### Step 3 — install it on that server
+
+```bash
+# On the far server
+sudo mkdir -p /root/webca
+sudo tar -xzf ~/<name>-webca.tar.gz -C /root/webca
+
+cd ~/fogproject/bin
+sudo ./installfog.sh --web-ca-cert /root/webca/webca.pem \
+                     --web-ca-key  /root/webca/webca.key \
+                     --web-ca-root /root/webca/fog-root.pem
+```
+
+Unpacking as root into `/root/webca` keeps `webca.key` out of reach of every
+other account on the machine — it is a CA private key, and it stays on this
+server permanently, so where it lands matters. Delete the tarball from your
+home directory afterwards.
+
+You pass these three options **once**. The files are imported into the web zone
+and later upgrades reuse the import without the options being given again.
+
+### Step 4 — trust the hub's CA wherever you need it
 
 One certificate now covers the whole fleet. On a Linux client:
 
