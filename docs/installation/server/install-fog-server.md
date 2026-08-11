@@ -19,7 +19,7 @@ tags:
 
 Before rushing into installing FOG you want to make sure you check the [[requirements]] 
 The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
-Updating fog is essentially the same process, just instead of creating a fresh clone of the repo, you do a `git pull` and run the installer again.
+Updating fog is essentially the same process, just instead of creating a fresh clone of the repo, you do a `git pull` and run the installer again — or let [`bin/updatefog.sh`](#updating-an-existing-install) do both steps for you.
 
 ## Prerequisite
 
@@ -98,6 +98,48 @@ You can see a list of current branches here:
 > `git reset --hard origin/{branchName}`
 >  to undo file changes within your repo folder that sometimes occur during the install then run `git pull` again to ensure your on the latest.
 
+### Updating an existing install
+
+The manual `git fetch`/`git checkout`/`git pull` steps above still work exactly
+as described, and give you the most control — useful if you want to inspect
+changes before pulling them, update to a specific commit or tag, or otherwise
+customize the process.
+
+If you'd rather not do that by hand every time, `bin/updatefog.sh` wraps the
+same steps into one command:
+
+    cd /root/fogproject/bin
+    ./updatefog.sh
+
+It fetches and checks out the branch mapped from the update channel this
+server is configured to track (`stable`, `dev`, or `beta` — mapping to the
+`stable`, `dev-branch`, and `working-1.6` branches respectively), backs up the
+PXE background, kernel set, and rEFInd files that the installer's asset sync
+can overwrite, re-runs `installfog.sh` for you, and automatically reverts the
+git checkout and those backed-up files (then re-installs) if anything fails
+partway through.
+
+Options:
+
+    ./updatefog.sh --help
+    Usage: ./updatefog.sh [-h?y] [--channel stable|dev|beta] [--git-path </path>] [--no-revert]
+        -h -? --help       Display this info
+              --channel    Update channel to track: stable, dev, or beta
+                            defaults to whatever this server already tracks
+              --git-path   Override the git checkout path this server records
+              --no-revert  On failure, leave the system as-is instead of
+                            automatically reverting to the previous commit
+        -y    --yes        Skip the confirmation prompt (for cron/GUI use)
+
+The channel you choose is remembered for next time, the same way `.fogsettings`
+already remembers your other install choices — see
+[[install-fogsettings|The .fogsettings file]]. It's also mirrored into the
+database as `FOG_GIT_PATH`/`FOG_UPDATE_CHANNEL` under the **FOG Update**
+category on the Settings page in the web UI, so you can see which checkout and
+channel a server is tracking without SSHing in. That copy is informational
+only — editing it there has no effect on the next update; change the channel
+with `--channel` instead.
+
 ### Alternatives
 
 If you have issues or good reasons for not using Git, you can just
@@ -140,8 +182,8 @@ after the installer finishes:
 
 Prompt  | Description
 --      |   --
-**SELinux** | *this only applies to RedHat based installs* If SELinux is enabled on your system, then the installer asks you to disable SELinux. The current version of FOG will give problems when SELinux is enabled. Everyone is encouraged to come up with a properly tested SELinux policy we can add to the project and apply for everyone.
-**Local Firewall** | If a local firewall (iptables or firewalld) is enabled, then the installer asks you to disable it. You can leave it  enabled, but then you need to know how to manage the firewall and let all services pass. Currently, the best practice is to disable the firewall if you don't know how to set up rules yourself. As with SELinux, everyone is encouraged to develop a proper set of firewall rules.
+**SELinux** | *this only applies to RedHat based installs* **FOG supports SELinux enforcing, and leaving it on is now the default.** The installer labels its own directories, ships a small policy module for the ports the web tier needs, and has been tested capturing, deploying and replicating under enforcing. You are still asked, and can still choose permissive, but you no longer need to. Older versions of FOG recommended permissive and switched to it automatically under `-y`; that is no longer the case.
+**Local Firewall** | **The installer now configures your firewall rather than asking you to switch it off.** It opens only the ports your install actually uses, on firewalld and ufw, and prints the exact commands for raw `iptables` (which it deliberately does not modify — see below). You can still choose to disable the firewall, or to leave it alone and configure it yourself. Note older versions did nothing at all here under `-y`, leaving the firewall in whatever state the machine happened to be in. For the port list, the manual steps for all three backends, and how to restrict FOG to one subnet, see [[firewall|Firewall configuration for a FOG server]].
 **OS Selection** | The installer tries to guess the distribution you're running. Just confirm the selection if it's correct, otherwise choose the apropriate option.
 **Installation mode** | With the same installer you can install a normal FOG server (called master node) or a FOG storage node. A storage node uses this same installer — you would answer Y here to install one instead of a full server. For what a storage node is and how to manage one, see [[storage-node|Storage Node Management]]. As we're installing a full FOG server here, choose N here.
 **Default Network interface** | The installer needs to know which network interface will be used for hosting PXE booting as well as sending images via unicast and multicast. If the installer guessed the right interface, then choose n(o) to proceed, using the pre-selected network interface. Otherwise, choose y(es) and type in the name of the network interface (like eth0, ens192).

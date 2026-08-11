@@ -29,18 +29,23 @@ tags:
 > clients to load. The table below lists the old and new file names; the examples
 > on this page already use the 1.6 names.
 
-| Client type | DHCP arch | FOG 1.5.x boot file | **FOG 1.6 boot file** |
-| --- | --- | --- | --- |
-| BIOS / legacy | `00000` | `undionly.kpxe` | `undionly.kkpxe` |
-| 32-bit UEFI | `00006` | `i386-efi/ipxe.efi` | `i386-efi/snponly.efi` |
-| 64-bit UEFI | `00007`/`00008`/`00009` | `ipxe.efi` | `snponly.efi` |
-| ARM64 UEFI | `00011` | — | `arm64-efi/snponly.efi` |
+| Client type | DHCP arch | FOG 1.5.x boot file | **FOG 1.6 boot file** | **1.6 Secure Boot** |
+| --- | --- | --- | --- | --- |
+| BIOS / legacy | `00000` | `undionly.kpxe` | `undionly.kkpxe` | n/a — no Secure Boot in BIOS mode |
+| 32-bit UEFI | `00006` | `i386-efi/ipxe.efi` | `i386-efi/snponly.efi` | **not possible** — see below |
+| 64-bit UEFI | `00007`/`00008`/`00009` | `ipxe.efi` | `snponly.efi` | `secureboot/snponly-shimx64.efi` |
+| ARM64 UEFI | `00011` | — | `arm64-efi/snponly.efi` | `secureboot/arm64-efi/snponly-shimaa64.efi` |
 
 FOG 1.6 standardized on the SNP-driver `snponly.efi` binaries, which are far more
 reliable on modern UEFI firmware than the older UNDI-driver `ipxe.efi`. These are
 the exact file names the FOG 1.6 installer configures for its own ISC/Kea DHCP
 server, so they are the correct values to put in your dnsmasq config too. All of
 these files ship in `/tftpboot` on a 1.6 server.
+
+If any of your clients have Secure Boot enabled, read
+[Secure Boot and proxyDHCP](#secure-boot-and-proxydhcp) before choosing which
+column to use — the short version is that the Secure Boot files are safe to hand
+to *every* 64-bit UEFI client, whether Secure Boot is on or off.
 
 ## dnsmasq's Roles in FOG
 
@@ -130,17 +135,37 @@ dhcp-boot=net:UEFI64,snponly.efi,,<fog_server_IP>
 # The second is the timeout, in seconds.
 pxe-prompt="Booting FOG Client", 1
 
-# The known types are x86PC, PC98, IA64_EFI, Alpha, Arc_x86,
-# Intel_Lean_Client, IA32_EFI, BC_EFI, Xscale_EFI and X86-64_EFI
+# The known types, IN THE ORDER DNSMASQ NUMBERS THEM, are x86PC(0), PC98(1),
+# IA64_EFI(2), Alpha(3), Arc_x86(4), Intel_Lean_Client(5), IA32_EFI(6),
+# x86-64_EFI(7), Xscale_EFI(8), BC_EFI(9), ARM32_EFI(10), ARM64_EFI(11).
+# NOTE: dnsmasq's names for 7 and 9 are the reverse of RFC 4578, where 7 is
+# "EFI BC" and 9 is "EFI x86-64". Most 64-bit UEFI firmware reports arch 7,
+# which dnsmasq calls x86-64_EFI -- NOT BC_EFI. Getting this backwards means
+# your rule silently never matches. dnsmasq also accepts the bare number, which
+# is unambiguous, so prefer that if you are unsure.
+#
+# THE TRAILING SERVER IP IS REQUIRED. Given a bare filename, dnsmasq announces
+# ITSELF as the boot server and only works if it is also running a TFTP server
+# (enable-tftp). This config is not -- so without the IP the client performs PXE
+# boot server discovery, gets no usable answer, and dies with
+# "PXEBS ... Connection timed out" while dnsmasq's log cheerfully shows the
+# right filename being offered. Naming the FOG server sends it to FOG's tftpd.
 # This option is first and will be the default if there is no input from the user.
-pxe-service=X86PC, "Boot to FOG", undionly.kkpxe
-pxe-service=X86-64_EFI, "Boot to FOG UEFI", snponly.efi
-pxe-service=BC_EFI, "Boot to FOG UEFI PXE-BC", snponly.efi
+pxe-service=X86PC, "Boot to FOG", undionly.kkpxe, <fog_server_IP>
+pxe-service=X86-64_EFI, "Boot to FOG UEFI", snponly.efi, <fog_server_IP>
+pxe-service=BC_EFI, "Boot to FOG UEFI PXE-BC", snponly.efi, <fog_server_IP>
 
 dhcp-range=<fog_server_ip>,proxy
 ```
 
 **You must update the <fog_server_ip> values with the exact IP address of your FOG server.**
+
+> [!warning] `pxe-service` overrides `dhcp-boot` for UEFI clients
+> When exactly one `pxe-service` line matches a UEFI client's architecture,
+> dnsmasq answers it from that line and **skips the `dhcp-boot` rules entirely**.
+> If you change a UEFI boot file and nothing happens, you almost certainly edited
+> `dhcp-boot` when the `pxe-service` line is what is being used. Change both, and
+> keep them in agreement.
 
 10.  Restart the dnsmasq service
 
@@ -196,6 +221,111 @@ your switches/routers and your server config:
     server won't respond to requests from hosts outside its own subnet.
 2.  Add an IP Helper / DHCP Relay record to your router or switch so DHCP
     broadcasts are sent to both your normal DHCP server and the FOG server.
+
+## Secure Boot and proxyDHCP
+
+### No, DHCP cannot detect Secure Boot — and it does not need to
+
+A common first instinct is to make dnsmasq notice that a client has Secure Boot
+enabled and hand it a signed binary, sending everyone else the ordinary one.
+**That is not possible.** The client's DHCP request comes from firmware before
+any operating system exists, and it carries no indication of Secure Boot state.
+Option 93 (`PXEClient:Arch:NNNNN`) reports only the client *architecture* —
+BIOS, 32-bit UEFI, 64-bit UEFI, ARM64. There is no option, vendor class, or
+user class that reports whether Secure Boot is on, and no proxyDHCP server of
+any kind can infer it.
+
+The reason this does not matter is that **the signed chain works whether Secure
+Boot is enabled or not.** `shim` is an ordinary UEFI application that happens to
+carry a Microsoft signature. With Secure Boot on, the firmware verifies it and
+it verifies what it loads next; with Secure Boot off, the firmware verifies
+nothing and shim does not enforce anything either. It simply boots.
+
+So the correct configuration is not a conditional — it is to point **every**
+64-bit UEFI and ARM64 client at the Secure Boot files unconditionally. That set
+is a superset: it covers the Secure Boot machines and costs the others nothing.
+
+### The optimal configuration
+
+```
+# Architecture tags, as above.
+dhcp-vendorclass=BIOS,PXEClient:Arch:00000
+dhcp-vendorclass=UEFI32,PXEClient:Arch:00006
+dhcp-vendorclass=UEFI,PXEClient:Arch:00007
+dhcp-vendorclass=UEFI64,PXEClient:Arch:00009
+dhcp-vendorclass=ARM64,PXEClient:Arch:00011
+
+# BIOS clients: Secure Boot does not exist in BIOS/CSM mode, so this is
+# unchanged.
+dhcp-boot=net:BIOS,undionly.kkpxe,,<fog_server_IP>
+
+# 64-bit UEFI and ARM64: always the shim chain, Secure Boot on or off.
+dhcp-boot=net:UEFI,secureboot/snponly-shimx64.efi,,<fog_server_IP>
+dhcp-boot=net:UEFI64,secureboot/snponly-shimx64.efi,,<fog_server_IP>
+dhcp-boot=net:ARM64,secureboot/arm64-efi/snponly-shimaa64.efi,,<fog_server_IP>
+
+# 32-bit UEFI: unsigned, and it cannot be otherwise. See below.
+dhcp-boot=net:UEFI32,i386-efi/snponly.efi,,<fog_server_IP>
+
+# Remember that for UEFI clients these pxe-service lines, not the dhcp-boot
+# rules above, are what actually decides the file. Keep them in agreement.
+pxe-prompt="Booting to FOG", 1
+pxe-service=X86PC, "Boot to FOG", undionly.kkpxe, <fog_server_IP>
+pxe-service=IA32_EFI, "Boot to FOG", i386-efi/snponly.efi, <fog_server_IP>
+pxe-service=x86-64_EFI, "Boot to FOG", secureboot/snponly-shimx64.efi, <fog_server_IP>
+pxe-service=BC_EFI, "Boot to FOG", secureboot/snponly-shimx64.efi, <fog_server_IP>
+pxe-service=ARM64_EFI, "Boot to FOG", secureboot/arm64-efi/snponly-shimaa64.efi, <fog_server_IP>
+
+dhcp-range=<fog_server_ip>,proxy
+```
+
+Both arch 7 and arch 9 are listed because firmware disagrees about which one
+means "64-bit UEFI" — most reports 7, some reports 9. Point both at the same
+file and the disagreement stops mattering.
+
+### Why the boot file names the shim and not the loader
+
+`secureboot/snponly-shimx64.efi` and `secureboot/ipxe-shimx64.efi` are the
+**same signed binary**, staged under two names — you can confirm it from the
+sha256 values in `/tftpboot/secureboot/MANIFEST`. It is upstream `ipxe/shim`,
+signed by Microsoft.
+
+The name still matters, because ipxe/shim carries a patch that strips the
+`-shim<arch>` infix from the path it was itself fetched from and loads *that*
+file out of the same directory. So the file you name in DHCP chooses the
+loader:
+
+| DHCP boot file | shim then loads | iPXE uses |
+| --- | --- | --- |
+| `secureboot/snponly-shimx64.efi` | `secureboot/snponly.efi` | the firmware's UEFI SNP driver |
+| `secureboot/ipxe-shimx64.efi` | `secureboot/ipxe.efi` | iPXE's own built-in NIC drivers |
+
+Start with the `snponly` name. **If the chain loads but the network never comes
+up, the firmware's own SNP implementation is at fault — switch the DHCP file
+name to `secureboot/ipxe-shimx64.efi`.** That is a DHCP-only change; nothing is
+renamed on the server.
+
+### 32-bit UEFI cannot do Secure Boot with FOG
+
+There is no Microsoft-signed 32-bit shim and no signed 32-bit iPXE, so there is
+nothing signed to point an ia32 UEFI client at. Such machines must have Secure
+Boot **disabled** to network boot. FOG refuses Secure Boot enrolment on them
+outright rather than half-completing it, and 1.6 hides the "Enroll Secure Boot
+Key" boot-menu entry from clients that booted in BIOS/CSM mode for the same
+reason: an option that cannot succeed should not be offered.
+
+> [!warning] Secure Boot and HTTPS are mutually exclusive
+> An HTTPS FOG install rebuilds iPXE locally so the binary trusts your server's
+> CA. A signed binary cannot be rebuilt without destroying its signature, so the
+> Secure Boot binaries are upstream's generic ones and cannot carry your CA. Use
+> one or the other, not both.
+
+> [!important] The boot file is only half of Secure Boot
+> Getting a signed iPXE to load is the part dnsmasq controls. The FOS kernel FOG
+> boots afterwards must also be trusted by the machine, which is a separate
+> setup step — see [Secure Boot signing](../../kb/how-tos/secure-boot-signing.md).
+> A correct DHCP configuration with an untrusted kernel gets you a signed iPXE
+> and then a failure one step later.
 
 ## Advanced dnsmasq techniques
 

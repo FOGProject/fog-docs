@@ -16,13 +16,13 @@ tags:
 
 The FOG installer has quite a few command line options. See the output
 below. You might want force FOG to setup the web interface via HTTPS,
-change the default PXE boot file or web root directory.
+change the web root directory, or install to a non-default location.
 
     ./installfog.sh --help
-    Usage: ./installfog.sh [-h?dEUuHSCKYXTFA] [-f <filename>] [-N <databasename>]
+    Usage: ./installfog.sh [-h?odEUHSCKYyXTFl] [-f <filename>] [-N <databasename>]
             [-D </directory/to/document/root/>] [-c <ssl-path>]
             [-W <webroot/to/fog/after/docroot/>] [-B </backup/path/>]
-            [-s <192.168.1.10>] [-e <192.168.1.254>] [-b <undionly.kpxe>]
+            [-s <192.168.1.10>] [-e <192.168.1.254>]
         -h -? --help            Display this info
         -o    --oldcopy         Copy back old data
         -d    --no-defaults     Don't guess defaults
@@ -31,6 +31,18 @@ change the default PXE boot file or web root directory.
         -S    --force-https     Force HTTPS for all comunication
         -C    --recreate-CA     Recreate the CA Keys
         -K    --recreate-keys   Recreate the SSL Keys
+              --external-ca     Sign FOG's server certificate with an
+                                existing external/intermediate CA instead
+                                of generating a self-signed CA
+              --ca-cert         Path to the intermediate CA certificate (PEM)
+              --ca-key          Path to the intermediate CA private key (PEM)
+              --ca-root         Path to the root CA certificate (PEM)
+              --web-ca-cert     Bring your own CA for the WEB zone: the
+                                intermediate that signs this server's
+                                vhost certificate
+              --web-ca-key      Private key matching --web-ca-cert
+              --web-ca-root     Root certificate --web-ca-cert chains to
+                                (all three are required together)
         -Y -y --autoaccept      Auto accept defaults and install
         -f    --file            Use different update file
         -c    --ssl-path        Specify the ssl path
@@ -41,13 +53,125 @@ change the default PXE boot file or web root directory.
                                 (E.G. http://127.0.0.1/fog,
                                       http://127.0.0.1/)
                                 Defaults to /fog/
+              --fogprogramdir   Specify the FOG base directory
+                                defaults to /opt/fog
+                                remembered in /etc/fog/fog.conf, so it
+                                only needs giving on a first install
+        -N    --mysqldbname     Specify the FOG database name
+                                defaults to fog
         -B    --backuppath      Specify the backup path
-              --uninstall       Uninstall FOG
+              --uninstall       Uninstall FOG. Removes FOG's own files,
+                                services and config, and restores the
+                                files FOG replaced. Your database,
+                                images, snapins, SSL CA and the fog
+                                account are KEPT unless purged below.
+                                Packages are never removed.
+              --dry-run         With --uninstall, list what would be
+                                removed and exit without changing anything
+              --force           With --uninstall, skip the typed
+                                confirmation (-Y does NOT skip it)
+              --purge-db        Also drop the FOG database
+              --purge-images    Also delete the image storage
+              --purge-snapins   Also delete the snapins
+              --purge-ssl       Also delete the SSL CA. This permanently
+                                breaks every deployed fog-client
+              --purge-user      Also delete the fog Linux account
+              --purge-all       All of the --purge-* options above
         -s    --startrange      DHCP Start range
         -e    --endrange        DHCP End range
-        -b    --bootfile        DHCP Boot file
         -E    --no-exportbuild  Skip building nfs file
         -X    --exitFail        Do not exit if item fails
         -T    --no-tftpbuild    Do not rebuild the tftpd config file
         -F    --no-vhost        Do not overwrite vhost file
         -l    --list-packages   List of the basic packages FOG needs for install or is currently installed for FOG
+              --secure-boot-key   Private key used to re-sign the FOS
+                                  kernels for UEFI Secure Boot
+              --secure-boot-cert  Certificate matching --secure-boot-key
+                                  (both are required together)
+              --no-secure-boot    Do not generate a Secure Boot signing
+                                  key, and leave the FOS kernels unsigned
+              --no-ca-trust       Do not add this server's CA to this
+                                  server's own system trust store
+
+The `--uninstall`, `--dry-run`, `--force` and `--purge-*` options are
+covered in detail in [Uninstalling the Fog server](uninstall-fog-server.md).
+
+## Certificate options
+
+FOG generates its own Certificate Authority at install time and uses it to sign
+this server's HTTPS certificate. These options change **which** CA does that
+signing, and whether this server trusts the result locally.
+
+| Option | Use it when |
+| --- | --- |
+| *(none)* | The default. FOG generates a CA and a Web CA beneath it, and signs the vhost certificate from that. |
+| `--web-ca-cert` + `--web-ca-key` + `--web-ca-root` | You want this server's HTTPS certificate signed by a CA **you** supply — your enterprise PKI, an internal ACME CA, or one issued by another FOG server. All three are required together. |
+| `--external-ca` with `--ca-cert`/`--ca-key`/`--ca-root` | The older spelling of the same thing. It targets the same zone, which is what it has always effectively meant. |
+| `--no-ca-trust` | You do **not** want the installer adding this server's CA to this server's own system trust store. |
+
+Passing any one of `--web-ca-*` implies `--external-ca`, so you do not need
+both. You supply the files **once** — they are imported and later upgrades
+reuse the import without the flags.
+
+All three are validated before anything is changed: the key must match the
+certificate, the certificate must be a CA (`basicConstraints CA:TRUE`), and it
+must verify against the root you supply. Any failure stops the install rather
+than producing a server signed by the wrong thing.
+
+>[!info] This does not affect fog-client
+>`--web-ca-*` replaces the CA that signs the **web** certificate and nothing
+>else. The root that fog-client pinned at registration is untouched, which is
+>what makes this safe to do on a running fleet without re-registering a single
+>machine.
+
+### `--no-ca-trust` and the local trust store
+
+By default the installer adds this server's own CA to this server's system
+trust store, so `curl`, `wget` and PHP's stream wrapper on the FOG server can
+verify the FOG server without being handed a CA file each time. The store is
+detected from the host — `/etc/pki/ca-trust/source/anchors` on the RHEL family,
+`/usr/local/share/ca-certificates` on Debian/Ubuntu/Alpine,
+`/etc/ca-certificates/trust-source/anchors` on Arch.
+
+`--no-ca-trust` skips it, and is remembered in `.fogsettings` so an upgrade
+does not quietly reverse the decision.
+
+>[!warning] This does not make your browser stop warning
+>Firefox keeps its own certificate store and Chrome reads a per-user one, so
+>neither consults what this writes — and your browser is usually on a different
+>machine entirely. Import the CA into the browser yourself; it is published at
+>`https://<your-fog-server>/fog/management/other/ca.cert.der`.
+
+For the per-zone mechanism in full see [[bringing-your-own-ca|Bringing your own
+CA]]. To point **several** FOG servers at a single CA so one import covers all
+of them, see
+[[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]].
+
+## Secure Boot options
+
+Since FOG 1.6.0 the installer **generates a Secure Boot signing key by
+default** and signs the FOS kernels with it, so a stock server always has a
+certificate fingerprint to check and an enrolment kit to hand out. The three
+options above only matter if you want to change that:
+
+| Option | Use it when |
+| --- | --- |
+| *(none)* | The default. A key is generated at `/opt/fog/secureboot/` on first install and **reused, never regenerated**, on every later upgrade. |
+| `--secure-boot-key` + `--secure-boot-cert` | You already have a signing key you want FOG to use. Both are required together; the certificate may be PEM or DER. Your key is never overwritten. |
+| `--no-secure-boot` | You do not want a signing key or the root-only signing helper on this server. The FOS kernels are left unsigned. |
+
+`--no-secure-boot` is remembered in `.fogsettings`, so an upgrade will not
+hand back a key and a `sudoers` rule you deliberately declined.
+
+>[!warning] The generated key is never regenerated, and that is deliberate
+>A new signing key silently invalidates enrolment on **every machine that
+>already trusted the old one**, and nothing reports that until a client fails
+>to boot — long after the install that caused it. `--recreate-keys` and
+>`--recreate-CA` deliberately do not touch it. To rotate deliberately, remove
+>`/opt/fog/secureboot/` and re-run the installer, then re-enrol every client.
+
+The private key lives at `/opt/fog/secureboot/MOK.key`, `0600` inside a `0700`
+directory owned by root. It is never copied into the web root and the web
+server cannot read it — see
+[[secure-boot-signing|Secure Boot: signing FOS with your own key]] for the
+full procedure and for what to do on each client.
