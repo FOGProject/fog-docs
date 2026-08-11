@@ -246,11 +246,21 @@ plugins:
     layout:
       position: beforeBody
       priority: 30
+  # FOG icon shown beside the site title, mirroring mkdocs-material's `theme.logo`.
+  # Grouped with page-title into a single "brand" flex row (see layout.groups below)
+  # so the icon and text sit side-by-side instead of stacking.
+  - source: "./local-plugins/site-logo"
+    enabled: true
+    layout:
+      position: left
+      priority: 8
+      group: brand
   - source: "@quartz-community/page-title"
     enabled: true
     layout:
       position: left
       priority: 10
+      group: brand
   - source: "@quartz-community/darkmode"
     enabled: true
     layout:
@@ -368,6 +378,10 @@ plugins:
       priority: 26
 layout:
   groups:
+    brand:
+      priority: 10
+      direction: row
+      gap: 0.5rem
     toolbar:
       priority: 35
       direction: row
