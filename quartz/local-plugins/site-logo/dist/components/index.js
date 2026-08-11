@@ -20,9 +20,10 @@ export const SiteLogo = () => {
 }
 .site-logo img {
   display: block;
-  height: 1.75rem;
-  width: 1.75rem;
-  border-radius: 0.2rem;
+  height: auto;
+  width: auto;
+  border-radius: 0;
+  margin: 1rem -5px;
 }
 `
 

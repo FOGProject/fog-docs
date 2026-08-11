@@ -246,9 +246,12 @@ plugins:
     layout:
       position: beforeBody
       priority: 30
-  # FOG icon shown beside the site title, mirroring mkdocs-material's `theme.logo`.
-  # Grouped with page-title into a single "brand" flex row (see layout.groups below)
-  # so the icon and text sit side-by-side instead of stacking.
+  # FOG icon shown above the site title, mirroring mkdocs-material's `theme.logo`.
+  # Grouped with page-title into a single "brand" flex column (see layout.groups
+  # below) -- Quartz's sidebar has far less horizontal room than mkdocs-material's
+  # full-width header bar, so a side-by-side icon+title gets dwarfed/overlapped by
+  # the title once it wraps to 2-3 lines. Stacking keeps the icon a fixed, legible
+  # size regardless of title length or sidebar width.
   - source: "./local-plugins/site-logo"
     enabled: true
     layout:
@@ -381,7 +384,7 @@ layout:
     brand:
       priority: 10
       direction: row
-      gap: 0.5rem
+      gap: 0.1rem
     toolbar:
       priority: 35
       direction: row
