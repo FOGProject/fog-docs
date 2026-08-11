@@ -215,6 +215,25 @@ openssl verify -CAfile /tmp/fogca.crt /tmp/leaf.pem
 
 You want `OK`.
 
+>[!tip] If the issuer is still the old one, check the file before the install
+>The install writing the wrong certificate and the web server *serving* the
+>wrong file look identical from outside. Ask the server which file it wrote:
+>
+>```bash
+>sudo openssl x509 -noout -issuer \
+>  -in "$(grep -oP "(?<=^sslpubcert=').*(?=')" /opt/fog/.fogsettings)"
+>```
+>
+>`CN = FOG Web CA - <hostname>` here means the install worked and the problem is
+>on the serving side — see *"the certificate on disk is right but the server
+>sends the old one"* under [Troubleshooting](#troubleshooting). Anything else
+>means the install itself did not take.
+>
+>Note the path comes from `sslpubcert`. `/opt/fog/snapins/ssl/.srvpublic.crt` is
+>the **client communication** certificate, a different zone, and it is *supposed*
+>to stay signed by the server's own CA — reading that one instead will convince
+>you a working setup is broken.
+
 ## Troubleshooting
 
 **The certificate did not change after I installed with the new options.**
@@ -223,6 +242,35 @@ at the server's *names*. Switching CA left the names identical, so the
 certificate was left alone — a clean install that changed nothing. Update the
 installer and run it again; the newer version notices the CA changed and
 re-issues by itself.
+
+If the installer is already current, confirm which side the problem is on before
+going further — the certificate may have been reissued correctly and simply not
+be the one the web server is sending. See the next entry.
+
+**The certificate on disk is right but the server sends the old one.**
+The server has two FOG virtual hosts in one file, and is using the wrong one.
+Count them:
+
+```bash
+# Apache
+grep -c '^<VirtualHost \*:443>' /etc/apache2/sites-available/001-fog.conf
+# nginx
+grep -c '^server {' /etc/nginx/conf.d/fog.conf
+```
+
+`2` confirms it. FOG owns a marked region of that file so your own additions
+survive an upgrade, and for a short window the run that introduced those markers
+added the new block *below* the existing one instead of replacing it — leaving
+FOG's previous virtual host in place above it. Both Apache and nginx use the
+first virtual host that matches, so the stale copy won, complete with the
+certificate paths from before the change. Nothing logs an error, because nothing
+is wrong as far as the web server is concerned.
+
+Update the installer and run it again. It detects the stale copy and removes it,
+reporting `Removed a stale FOG vhost left outside the managed block`. Only a
+block claiming a name FOG's own block claims is removed, so a virtual host you
+added for a different name is left alone; the installer's timestamped backup of
+the file is kept regardless.
 
 **The far server's web server will not start, or its certificate is
 rejected.** Its certificate carries a name its CA does not allow. Every FOG
