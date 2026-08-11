@@ -160,16 +160,21 @@ generation:
 ```
 
 The helper copies the key, verifies the copy still matches the certificate
-that stays behind, and only then shreds the original.
+that stays behind, and only then shreds the original — the key is what
+leaves, never the certificate.
 
->[!warning] Leave the certificate in place
->Everything chains to it, and the installer uses its presence to recognize
->that a CA already exists. Removing the *certificate* is what makes the next
->run mint a brand new CA, orphaning every intermediate beneath it.
+>[!warning] It's the certificate that must never move, not the key
+>This warning is about a *different* file than the one you just offlined.
+>Everything on the server chains to the CA's certificate, and the installer
+>uses its presence — not the key's — to recognize that a CA already exists.
+>Move or delete the *certificate* (root or intermediate alike) and the next
+>run mints a brand new CA in its place, orphaning every intermediate and
+>leaf beneath it and every client that already trusts what's enrolled.
 
-Day to day nothing needs the key — only issuing a **new** intermediate does.
-The installer detects an offlined key and says what to restore rather than
-failing inside openssl.
+Day to day nothing needs the key — only issuing a **new** intermediate, or a
+new leaf beneath one whose own key is offline, does. The installer detects
+an offlined key and says what to restore rather than failing inside
+openssl.
 
 ## Leaf renewal
 
