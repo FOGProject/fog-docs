@@ -10,3 +10,7 @@ quartz/public
 quartz/.quartz-cache
 quartz/.quartz
 quartz/.turbo
+site
+_build
+__pycache__
+.lastprereqrun
