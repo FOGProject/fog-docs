@@ -76,6 +76,14 @@ per `mkdocs.yml`) — not via `make.ps1`.
   - Image: `![[image-name.ext]]` — all images live under `docs/assets/img/`
     and are referenced by filename only (no path), so names must be unique
     site-wide.
+  - **Inside a table cell, use a normal relative link**
+    (`[Title](../../kb/how-tos/page.md)`), not a wikilink. The cell's `|`
+    separator means the alias pipe has to be escaped, and `roamlinks` does
+    not recognise `[[page\|Title]]` — it warns `unable to find page\` at
+    build time and renders the wikilink as literal text on the page.
+  - Don't start a line in a fenced code block with a bash `[[ ... ]]` test —
+    `roamlinks` rewrites it into a markdown link (`test -d …` instead). The
+    same test later in a line, or wrapped in `if`, survives; it only warns.
 - **Callouts, not raw admonitions**: write Obsidian callout syntax —
   ```
   >[!note]
