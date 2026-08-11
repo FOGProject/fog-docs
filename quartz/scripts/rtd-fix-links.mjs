@@ -119,6 +119,17 @@ function rewriteFile(absPath) {
     /(content="0;\s*url=)([^"]*)(")/g,
     (m, a, url, b) => `${a}${fixUrl(url)}${b}`,
   )
+  // Quartz core (renderPage.tsx's pageResources()) bakes contentIndex.json's
+  // relative path into an INLINE <script> body (`const fetchData = fetch("...")`),
+  // not a src/href attribute, so it's invisible to the three regexes above.
+  // Search and the graph view both read from `fetchData` — without this,
+  // every leaf page promoted into a directory below is left with a fetch
+  // path resolved one directory level too shallow, and both features
+  // silently fail to load their data on every such page.
+  html = html.replace(
+    /(const fetchData = fetch\(")([^"]*)("\))/g,
+    (m, a, url, b) => `${a}${fixUrl(url)}${b}`,
+  )
   if (html !== original) writeFileSync(absPath, html)
 }
 
