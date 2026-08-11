@@ -2,7 +2,6 @@
 title: What is FOG
 context_id: intro
 aliases:
-    - Introduction
     - What is FOG
 description: What is FOG 
 tags:
