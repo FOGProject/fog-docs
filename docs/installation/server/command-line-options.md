@@ -37,6 +37,12 @@ change the web root directory, or install to a non-default location.
               --ca-cert         Path to the intermediate CA certificate (PEM)
               --ca-key          Path to the intermediate CA private key (PEM)
               --ca-root         Path to the root CA certificate (PEM)
+              --web-ca-cert     Bring your own CA for the WEB zone: the
+                                intermediate that signs this server's
+                                vhost certificate
+              --web-ca-key      Private key matching --web-ca-cert
+              --web-ca-root     Root certificate --web-ca-cert chains to
+                                (all three are required together)
         -Y -y --autoaccept      Auto accept defaults and install
         -f    --file            Use different update file
         -c    --ssl-path        Specify the ssl path
@@ -84,9 +90,62 @@ change the web root directory, or install to a non-default location.
                                   (both are required together)
               --no-secure-boot    Do not generate a Secure Boot signing
                                   key, and leave the FOS kernels unsigned
+              --no-ca-trust       Do not add this server's CA to this
+                                  server's own system trust store
 
 The `--uninstall`, `--dry-run`, `--force` and `--purge-*` options are
 covered in detail in [Uninstalling the Fog server](uninstall-fog-server.md).
+
+## Certificate options
+
+FOG generates its own Certificate Authority at install time and uses it to sign
+this server's HTTPS certificate. These options change **which** CA does that
+signing, and whether this server trusts the result locally.
+
+| Option | Use it when |
+| --- | --- |
+| *(none)* | The default. FOG generates a CA and a Web CA beneath it, and signs the vhost certificate from that. |
+| `--web-ca-cert` + `--web-ca-key` + `--web-ca-root` | You want this server's HTTPS certificate signed by a CA **you** supply — your enterprise PKI, an internal ACME CA, or one issued by another FOG server. All three are required together. |
+| `--external-ca` with `--ca-cert`/`--ca-key`/`--ca-root` | The older spelling of the same thing. It targets the same zone, which is what it has always effectively meant. |
+| `--no-ca-trust` | You do **not** want the installer adding this server's CA to this server's own system trust store. |
+
+Passing any one of `--web-ca-*` implies `--external-ca`, so you do not need
+both. You supply the files **once** — they are imported and later upgrades
+reuse the import without the flags.
+
+All three are validated before anything is changed: the key must match the
+certificate, the certificate must be a CA (`basicConstraints CA:TRUE`), and it
+must verify against the root you supply. Any failure stops the install rather
+than producing a server signed by the wrong thing.
+
+>[!info] This does not affect fog-client
+>`--web-ca-*` replaces the CA that signs the **web** certificate and nothing
+>else. The root that fog-client pinned at registration is untouched, which is
+>what makes this safe to do on a running fleet without re-registering a single
+>machine.
+
+### `--no-ca-trust` and the local trust store
+
+By default the installer adds this server's own CA to this server's system
+trust store, so `curl`, `wget` and PHP's stream wrapper on the FOG server can
+verify the FOG server without being handed a CA file each time. The store is
+detected from the host — `/etc/pki/ca-trust/source/anchors` on the RHEL family,
+`/usr/local/share/ca-certificates` on Debian/Ubuntu/Alpine,
+`/etc/ca-certificates/trust-source/anchors` on Arch.
+
+`--no-ca-trust` skips it, and is remembered in `.fogsettings` so an upgrade
+does not quietly reverse the decision.
+
+>[!warning] This does not make your browser stop warning
+>Firefox keeps its own certificate store and Chrome reads a per-user one, so
+>neither consults what this writes — and your browser is usually on a different
+>machine entirely. Import the CA into the browser yourself; it is published at
+>`https://<your-fog-server>/fog/management/other/ca.cert.der`.
+
+For the per-zone mechanism in full see [[bringing-your-own-ca|Bringing your own
+CA]]. To point **several** FOG servers at a single CA so one import covers all
+of them, see
+[[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]].
 
 ## Secure Boot options
 
