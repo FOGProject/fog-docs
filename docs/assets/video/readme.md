@@ -1,3 +1,8 @@
+---
+title: Videos
+unlisted: true
+---
+
 # Videos
 
 Videos are hosted on our FogProject youtube channel. 

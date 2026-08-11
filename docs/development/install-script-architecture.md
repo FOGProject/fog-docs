@@ -266,7 +266,7 @@ other functions in the library do.
 | Function | Purpose |
 |---|---|
 | `registerStorageNode()`, `updateStorageNodeCredentials()` | Register a new storage node with an existing master, and keep its login in sync on every run. |
-| `writeUpdateFile()` | Writes `/opt/fog/.fogsettings` — see [The .fogsettings file](../management/server/install-fogsettings.md) for the format itself. Maintains one canonical list of managed keys so the fresh-write and in-place-upgrade-merge paths can't drift apart. |
+| `writeUpdateFile()` | Writes `/opt/fog/.fogsettings` — see [[install-fogsettings\|The .fogsettings file]] for the format itself. Maintains one canonical list of managed keys so the fresh-write and in-place-upgrade-merge paths can't drift apart. |
 | `configureStorage()`, `configureSnapins()`, `linkOptFogDir()` | Create/permission the image storage, snapin, and `/opt/fog` symlink locations. |
 | `checkInternetConnection()` | DNS/HTTP/HTTPS reachability probe against a small set of well-known hosts, with distro-specific troubleshooting hints on failure. |
 | `setupFogReporting()` | Installs the randomized-schedule cron job behind the anonymous usage-reporting opt-in from `newinput.sh`. |

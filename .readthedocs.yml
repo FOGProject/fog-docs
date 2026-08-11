@@ -1,28 +1,32 @@
 # .readthedocs.yml
-# Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+# Read the Docs configuration file — production Quartz build for fog-docs.
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html
+# and https://docs.readthedocs.io/en/stable/build-customization.html
+#
+# This site is built with Quartz (see quartz/README.md). Read the Docs has
+# no native Quartz/Node-based-generator support, so this fully overrides the
+# default build via build.commands: install Node, run Quartz, drop the
+# result in $READTHEDOCS_OUTPUT/html for RTD to host.
+#
+# This was proven out against a side "fog-docs-quartz-test" RTD project
+# pointed at the pre-merge quartz-docs branch; the real fog-docs RTD
+# project now builds this directly from master.
+#
+# Quartz's link-resolution core unconditionally strips the .html extension
+# when generating internal hrefs (no config toggle for this) — it assumes
+# the host does clean-URL rewriting the way GitHub Pages/Cloudflare Pages
+# do. RTD's custom build.commands hosting serves by exact path instead, so
+# every internal link 404s without the post-build fix-up below.
+# See quartz/scripts/rtd-fix-links.mjs for details.
 
-# Required
 version: 2
 
-# Build documentation in the docs/ directory with Sphinx
-# sphinx:
-#   configuration: conf.py
-
-# Build documentation with MkDocs
-mkdocs:
- configuration: mkdocs.yml
-
-# Optionally build your docs in additional formats such as PDF and ePub
-formats: all
-
-# Optionally set the version of Python and requirements required to build your docs
-
 build:
-  os: ubuntu-22.04
+  os: ubuntu-24.04
   tools:
-    python: "3.11"
-
-python:
-  install:
-    - requirements: requirements.txt
+    nodejs: "22"
+  commands:
+    - cd quartz && npm ci
+    - cd quartz && npm run install-plugins
+    - cd quartz && node quartz/bootstrap-cli.mjs build --directory ../docs -o "$READTHEDOCS_OUTPUT/html"
+    - cd quartz && node scripts/rtd-fix-links.mjs "$READTHEDOCS_OUTPUT/html"

@@ -7,6 +7,7 @@ aliases:
     - Proxy DHCP using DNSMasq
     - Using FOG with an unmodifiable DHCP server
     - Proxy DHCP
+    - installation/network-setup/legacy-proxy-dhcp
 tags:
     - pxe
     - ipxe
@@ -21,11 +22,6 @@ tags:
 ---
 
 # Proxy DHCP with dnsmasq
-
-
-Legacy article:
-
-[[legacy-proxy-dhcp|Legacy proxy dhcp configuration]]
 
 > [!important] FOG 1.6 boot file changes
 > The way dnsmasq works as a proxyDHCP server is **unchanged** between FOG 1.5.x and
@@ -211,6 +207,21 @@ problem is downstream:
 > server's `/tftpboot` (or that the files are copied from it), not an older or
 > hand-built set of binaries — otherwise the HTTPS chainload will fail with a
 > certificate error after iPXE loads.
+
+## Serving ProxyDHCP to multiple subnets
+
+If you're serving ProxyDHCP to multiple subnets, some changes must be made to
+your switches/routers and your server config:
+
+1.  Add a subnet mask to your `dhcp-range` line, e.g. changing
+    `dhcp-range=<fog_server_ip>,proxy` to
+    `dhcp-range=<fog_server_ip>,proxy,255.255.0.0` to serve all `192.168.x.x`
+    subnets. Use `255.0.0.0` (8-bit) for `10.x.x.x` addressing, or
+    `255.240.0.0` (12-bit) for `172.16.x.x`. Set the mask so every subnet
+    ProxyDHCP should answer on is covered — without this, the ProxyDHCP
+    server won't respond to requests from hosts outside its own subnet.
+2.  Add an IP Helper / DHCP Relay record to your router or switch so DHCP
+    broadcasts are sent to both your normal DHCP server and the FOG server.
 
 ## Secure Boot and proxyDHCP
 

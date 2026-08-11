@@ -1,0 +1,20 @@
+{
+  "name": "context-id-aliases",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "quartz": {
+    "name": "context-id-aliases",
+    "displayName": "Context ID Aliases",
+    "category": "transformer",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultOrder": 6,
+    "defaultEnabled": true
+  }
+}

@@ -12,6 +12,10 @@ tags:
 
 # Customizing FOG iPXE Settings
 
+See [[using-fog-boot-menu|Using the FOG Boot Menu]] for the built-in commands
+available at the boot prompt without any customization — this page covers
+adding your own custom entries and background on top of that.
+
 ## Custom Background
 
 You can add a custom picture background.

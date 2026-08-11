@@ -1,5 +1,5 @@
 ---
-tite: Storage Node Selection Hooks
+title: Storage Node Selection Hooks
 description: Describes new Fog 1.6 storage node selection hooks
 context_id: storage-node-selection-hooks
 aliases:

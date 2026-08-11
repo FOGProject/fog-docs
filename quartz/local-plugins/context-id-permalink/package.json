@@ -1,0 +1,29 @@
+{
+  "name": "context-id-permalink",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "quartz": {
+    "name": "context-id-permalink",
+    "displayName": "Context ID Permalink",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultEnabled": true,
+    "components": {
+      "ContextIdPermalink": {
+        "displayName": "Context ID Permalink",
+        "defaultPosition": "beforeBody",
+        "defaultPriority": 25
+      }
+    }
+  }
+}

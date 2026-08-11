@@ -29,62 +29,59 @@ tags:
 
 
 
-## Fog Documentation Sections
+## Getting Started — standing up your first server
 
-Below you'll find basic descriptions of each section
+Follow these in order for a first install:
 
-> [!tip] 
-> ### Getting Started
-> An introduction to what fog is and some common first questions
-> - [[introduction| What is FOG?]]
-> - [[requirements|System Requirements]]
+1. [[introduction|What is FOG?]]
+2. [[requirements|System Requirements]]
+3. [[install-fog-server|Install Fog Server]]
+4. [[install-fog-client|Install Fog Client]]
+5. [[installation/network-setup/index|Network Setup]] (if FOG isn't hosting your DHCP)
+6. [[capture-an-image|Capture an Image]]
+7. [[deploy-an-image|Deploy an Image]]
 
-> [!tip]
-> ### Installation, Updating, and Migrating
->Documentation on the installation, updating, and migrating of a Fog Server
-> - [[installation/network-setup/README|Network Setup]]
-> - [[install-fog-server|Install Fog Server]]
-> - [[install-fog-client|Install Fog Client]]
-> - [[virtualization|Running in a Virtual Environment]]
+## Documentation Sections
 
->[!tip]
->### Management
->Documentation on the use and management of fog. A general glossay/guide for the ui and command line operations avaiable once you've installed the server
->These sections explain what can be done in each of the fog ui menus
->- [[management/web/README|Web UI Management]]
+<div class="grid cards" markdown>
 
->[!tip]
->### Knowledge Base
->Documentation on important references, integrations, customizations, FAQs, and troubleshooting
-> - [Customization](knowledge-base\customization)
-> - [[kb/faqs/README|FAQs]]
-> - [[kb/integrations/README|Integrations]]
-> - [[kb/how-tos/README|How To Guides]]
-> - [[kb/reference/README| Reference]]
-> - [[kb/troubleshooting/README|Troubleshooting]]
+-   **Installing/Updating**
 
+    ---
 
->[!tip]
->### Development
->Resources and documentation related to contributing to the development of FOG
->- [Development](development\fog_release)
+    Installing, updating, and migrating a FOG server, its network setup, and the client.
 
->[!tip]
->### Release Notes
->This is a link to the fog project release notes for abbreviated information on what's improved in the stable revisions of Fog
->- [Github Release Notes](https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD)
+    [[installation/index|Go to Installing/Updating]]
 
->[!tip]
->### Fog Forums
->Search for solutions to your problems or ask the community for help
->- [Fog Forums](https://forums.fogproject.org)
+-   **Management**
 
->[!tip]
->### Fog On GitHUB
->Browse the opensource code for FOGProject
->- [Fog Project Github repos](https://github.com/FOGProject)
+    ---
 
->[!tip]
->### Fog Home Page
->The homepage of the FOG Project
->- [Fog Home Page](https://fogproject.org)
+    Using the web management UI, and administering the FOG Linux server and FOS.
+
+    [[management/index|Go to Management]]
+
+-   **Knowledge Base**
+
+    ---
+
+    How-to guides, reference material, troubleshooting, customization, and integrations.
+
+    [[kb/index|Go to Knowledge Base]]
+
+-   **Development**
+
+    ---
+
+    Contributing to FOG: plugin development, the release process, and internals.
+
+    [[development/index|Go to Development]]
+
+</div>
+
+## Community & Project Links
+
+- [Github Release Notes](https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD) — what's improved in the stable revisions of FOG
+- [Fog Forums](https://forums.fogproject.org) — search for solutions or ask the community for help
+- [Fog Project Github repos](https://github.com/FOGProject) — browse the open-source code
+- [Fog Home Page](https://fogproject.org) — the homepage of the FOG Project

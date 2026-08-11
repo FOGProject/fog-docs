@@ -1,11 +1,12 @@
-_build
 .vscode
-.claude
-site
-.lastprereqrun
 docs/.obsidian
 docs/.obsidian/*
 .obsidian/*
 .obsidian
 debug.log
-__pycache__
+
+quartz/node_modules
+quartz/public
+quartz/.quartz-cache
+quartz/.quartz
+quartz/.turbo

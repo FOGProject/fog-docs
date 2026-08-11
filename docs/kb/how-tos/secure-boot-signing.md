@@ -135,7 +135,7 @@ Less than most people expect.
 | shim (`snponly-shimx64.efi` / `ipxe-shimx64.efi`) | **No — Microsoft already signed it** | Published by the iPXE project |
 | FOS kernel (`bzImage`, `bzImage32`) | **Yes — this is your job** | The firmware refuses to load an unsigned kernel |
 | FOS init (`init.xz`, `init_32.xz`) | **No** | See below |
-| Custom-built iPXE with your CA embedded (`TRUST=`) | **Optional — only if you bypass shim entirely** | Lets you sign your own rebuilt iPXE (e.g. for HTTPS netboot with an internal CA) with your own key; requires enrolling that CA straight into `db` via [Setup Mode enrollment](secure-boot-setup-mode-enrollment.md), since shim only trusts iPXE's own certificate |
+| Custom-built iPXE with your CA embedded (`TRUST=`) | **Optional — only if you bypass shim entirely** | Lets you sign your own rebuilt iPXE (e.g. for HTTPS netboot with an internal CA) with your own key; requires enrolling that CA straight into `db` via [[secure-boot-setup-mode-enrollment\|Setup Mode enrollment]], since shim only trusts iPXE's own certificate |
 | Your images, snapins, scripts | **No** | They are never executed by firmware |
 
 ### The initrd is not verified — by anyone

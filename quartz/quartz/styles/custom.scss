@@ -1,0 +1,57 @@
+@use "./variables.scss" as *;
+
+// Ported from fog-docs' docs/assets/css/custom.css (mkdocs-material build).
+
+// Inline color-class helpers, used via attr_list syntax (`**Required**{ .red }`)
+// under mkdocs. Quartz has no attr_list equivalent, so these classes are inert
+// unless applied via raw HTML spans — kept for branding parity/reference.
+// The "brand" flex group (site-logo + page-title, see quartz.config.yaml
+// layout.groups.brand) stacks the icon above the title -- center both so the
+// lockup reads as a unit instead of a left-aligned icon over left-aligned text.
+// .flex-component:has(> div > .site-logo) {
+//   text-align: center;
+// } //no we like the left aligned text
+
+.red {
+  color: red;
+}
+.orange {
+  color: orange;
+}
+.yellow {
+  color: yellow;
+}
+
+// Homepage card-grid layout, retargeted from mkdocs-material's `.md-typeset`
+// wrapper class to Quartz's `.popover-hint` content wrapper.
+.popover-hint .grid {
+  grid-gap: 0.4rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  margin: 1em 0;
+}
+
+.popover-hint .grid.cards > ol,
+.popover-hint .grid.cards > ul {
+  display: contents;
+}
+
+.popover-hint .grid.cards > ol > li,
+.popover-hint .grid.cards > ul > li,
+.popover-hint .grid > .card {
+  border: 0.05rem solid var(--lightgray);
+  border-radius: 0.1rem;
+  display: block;
+  margin: 0;
+  padding: 0.8rem;
+  transition:
+    border 0.25s,
+    box-shadow 0.25s;
+}
+
+.popover-hint .grid.cards > ol > li:hover,
+.popover-hint .grid.cards > ul > li:hover,
+.popover-hint .grid > .card:hover {
+  border-color: transparent;
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+}
