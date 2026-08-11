@@ -16,3 +16,4 @@ Documentation on important references, integrations, customizations, how-to guid
 - [[kb/reference/index|Reference]] — settings, command-line options, and background material
 - [[kb/customization/index|Customization]] — customizing the PXE/iPXE boot experience
 - [[kb/integrations/index|Integrations]] — the FOG API and third-party integrations
+- [[kb/faqs/index|FAQs]] — retired section index; see the page for where its content now lives

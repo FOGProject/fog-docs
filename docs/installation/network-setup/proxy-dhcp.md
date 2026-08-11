@@ -7,6 +7,7 @@ aliases:
     - Proxy DHCP using DNSMasq
     - Using FOG with an unmodifiable DHCP server
     - Proxy DHCP
+    - installation/network-setup/legacy-proxy-dhcp
 tags:
     - pxe
     - ipxe

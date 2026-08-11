@@ -5,9 +5,7 @@ configuration:
   enableSPA: true
   enablePopovers: true
   locale: en-US
-  # RTD subproject deploy target — includes the subpath per Quartz's own
-  # docs guidance for non-root deployments (docs/hosting.md / configuration.md)
-  baseUrl: docs.fogproject.org/projects/fog-docs-quartz-test/en/latest
+  baseUrl: docs.fogproject.org
   ignorePatterns:
     - private
     - templates
@@ -374,7 +372,7 @@ plugins:
     enabled: true
     options:
       repoUrl: https://github.com/FOGProject/fog-docs
-      branch: quartz-docs
+      branch: master
       contentDir: docs
     layout:
       position: beforeBody

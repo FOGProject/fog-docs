@@ -1,6 +1,6 @@
 ---
 title: Migrating FOG Server
-description: How to move FOG settings, database, images, and SSL trust from an old server to a new one
+description: How to move FOG settings, database, images, and certificate trust from an old server to a new one
 aliases:
     - Migrating FOG Server
     - FOG Server Migration
@@ -18,6 +18,9 @@ tags:
     - database
     - cli-switches
     - ssl
+    - pki
+    - certificates
+    - secure-boot
     - storage-node
     - dhcp
 ---
@@ -36,10 +39,12 @@ We'll cover:
     its own (this decision affects almost everything else below).
 -   Building the new server.
 -   Migrating images and the database from the old server to the new one.
--   Migrating SSL/CA trust so existing FOG clients and PXE-embedded images
-    keep working.
--   Migrating the Secure Boot signing key, if you sign FOS kernels for UEFI
-    Secure Boot, so already-enrolled clients don't need re-enrolling.
+-   Migrating the certificate authority so existing FOG clients and
+    PXE-embedded images keep working — including working out whether the old
+    server is on the pre-PKI or post-PKI layout, because what you copy
+    differs.
+-   Migrating the Secure Boot signing material, if you sign FOS kernels for
+    UEFI Secure Boot, so already-enrolled clients don't need re-enrolling.
 -   Automating all of the above with a sample script, if you'd rather not
     run it step by step.
 -   Reconciling IP-dependent settings, if the new server isn't reusing the
@@ -165,110 +170,188 @@ installation is actually secured (no root password, a different host, etc.).
 > [[install-fogsettings|.fogsettings]] for where FOG stores it, or reset it
 > from a shell on the new server.
 
-# Migrating SSL / preserving client trust
+# Migrating the certificate authority
 
-FOG generates its own self-signed CA at install time and uses it for three
-things: the web server's HTTPS certificate, the iPXE binaries (which are
-compiled to trust that CA), and the **fog-client**, which pins the CA and
-validates the server against it before acting on any task. See
+FOG generates its own certificate authority at install time, and three
+different things depend on it: the web server's HTTPS certificate, the iPXE
+binaries (which are compiled to trust that CA), and the **fog-client**, which
+pins the CA and validates the server against it before acting on any task.
+See [[pki-zones|FOG PKI Infrastructure]] for the full model and
 [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]] for the
-full model.
+fog-client pinning specifically.
 
 Because of that pinning, if the new server generates a **new** CA (the
 default for any fresh install), every already-deployed fog-client — and any
 image with the client baked in — will not trust the new server until it
 re-pins (reinstalling the client, or rebuilding affected images).
 
-To avoid that, copy the CA over **before** you (re-)run the installer on the
-new server:
+So the CA has to be in place on the new server **before** you run the
+installer there. *Where* it lives depends on which layout the old server is
+on, and the two are not interchangeable.
+
+## First: is the old server pre-PKI or post-PKI?
+
+FOG 1.6 split its certificates into per-purpose *zones* under `/opt/fog/pki/`.
+Everything before that kept a single CA — key and certificate together —
+inside the SSL directory. Ask the **old** server which it is:
 
 ```bash
-# on the OLD server
-cp -R /opt/fog/snapins/ssl /mnt/oldfog/   # or scp directly to the new server
+test -d /opt/fog/pki && echo "post-PKI layout" || echo "pre-PKI layout"
 ```
+
+| | Pre-PKI (FOG 1.5.x, and 1.6 before the zone split) | Post-PKI (current 1.6 and dev-branch) |
+|---|---|---|
+| Root CA certificate | `/opt/fog/snapins/ssl/CA/.fogCA.pem` | `/opt/fog/snapins/ssl/CA/.fogCA.pem` — unchanged |
+| Root CA **private key** | `/opt/fog/snapins/ssl/CA/.fogCA.key` | `/opt/fog/pki/root/ca/.fogCA.key` |
+| Client-communication keypair | `/opt/fog/snapins/ssl/.srvprivate.key` + `.srvpublic.crt` | same |
+| Web certificate | signed by the root directly | its own zone, `/opt/fog/pki/web/` |
+| Secure Boot material | `/opt/fog/secureboot/` where it exists at all | `/opt/fog/pki/secureboot/` |
+| **What you copy** | `/opt/fog/snapins/ssl` (plus `/opt/fog/secureboot` if present) | `/opt/fog/snapins/ssl` **and** `/opt/fog/pki` |
+
+The certificate stayed put on purpose — it is the file fog-client pinned, and
+relocating a *public* certificate buys nothing. It is the private key that
+moved out of the web-readable SSL directory, and that move is the entire
+reason a post-PKI server needs a second path copied.
+
+Only the **old** server's layout decides what you copy. The new server ends up
+on whatever layout the version you install there uses; pre-PKI → post-PKI is
+the normal case, and the installer relocates the key into the zone tree by
+itself on its first run. The reverse cannot arise, since you can't install an
+older FOG on the new box than the old one runs.
+
+## Copying it across
+
+Run these on the **new** server, before installing FOG on it:
 
 ```bash
-# on the NEW server, with the old ssl dir now in place at /opt/fog/snapins/ssl
+rsync -az -e ssh root@OLD_SERVER:/opt/fog/snapins/ssl/ /opt/fog/snapins/ssl/
+
+# post-PKI old servers only — skip if /opt/fog/pki doesn't exist there
+rsync -az -e ssh root@OLD_SERVER:/opt/fog/pki/ /opt/fog/pki/
+
+# pre-PKI old servers that had Secure Boot configured
+rsync -az -e ssh root@OLD_SERVER:/opt/fog/secureboot/ /opt/fog/secureboot/
 ```
 
-The installer only regenerates the CA when one isn't already present (or
-when you explicitly pass `-C`/`--recreate-CA` — see
-[[command-line-options]]), so once the old `ssl` directory is in place, a
-normal installer run leaves it alone and every existing client keeps
-trusting the server without any client-side changes.
+`rsync -a` matters here: it preserves the ownership and modes these files are
+installed with, and the CA private keys are deliberately root-only.
 
-If you'd rather run your own CA going forward — for example to integrate
-with your organization's PKI — the installer's `--external-ca` option lets
-you supply your own intermediate CA at install time instead of using FOG's
-generated one. This is currently only available on the working-1.6 branch,
-not yet in stable/dev-branch releases; see
-[[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]] for
-details and the caveats of switching an existing server's CA.
+>[!warning] Don't route private keys through the images export
+>The `/images` NFS share used for the image copy earlier is exported to the
+>whole network, and these directories hold the private key that every machine
+>in your estate trusts. Copy them over SSH as above, or on removable media —
+>not through `/mnt/oldfog`.
 
-# Migrating the Secure Boot signing key
+Once the material is in place, a normal installer run leaves it alone: FOG
+only generates a CA when one isn't already there, or when you explicitly pass
+`-C`/`--recreate-CA` (see [[command-line-options]]). Every existing client
+keeps trusting the server with no client-side change at all.
+
+>[!warning] Post-PKI: copying only `snapins/ssl` leaves a server that can't issue anything
+>A post-PKI installer decides "a CA already exists here" from the presence of
+>the root **certificate**, not its key — deliberately, because a root whose key
+>is kept offline is a supported configuration. Bring the certificate across
+>without `/opt/fog/pki`, and the new server reads that as an offline root: it
+>won't mint a replacement (nothing gets silently orphaned, which is the point
+>of the check) but it also can't issue the Web CA beneath it, and says so:
+>
+>```
+>Cannot issue 'FOG Web CA': the Root CA private key is not on this
+>server (only /opt/fog/snapins/ssl/CA/.fogCA.pem is present).
+>... Restore it to:
+>  /opt/fog/pki/root/ca/.fogCA.key
+>```
+>
+>Copy `/opt/fog/pki` across and run the installer again.
+
+>[!note] Pre-PKI new servers work the other way round
+>Migrating 1.5.x → 1.5.x, the installer tests for the CA **key**, not the
+>certificate. There `snapins/ssl` really is the only path to copy — but it has
+>to include `CA/.fogCA.key`, or the new server quietly builds a brand new CA
+>and every fog-client stops trusting it.
+
+If you'd rather run your own CA going forward — for example to integrate with
+your organization's PKI — supply it at install time with
+`--web-ca-cert`/`--web-ca-key`/`--web-ca-root` instead of using FOG's
+generated one; see [[bringing-your-own-ca|Bringing your own CA]]. That
+replaces the **web** certificate only and deliberately leaves fog-client's
+pinned CA alone, which is what makes it safe to do on a live fleet. On
+working-1.6, `--external-ca` with `--ca-cert`/`--ca-key`/`--ca-root` is an
+older spelling of the same three options. If the goal is to stop importing one
+CA per server across several FOG servers,
+[[unify-certificates-across-fog-servers|Unifying certificates across several
+FOG servers]] covers that case specifically.
+
+# Migrating the Secure Boot signing material
 
 Skip this entirely if you are not signing FOS kernels for UEFI Secure Boot —
 check whether the old server's **FOG Configuration → Secure Boot** page shows
-a certificate fingerprint, or whether `/opt/fog/secureboot/` exists there.
+a certificate fingerprint, or whether `/opt/fog/pki/secureboot/` (post-PKI) or
+`/opt/fog/secureboot/` (pre-PKI) exists there.
 
-If it is configured, this key is **not** covered by the SSL/CA copy above —
-`/opt/fog/secureboot/` is a sibling of `/opt/fog/snapins`, not inside it, and
-needs its own step.
+If it is configured, the copies in the previous section **already cover it**:
+post-PKI it is a zone inside `/opt/fog/pki`, pre-PKI it is the flat
+`/opt/fog/secureboot` in the third `rsync`. What follows is what is at stake,
+and how to confirm it carried over.
 
->[!danger] Skipping this silently re-enrols your whole fleet
->The installer only generates a Secure Boot signing key when none is present.
->If you do not carry the old key forward, a fresh install on the new server
->generates a **new** one automatically, signs the FOS kernels with it, and
+>[!danger] Skipping this silently re-enrolls your whole fleet
+>The installer only generates Secure Boot keys when none are present. If you
+>do not carry the old ones forward, a fresh install on the new server
+>generates new ones automatically, signs the FOS kernels with them, and
 >nothing tells you this happened until a Secure Boot client fails to boot.
->Every already-enrolled client then needs a physical visit to re-enrol the
->new fingerprint — exactly the repeated work this section exists to avoid.
->See [[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a
->key]] for what that involves if it does happen.
+>Every already-enrolled client then needs a physical visit to enroll the new
+>certificate — exactly the repeated work this section exists to avoid. See
+>[[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]]
+>for what that involves if it does happen.
 
-**Using the installer-generated key (the default):** copy the whole
-directory to the **same path** on the new server, before you (re-)run the
-installer there — the same trick as the SSL/CA directory above, and for the
-same reason: the installer only generates a key when
-`/opt/fog/secureboot/MOK.key` and `MOK.pem` are not already present.
+**Post-PKI: what `/opt/fog/pki/secureboot/` holds.**
 
-```bash
-# on the OLD server
-cp -R /opt/fog/secureboot /mnt/oldfog/   # or scp directly to the new server
-```
+| Path | What it is | Why it has to come across |
+|---|---|---|
+| `ca/.fogSBCA.{key,pem,der}` | The Secure Boot CA — published as `MOK.der` and enrolled in firmware | A different one means a physical re-enrollment on every machine |
+| `leaf/sign.{key,pem}` | The code-signing leaf the FOS kernels are actually signed with | Rotatable freely, but only while the CA above is the enrolled one |
+| `PK.{key,pem}`, `KEK.{key,pem}` | This server's UEFI platform keys, used by [Setup Mode enrollment](../../kb/how-tos/secure-boot-setup-mode-enrollment.md) | They never regenerate; a machine enrolled with the old `PK` can never be updated by a server holding a different one |
+| `mscerts/` | Microsoft's CA certificates, staged for the `.auth` builder | Rebuilt from the packaged copies, so nothing is lost if it is missing |
 
-```bash
-# on the NEW server, before running the installer
-mkdir -p /opt/fog
-cp -R /mnt/oldfog/secureboot /opt/fog/secureboot
-chown -R root:root /opt/fog/secureboot
-chmod 0700 /opt/fog/secureboot
-chmod 0600 /opt/fog/secureboot/MOK.key
-chmod 0644 /opt/fog/secureboot/MOK.pem
-```
+A normal installer run on the new server then finds all of that already there,
+signs the FOS kernels with the same leaf, and republishes the same certificate
+— and the same fingerprint — in the enrollment kit. Nothing needs
+re-enrolling.
 
-A normal installer run then finds the pair already there, signs the FOS
-kernels with it, and republishes the same certificate — and the same
-fingerprint — in the enrolment kit. Every existing client keeps trusting the
-new server exactly as it trusted the old one; nothing needs re-enrolling.
+>[!warning] Pre-PKI → post-PKI needs one round of re-enrollment anyway
+>An old server on the flat `MOK.key`/`MOK.pem` pair predates the CA/leaf
+>split. Copying it forward is still worth doing — the new server's installer
+>moves it into the zone tree and leaves the old files readable — but the
+>certificate that ends up enrolled changes from that self-signed MOK to the
+>new Secure Boot CA, so every machine that enrolled the old one must enroll
+>once more. There is no way around that when the enrolled certificate itself
+>changes; it buys you a hierarchy where no future signing-key change needs a
+>firmware trip. See [[secure-boot-signing#the-old-flat-mok|The old flat MOK]].
+>This only ever affected very early 1.6 testers — a 1.5.x server has no Secure
+>Boot signing material at all, and nothing to re-enroll.
 
 **Using a key of your own** (installed originally with
-`--secure-boot-key`/`--secure-boot-cert`): make those same key/cert files
-available to the new server — copied to the same path, or anywhere else —
-and pass the same flags (or equivalent paths) when installing it:
+`--secure-boot-key`/`--secure-boot-cert`): make those same files available to
+the new server — copied to the same path, or anywhere else — and pass the same
+flags when installing it. Post-PKI those two flags name the code-signing
+**leaf**, and `--secureboot-ca-cert` (working-1.6) names the intermediate that
+is actually enrolled in firmware:
 
 ```bash
 cd /path/to/fogproject/bin
 ./installfog.sh \
-  --secure-boot-key  /path/to/your/MOK.priv \
-  --secure-boot-cert /path/to/your/MOK.der
+  --secureboot-ca-cert /path/to/your/sbca.pem \
+  --secure-boot-key    /path/to/your/sign.key \
+  --secure-boot-cert   /path/to/your/sign.pem
 ```
 
-See [[secure-boot-signing#switching-to-a-key-you-supply|Switching to a key
-you supply]] for what that run does.
+See [[secure-boot-signing#switching-to-a-key-you-supply|Switching to a key you
+supply]] for what that run does, and [[bringing-your-own-ca|Bringing your own
+CA]] for building the CA/leaf pair by hand.
 
-After either path, confirm the fingerprint on the new server's **Secure
-Boot** page matches what the old server showed, before decommissioning it —
-that comparison is the whole check that the key really carried over.
+After either path, confirm the fingerprint on the new server's **Secure Boot**
+page matches what the old server showed, before decommissioning it — that
+comparison is the whole check that the material really carried over.
 
 # Migrating other snapin files
 
@@ -285,12 +368,13 @@ cp -R /opt/fog/snapins/* /mnt/oldfog/snapins-backup/   # excluding ssl/, already
 
 # Automating it with a script
 
-Everything above — images, SSL/CA, snapins, the database, and installing FOG
-itself — can be scripted into a single pass once the new server is up and
-reachable. The script below **pulls** everything from the old server over
-SSH rather than pushing from it, so the old (still-production) server needs
-no setup beyond allowing the SSH connection — nothing is installed or
-changed on it.
+Everything above — images, the certificate material, snapins, the database,
+and installing FOG itself — can be scripted into a single pass once the new
+server is up and reachable. The script below **pulls** everything from the old
+server over SSH rather than pushing from it, so the old (still-production)
+server needs no setup beyond allowing the SSH connection — nothing is
+installed or changed on it. Pulling over SSH is also what keeps the private
+keys off the `/images` NFS export.
 
 ### Set up SSH access first
 
@@ -322,7 +406,7 @@ always acts on the machine it's run on):
 
 ```bash
 #!/usr/bin/env bash
-# migrate-fog.sh — pulls images, SSL/CA trust, snapins, and the database
+# migrate-fog.sh — pulls images, certificate trust, snapins, and the database
 # from an existing FOG server onto this one, then installs FOG here.
 #
 # Usage: ./migrate-fog.sh <old-fog-host> [new-fog-host]
@@ -335,7 +419,8 @@ FOG_REPO_DIR="/root/fogproject"
 FOG_BRANCH="stable"   # match or exceed the old server's branch/version — never go older
 IMAGES_DIR="/images"
 SNAPINS_DIR="/opt/fog/snapins"
-SECUREBOOT_DIR="/opt/fog/secureboot"   # only present if Secure Boot signing is configured
+PKI_DIR="/opt/fog/pki"                 # post-PKI: root CA key + the web/Secure Boot zones
+SECUREBOOT_DIR="/opt/fog/secureboot"   # pre-PKI flat Secure Boot layout, if the old server has one
 DB_DUMP="/root/fog_migrate_$(date +%Y%m%d_%H%M%S).sql"
 
 ssh_old() { ssh -o BatchMode=yes "root@${OLD_HOST}" "$@"; }
@@ -354,21 +439,34 @@ ssh_old true
 echo "==> Syncing images from ${OLD_HOST}:${IMAGES_DIR} (this can take a while)"
 rsync -az --info=progress2 -e ssh "root@${OLD_HOST}:${IMAGES_DIR}/" "${IMAGES_DIR}/"
 
-echo "==> Copying SSL/CA and snapins from ${OLD_HOST}:${SNAPINS_DIR}"
+echo "==> Copying the CA certificate, client-communication keypair and snapins"
+echo "    from ${OLD_HOST}:${SNAPINS_DIR}"
 mkdir -p "${SNAPINS_DIR}"
 rsync -az -e ssh "root@${OLD_HOST}:${SNAPINS_DIR}/" "${SNAPINS_DIR}/"
 
+# Post-PKI servers keep the root CA's PRIVATE KEY, the web zone and the Secure
+# Boot zone here instead — the snapins copy above carries only the certificate.
+# Missing this leaves a server that reads its own root as offline and cannot
+# issue the Web CA beneath it.
+if ssh_old "[[ -d '${PKI_DIR}' ]]"; then
+    echo "==> post-PKI layout on ${OLD_HOST}, copying ${PKI_DIR} forward"
+    mkdir -p "${PKI_DIR}"
+    rsync -az -e ssh "root@${OLD_HOST}:${PKI_DIR}/" "${PKI_DIR}/"
+else
+    echo "==> pre-PKI layout on ${OLD_HOST} (no ${PKI_DIR}); the CA key travels"
+    echo "    inside ${SNAPINS_DIR}/ssl/CA and this installer will relocate it"
+fi
+
+# Pre-PKI flat Secure Boot layout. The installer moves it into the zone tree,
+# which changes the enrolled certificate — every machine that enrolled the old
+# flat MOK has to enroll once more. Copy it regardless: without it the new
+# server generates fresh keys and nothing signed before can be re-signed.
 if ssh_old "[[ -d '${SECUREBOOT_DIR}' ]]"; then
-    echo "==> Secure Boot signing key found on ${OLD_HOST}, copying it forward"
-    echo "    so already-enrolled clients don't need re-enrolling"
+    echo "==> Flat Secure Boot material found on ${OLD_HOST}, copying it forward"
     mkdir -p "${SECUREBOOT_DIR}"
     rsync -az -e ssh "root@${OLD_HOST}:${SECUREBOOT_DIR}/" "${SECUREBOOT_DIR}/"
     chown -R root:root "${SECUREBOOT_DIR}"
     chmod 0700 "${SECUREBOOT_DIR}"
-    [[ -f "${SECUREBOOT_DIR}/MOK.key" ]] && chmod 0600 "${SECUREBOOT_DIR}/MOK.key"
-    [[ -f "${SECUREBOOT_DIR}/MOK.pem" ]] && chmod 0644 "${SECUREBOOT_DIR}/MOK.pem"
-else
-    echo "==> No Secure Boot signing key on ${OLD_HOST}, nothing to copy"
 fi
 
 echo "==> Fetching FOG source (${FOG_BRANCH})"
@@ -380,8 +478,8 @@ else
     git clone --branch "${FOG_BRANCH}" https://github.com/FOGProject/fogproject.git "${FOG_REPO_DIR}"
 fi
 
-echo "==> Installing FOG (the ssl/ and secureboot/ dirs copied above mean the"
-echo "    existing CA and Secure Boot key, if any, are both kept)"
+echo "==> Installing FOG (the material copied above means the existing CA and"
+echo "    Secure Boot keys, if any, are kept rather than regenerated)"
 ( cd "${FOG_REPO_DIR}/bin" && ./installfog.sh -Y )
 
 echo "==> Dumping the fog database on ${OLD_HOST} (enter ITS MySQL root password if prompted)"
@@ -398,9 +496,10 @@ Remaining manual steps:
   - If this server didn't inherit the old one's IP/hostname, work through
     "Reconciling IP-dependent settings" below.
   - Update DHCP/DNS to point at this server — see "If FOG isn't doing DHCP".
-  - If a Secure Boot key was copied above, confirm the fingerprint on this
+  - If Secure Boot material was copied above, confirm the fingerprint on this
     server's FOG Configuration -> Secure Boot page matches what the old
-    server showed.
+    server showed. A pre-PKI flat MOK is the exception: it is expected to
+    change, and every enrolled machine needs enrolling once more.
   - Test a PXE boot and a live capture/deploy before retiring ${OLD_HOST}.
 EOF
 ```
@@ -451,7 +550,7 @@ nothing to change here at all.
 
 # Cut over and clean up
 
-Once images, the database, and SSL trust are migrated:
+Once images, the database, and certificate trust are migrated:
 
 1.  Do a final `rsync` pass for any images captured on the old server since
     your first sync.
@@ -472,8 +571,12 @@ Once images, the database, and SSL trust are migrated:
 -   [[install-fogsettings|The .fogsettings file]]
 -   [[storage-node|Storage Node Management]]
 -   [[snapins|Snapin Management]]
+-   [[pki-zones|FOG PKI Infrastructure]]
+-   [[bringing-your-own-ca|Bringing your own CA]]
+-   [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]]
 -   [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
 -   [[secure-boot-signing|Secure Boot: signing FOS with your own key]]
+-   [[secure-boot-setup-mode-enrollment|Secure Boot: Setup Mode enrollment]]
 -   [[fog-security|FOG Security]]
 -   [[troubleshoot-ftp|Troubleshooting FTP]]
 -   [[dhcp-server-settings|DHCP Server Settings]]

@@ -4,6 +4,7 @@ description: Overview of the Active Directory settings management
 context_id: ad-integration
 aliases:
     - Active Directory Integration
+    - kb/how-tos/active-directory-fog-setting
 tags:
     - management
     - active-directory

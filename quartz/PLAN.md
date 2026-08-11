@@ -1,4 +1,6 @@
 > **Implementation note:** This is the plan as approved before implementation began. It assumed a classic Quartz v4 layout (`quartz.config.ts` + `quartz.layout.ts`, TypeScript plugin imports). The actual `jackyzha0/quartz` checkout turned out to be a newer v5 plugin-marketplace architecture — config lives in `quartz.config.yaml`, plugins are `@quartz-community/*` npm packages, and local custom plugins live under `quartz/local-plugins/`. The plan's goals, decisions, and verification checklist below were all carried out; only the specific file paths in Phases 2/5/6/7 and "Critical files" differ from what was actually built. See `quartz/README.md` for what's actually there.
+>
+> **Also since this plan was written:** Phase 8's deployment sketch (GitHub Pages / Cloudflare Pages) was superseded — the site is deployed via a native Node/Quartz build in `.readthedocs.yml`, running directly on Read the Docs. This branch has since been merged into `master` as the site's real docs build, not just a spike; see `quartz/README.md` for the current state, including a few pages restored as short stub/redirect pages for URLs `master` had kept live.
 
 # Spike: Quartz as a Quartz-based alternative to MkDocs for fog-docs
 

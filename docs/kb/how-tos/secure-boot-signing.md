@@ -218,7 +218,7 @@ flowchart TD
 >do it **before** setting up Secure Boot here, not after. Migrating an
 >already-enrolled Secure Boot setup is a viable, well-understood path — copy
 >the `pki/secureboot/` directory forward, per
->[[migrating-fog-server#migrating-the-secure-boot-signing-key|that guide's
+>[[migrating-fog-server#migrating-the-secure-boot-signing-material|that guide's
 >Secure Boot section]] — but it is still one more thing to get right, and
 >getting it wrong means every already-enrolled client needs re-enrolling a
 >second time for no reason. Enrolling once, on the server you intend to keep,

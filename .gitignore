@@ -1,15 +1,10 @@
-_build
 .vscode
-site
-.lastprereqrun
 docs/.obsidian
 docs/.obsidian/*
 .obsidian/*
 .obsidian
 debug.log
-__pycache__
 
-# Quartz spike (spike/quartz-docs branch)
 quartz/node_modules
 quartz/public
 quartz/.quartz-cache
