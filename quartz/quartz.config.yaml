@@ -302,9 +302,9 @@ plugins:
     enabled: true
     options:
       links:
-        FOG Project GitHub: https://github.com/FOGProject/fog-docs
-        Release Notes: https://github.com/FOGProject/fogproject/blob/master/Release%20Notes.MD
-        Security Advisories: https://forums.fogproject.org/category/25/security-advisories
+        FOG Project GitHub: https://github.com/FOGProject
+        Release Notes: https://github.com/FOGProject/fogproject/releases
+        Security Advisories: https://github.com/FOGProject/fogproject/security/advisories?state=published
     layout:
       position: footer
       priority: 50
