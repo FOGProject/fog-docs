@@ -109,7 +109,7 @@ Now go to your machine and wait for the next poll of the FOG Client.
 When the task starts, you should get a notification that the task has
 started.
 
-Afterwards, you will get a notification that the task has ended.
+Afterward, you will get a notification that the task has ended.
 
 By now the application 7-zip should be installed.
 

@@ -151,7 +151,7 @@ of them, see
 
 Since FOG 1.6.0 the installer **generates a Secure Boot signing key by
 default** and signs the FOS kernels with it, so a stock server always has a
-certificate fingerprint to check and an enrolment kit to hand out. The three
+certificate fingerprint to check and an enrollment kit to hand out. The three
 options above only matter if you want to change that:
 
 | Option | Use it when |
@@ -164,11 +164,11 @@ options above only matter if you want to change that:
 hand back a key and a `sudoers` rule you deliberately declined.
 
 >[!warning] The generated key is never regenerated, and that is deliberate
->A new signing key silently invalidates enrolment on **every machine that
+>A new signing key silently invalidates enrollment on **every machine that
 >already trusted the old one**, and nothing reports that until a client fails
 >to boot — long after the install that caused it. `--recreate-keys` and
 >`--recreate-CA` deliberately do not touch it. To rotate deliberately, remove
->`/opt/fog/secureboot/` and re-run the installer, then re-enrol every client.
+>`/opt/fog/secureboot/` and re-run the installer, then re-enroll every client.
 
 The private key lives at `/opt/fog/secureboot/MOK.key`, `0600` inside a `0700`
 directory owned by root. It is never copied into the web root and the web

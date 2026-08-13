@@ -56,7 +56,7 @@ tags:
 -   This section updates in real time.
 -   It will display all the queued, running, etc\... tasks and updates
     at the same interval as the Bandwidth graph.
--   You can also edit which type of tasks get counted towards the "queue".
+-   You can also edit which type of tasks get counted toward the "queue".
       -   This edit can be performed by going to 
         **FOGConfiguration** ![[Config.png]]\-:octicons-arrow-right-24: **FOG Settings**\-:octicons-arrow-right-24: **General Settings** \-:octicons-arrow-right-24:**FOG_USED_TASKS**.
         -   The text field is numeric values (so you'll need to know which task id's are which type.

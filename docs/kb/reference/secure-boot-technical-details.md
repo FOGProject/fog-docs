@@ -143,7 +143,7 @@ $ sbverify --list /var/www/fog/service/ipxe/bzImage
 
 The signer shown should match the fingerprint on the **FOG Configuration →
 Secure Boot** page; that page's fingerprint is the digest of the certificate
-your clients enrol — the CA, not the leaf.
+your clients enroll — the CA, not the leaf.
 
 The installer keeps a `.unsigned` copy of each kernel beside the signed one,
 because `sbsign` will not cleanly re-sign an already-signed image. Leave them
@@ -209,7 +209,7 @@ is not being accepted. In order of likelihood:
 | `Security Policy Violation`, but the certificate *is* listed by `mokutil --list-enrolled` | The key carries the Module-signing only OID — see [[secure-boot-signing#bringing-your-own-key|Bringing your own key]] |
 | Fails on every machine, including enrolled ones | Shim is not in the boot chain — see [[secure-boot-signing#the-chain-you-are-building|the chain]] |
 | Worked yesterday, fails today | Something replaced the kernels without re-signing them. The installer always re-signs on install/upgrade — suspect anything that copies into `service/ipxe/` outside it — check with `sbverify` and re-run the installer |
-| Every machine stops working after a change | Either the CA was regenerated, or you switched to a different admin-supplied flat key. Enrolment is per-CA (or per-flat-key), so all clients need re-enrolling — see [[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]] |
+| Every machine stops working after a change | Either the CA was regenerated, or you switched to a different admin-supplied flat key. Enrollment is per-CA (or per-flat-key), so all clients need re-enrolling — see [[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]] |
 | Complains about format, not signature | Kernel lacks `CONFIG_EFI_STUB` |
 
 ## See also

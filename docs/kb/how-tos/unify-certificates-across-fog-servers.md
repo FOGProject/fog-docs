@@ -91,7 +91,7 @@ then rolls up to the hub's CA, so one import covers all of them.
 >[!info] Update every server's installer first
 >This uses `--web-ca-cert`/`--web-ca-key`/`--web-ca-root`. Pull the latest
 >installer on **every** server before you start, or the options will not be
->recognised. See [[command-line-options|Fog installer command line options]].
+>recognized. See [[command-line-options|Fog installer command line options]].
 
 ### Step 1 — issue a CA for each server, on the hub
 
@@ -154,7 +154,7 @@ sudo ./installfog.sh --web-ca-cert /root/webca/webca.pem \
 Unpacking as root into `/root/webca` keeps `webca.key` out of reach of every
 other account on the machine — it is a CA private key, and it stays on this
 server permanently, so where it lands matters. Delete the tarball from your
-home directory afterwards.
+home directory afterward.
 
 You pass these three options **once**. The files are imported into the web zone
 and later upgrades reuse the import without the options being given again.

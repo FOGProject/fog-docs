@@ -99,7 +99,7 @@ packet of the actual transfer. PXE clients get as far as asking for a file and
 then time out.
 
 The fix is a connection-tracking helper, `nf_conntrack_tftp`, which teaches the
-firewall to recognise the data connection as related to the request it already
+firewall to recognize the data connection as related to the request it already
 allowed.
 
 !!! warning "Helpers are no longer automatic"
@@ -196,7 +196,7 @@ ufw allow 63100:63228/udp
 Note ufw writes ranges with a **colon**, not a hyphen.
 
 ufw's stock `before.rules` already accepts `RELATED,ESTABLISHED`, so once
-`nf_conntrack_tftp` is loaded the TFTP data transfer is recognised and allowed.
+`nf_conntrack_tftp` is loaded the TFTP data transfer is recognized and allowed.
 Without the module, PXE stalls after the first packet — and nothing in FOG's
 logs will say so.
 

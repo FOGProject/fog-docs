@@ -96,15 +96,15 @@ FOG's own Secure Boot certificate so that shim would accept it.
 The way out is to stop needing a custom binary. FOG's embedded boot script is
 entirely generic, and iPXE 2.0 can fetch that script from the TFTP server
 instead (`autoexec.ipxe`). That lets you run **upstream's signed `snponly.efi`**
-and still get FOG's boot behaviour — which is the approach FOG takes.
+and still get FOG's boot behavior — which is the approach FOG takes.
 
 The alternative the firmware already provides is **MOK** (Machine Owner Key):
 a per-machine list of extra certificates that *you*, as the physical owner of
 the machine, choose to trust. That is what [[secure-boot-mok-enrollment|MOK
 enrollment]] uses.
 
->[!info] Why enrolment usually cannot be automated
->MOK enrolment requires a human at the physical console pressing keys. That
+>[!info] Why enrollment usually cannot be automated
+>MOK enrollment requires a human at the physical console pressing keys. That
 >is not an oversight — it is the security property. If a remote process
 >could enroll a signing key, Secure Boot would be decorative. Budget for one
 >visit per machine, the same way you would for a firmware password. FOG 1.6
@@ -230,7 +230,7 @@ Fedora and Arch) is part of the installer's baseline package set, alongside
 carries on, leaving the kernels unsigned — read the installer output rather
 than assuming.
 
-On each client machine you intend to enrol via MOK, you need a way to run
+On each client machine you intend to enroll via MOK, you need a way to run
 `mokutil` — most simply, boot it once from any Linux live USB. Setup Mode
 enrollment needs no client-side tooling at all.
 
@@ -345,7 +345,7 @@ so none of it is reachable over HTTP. **The web server cannot read either
 private key**: kernel downloads from the web UI are signed by a small
 root-only helper (`/opt/fog/bin/fog-sign-kernel`) that takes no arguments,
 rather than in the web server itself. Only the public certificate is
-published, as `MOK.der` in the enrolment kit.
+published, as `MOK.der` in the enrollment kit.
 
 Back up the whole `pki/secureboot/` directory somewhere you would put a root
 password. Anyone holding the CA key can mint a new signer your machines will
@@ -354,7 +354,7 @@ full stop.
 
 >[!warning] The CA is never regenerated, on purpose
 >Re-running the installer reuses the existing CA. A fresh CA silently
->invalidates enrolment on **every machine that already trusted the old one**,
+>invalidates enrollment on **every machine that already trusted the old one**,
 >and nothing surfaces that until a client fails to boot. `--recreate-keys` and
 >`--recreate-CA` deliberately do not reach it. To rotate the CA on purpose,
 >delete `pki/secureboot/`, re-run the installer, and re-enroll every client —
@@ -427,7 +427,7 @@ cd /path/to/fogproject/bin
 ```
 
 That one run re-signs the FOS kernels with your key and republishes the
-enrolment kit — `MOK.der` and the fingerprint on the **Secure Boot** page —
+enrollment kit — `MOK.der` and the fingerprint on the **Secure Boot** page —
 from your certificate, in the same pass. Remember this switches you to the
 **flat model** (see [[bringing-your-own-ca|Bringing your own CA]]) unless
 you also pass FOG 1.6's `--secureboot-ca-cert`, so every already-enrolled
@@ -473,7 +473,7 @@ key from one machine]].
 generated leaf, rotate it per [above](#rotating-fogs-own-auto-generated-leaf-the-normal-case)
 and nothing else needs to happen. If the compromised key is the CA itself
 (or a flat admin-supplied key), every machine that enrolled it needs a
-physical visit to remove it and enrol the replacement's fingerprint, exactly
+physical visit to remove it and enroll the replacement's fingerprint, exactly
 like a planned rotation, just unplanned. That per-machine visit is the trade
 you accept for not needing anyone else's permission to sign your own
 kernels — treat the private key accordingly, and back it up somewhere you
@@ -487,7 +487,7 @@ would put a root password; see [The signing key](#the-signing-key).
   unaffected and need none of this.
 - **One visit per machine, always** — for MOK enrollment. There is no
   supported way to enroll a MOK without physical presence — that is the
-  security property, not an oversight. The enrolment kit makes the visit
+  security property, not an oversight. The enrollment kit makes the visit
   short; it cannot remove it. [[secure-boot-setup-mode-enrollment|Setup Mode
   enrollment]] enrolls into the firmware's own `db` instead, still
   per-machine, but without the shim/MokManager detour — in practice only
@@ -544,9 +544,9 @@ would put a root password; see [The signing key](#the-signing-key).
 >[!note] Clearing the TPM does not touch enrolled keys
 >Separately from the above: clearing a machine's TPM removes what is sealed
 >*to* the TPM (BitLocker keys, the Windows Hello for Business container,
->etc.), but MOK enrolment is not TPM-backed at all — MokList lives in
+>etc.), but MOK enrollment is not TPM-backed at all — MokList lives in
 >ordinary UEFI (NVRAM) variables that shim reads directly. Clearing the TPM
->neither enrols nor un-enrols a MOK, and does not interact with anything else
+>neither enrolls nor un-enrolls a MOK, and does not interact with anything else
 >in this guide.
 
 ## Still unverified

@@ -70,7 +70,7 @@ Ideal scenarios for dnsmasq include:
 2.  A regular DHCP server responds with a DHCP Offer, which contains possible values for network settings requested by the client. Usually a possible IP address, subnet mask, router (gateway) address, dns domain name, etc.
 3.  Because the client identified itself as a PXEClient, the proxyDHCP server also responds with a DHCP Offer with additional information, but not IP address info. It leaves the IP address assigning to the regular DHCP server. The proxyDHCP server provides the next-server-name and boot file name values, which is used by the client during the upcoming TFTP transaction.
 4.  The PXE Client responds to the DHCP Offer with a DHCP Request, where it officially requests the IP configuration information from the regular DHCP server.
-5.  The regular DHCP server responds back with an ACK (acknowledgement), letting the client know it can use the IP configuration information it requested.
+5.  The regular DHCP server responds back with an ACK (acknowledgment), letting the client know it can use the IP configuration information it requested.
 6.  The client now has its IP configuration information, TFTP Server name, and boot file name and it initiate a TFTP transaction to download the boot file.
 
   
@@ -310,7 +310,7 @@ renamed on the server.
 
 There is no Microsoft-signed 32-bit shim and no signed 32-bit iPXE, so there is
 nothing signed to point an ia32 UEFI client at. Such machines must have Secure
-Boot **disabled** to network boot. FOG refuses Secure Boot enrolment on them
+Boot **disabled** to network boot. FOG refuses Secure Boot enrollment on them
 outright rather than half-completing it, and 1.6 hides the "Enroll Secure Boot
 Key" boot-menu entry from clients that booted in BIOS/CSM mode for the same
 reason: an option that cannot succeed should not be offered.
@@ -323,7 +323,7 @@ reason: an option that cannot succeed should not be offered.
 
 > [!important] The boot file is only half of Secure Boot
 > Getting a signed iPXE to load is the part dnsmasq controls. The FOS kernel FOG
-> boots afterwards must also be trusted by the machine, which is a separate
+> boots afterward must also be trusted by the machine, which is a separate
 > setup step — see [Secure Boot signing](../../kb/how-tos/secure-boot-signing.md).
 > A correct DHCP configuration with an untrusted kernel gets you a signed iPXE
 > and then a failure one step later.

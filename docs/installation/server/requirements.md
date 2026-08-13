@@ -20,7 +20,7 @@ the ports and firewall rules FOG needs to actually talk to clients, see
 
 Before diving right into the installation of FOG you need to decide
 which server OS you are going to use. FOG is made to install on RedHat
-based distro CentOS, Fedora, RHEL amongst others as well as Debian,
+based distro CentOS, Fedora, RHEL among others as well as Debian,
 Ubuntu and Arch Linux.
 
 Choose whichever you like most and have knowledge about! FOG is known to

@@ -24,7 +24,7 @@ tags:
 Many firmwares support **Setup Mode** — a state that lets you write
 certificates directly into UEFI's own trust database (`PK`, `KEK`, `db`),
 bypassing shim and MokManager entirely. This is Route C: [[secure-boot-mok-enrollment|Routes
-A and B]] both end at a human pressing keys, because MOK enrolment is
+A and B]] both end at a human pressing keys, because MOK enrollment is
 *designed* to require one. Route C sidesteps that by not using MOK at all: if
 the platform is in Setup Mode, the running OS can write the real Secure Boot
 databases directly, and FOS does it unattended.
@@ -75,7 +75,7 @@ firmware computes it during POST.
 
 >[!note] What still needs a human
 >*Getting into* Setup Mode means clearing the `PK` at the firmware screen, and
->turning Secure Boot back **on** afterwards is a firmware toggle too. Neither is
+>turning Secure Boot back **on** afterward is a firmware toggle too. Neither is
 >reachable from a running OS by design. So Route C trades "a visit with a live
 >USB, or keypresses at MokManager" for "a firmware visit" — the win is that the
 >firmware half is scriptable through vendor tooling (Dell `cctk`, Redfish) where
@@ -86,7 +86,7 @@ firmware computes it during POST.
 >with Secure Boot enforcing and your certificate not yet trusted, both are
 >refused — `Verification failed: Security Policy Violation` — so FOS never
 >starts and no task of any kind runs. This is a property of the boot chain, not
->of the enrolment task. Secure Boot must be off, or the platform in Setup Mode,
+>of the enrollment task. Secure Boot must be off, or the platform in Setup Mode,
 >for the machine to get far enough to enroll.
 
 ## Requirements
@@ -95,7 +95,7 @@ firmware computes it during POST.
 - **`efitools` on the server.** The installer installs it and builds the signed
   variable updates (`PK.auth`, `KEK.auth`, `db.auth`, via
   `cert-to-efi-sig-list`, `sign-efi-sig-list`, `efi-updatevar`) automatically.
-  If it is missing the installer says so and skips building them — enrolment
+  If it is missing the installer says so and skips building them — enrollment
   then falls back to the MOK routes rather than failing silently.
 - **FOG 1.6.** The blobs are published at
   `<web-root>/service/secureboot/{db,KEK,PK}.auth` by the 1.6 installer only.
@@ -130,7 +130,7 @@ regenerate** on later installs. The `.auth` blobs are rebuilt every install, but
 from those same keys, so re-running the installer does not invalidate machines
 you have already enrolled.
 
-MOK enrolment via MokManager works exactly the same regardless of whether
+MOK enrollment via MokManager works exactly the same regardless of whether
 Setup Mode is also used — the two are independent enrollment routes for the
 same Secure Boot CA, not alternatives that conflict. Confirmed on real UEFI
 hardware: machines boot FOG's leaf-signed kernels while trusting only the

@@ -110,7 +110,7 @@ their dashboard, the client-facing pages, and log out.
     of arriving without a role.
 
     The upgrade converts every account that was relying on the old
-    behaviour into an explicit role, so nobody's access changes silently
+    behavior into an explicit role, so nobody's access changes silently
     — see [What the upgrade does to existing users](#what-the-upgrade-does-to-existing-users).
 
 ## What restricted users see

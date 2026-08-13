@@ -116,7 +116,7 @@ is still on disk, FOG tells you to uninstall it instead.
 >[!warning] Forget does not drop the plugin's tables
 >What to drop is described by the plugin's own code, which is exactly what is
 >no longer there. Its tables stay behind, and removing them is a manual job. If
->you still have the code, **Uninstall** first and Forget afterwards.
+>you still have the code, **Uninstall** first and Forget afterward.
 
 ## Where plugins live
 
@@ -178,7 +178,7 @@ Two independent switches, both required:
 >That is why the second switch is a root command rather than something the
 >settings page can do for itself: granting this authority is deliberately not
 >something the application can grant to itself. Turn it on when you need it,
->and `disable` it again afterwards if you prefer.
+>and `disable` it again afterward if you prefer.
 
 Uploading also needs the **`plugin.install`** permission, which is not part of
 `plugin.edit`. Activating code that is already on the server and adding new

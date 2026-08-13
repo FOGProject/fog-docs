@@ -247,7 +247,7 @@ nesting works and what it costs depends on the directory:
 
 | **Nested Groups** | What it does |
 |---|---|
-| **Off - direct membership only** | Today's behaviour. Direct members only. |
+| **Off - direct membership only** | Today's behavior. Direct members only. |
 | **Expand - walk the chain (any directory)** | FOG walks up the group tree itself, one query per level. Works on **every** directory. |
 | **Chain - LDAP_MATCHING_RULE_IN_CHAIN (AD only)** | The directory resolves the whole chain server-side, in a single query. |
 
@@ -396,6 +396,6 @@ still carries only their role's permissions — see
   a full administrator. If that is not what you want, the role mapping
   is where you fix it.
 - **Certificate verification does not change on upgrade.** Existing
-  servers come through set to **Inherit**, which is the behaviour they
+  servers come through set to **Inherit**, which is the behavior they
   already had — whatever `TLS_REQCERT` on the FOG server says. Nothing
   starts failing because the setting arrived.
