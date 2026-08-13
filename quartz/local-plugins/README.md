@@ -3,7 +3,7 @@
 The first two local plugins replicate fog-docs' `context_id` short-permalink feature under Quartz, without editing any of the 94 content files in `docs/`:
 
 - **context-id-aliases** (transformer, runs after `note-properties`): appends each page's `context_id` front-matter value into its in-memory `aliases` list, so Quartz's built-in `alias-redirects` emitter generates a `/{context_id}` redirect stub automatically — the same guarantee `hook.py` provides today under MkDocs.
-- **context-id-permalink** (component): renders a small "Permalink" link from `context_id`, mirroring `overrides/partials/tags.html`'s visible link under mkdocs-material.
+- **context-id-permalink** (component): renders a small "Permalink" link from `context_id`, mirroring `overrides/partials/tags.html`'s visible link under mkdocs-material. The href is built with `resolveRelative(fileData.slug, context_id)` and **must stay relative** — Read the Docs serves the site under a language/version prefix (`/en/latest/` today), so a root-absolute `/{context_id}` drops that prefix and 404s, and `scripts/rtd-fix-links.mjs` can't repair it (its `fixUrl` pass skips URLs resolving outside the output dir). Don't "fix" it by prepending `cfg.baseUrl` either: that would bake `en/latest` into every page, breaking future translations/versions and pointing local dev links at production.
 
 The rest cover mkdocs-material features with no `@quartz-community` equivalent:
 
