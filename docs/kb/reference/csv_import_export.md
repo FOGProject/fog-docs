@@ -75,7 +75,7 @@ Each object type has an **Export** page (for example *Hosts
 
 >[!tip]
 >Type in the table's **search box first** to scope the export. **CSV (All)**
->honours the active search, so you can export just the matching subset — for
+>honors the active search, so you can export just the matching subset — for
 >example, every host whose name contains `lab`.
 
 The exported columns — and the optional trailing `associations` column — are
@@ -92,7 +92,7 @@ maps each subsequent row **by name**:
 - **Partial** — include only the columns you want to set; omitted columns keep
   their defaults. (The identity columns are still required: `name` for every
   class, plus `primac` for hosts.)
-- **Auto‑detected** — a first row whose cells are *all* recognised column names
+- **Auto‑detected** — a first row whose cells are *all* recognized column names
   is treated as a header automatically. The *"First row is a header"* checkbox
   forces header mode (and reports any unrecognised header names as ignored).
 - **Names are matched case‑insensitively** (`ProductKey` == `productkey`).
@@ -129,7 +129,7 @@ position**, in the exact order Export produces (the per‑class tables below).
 
 ### A note on sensitive / special fields
 
-| Field | Class | Behaviour |
+| Field | Class | Behavior |
 |-------|-------|-----------|
 | `primac` | Host | **Required**, first column. Pipe‑separated MAC list; the first MAC becomes primary, the rest are added as additional MACs. |
 | `productKey` | Host | Auto‑detected: accepts plaintext, base64, or the AES‑encrypted form an export produces. |

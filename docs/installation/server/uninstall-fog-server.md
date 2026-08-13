@@ -83,7 +83,7 @@ genuine pre-FOG original — newer ones are just FOG's own earlier versions. The
 version FOG was using is kept as `<file>.fog-uninstall.<timestamp>` rather than
 deleted, so nothing is lost.
 
-!!! note "Check these afterwards"
+!!! note "Check these afterward"
     If you edited any of those files yourself after installing FOG, those edits
     are in the `.fog-uninstall.` copy, not in the restored file. Review them
     before restarting the affected service.
