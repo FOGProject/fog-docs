@@ -12,14 +12,20 @@ tags:
     - plugin-development
     - customization
 ---
-
 # Building a FOG Plugin — Start to Finish
 
 This guide walks you from an empty directory to a working, installable FOG
 plugin on the **working‑1.6** framework. It uses a complete, runnable example
-plugin — **`helloworld`** — that ships alongside this document at
-[`packages/web/lib/plugins/helloworld/`](../packages/web/lib/plugins/helloworld/).
+plugin — **`helloworld`** — which lives in
+[`FOGProject/fog-plugins`](https://github.com/FOGProject/fog-plugins) and
+lands at `packages/web/lib/plugins/helloworld/` once the plugins are fetched.
 Copy that directory, rename it, and you have a head start.
+
+> The bundled plugins are no longer committed to the `fogproject` repository.
+> A fresh clone has no `packages/web/lib/plugins/` at all until
+> `bin/fetch-plugins.sh` populates it from the release `FOG_PLUGINS_VERSION`
+> pins — which the installer does for you. Run it by hand if you just want the
+> tree.
 
 > **Scope:** this targets the working‑1.6 plugin framework (the `formFields` /
 > `makeInput` page helpers, the `addPost`/`editPost` JSON pattern, and the
@@ -31,10 +37,33 @@ Copy that directory, rename it, and you have a head start.
 
 ## 1. What a plugin is
 
-A FOG plugin is just a directory under `packages/web/lib/plugins/<name>/`
-containing PHP classes that FOG auto‑discovers. There is no build step and no
-registration list to edit — drop the directory in, activate the plugin in the
-UI (**Plugin Management**), and it works.
+A FOG plugin is just a directory containing PHP classes that FOG
+auto‑discovers. There is no build step and no registration list to edit — drop
+the directory in, activate the plugin in the UI (**Plugin Management**), and it
+works.
+
+There are two places that directory can live, and which one you pick matters:
+
+| Root | For | Survives a FOG upgrade? |
+|---|---|---|
+| `packages/web/lib/plugins/<name>/` | plugins bundled with FOG itself, sourced from `FOGProject/fog-plugins` | No — the tarball re‑lays this tree |
+| `/opt/fog/plugins/<name>/` (`FOG_PLUGIN_DIR`) | **everything third‑party** | Yes |
+
+The installer's `configureHttpd()` does `rm -rf` on the web root before laying
+the new one down, so a plugin installed into `lib/plugins/` is deleted by the
+next `installfog.sh` run without warning. `FOG_PLUGIN_DIR` sits outside the web
+root precisely so that cannot happen. See
+[ADR 0009](https://github.com/FOGProject/fogproject/blob/working-1.6/docs/adr/0009-plugins-become-installable-artifacts.md).
+
+Bundling is not a route third parties take. `lib/plugins/` is filled from a
+pinned `fog-plugins` release, so putting a plugin there means opening a PR
+against that repository and waiting for FOG to pin a release containing it.
+Ship your own archive instead — see §11a.
+
+Discovery, the class autoloader and the routing all treat the two roots
+identically; the only difference an external plugin sees is that its `js/`,
+`css/` and `images/` are reached through a symlink FOG maintains for it (see
+§10).
 
 A typical plugin provides:
 
@@ -81,9 +110,9 @@ The running example, `helloworld`, manages a trivial entity with a `name` and a
 ## 3. Directory layout
 
 ```
-packages/web/lib/plugins/helloworld/
+<root>/helloworld/                  # <root> = lib/plugins (bundled) or /opt/fog/plugins
 ├── config/
-│   └── plugin.config.php          # discovery metadata ($fog_plugin[...])
+│   └── plugin.config.php          # the manifest ($fog_plugin[...])
 ├── class/
 │   ├── helloworld.class.php        # HelloWorld         (model, FOGController)
 │   └── helloworldmanager.class.php # HelloWorldManager  (manager + schema())
@@ -107,9 +136,9 @@ lowercase and use it consistently (`$fog_plugin['name']`, each hook's
 
 ## 4. Step by step
 
-### 4.1 `config/plugin.config.php`
+### 4.1 `config/plugin.config.php` — the manifest
 
-Discovery metadata. `Plugin::getPlugins()` `include`s this file and reads the
+`Plugin::readManifest()` `include`s this file during discovery and reads the
 `$fog_plugin` array.
 
 ```php
@@ -117,13 +146,48 @@ $fog_plugin = [];
 $fog_plugin['name']        = 'helloworld';           // == directory name
 $fog_plugin['description'] = 'Skeleton example plugin …';
 $fog_plugin['menuicon']    = 'fa fa-cube fa-fw';     // "fa …" => icon; else <img src>
-$fog_plugin['menuicon_hover'] = null;
-$fog_plugin['entrypoint']  = 'html/run.php';         // legacy/conventional; not shipped
+$fog_plugin['version']     = '1.0.0';                // your plugin's own version
+$fog_plugin['fog_min']     = '1.6.0';                // oldest FOG it runs on
+$fog_plugin['fog_max']     = '1.7.0';                // newest FOG it runs on
+$fog_plugin['requires']    = ['location'];           // other plugins, by directory name
+$fog_plugin['author']      = 'Your Name';
+$fog_plugin['homepage']    = 'https://example.org/my-plugin';
 ```
 
-> The `entrypoint` is vestigial — no plugin actually ships `html/run.php`;
-> routing happens through the `node` → page‑class mapping. Declare it anyway for
-> consistency with every other plugin.
+| Key | Required | What it does |
+|---|---|---|
+| `name` | yes | Machine name and routing `node`. Must equal the directory name, lowercase. |
+| `description` | no | Shown in Plugin Management. |
+| `menuicon` | no | Defaults to `fa fa-plug fa-fw`. |
+| `version` | no | Yours to number. Shown in the grid, stored in `plugins.pVersion`. Nothing compares it to anything. |
+| `fog_min` / `fog_max` | no | The FOG range you support. An absent bound is no bound. |
+| `requires` | no | Plugins that must be active first. |
+| `author`, `homepage` | no | Attribution. |
+
+**Every key except `name` is optional**, so a plugin written before the manifest
+existed keeps working untouched.
+
+#### How the compatibility range is enforced
+
+- Activating or installing a plugin outside its range is **refused**, with the
+  reason in the error toast. The whole batch is refused, not just the offending
+  plugin — a partial success reported as "Plugins activated!" is worse than a
+  clean failure.
+- If a FOG upgrade moves the server out of the range of a plugin that is
+  already active, the next boot **deactivates it** and logs why. `installed` and
+  `pSchema` are left alone, so its tables and applied migrations survive and
+  re‑activating once you ship a compatible build is one click.
+- Only the **numeric core** of a version is compared. `FOG_VERSION` is
+  `1.6.0-beta.3318` on a beta and `version_compare()` sorts that *below*
+  `1.6.0`, so comparing raw would refuse `fog_min = '1.6.0'` on the entire beta
+  branch.
+- Plugins turned on in the same batch satisfy each other's `requires`, so the
+  order you tick the checkboxes in doesn't matter.
+
+> `menuicon_hover` and `entrypoint` used to appear here. Nothing ever read
+> either one — no plugin has ever shipped the `html/run.php` that `entrypoint`
+> named, and routing goes through the `node` → page‑class mapping. Both are
+> gone; if your manifest still sets them they are simply ignored.
 
 ### 4.2 Model — `class/helloworld.class.php`
 
@@ -247,16 +311,18 @@ matching `*GeneralPost()` that mutates `$this->obj` before the shared `save()`.
 ### 4.5 Hooks — `hooks/*.hook.php`
 
 Each hook is a small class extending `Hook`, with `public $node`, that registers
-callbacks **in its constructor, guarded by the install check**:
+callbacks **in its constructor**. Use `registerInstalled()` — it applies the
+"only when this plugin is installed" guard for you and takes an ordered list of
+`[event, method]` pairs:
 
 ```php
 public function __construct()
 {
     parent::__construct();
-    if (!in_array($this->node, (array)self::$pluginsinstalled)) {
-        return;                       // do nothing unless this plugin is installed
-    }
-    self::$HookManager->register('MAIN_MENU_DATA', [$this, 'menuData']);
+    $this->registerInstalled([
+        ['MAIN_MENU_DATA', 'menuData'],
+        ['PERMISSION_REGISTRY_DATA', 'permData'],
+    ]);
 }
 ```
 
@@ -270,6 +336,34 @@ The example ships three hooks:
   the current sub‑page.
 - **API** (`AddHelloWorldAPI`) — `API_VALID_CLASSES` exposes the node over REST
   so `/fog/helloworld` reuses the same ORM as the UI.
+
+> **Name API classes after your permission node.** Access to a REST class is
+> resolved to `<node>.<action>` by matching the class name against the nodes
+> registered through `PERMISSION_REGISTRY_DATA`. A class is claimed by a node
+> when it either *is* the node (`site`) or *starts with* the node and ends in
+> `association` (`sitehostassociation`) — the same shape core uses for
+> `groupassociation` → `group`. Longest match wins.
+>
+> A class no node claims is restricted to administrators and logs a line
+> naming it. That is deliberate: an unmapped class used to be readable and
+> writable by **any** authenticated user regardless of role. If your endpoint
+> is admin-only when you did not intend it to be, check the log and rename the
+> class (or register the node) rather than working around it.
+
+> **Register your node, or your page is admin-only.** The same stance applies
+> to the management page, not just the REST classes: a node absent from the
+> permission registry resolves to `unmapped.<node>`, which no role can be
+> granted, so only a holder of `*` can reach it — and its sidebar entry is
+> hidden from everyone else. It logs one line per node per request naming
+> what to register. Firing `PERMISSION_REGISTRY_DATA` is therefore not
+> optional; a plugin that skips it is not "ungated", it is unreachable.
+>
+> ```php
+> public function permData($arguments)
+> {
+>     $arguments['registry'][$this->node] = ['view', 'create', 'edit', 'delete'];
+> }
+> ```
 
 ### 4.6 JavaScript — `js/fog.helloworld.*.js`
 
@@ -291,7 +385,8 @@ Shared helpers you'll use: `Common.node`, `Common.id`, `Common.search`,
 FOG has **no automatic per‑column migration**. `Schema::createTable()` emits
 `CREATE TABLE IF NOT EXISTS`, which does nothing on a table that already
 exists — so simply adding a column to `createSql()` will **not** reach existing
-installs. Use the **`schema()` contract** instead.
+installs. Use the **`schema()` contract** instead — covered in depth in
+[[plugin-schema-migrations|Plugin Schema Migrations]].
 
 **`schema()` returns an ordered, append‑only list of steps.** Each step is a SQL
 string (or a closure returning SQL). On install/upgrade the framework
@@ -337,16 +432,30 @@ Seed data (e.g. default `globalSettings` rows) is just another step — return t
 
 ## 6. Lifecycle
 
-1. **Discovery.** `Plugin::getPlugins()` scans the plugins directory, `include`s
-   each `config/plugin.config.php`, and upserts a row in the `plugins` table.
+1. **Discovery.** `Plugin::getPlugins()` scans **both** plugin roots, reads each
+   manifest, and upserts a row in the `plugins` table. It also maintains the
+   asset symlink for external plugins and deactivates any active plugin that
+   this FOG version has moved out of range.
 2. **Activation.** An admin enables the plugin in **Plugin Management**. Its
    `node` is added to `FOGBase::$pluginsinstalled`, which is what every hook
-   constructor checks before registering.
+   constructor checks before registering. Refused if `fog_min`/`fog_max`/
+   `requires` say it cannot run here.
 3. **Install / upgrade.** `Plugin::installdb()` runs `schema()` via
    `applyUpdates()` and tracks `pSchema`. This is idempotent and
    non‑destructive — safe to run on every upgrade.
 4. **Uninstall.** Inherited `uninstall()` drops the table; override it if you
    need to clean up settings, associations, or users you created.
+5. **Code removed.** Deleting the plugin directory does **not** delete its row.
+   Discovery only ever walks directories that exist, so nothing would visit
+   the row again to clean it up — and absence is not reliably permanent (an
+   unmounted external root, or the web tree mid-upgrade, makes every plugin
+   vanish at once). The row keeps its state and its `pSchema` count, so
+   putting the code back resumes exactly where it left off.
+
+   Plugin Management badges such a row **Missing**, refuses to activate or
+   install it, and offers **Forget selected** to delete the row deliberately.
+   Forget leaves the plugin's tables behind and says so: what to drop is
+   described by `schema()`, which is part of the code that has gone.
 
 ---
 
@@ -373,6 +482,24 @@ Global configuration lives in the `globalSettings` table.
 - **Instantiation:** prefer `self::getClass('HelloWorld')` /
   `self::getClass('HelloWorldManager')` over `new`.
 - **Translation:** wrap UI strings in `_('…')`.
+- **Secrets in your table:** if a column holds a credential — an API token, a
+  webhook URL, a bind password — declare it through `API_SENSITIVE_FIELDS` or
+  it is emitted in REST payloads and by the unauthenticated boot endpoint.
+  Two tiers:
+
+  | Tier | Stripped from | Use when |
+  |---|---|---|
+  | `fields` | lists and expanded relations | a client legitimately reads it back on a direct single GET (as fog-client does with `host.ADPass`) |
+  | `always` | everything, single GET included | nothing outside the web tier ever needs it |
+
+  ```php
+  public function declareSensitiveFields($arguments)
+  {
+      $arguments['always'][$this->node][] = 'bindPwd';
+  }
+  ```
+
+  Prefer `always` unless you can name the consumer that reads the field back.
 
 ---
 
@@ -385,7 +512,9 @@ Global configuration lives in the `globalSettings` table.
 | `SEARCH_PAGES` | make the node searchable |
 | `PAGES_WITH_OBJECTS` | enable the object (edit/delete) flow for the node |
 | `PAGE_JS_FILES` | inject JS files for the current page |
-| `API_VALID_CLASSES` | expose the node over the REST API |
+| `PERMISSION_REGISTRY_DATA` | register the node and its actions — **required**, see §4.5 |
+| `API_VALID_CLASSES` | expose the node over the REST API (name classes after your permission node — see §4.5) |
+| `API_SENSITIVE_FIELDS` | keep credential columns out of API and boot-endpoint output — see §8 |
 | `<NODE>_ADD_FIELDS` / `_GENERAL_FIELDS` | let others extend your forms |
 | `<NODE>_ADD_POST` / `_EDIT_POST` / `_ADD_SUCCESS` / `_ADD_FAIL` | extension points around your saves |
 
@@ -399,7 +528,10 @@ Fire your own events with `&`‑by‑reference args so listeners can mutate them
 - **`CREATE TABLE IF NOT EXISTS` never alters a live table.** Add columns via a
   new `schema()` step, not by editing `createSql()`.
 - **Filename = `strtolower(ClassName)` + suffix.** A mismatch means the class
-  silently won't autoload.
+  won't autoload. Silently, for most classes — but not for your manager:
+  install refuses outright if `class/<name>manager.class.php` exists and does
+  not declare `<Name>Manager`, because the fallback used to make the install
+  report success having created nothing.
 - **`menuicon`** beginning with `fa` is rendered as a font‑awesome icon;
   anything else is treated as an `<img>` `src`.
 - **`$serverFault`** must be `true` only for server‑side failures, so HTTP
@@ -408,15 +540,25 @@ Fire your own events with `&`‑by‑reference args so listeners can mutate them
   `$pluginsinstalled`, or your hooks run for a plugin that isn't enabled.
 - **List columns** in the JS must match `$headerData` order and the keys the
   router emits (`mainlink`, `id`, friendly field names).
+- **An external plugin's assets are served through a symlink FOG maintains for
+  you.** `/opt/fog/` is outside the document root, so the browser cannot reach
+  it; every discovery pass (re)creates `lib/plugins/<name>` →
+  `/opt/fog/plugins/<name>` so `../lib/plugins/<name>/js/…` resolves for a
+  bundled and an external plugin alike. You do nothing — reference your assets
+  the normal way and `Hook::injectPluginJS()` emits the right URL. Apache needs
+  `Options +FollowSymLinks` (the installer sets it); nginx follows regardless.
 
 ---
 
 ## 11. Install & test your plugin
 
-1. Copy `helloworld/` to `packages/web/lib/plugins/<yourname>/` and rename the
-   directory, the classes, the files (lowercased), every `$node`, and the
-   `$fog_plugin['name']`.
-2. Deploy to the web root (e.g. `copybacktrunk.sh "" "" "1.6"`).
+1. Copy `helloworld/` to `/opt/fog/plugins/<yourname>/` (or, for a plugin you
+   intend to bundle with FOG itself, `packages/web/lib/plugins/<yourname>/`) and
+   rename the directory, the classes, the files (lowercased), every `$node`, and
+   the `$fog_plugin['name']`.
+2. Get it into the web root — only needed for a bundled plugin, since
+   `/opt/fog/plugins/` is already live and outside the docroot on purpose.
+   Whatever you normally use to sync a working tree onto the server will do.
 3. In the UI: **Plugin System → Plugin Management → install/activate** your
    plugin.
 4. Confirm: the sidebar entry appears, **Create New** saves a row (check the
@@ -427,13 +569,87 @@ Fire your own events with `&`‑by‑reference args so listeners can mutate them
 
 ---
 
+## 11a. Shipping your plugin to other people
+
+Package it as a `.tar.gz` containing **one directory, named for the plugin**:
+
+```
+tar czf myplugin-1.0.0.tar.gz myplugin/
+```
+
+Publish the archive's `sha256sum` alongside it — Plugin Management shows the
+checksum of what was uploaded so an admin can compare the two before
+installing.
+
+Admins have two routes:
+
+- **`git clone` or untar into `/opt/fog/plugins/`** as root. Always available,
+  nothing to switch on.
+- **Plugin Management → Upload plugin.** Off by default; see below.
+
+### The archive must survive validation
+
+FOG unpacks the archive somewhere the autoloader does not look, reads the
+manifest, and shows the admin what it found *before* anything is installed. It
+is refused outright if:
+
+| | |
+|---|---|
+| it isn't a readable `.tar.gz` | opened as a tar regardless of the file name |
+| it holds anything other than exactly one top-level directory | including a stray file at the archive root |
+| an entry path is absolute or contains `..` | an interior `..` gets past PharData; FOG checks anyway |
+| there is no `<name>/config/plugin.config.php` | |
+| the manifest's `name` isn't the directory name | |
+| the plugin is outside its own `fog_min`/`fog_max` range | |
+| a **bundled** plugin already has that name | a bundled plugin always wins the collision, so the upload could never load |
+| it is over 64 MB | `post_max_size` usually bites first |
+
+Symlinks need no rule: `PharData` writes them out as empty regular files, so
+they cannot escape — but it also means **a plugin that relies on a symlink will
+install subtly broken.** Don't ship one.
+
+Uploading a plugin that is already in `/opt/fog/plugins` is an upgrade; the
+admin is warned that files will be replaced, and the old copy is only deleted
+once the new one is in place. Installing the files does **not** install or
+activate the plugin — the admin still does that from the same page, so "the
+files are here" and "this code is running" stay separate decisions.
+
+### Turning uploads on (admins)
+
+The admin-side walkthrough is on the
+[[plugins#Installing a plugin from an archive|Plugins page]]; the short version
+is two independent switches, both required:
+
+1. `FOG_PLUGIN_UI_INSTALL_ENABLED` in **FOG Configuration → FOG Settings →
+   Plugin System**.
+2. `sudo bin/fog-plugin-uploads.sh enable`, which makes `/opt/fog/plugins`
+   writable by the web server (and relabels it for SELinux). `disable` and
+   `status` do what they say.
+
+The upload route also needs the **`plugin.install`** permission, which is
+deliberately *not* part of `plugin.edit`: activating a plugin that is already
+on disk and adding new executable code to the server are different authorities.
+
+> **Understand what you are turning on.** A plugin is PHP that FOG autoloads
+> and runs as the web user. Making its directory web-writable means any
+> file-write bug anywhere in FOG can put executable code on the server. That is
+> why step 2 is a root command rather than something the settings page can do
+> for itself — and why leaving uploads off and using `git clone` is a perfectly
+> good answer.
+
+---
+
 ## 12. Reference plugins
 
 - **`helloworld`** — this guide's minimal, complete CRUD example.
 - **`subnetgroup`** — a clean real CRUD plugin (model→class relationship,
   Export/Import, `schema()`).
-- **`accesscontrol`** — a multi‑table plugin showing a richer `schema()` with
-  seed and closure steps.
+- **`site`** — a five‑table plugin, and the reference for object scoping via
+  `OBJECT_SCOPE_CHECK`. Its `schema()` shows how to retire a table you shipped
+  (steps are immutable: step 3 creates it, step 4 drops it).
+- **`persistentgroups`** — a plugin that is nothing but a `schema()` closure
+  step (it installs a MySQL trigger). No page, no model, no hooks: proof that
+  none of those are mandatory.
 - **`ldap`** — authentication/integration plugin (custom hooks beyond CRUD).
 
 When in doubt, copy the closest existing plugin and adapt it — the conventions

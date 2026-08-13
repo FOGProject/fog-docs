@@ -8,6 +8,7 @@ debug.log
 quartz/node_modules
 quartz/public
 quartz/.quartz-cache
+quartz/quartz/.quartz-cache
 quartz/.quartz
 quartz/.turbo
 site
