@@ -42,6 +42,18 @@ Each permission is an **area** plus an **action**:
 - **Actions** are what can be done there: **View**, **Create**,
   **Edit**, **Delete**, and **Task** (starting imaging/snapin tasks).
 
+Not every area offers every action, and a few offer one of their own. The
+clearest example is **Plugins**, which has **View**, **Edit** and **Install**:
+
+- **Edit** activates, deactivates, installs and uninstalls plugins that are
+  already on the server.
+- **Install** uploads a *new* plugin archive.
+
+They are separate on purpose. Switching on code an administrator already chose
+to put on the server, and adding new code to it, are different authorities —
+so a role that manages plugins does not thereby get to add one. See
+[[plugins#Installing a plugin from an archive|Plugins]].
+
 For example, a help-desk role might have full Host and Printer access
 plus the ability to view Images and start imaging tasks, but no access
 to Users, Roles, or FOG Settings.
