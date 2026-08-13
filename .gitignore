@@ -11,6 +11,12 @@ quartz/.quartz-cache
 quartz/quartz/.quartz-cache
 quartz/.quartz
 quartz/.turbo
+# Backup of the config while quartz/scripts/rtd-build.mjs has it patched for a
+# translated build. Restored on exit; only ever present mid-build.
+# (The composed content trees deliberately live in the OS temp dir instead --
+# a gitignored content root inside the repo builds to an empty site. See
+# rtd-build.mjs.)
+quartz/quartz.config.yaml.orig
 site
 _build
 __pycache__

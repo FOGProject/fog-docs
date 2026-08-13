@@ -30,15 +30,23 @@ Both scripts point Quartz at `../docs` via its `--directory` flag, so `docs/`
 remains the single source of truth for content — nothing is copied or
 symlinked into `quartz/content/`.
 
-There are no tests or linters in this repo — the only "validation" is that
-`npm run docs:build` completes without errors (broken wikilinks, duplicate
-`context_id`s, etc. surface as build warnings/errors).
+The only tests in this repo cover the translation pipeline's helpers
+(`node --test "scripts/*.test.mjs"`). There are no linters — otherwise the only
+"validation" is that `npm run docs:build` completes without errors (broken
+wikilinks, duplicate `context_id`s, etc. surface as build warnings/errors).
 
 Production builds happen on Read the Docs per `.readthedocs.yml`, which fully
-overrides RTD's default build via `build.commands`: install Node, run Quartz,
-then run `quartz/scripts/rtd-fix-links.mjs` as a post-build fix-up (Quartz
-assumes clean-URL host rewriting; RTD serves by exact path, so leaf pages get
-promoted to `foo/index.html`).
+overrides RTD's default build via `build.commands`: install Node, then run
+`quartz/scripts/rtd-build.mjs`. That script picks the language, composes the
+content tree, runs Quartz, and finishes with `quartz/scripts/rtd-fix-links.mjs`
+as a post-build fix-up (Quartz assumes clean-URL host rewriting; RTD serves by
+exact path, so leaf pages get promoted to `foo/index.html`). To build a
+non-English language locally:
+
+```bash
+cd quartz
+node scripts/rtd-build.mjs --language fr -o /tmp/fr-site
+```
 
 ## Content architecture
 
@@ -127,6 +135,55 @@ promoted to `foo/index.html`).
 - See `quartz/README.md` for the full picture, including known, accepted
   gaps (unconverted MkDocs admonition syntax in a few files, an unsupported
   color-class syntax, and pre-existing `context-id` front-matter typos).
+
+## Translations
+
+The site is published in several languages. `docs/` is English and is the only
+source of truth; everything under `translations/` is machine-generated from it
+and is safe to delete and regenerate.
+
+- **Read the Docs serves translations as one project per language**, all
+  pointed at this same repo and branch and linked from the parent project's
+  *Translations* page. The only difference between them is each project's
+  Language setting, which arrives in the build as `$READTHEDOCS_LANGUAGE`.
+  Adding a language is one entry in `translations/languages.json` plus one RTD
+  project — there are no per-language branches and no config to keep in sync.
+- **Layout**: `translations/<lang>/` mirrors `docs/`, holding only the pages
+  actually translated. `quartz/scripts/rtd-build.mjs` lays it over a copy of
+  `docs/`, so an untranslated page falls back to English rather than 404ing.
+- **`scripts/translate.mjs`** regenerates a language from `docs/`. It tracks
+  which pages are stale by hashing their English source into
+  `translations/<lang>/.translation-state.json`, and
+  `.github/workflows/translate.yml` runs it on every push to `master` that
+  touches `docs/**`, plus nightly to drain whatever the rate limit deferred.
+  Translation runs on GitHub Models via the workflow's own `GITHUB_TOKEN`
+  (`models: read`) — free, no API key, but rate limited per account, which is
+  why the script works to a request budget and the nightly drain exists.
+
+Rules that matter when touching any of this:
+
+- **Filenames stay English.** The Explorer `sortFn`, `section-shortcuts`,
+  `prev-next-nav` and every wikilink target key off slugs, which come from
+  filenames. Only front-matter `title`/`description` and the prose are
+  translated; the visible nav localizes through `title` alone.
+- **`context_id`, `tags` and `aliases` are copied verbatim.** `context_id` must
+  match English for the `/{context_id}` permalink to resolve, `aliases` hold
+  redirect slugs from retired URLs, and translating `tags` would fragment the
+  tag tree. Each language is its own site build, so a repeated `context_id`
+  across languages is not a collision.
+- **Terminology comes from the FOG web UI's own gettext catalogs**
+  (`fogproject`'s `packages/web/management/languages/`), fetched at run time and
+  fed to the model as a glossary. This is not cosmetic: FOG's French UI calls a
+  Host a *Machine*, not an *Hôte*, and without the glossary the docs name
+  buttons that do not exist on the reader's screen.
+- **Every translated page carries a machine-translation warning callout**
+  linking to the English original, injected by code rather than by the model.
+- **Human edits to a translation survive until the English page changes**, at
+  which point the page is regenerated and the edit is lost. Fixes belong
+  upstream in `docs/`. Run `node scripts/translate.mjs <lang> --verify` after
+  editing a translation by hand — it re-checks every page against its English
+  source for dropped wikilinks, altered code blocks and the like, none of which
+  the Quartz build would warn about.
 
 ## Documenting FOG's release/version automation
 

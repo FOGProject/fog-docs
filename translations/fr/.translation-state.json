@@ -1,0 +1,45 @@
+{
+  "$comment": "Written by scripts/translate.mjs. Maps each docs/ page to the sha256 of the English source it was last translated from; a page is retranslated when its source hash moves. Delete an entry to force that page to be retranslated.",
+  "entries": {
+    "development/index.md": {
+      "sourceHash": "e64c94ad8d55bea96af8e0d66b961d968df125598dffdd8b30600f7de8c7f665",
+      "translatedAt": "2026-08-13T23:12:20.738Z"
+    },
+    "index.md": {
+      "sourceHash": "abe2a58ad4bc8b1180ec36aa6817c8e8b302ec8031a4ebf8b2ea75957e1a3149",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    },
+    "installation/client/index.md": {
+      "sourceHash": "dfe4e748472509d0e24fa018517a073e4460439298c6f65f7bc65bb935dc4cd6",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    },
+    "installation/index.md": {
+      "sourceHash": "2ab51a2efed9e3cdb0c7b1747a727578c4e05368013cf81c04a44a927fb7779f",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    },
+    "installation/network-setup/index.md": {
+      "sourceHash": "2c674ad250fa1fd4fdc8f3a33e8be407b1dfdd9319603d3a5854cf7e640dcebe",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    },
+    "installation/server/index.md": {
+      "sourceHash": "0fa451a34480401b51ef692130d4e9c54145ed351204332b7f953ce427580fdf",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    },
+    "installation/server/requirements.md": {
+      "sourceHash": "5e490c297f0ec54b1d3c18e3cc598ebb4cf6c5126816c4968ee992a89786685c",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    },
+    "introduction.md": {
+      "sourceHash": "d58925fa42d7d06dd8317b49a2dda9868620ede87cee4e0357dd0a41e2c898ec",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    },
+    "kb/index.md": {
+      "sourceHash": "87406017097514e26b3d213267dcd0e12aa9e2b3af3767071a7af443e84e8a09",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    },
+    "management/index.md": {
+      "sourceHash": "b6c7c105785c36d7cd23792d8fde58c29812c1eb45f568de47558b84fc45ae90",
+      "translatedAt": "2026-08-13T23:12:20.739Z"
+    }
+  }
+}

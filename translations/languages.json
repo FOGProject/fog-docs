@@ -1,0 +1,107 @@
+{
+  "$comment": [
+    "Every language fog-docs is translated into. Read by scripts/translate.mjs",
+    "(which files to produce, which glossary to pull, what banner to inject) and",
+    "by quartz/scripts/rtd-build.mjs (which Quartz UI locale to build with).",
+    "",
+    "'code' is Read the Docs' language code -- it is simultaneously the RTD",
+    "project's Language setting, the URL prefix RTD serves the site under",
+    "(docs.fogproject.org/<code>/latest/), the value RTD passes to the build as",
+    "$READTHEDOCS_LANGUAGE, and the directory name under translations/. Those are",
+    "the same string on purpose: it means adding a language is one entry here",
+    "plus one RTD project, with nothing to keep in sync between them.",
+    "",
+    "'quartzLocale' is the UI-chrome locale Quartz ships in quartz/quartz/i18n/",
+    "locales/. It only translates Quartz's own furniture (search placeholder,",
+    "'Table of Contents', graph controls) -- page content comes from the",
+    "translations/<code>/ tree. Every locale listed here has a file there; check",
+    "before adding a language, since a missing locale silently falls back to",
+    "English chrome around translated content.",
+    "",
+    "'gettextLocale' names this language's catalog in the fogproject repo",
+    "(packages/web/management/languages/<gettextLocale>/LC_MESSAGES/messages.po).",
+    "Those are human translations of the actual web UI strings, used as a",
+    "terminology glossary so the docs call a button what the reader's screen",
+    "calls it. Set to null for a language the web UI has no catalog for -- the",
+    "translation still runs, just without pinned terminology.",
+    "",
+    "'banner' is the machine-translation warning prepended to every translated",
+    "page. '{url}' is replaced with the English original's URL. It is injected by",
+    "code rather than asked of the model so it is always exactly right."
+  ],
+
+  "englishBaseUrl": "https://docs.fogproject.org/en/latest",
+
+  "languages": {
+    "fr": {
+      "name": "French",
+      "nativeName": "Français",
+      "quartzLocale": "fr-FR",
+      "gettextLocale": "fr_FR.UTF-8",
+      "banner": {
+        "title": "Traduction automatique",
+        "body": "Cette page a été traduite automatiquement et peut contenir des erreurs. En cas de doute, reportez-vous à [la version anglaise]({url})."
+      }
+    },
+    "es": {
+      "name": "Spanish",
+      "nativeName": "Español",
+      "quartzLocale": "es-ES",
+      "gettextLocale": "es_ES.UTF-8",
+      "banner": {
+        "title": "Traducción automática",
+        "body": "Esta página se ha traducido automáticamente y puede contener errores. En caso de duda, consulte [la versión en inglés]({url})."
+      }
+    },
+    "de": {
+      "name": "German",
+      "nativeName": "Deutsch",
+      "quartzLocale": "de-DE",
+      "gettextLocale": "de_DE.UTF-8",
+      "banner": {
+        "title": "Maschinelle Übersetzung",
+        "body": "Diese Seite wurde maschinell übersetzt und kann Fehler enthalten. Ziehen Sie im Zweifelsfall [die englische Fassung]({url}) heran."
+      }
+    },
+    "zh-cn": {
+      "name": "Chinese (Simplified)",
+      "nativeName": "简体中文",
+      "quartzLocale": "zh-CN",
+      "gettextLocale": "zh_CN.UTF-8",
+      "banner": {
+        "title": "机器翻译",
+        "body": "本页面由机器翻译生成，可能存在错误。如有疑问，请参阅[英文原版]({url})。"
+      }
+    },
+    "pt-br": {
+      "name": "Portuguese (Brazil)",
+      "nativeName": "Português (Brasil)",
+      "quartzLocale": "pt-BR",
+      "gettextLocale": "pt_BR.UTF-8",
+      "banner": {
+        "title": "Tradução automática",
+        "body": "Esta página foi traduzida automaticamente e pode conter erros. Em caso de dúvida, consulte [a versão em inglês]({url})."
+      }
+    },
+    "it": {
+      "name": "Italian",
+      "nativeName": "Italiano",
+      "quartzLocale": "it-IT",
+      "gettextLocale": "it_IT.UTF-8",
+      "banner": {
+        "title": "Traduzione automatica",
+        "body": "Questa pagina è stata tradotta automaticamente e può contenere errori. In caso di dubbio, consultare [la versione inglese]({url})."
+      }
+    },
+    "ja": {
+      "name": "Japanese",
+      "nativeName": "日本語",
+      "quartzLocale": "ja-JP",
+      "gettextLocale": "ja_JP.UTF-8",
+      "banner": {
+        "title": "機械翻訳",
+        "body": "このページは機械翻訳されたものであり、誤りが含まれている可能性があります。疑問がある場合は[英語版]({url})を参照してください。"
+      }
+    }
+  }
+}
