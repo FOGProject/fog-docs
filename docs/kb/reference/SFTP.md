@@ -60,7 +60,7 @@ If you get an error when capturing an image or updating your kernel in the web u
 Message: ssh2_sftp(): Unable to startup SFTP subsystem: Timeout waiting for response from SFTP subsystem
 ```
 
-Then you may need to adjust `/etc/ssh/sshd_config` manually to have this line towards the end of the file, replacing any existing `Subsystem sftp` lines
+Then you may need to adjust `/etc/ssh/sshd_config` manually to have this line toward the end of the file, replacing any existing `Subsystem sftp` lines
 
 ```
 # override default of no subsystems

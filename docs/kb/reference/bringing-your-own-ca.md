@@ -59,7 +59,7 @@ page only covers the mechanism, that page covers the workflow around it.
 replacement, the same shape as FOG's own auto-generated pair. Without it,
 `--secure-boot-key`/`--secure-boot-cert` on their own hand the installer a
 **leaf with no CA above it**, and that certificate becomes both the signer
-and the thing you enrol — the flat model, same as before the CA/leaf split
+and the thing you enroll — the flat model, same as before the CA/leaf split
 existed for FOG's own key. Rotating a flat key later means re-enrolling
 every machine — see
 [[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a
@@ -95,7 +95,7 @@ cd /path/to/fogproject/bin
   somewhere you would put a root password, not somewhere you would put a
   config file.
 - `MOK.der` — the public certificate, DER-encoded. This is what you distribute
-  to clients and what `mokutil` enrols; it is not sensitive.
+  to clients and what `mokutil` enrolls; it is not sensitive.
 - `MOK.pem` — the same certificate, PEM-encoded. This is what `sbsign` and
   `sbverify` read.
 
@@ -115,7 +115,7 @@ unsigned on a server whose admin believes they are signed.
 >```
 >
 >`mokutil` and MokManager want the opposite. Neither tool tells you which
->format it wanted, so keep both files and use `MOK.der` for enrolment and
+>format it wanted, so keep both files and use `MOK.der` for enrollment and
 >`MOK.pem` for signing. The installer's `--secure-boot-cert` accepts either and
 >converts internally, so this only bites you when running `sbsign`/`sbverify`
 >by hand.
@@ -126,13 +126,13 @@ uses a longer lifetime, on the logic that a CA is meant to sit still for
 years while the leaf underneath it does the rotating.
 
 >[!tip] Use a descriptive CN
->It is shown in MokManager when someone enrols it, and again years later
+>It is shown in MokManager when someone enrolls it, and again years later
 >when someone is trying to work out what that key is for. `FOG imaging -
 >fog.example.edu` beats `MOK`.
 
 ### Getting the CA/leaf split by hand, without `--secureboot-ca-cert`
 
-Nothing above requires your key to be self-signed. If your organisation
+Nothing above requires your key to be self-signed. If your organization
 already runs an internal CA (AD Certificate Services or similar) and can
 issue a code-signing certificate, `--secure-boot-key`/`--secure-boot-cert`
 (or `--sign-key`/`--sign-cert` in `fos/build.sh`) accept that leaf
@@ -153,7 +153,7 @@ with your own CA means signing and publishing by hand: follow
 kernels]] with `--addcert` added to the `sbsign` call, and enroll the CA's
 certificate rather than a leaf.
 
-One thing this does **not** get you: a way to skip enrolment entirely by
+One thing this does **not** get you: a way to skip enrollment entirely by
 piggybacking on infrastructure your fleet might already have. There is no
 generic Intune/GPO mechanism to push an arbitrary org CA into UEFI `db` —
 what exists there is only Microsoft's own certificate rollover. If your CA

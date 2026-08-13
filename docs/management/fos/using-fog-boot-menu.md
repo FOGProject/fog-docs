@@ -116,7 +116,7 @@ entries and background on top of the built-in commands below.
 > -   Added in FOG 1.6.0, and only relevant to clients booting with UEFI
 >     Secure Boot enabled.
 >
-> -   This command enrols FOG's signing certificate on the client, which is
+> -   This command enrolls FOG's signing certificate on the client, which is
 >     what allows the machine to boot the FOS kernel with Secure Boot left
 >     on.
 >
@@ -139,7 +139,7 @@ entries and background on top of the built-in commands below.
 >
 >         -   **Anything else** — FOS stages a MOK request and hands off to
 >             MokManager, which needs someone at the console to confirm it.
->             MOK enrolment is designed to require physical presence and
+>             MOK enrollment is designed to require physical presence and
 >             there is no way around that.
 >
 > -   fog.enrollsecureboot is the command used to reference this action in

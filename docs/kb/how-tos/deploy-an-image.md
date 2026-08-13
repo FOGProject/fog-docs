@@ -77,7 +77,7 @@ For now we will say 'N' here.
 
 You are asked if you would like to associate snapins with this host.
 Snapins are tasks that are executed by the FOG Client and are mostly
-used to install applications afterwards. Snapins for this machine can
+used to install applications afterward. Snapins for this machine can
 later be managed in the Web UI.
 
 For now we will say 'N' here.

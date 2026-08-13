@@ -29,13 +29,13 @@ and you should not: both routes below work with it left on.
 The FOG web UI has a **FOG Configuration → Secure Boot** page. It shows your
 certificate's fingerprint (SHA-256, and SHA-1 for MokManager's own "view key"
 screen — see [[pki-glossary#fingerprint-aka-thumbprint|fingerprint]]), offers a
-small **enrolment kit**, and links back to this guide for the full per-client
+small **enrollment kit**, and links back to this guide for the full per-client
 steps below:
 
 | File | What it is |
 | --- | --- |
 | `MOK.der` | your public certificate — this is the thing being enrolled |
-| `fog-enroll-mok.sh` | does the enrolment, checks the fingerprint first |
+| `fog-enroll-mok.sh` | does the enrollment, checks the fingerprint first |
 | `fog-enroll-mok.desktop` | double-click launcher for the above |
 
 Leave that page open on another screen — you are going to compare the
@@ -70,7 +70,7 @@ Reboot. The machine stops in a blue **MOK Manager** screen instead of booting:
 5. Enter the password you just chose
 6. `Reboot`
 
-Confirm afterwards:
+Confirm afterward:
 
 ```bash
 mokutil --list-enrolled | grep -A2 "FOG"
@@ -95,7 +95,7 @@ in `Enroll key from disk` without you carrying anything to the machine.
 
 >[!warning] Why the menu item exists, rather than "just PXE-boot the shim"
 >**A plain PXE boot through the shim never shows MokManager.** Shim only hands
->control to MokManager when a *pending* MOK enrolment request already exists —
+>control to MokManager when a *pending* MOK enrollment request already exists —
 >normally staged by `mokutil --import`, which is what Route A does. With
 >nothing staged, the shim boots straight through to `snponly.efi` and the blue
 >MokManager screen never appears, however long you wait.
@@ -112,9 +112,9 @@ in `Enroll key from disk` without you carrying anything to the machine.
 
 You do **not** need Secure Boot currently enabled to do this, either — tested
 on physical hardware with Secure Boot off, enrolled, then switched back on
-afterward, with no difference in behaviour either way. MokManager's enrolment
+afterward, with no difference in behavior either way. MokManager's enrollment
 does not depend on the firmware currently enforcing anything, only on shim
-having loaded it. That means you can stage enrolment across a fleet before
+having loaded it. That means you can stage enrollment across a fleet before
 ever flipping Secure Boot on: run this while it is still off, and every
 machine already trusts your key by the time enforcement begins.
 Or you can leave secure boot on for a new machine, enroll it then register it
@@ -132,7 +132,7 @@ and you're off without needing to touch secure boot settings.
    >[!warning] If it is not listed
    >Not every firmware/MokManager combination is confirmed to expose a plain
    >`imgfetch`ed file the same way it exposes a kernel/initrd. Fall back to a
-   >FAT-formatted USB stick with `MOK.der` on it (from the enrolment kit) —
+   >FAT-formatted USB stick with `MOK.der` on it (from the enrollment kit) —
    >it will appear in the same browser, the same way Route A's stick does.
 5. `Continue` → `Yes`. Check the CN is yours, **and compare the fingerprint
    MokManager shows against the FOG Secure Boot page before confirming** —
@@ -146,11 +146,11 @@ and you're off without needing to touch secure boot settings.
 >
 >- If you do not press a key within roughly **10 seconds** of the screen
 >  appearing, MokManager gives up waiting and continues booting normally —
->  silently skipping enrolment. Be at the console before you select the
+>  silently skipping enrollment. Be at the console before you select the
 >  menu item or schedule the task, not after.
 >- Once you are inside the tool, an **idle timeout of a couple of minutes**
 >  reboots the machine if you stop responding partway through. Finish the
->  walkthrough once you start it; do not step away mid-enrolment.
+>  walkthrough once you start it; do not step away mid-enrollment.
 
 >[!note] Why the fingerprint isn't checked automatically
 >iPXE could in principle hash the file it just fetched and compare it
@@ -164,14 +164,14 @@ and you're off without needing to touch secure boot settings.
 
 The client now trusts your key and will boot the signed FOS kernel on its
 next PXE boot. Unlike Route A there is no one-time password step, because you
-are already standing at the machine when the enrolment happens.
+are already standing at the machine when the enrollment happens.
 
 >[!tip] Push it as a task instead of hunting for the menu item
 >"Enroll Secure Boot Key" is also a task type, schedulable from **Task
 >Scheduling** against a single host or a whole group, the same way you would
 >schedule a Deploy or a Capture. A host with this task pending skips the
 >interactive boot menu entirely and chains straight into the flow above on
->its next PXE boot — useful for pushing enrolment across many machines
+>its next PXE boot — useful for pushing enrollment across many machines
 >without walking a tech through which menu item to pick on each one. The
 >final `Enroll key from disk` → `Yes` step still has to happen at the
 >console; nothing removes that.
@@ -212,7 +212,7 @@ server at all:
 mokutil --delete MOK.der
 ```
 
-then reboot and confirm in MokManager, exactly as for enrolment.
+then reboot and confirm in MokManager, exactly as for enrollment.
 
 ## Verified
 
@@ -256,9 +256,9 @@ firmware would refuse to launch it directly — but shim's verification protocol
 is what the load actually goes through, and shim trusts it. This is the same
 mechanism that lets a MOK-signed kernel boot, so if one works the other does.
 
-The same client also confirmed that enrolment does not require Secure Boot to
+The same client also confirmed that enrollment does not require Secure Boot to
 be currently enabled: enrolling with it off, then switching Secure Boot back
-on afterward, produced no difference in behaviour from enrolling with it left
+on afterward, produced no difference in behavior from enrolling with it left
 on throughout.
 
 ## See also

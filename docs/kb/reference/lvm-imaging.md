@@ -42,7 +42,7 @@ content, so it works regardless of the partition's type ID), it:
    below).
 2. With a resizable image type, shrinks each ext logical volume's
    filesystem before capture — the same "Resizing filesystem" step flat
-   partitions get — and expands it back on the source machine afterwards.
+   partitions get — and expands it back on the source machine afterward.
    This is what lets the image deploy to smaller disks (see
    [Sizing](#sizing-deploying-to-different-disk-sizes) below).
 3. Records the PV/VG/LV layout — names, UUIDs, sizes, and how small each

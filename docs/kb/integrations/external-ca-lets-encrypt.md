@@ -133,7 +133,7 @@ its trust is whatever CA FOG happened to bake in at build time. It isn't:
 **Net effect:** a FOG web vhost with a real Let's Encrypt certificate
 validates fine for iPXE's netboot fetches (`boot.php`, kernel, initrd) with
 **no FOG-side change**, on both FOG's own build and the republished
-Secure-Boot-signed binaries, and independent of Secure Boot enrolment
+Secure-Boot-signed binaries, and independent of Secure Boot enrollment
 status. This assumes the booting client can reach `ca.ipxe.org`, which holds
 for most sites — outbound internet access is the common case, not the
 exception. Only on a fully air-gapped network does that fallback not fire,
@@ -235,7 +235,7 @@ better.
 
 Point your ACME client's install/renew hook at the two paths FOG's vhost
 reads — `sslpubcert` and `sslprivkey` from `/opt/fog/.fogsettings` — and
-reload the web server afterwards:
+reload the web server afterward:
 
 ```bash
 acme.sh --issue --server https://step-ca.internal/acme/acme/directory \
