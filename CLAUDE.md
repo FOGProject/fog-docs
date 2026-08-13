@@ -86,6 +86,12 @@ promoted to `foo/index.html`).
   - Image: `![[image-name.ext]]` — all images live under `docs/assets/img/`
     and are referenced by filename only (no path), so names must be unique
     site-wide.
+  - **Keep each wikilink on one line.** A link wrapped across a newline to
+    respect the file's line width does not parse — it renders literally as
+    `[[page|Text]]` on the published page, and the build does not warn. Rewrap
+    the sentence around the link instead. Worth grepping the built HTML for
+    `[[` after adding links (`grep -o '\[\[' quartz/public/**/*.html`); the
+    only legitimate hits are inside code blocks.
 - **Callouts, not raw admonitions**: write Obsidian callout syntax —
   ```
   >[!note]
