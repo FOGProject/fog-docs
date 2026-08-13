@@ -23,10 +23,10 @@ FOG ships a set of bundled plugins, and from FOG 1.6 you can also install
 plugins written by other people.
 
 >[!info] FOG 1.6
->Most of this page is 1.6. On 1.5.x the plugin system exists but only the
->bundled plugins are practical to use: there is no manifest, no compatibility
->range, no upload, and a plugin installed by hand lives inside the web root
->where the next installer run deletes it.
+>Most of this page describes 1.6. The plugin system exists on 1.5.x too, but
+>the screens and what you can do with them are different enough that 1.5 has
+>its own section: [[plugins#On FOG 1.5.x|On FOG 1.5.x]]. Enabling it is the
+>same on both.
 
 ## Turning the plugin system on
 
@@ -38,9 +38,10 @@ Plugins are off until you enable them.
 4. Tick **FOG_PLUGINSYS_ENABLED**.
 5. Click **Save Changes**.
 
-Reload the UI and a **Plugins** entry (puzzle-piece icon) appears in the main
-menu. That takes you to **Plugin Management**, a single list of every plugin
-FOG can see.
+Reload the UI and a **Plugins** entry appears in the main menu — a puzzle piece
+on 1.6, a gear wheel on 1.5. On 1.6 that takes you to **Plugin Management**, a
+single list of every plugin FOG can see; on 1.5 it opens the first of three
+pages, described [[plugins#On FOG 1.5.x|below]].
 
 ## The Plugin Management list
 
@@ -214,6 +215,9 @@ running" stay separate decisions.
 
 ## The bundled plugins
 
+This is the 1.6 set. See [[plugins#The 1.5 plugin set|The 1.5 plugin set]] for
+how it differs on the older line.
+
 | Plugin | What it does |
 |---|---|
 | **capone** | Match a machine's DMI value against a key you define and deploy the associated image, without registering the host first |
@@ -236,6 +240,63 @@ running" stay separate decisions.
 >The Access Control plugin was replaced by native roles and permissions in
 >1.6. For what happens to plugin-era roles on upgrade, see
 >[[roles#Upgrading from the Access Control plugin|Roles & Permissions]].
+
+## On FOG 1.5.x
+
+The plugin system on 1.5.x is the same idea with a different, older interface,
+and it is worth knowing what it does *not* have before you plan around it.
+
+Enabling it is identical — `FOG_PLUGINSYS_ENABLED` in **FOG Configuration → FOG
+Settings** — but the menu entry is a **gear wheel**, and instead of one list it
+gives you three pages. Which page a plugin appears on is decided entirely by
+its state, so a plugin moves from one to the next as you work on it:
+
+| Page | Shows | What you do there |
+|---|---|---|
+| **Activate Plugins** (the default) | plugins that are neither activated nor installed | Click one to activate it. It then disappears from this page |
+| **Install Plugins** | plugins you have activated whose database is not set up yet | Run the install |
+| **Installed Plugins** | plugins that are activated *and* installed | Nothing — this is the "these are live" list |
+
+>[!note] The middle page is easy to misread
+>**Install Plugins** does not list plugins waiting to be activated. It lists
+>ones you have *already* activated that still need their database creating.
+>Older versions of this page had these the wrong way round.
+
+### What 1.5 does not have
+
+- **No second plugin directory.** Discovery reads `../lib/plugins/` and nothing
+  else. There is a `FOG_PLUGINSYS_DIR` setting, but FOG overwrites it back to
+  that path every time it looks, so pointing it somewhere safer does not work.
+  Since the installer rewrites the web root on every run, **any plugin you add
+  by hand on 1.5 is removed by your next upgrade** and there is no supported
+  way around it. It is recoverable — the installer copies the old tree to
+  `/home/fog_web_<version>.BACKUP` before deleting it — but it will not be
+  running, and nothing tells you. This is the problem the two-root layout in
+  1.6 exists to fix.
+- **No manifest beyond name, description and icon.** No version, no supported
+  FOG range, no dependency list — so nothing stops you activating a plugin that
+  cannot work on your server, and an upgrade that breaks a plugin gives you no
+  warning.
+- **No upload.** Plugins arrive on disk or not at all.
+- **No migration tracking.** The `plugins` table has no `pSchema` column, so
+  there is no record of which of a plugin's database steps have run. Plugins
+  that need to change their tables later have to do it destructively. The
+  `schema()` contract that makes upgrades non-destructive is 1.6 only.
+
+### The 1.5 plugin set
+
+1.5.x ships four plugins that 1.6 does not:
+
+| Plugin | What it does |
+|---|---|
+| **accesscontrol** | Restrict what users can see and do. **Replaced in 1.6** by native roles and permissions — see [[roles|Roles & Permissions]] |
+| **example** | The skeleton example plugin, equivalent to 1.6's `helloworld` |
+| **fileintegrity** | Records checksums, modification dates and locations for files on storage nodes |
+| **hoststatus** | Adds a live power/OS status entry to the host edit page. Needs TCP 445 open on the client |
+
+Three 1.6 plugins are not on 1.5: **helloworld** (its `example` is the
+equivalent), **ntfy** and **ou**. The rest of the table above is common to
+both lines.
 
 ## Writing your own
 
