@@ -171,15 +171,23 @@ and is safe to delete and regenerate.
   Everything that does not call a model still works: `--dry-run` reports which
   pages have drifted, and `--verify`/`--relink` are unaffected. Seeding by hand
   and running those checks is how the French tree was built.
-- **Azure Foundry Models is the intended replacement**, and is a configuration
-  change rather than a code one — it is OpenAI-compatible and takes the same
-  bearer header the script already sends. Set `TRANSLATE_API_KEY` (secret) plus
-  `TRANSLATE_ENDPOINT` and `TRANSLATE_MODEL` (variables):
-  `https://<resource>.openai.azure.com/openai/v1/chat/completions` and the
-  deployment name. **Azure Translator is a different API under the same Foundry
-  umbrella** — it is the one with the F0 2M-characters/month free tier, and it
-  is not usable here: no prompt means no glossary, and `textType` is plain/html
-  only, so markdown structure does not survive. `checkStructure` rejects it.
+- **Cloudflare Workers AI is the intended replacement**, chosen because it
+  keeps this free — an open-source project cannot carry a per-token bill. It is
+  OpenAI-compatible and takes the same bearer header the script already sends,
+  so reviving the workflow is configuration, not code. Set `TRANSLATE_API_KEY`
+  (secret) plus `TRANSLATE_ENDPOINT` and `TRANSLATE_MODEL` (variables):
+  `https://api.cloudflare.com/client/v4/accounts/<id>/ai/v1/chat/completions`
+  and `@cf/zai-org/glm-4.7-flash`. The Workers **Free** plan includes 10,000
+  Neurons/day, resetting 00:00 UTC — enough to track `docs/` changes, not
+  enough to seed a language from nothing, which is what the request budget and
+  nightly drain are already shaped around. Seed in bulk by hand; let the
+  workflow hold the line.
+- Two options that look right and are not: **Azure Translator** has the biggest
+  free tier (F0, 2M characters/month) and cannot do this job — it takes no
+  prompt, so the glossary has nowhere to go, and its `textType` is plain/html
+  only, so wikilinks and fenced code do not survive; `checkStructure` rejects
+  essentially every page. **Azure Foundry Models** would drop straight in but is
+  pay-per-token with no free allowance.
 
 Rules that matter when touching any of this:
 

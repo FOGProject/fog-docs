@@ -51,17 +51,21 @@
 //
 // The defaults below point at GitHub Models, which GitHub retired on
 // 30 July 2026 -- they are kept only so the failure names something real.
-// For Azure Foundry Models, which is OpenAI-compatible and takes the same
-// bearer header this already sends:
+// Cloudflare Workers AI keeps this free, which an open-source project needs.
+// It is OpenAI-compatible and takes the same bearer header already sent here:
 //
-//   TRANSLATE_ENDPOINT=https://<resource>.openai.azure.com/openai/v1/chat/completions
-//   TRANSLATE_MODEL=<your-deployment-name>
-//   TRANSLATE_API_KEY=<resource key>
+//   TRANSLATE_ENDPOINT=https://api.cloudflare.com/client/v4/accounts/<id>/ai/v1/chat/completions
+//   TRANSLATE_MODEL=@cf/zai-org/glm-4.7-flash
+//   TRANSLATE_API_KEY=<API token with Workers AI read>
 //
-// Note that Azure Translator (the F0 tier with 2M free characters/month) is a
-// different API under the same Foundry umbrella: no prompt, so no glossary,
-// and textType is plain/html only, so markdown structure does not survive.
-// checkStructure would reject its output. It is not a drop-in for this.
+// 10,000 Neurons/day on the Workers Free plan, resetting 00:00 UTC -- enough to
+// track docs/ changes, not enough to seed a language from nothing. That is what
+// the request budget and the nightly drain are already shaped around.
+//
+// Azure Translator is NOT usable here despite having a bigger free tier: it
+// takes no prompt, so the glossary has nowhere to go, and its textType is
+// plain/html only, so markdown structure does not survive. Azure Foundry Models
+// would drop in but is pay-per-token.
 import { createHash } from "node:crypto"
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs"
 import path from "node:path"

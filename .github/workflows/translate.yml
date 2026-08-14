@@ -11,16 +11,27 @@
 # rotate. GitHub retired that service on 30 July 2026. Every request now
 # returns 410, so every run fails at the first page until a provider is set.
 #
-# Azure Foundry Models is the intended replacement. It is OpenAI-compatible and
-# takes the same bearer header this already sends, so it is a configuration
-# change rather than a code change: set TRANSLATE_ENDPOINT, TRANSLATE_MODEL and
-# TRANSLATE_API_KEY (see the Translate step below).
+# Cloudflare Workers AI replaces it, and keeps this free -- which matters for an
+# open-source project that cannot carry a per-token bill. It is OpenAI
+# compatible and takes the same bearer header this already sends, so reviving
+# this is configuration, not code: set TRANSLATE_ENDPOINT, TRANSLATE_MODEL and
+# TRANSLATE_API_KEY on the Translate step below.
 #
-# Azure Translator is a different API under the same Foundry umbrella, and the
-# one with the F0 free tier. It is not usable here: it takes no prompt, so the
-# gettext glossary that pins FOG's terminology has nowhere to go, and its
-# textType is plain/html only, so markdown structure does not survive the round
-# trip. checkStructure would reject essentially every page.
+# The Workers *Free* plan includes 10,000 Neurons per day, resetting at 00:00
+# UTC. That maps onto the design already here: the per-run request budget stops
+# before the allowance is gone, and the nightly schedule drains the backlog the
+# next day. It is sized for keeping up with docs/ changes, not for seeding a
+# language from nothing -- do bulk seeding by hand and let this hold the line.
+#
+# Two paths that look right and are not:
+#
+#   * Azure Translator is the Foundry tool with the F0 2M-characters/month free
+#     tier, and cannot do this job. It takes no prompt, so the gettext glossary
+#     that pins Host -> Machine has nowhere to go, and its textType is
+#     plain/html only, so wikilinks and fenced code do not survive the round
+#     trip. checkStructure rejects essentially every page.
+#   * Azure Foundry Models is OpenAI compatible and would drop straight in, but
+#     is pay-per-token with no free allowance.
 #
 # That failure is deliberate and new: the run previously counted a dead backend
 # as an ordinary per-page failure and exited 0, so the first run after the
@@ -91,9 +102,13 @@ jobs:
       # Configure these once in the repository settings and this step needs no
       # further edits: TRANSLATE_API_KEY as a secret, the other two as variables.
       #
-      # For Azure Foundry Models (OpenAI-compatible, same bearer header):
-      #   TRANSLATE_ENDPOINT  https://<resource>.openai.azure.com/openai/v1/chat/completions
-      #   TRANSLATE_MODEL     <your deployment name>
+      # For Cloudflare Workers AI (free tier, OpenAI-compatible):
+      #   TRANSLATE_ENDPOINT  https://api.cloudflare.com/client/v4/accounts/<account-id>/ai/v1/chat/completions
+      #   TRANSLATE_MODEL     @cf/zai-org/glm-4.7-flash
+      #   TRANSLATE_API_KEY   an API token with Workers AI read
+      #
+      # Other models on the free plan: @cf/google/gemma-4-26b-a4b-it,
+      # @cf/nvidia/nemotron-3-120b-a12b. A few are Paid-only and answer 403.
       - name: Translate
         env:
           TRANSLATE_API_KEY: ${{ secrets.TRANSLATE_API_KEY }}
