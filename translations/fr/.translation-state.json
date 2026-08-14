@@ -3,295 +3,299 @@
   "entries": {
     "development/fog-release.md": {
       "sourceHash": "71dd064b69d84474cbe0fb1dc7c549c20a8b8bbe688ced0258ba12aa8fae9a4c",
-      "translatedAt": "2026-08-14T21:42:41.739Z"
+      "translatedAt": "2026-08-14T21:43:49.836Z"
     },
     "development/index.md": {
       "sourceHash": "e64c94ad8d55bea96af8e0d66b961d968df125598dffdd8b30600f7de8c7f665",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "development/plugin-schema-migrations.md": {
       "sourceHash": "868fcd58ceadd12f78b794c84458f4ee561863ae4c486a541e2fb61888f9d2b8",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "development/stable-release-workflow.md": {
       "sourceHash": "48bc8105283de743b01e322cc6213bbb4314f66b1b3fdfff57579c0227b0b15b",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "development/storage-node-selection-hooks.md": {
       "sourceHash": "cf2559cb826556af210f93aeb4cad6630002382bdd727dd9feb0775b872fe4db",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "index.md": {
       "sourceHash": "abe2a58ad4bc8b1180ec36aa6817c8e8b302ec8031a4ebf8b2ea75957e1a3149",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/client/index.md": {
       "sourceHash": "dfe4e748472509d0e24fa018517a073e4460439298c6f65f7bc65bb935dc4cd6",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/client/install-fog-client.md": {
       "sourceHash": "d9fea9918904c51ecd86574bb430571f6f3dcca2f690da553d396b83cec6965c",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/index.md": {
       "sourceHash": "2ab51a2efed9e3cdb0c7b1747a727578c4e05368013cf81c04a44a927fb7779f",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/network-setup/index.md": {
       "sourceHash": "2c674ad250fa1fd4fdc8f3a33e8be407b1dfdd9319603d3a5854cf7e640dcebe",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/server/index.md": {
       "sourceHash": "0fa451a34480401b51ef692130d4e9c54145ed351204332b7f953ce427580fdf",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/server/install-fog-server.md": {
       "sourceHash": "11f4d0c29690c601a3e19ff994fc56e914ea41a802e6345c312c3bd5d7e9f639",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/server/requirements.md": {
       "sourceHash": "5e490c297f0ec54b1d3c18e3cc598ebb4cf6c5126816c4968ee992a89786685c",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/server/uninstall-fog-server.md": {
       "sourceHash": "1c56cdbaf6927e03765497dcf5b7fb86b0c695f6dfb7cb3ab5f879e6987e8596",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "installation/server/virtualization.md": {
       "sourceHash": "121009edd0b7cfd5c7987ea87cb5861f491d498b85fb843e30953da3dec0dfa6",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "introduction.md": {
       "sourceHash": "d58925fa42d7d06dd8317b49a2dda9868620ede87cee4e0357dd0a41e2c898ec",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "kb/customization/advanced-boot-menu.md": {
       "sourceHash": "14c38de22596db5d9976ec82b9e10c13ad3c37a79f5b317fcd934069e187a722",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "kb/customization/index.md": {
       "sourceHash": "5fed30178d826f04ef02891fc0400963c2c67a58e31f90baf25686368007126e",
-      "translatedAt": "2026-08-14T21:42:41.740Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "kb/customization/ipxe.md": {
       "sourceHash": "f7e010935e65aaceef0e9b256aba17fce1bbf47940fe8f7c3b36dcc18e9e2d25",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "kb/faqs/articles-featuring-fog.md": {
       "sourceHash": "94df3c8340d472f8c35efb985334ab5c4a4da497b38c21264e52f22b43fb340e",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "kb/faqs/fog-user-guide.md": {
       "sourceHash": "e0d03bc34b060d1348c2fd58dad636364cef0fc3628cb6d049edca838ee18574",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "kb/faqs/index.md": {
       "sourceHash": "13d02a3ca6db7b4f5bbc51cf7547bf2441e155bc66752a86e7c902b227f2a419",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.837Z"
     },
     "kb/how-tos/add-extend-a-2nd-virtual-hdd.md": {
       "sourceHash": "f4ba008269c9df7e2799f694fe06a400abe45edfc7168026feb9748f0bfceaaf",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/how-tos/capture-an-image.md": {
       "sourceHash": "c86a3a3df4f43512f04246a1d2c1bfa66ba0792402085d98ebdba9b98773547d",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/how-tos/change-fog-server-ip-address.md": {
       "sourceHash": "6d625e0eb71106418e391d8de0f30baeaf31ab111e4c77d789dbae6bcd54dbda",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/how-tos/deploy-an-image.md": {
       "sourceHash": "16f0c0ffbbe12180af6add58435d07b5375641916881f48d63ba2fe4fe7ca9c0",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/how-tos/deploy-dual-boot-multi-disk-image.md": {
       "sourceHash": "f734575fc80b37bf593f5b871ed8b538c6429b507b940e066bb86f8c20323295",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/how-tos/fog-client-example-tasks.md": {
       "sourceHash": "cd495762c1244bb7901fe0fb4365c25a3a0a3a2097bc6bc6fb307ac0c4df9515",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/how-tos/index.md": {
       "sourceHash": "01a504303991251e9cbaffa7afc1a2360f838e7cf3f77a7753139da5aa84ba3d",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/how-tos/post-download-scripts.md": {
       "sourceHash": "0b7b4e064bd7c7dbd74b4a7de8f8c5532ccd3b2209c16ba9996adf76d81314e5",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/how-tos/uefi-boot-entries.md": {
       "sourceHash": "4abcf786dd7e08450979c7014862c6850f13e7a8873b2570f350fc760788e21c",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/index.md": {
       "sourceHash": "87406017097514e26b3d213267dcd0e12aa9e2b3af3767071a7af443e84e8a09",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/integrations/api.md": {
       "sourceHash": "f4481a7e06b1391f3788ebd50644e519f1d9a951e278cd8919859af1ea265008",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/integrations/index.md": {
       "sourceHash": "efaa7f19657b77a9f080e1d7e5d01efa33775b699e837437478908eb16f74135",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/archive/Acer-Iconia-Tab-w500.md": {
       "sourceHash": "976a109e3db2115d395ec15f504f0dd85dd355ab0b90972bc082a4ffd87842e7",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/compile_ipxe_binaries.md": {
       "sourceHash": "ccb83f2e6852199327a55bf9df5298d8676735d5a4bce1cf7f48c861adb633c3",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/compile-fos-kernel.md": {
       "sourceHash": "41d1d649250fd3574c2db250ad261fc586f645f27055a4664b1c72e5c073b781",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/fog-security.md": {
       "sourceHash": "26c35b6dd3d2afd723364be8367f0bbfedbb574fe646d6d4c2b2bbaba88a88fe",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/group-shared-state.md": {
       "sourceHash": "5b2e6f06cc1aacd44ea69b2bdd143d7149f93a02b4c1551352778d4149878763",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/hardware.md": {
       "sourceHash": "a10c980e8989a9fe06883fda9ba180275201d0fafe6975a96d30c316f4ce5399",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/index.md": {
       "sourceHash": "12d6af8f681cd196aaa93a5abe45e9350414f4e4dc0eb82e8d4a337c945c5aee",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
+    },
+    "kb/reference/lvm-imaging.md": {
+      "sourceHash": "eed98ca3cae2f44bcede91850c3d368a74eab75b5a903b676f5afa99c69683a9",
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/manual-kernel-upgrade.md": {
       "sourceHash": "ad330acedf8283f8788f25dcfabb6c75cc905415c48cc8ba90e0dea009f91ebc",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/network-and-firewall-requirements.md": {
       "sourceHash": "b673bb7b73cb81c3ed366ff08e0ed19df5624d755a64ef94f95638dc153ef9bb",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/pki-glossary.md": {
       "sourceHash": "dba49a9fb208be2d2dac66192e5923b8b9b70b9edf83cc1ea3134c0b5f4d318f",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/SFTP.md": {
       "sourceHash": "c8be9dbfb94fecb302fb9e754c597f868f134e8c7169ec2bef94d816ed0d2d45",
-      "translatedAt": "2026-08-14T21:42:41.741Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/reference/vi.md": {
       "sourceHash": "c3bb1bc7881bbae4b25e244ed3d788792e0ed97d089dd41f9b7be1468ad66c8d",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.838Z"
     },
     "kb/troubleshooting/database-schema-update.md": {
       "sourceHash": "d82fe63e9c5e4b9d030266b7511abac11b8d8c3d723fb7c5afc5d2cc31d2f4a1",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "kb/troubleshooting/index.md": {
       "sourceHash": "d753751d51ef5402cf4bd3246e2ab7bf26b22f1116ab2578d5920c6328571626",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "kb/troubleshooting/primary-mac-address-issues.md": {
       "sourceHash": "301323a3b4668a2154af201945301e07a2610fd80a64e204770d4822498460f7",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "kb/troubleshooting/sector-size-mismatch.md": {
       "sourceHash": "2e57fe95e0975517f6ae7b99bb7cc59027c8e26669f12958bdad63793d679cc1",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/fos/index.md": {
       "sourceHash": "9296d9de7a3b85a9a62c1eb570f5a5021ff894bba9d325414d33850c451ba57e",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/fos/using-fog-boot-menu.md": {
       "sourceHash": "11ecab55ec06a9ddde1998d72f3294ec6acd0d420e057a4a8aa11de3675e19e0",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/index.md": {
       "sourceHash": "b6c7c105785c36d7cd23792d8fde58c29812c1eb45f568de47558b84fc45ae90",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/server/index.md": {
       "sourceHash": "8284259db455ac56bcd52ed8e2ce51e439261b952c8ebe29e8f23b3a0124f4db",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/ad-integration.md": {
       "sourceHash": "bbccca81795d9ff7967b9043657ec589e9a3f8b980c6948d725d8c09e7f8d203",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/config.md": {
       "sourceHash": "c69e1662c06c158c121838542a037c32e70dd119bae8a31d0c32809aab9c9f26",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/dashboard.md": {
       "sourceHash": "bf3f899e44dc37eefdf88aad11b9b3ff10e51b5c9550d0f894e2d250159ceb2c",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/groups.md": {
       "sourceHash": "56740d9a40da7e76451befbc06534fbf9eb900b9818669a0c1fca02b1dcc8aba",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/hosts.md": {
       "sourceHash": "ab97c93967512b6aac6191c550bbaa52a5b61be357070f4e56d46e2c654bbdbb",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/images.md": {
       "sourceHash": "333f274813617fcdb4573399da4f4691b5b7dcf159418e731fd87ef0e2d2f933",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/index.md": {
       "sourceHash": "ac994872a4ff4d2e988bbd46b0f762b0dd0ca79e945801ed181243e15daa1d9c",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/ldap.md": {
       "sourceHash": "064ecc3b2909e372c8fcace7bb7450ca0d4ddfbff11b7c2acb6087bc32368679",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/multicast.md": {
       "sourceHash": "3d8d247d9346c6b76f3a2537c83f7169d0ff42634fa6c41eb1866c59ed33624a",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/plugins.md": {
       "sourceHash": "ebdfd6b2175adcdd71622c1ffd083041a95c8bc7fc4b5173d8cfe4d722abc6a5",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/printers.md": {
       "sourceHash": "9d48c6144e5eb25c477ad3d1c64de0ae4b07a18e3b9d2eb053980a4d09ee20f3",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/reports.md": {
       "sourceHash": "37a5000eeea14537cf538d0a784fda0d86e6600a66d8cdc90d4be631c564d2b3",
-      "translatedAt": "2026-08-14T21:42:41.742Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/roles.md": {
       "sourceHash": "9bf0d1963f7669fca452ffd407e4cb6f79b4cf2214608cc8265f6b51569e7f6c",
-      "translatedAt": "2026-08-14T21:42:41.743Z"
+      "translatedAt": "2026-08-14T21:43:49.839Z"
     },
     "management/web/service.md": {
       "sourceHash": "527da615e88326b38e6ad1bd9862e95ed6ccbdab301e7dd094e44499d82bbd74",
-      "translatedAt": "2026-08-14T21:42:41.743Z"
+      "translatedAt": "2026-08-14T21:43:49.840Z"
     },
     "management/web/site-scoping.md": {
       "sourceHash": "dac283107df85d2a010a50f95c2f08228b311d4a6e5d6c8668c14471757b1bdc",
-      "translatedAt": "2026-08-14T21:42:41.743Z"
+      "translatedAt": "2026-08-14T21:43:49.840Z"
     },
     "management/web/snapins.md": {
       "sourceHash": "387b882c587e3a7f3739d596fc9dbcdf7b01919ce13bb855f2642a9f998ef981",
-      "translatedAt": "2026-08-14T21:42:41.743Z"
+      "translatedAt": "2026-08-14T21:43:49.840Z"
     },
     "management/web/storage-node.md": {
       "sourceHash": "75a0290ee760db2c194a14cf7785bf8161beda8370a47becfa985dd968f052d3",
-      "translatedAt": "2026-08-14T21:42:41.743Z"
+      "translatedAt": "2026-08-14T21:43:49.840Z"
     },
     "management/web/tasks.md": {
       "sourceHash": "a0dc75db9fb55aae3a4f56c35585efe7e6e4d689368a4df0a889ae657b3b6e3a",
-      "translatedAt": "2026-08-14T21:42:41.743Z"
+      "translatedAt": "2026-08-14T21:43:49.840Z"
     },
     "management/web/users.md": {
       "sourceHash": "c2548d592c4e9e7a6087ef304152f44aadaab60622d9789cc142eb4f88053c6a",
-      "translatedAt": "2026-08-14T21:42:41.743Z"
+      "translatedAt": "2026-08-14T21:43:49.840Z"
     }
   }
 }
