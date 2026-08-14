@@ -12,8 +12,9 @@ what already bit us.
 
 ## Where things stand
 
-Branch **`i18n-translations`**. Twelve commits, nothing on `master`. The last
-six are not yet pushed to `origin`.
+Branch **`i18n-translations`**, pushed to `origin`, and
+**[PR #108](https://github.com/FOGProject/fog-docs/pull/108) is open against
+`master`**. Nothing merged yet.
 
 **Confirmed working in production hosting.** Two throwaway RTD projects,
 `fog-docs-lang-test` (English parent) and `fog-docs-lang-test-fr` (French
@@ -28,15 +29,18 @@ translation), build from this branch. Verified live on
   matches a real `id=` on the built page.
 - Untranslated pages fall back to English content inside French UI chrome.
 
-**French: 47 of 99 pages.** All section landing pages, the whole
-getting-started path, and all of `management/web/` except `ldap.md`.
+**French: 77 of 99 pages.** All section landing pages, the whole
+getting-started path, all of `management/web/`, and most of `kb/`. The 22 left
+are listed below.
 
 ## The plan from here (decided by the user)
 
 No more test projects — one test pair was enough to prove the mechanism.
 
-1. Seed the rest of French on this branch.
-2. PR `i18n-translations` → `master` and merge. That activates
+1. ~~Seed the rest of French on this branch.~~ 77/99 done; the remaining 22 are
+   the large contributor-facing and Secure Boot pages. They are **not blocking**
+   — an untranslated page is served in English.
+2. ~~PR `i18n-translations` → `master`~~ — PR #108 is open. Merging activates
    `.github/workflows/translate.yml` (the `schedule:` trigger only fires from
    the default branch, so it is inert until then).
 3. Create the real `fog-docs-fr` RTD project against `master` and add it as a
@@ -115,68 +119,42 @@ does cover are translated.
 
 ## Remaining French pages, largest first
 
-The four at the top are the expensive ones and were deliberately deferred.
-Regenerate this table any time with `node scripts/translate.mjs fr --dry-run`.
+These 22 are what is left. The big four at the top were deliberately deferred
+throughout; the rest of this list is mostly Secure Boot and contributor-facing
+material. Regenerate this table any time with
+`node scripts/translate.mjs fr --dry-run`.
 
 | Page | Size |
 |---|---|
-| installation/network-setup/proxy-dhcp.md | 30.0k |
-| development/plugin-development.md | 29.1k |
-| kb/how-tos/secure-boot-signing.md | 28.7k |
-| installation/server/migrating-fog-server.md | 27.1k |
-| development/install-script-architecture.md | 24.2k |
-| kb/troubleshooting/troubleshoot-tftp.md | 23.3k |
-| kb/integrations/external-ca-lets-encrypt.md | 19.1k |
-| kb/reference/pki-zones.md | 18.2k |
-| management/web/ldap.md | 17.6k |
-| kb/reference/csv_import_export.md | 16.7k |
-| kb/how-tos/bios-and-uefi-co-existence.md | 15.6k |
-| kb/integrations/api-expansion-and-pagination.md | 14.7k |
-| kb/how-tos/unify-certificates-across-fog-servers.md | 14.2k |
-| kb/how-tos/secure-boot-mok-enrollment.md | 13.6k |
-| installation/network-setup/dhcp-server-settings.md | 12.2k |
-| kb/how-tos/firewall.md | 11.4k |
-| kb/reference/fog-client-installation-options.md | 10.8k |
-| kb/troubleshooting/troubleshoot-ftp.md | 10.4k |
-| kb/reference/secure-boot-technical-details.md | 10.3k |
-| installation/server/command-line-options.md | 10.0k |
-| development/fos-release-workflows.md | 10.0k |
-| development/version-sync-automation.md | 9.8k |
-| management/server/install-fogsettings.md | 9.5k |
-| kb/reference/bringing-your-own-ca.md | 9.5k |
-| kb/reference/sector-size-imaging.md | 9.1k |
-| kb/reference/lvm-imaging.md | 8.8k |
-| kb/how-tos/secure-boot-setup-mode-enrollment.md | 8.3k |
-| development/plugin-schema-migrations.md | 8.0k |
-| kb/how-tos/add-extend-a-2nd-virtual-hdd.md | 8.0k |
-| development/fog-release.md | 7.3k |
-| kb/troubleshooting/database-schema-update.md | 6.9k |
-| kb/integrations/api.md | 6.9k |
-| kb/reference/compile_ipxe_binaries.md | 6.5k |
-| kb/troubleshooting/primary-mac-address-issues.md | 6.5k |
-| kb/reference/group-shared-state.md | 6.4k |
-| management/fos/using-fog-boot-menu.md | 5.6k |
-| kb/reference/fog-security.md | 5.1k |
-| kb/reference/pki-glossary.md | 4.8k |
-| kb/how-tos/post-download-scripts.md | 4.8k |
-| development/stable-release-workflow.md | 4.5k |
-| kb/reference/archive/Acer-Iconia-Tab-w500.md | 4.5k |
-| kb/reference/network-and-firewall-requirements.md | 4.4k |
-| kb/reference/compile-fos-kernel.md | 4.4k |
-| development/storage-node-selection-hooks.md | 4.3k |
-| kb/how-tos/uefi-boot-entries.md | 4.3k |
-| kb/how-tos/fog-client-example-tasks.md | 4.0k |
-| kb/troubleshooting/sector-size-mismatch.md | 3.7k |
-| kb/reference/manual-kernel-upgrade.md | 3.4k |
-| kb/reference/hardware.md | 3.1k |
-| kb/reference/SFTP.md | 2.2k |
-| kb/how-tos/change-fog-server-ip-address.md | 1.9k |
-| kb/reference/vi.md | 1.2k |
+| installation/network-setup/proxy-dhcp.md | 29.3k |
+| development/plugin-development.md | 28.4k |
+| kb/how-tos/secure-boot-signing.md | 28.1k |
+| installation/server/migrating-fog-server.md | 26.5k |
+| development/install-script-architecture.md | 23.7k |
+| kb/troubleshooting/troubleshoot-tftp.md | 22.7k |
+| kb/integrations/external-ca-lets-encrypt.md | 18.6k |
+| kb/reference/pki-zones.md | 17.8k |
+| kb/reference/csv_import_export.md | 16.2k |
+| kb/how-tos/bios-and-uefi-co-existence.md | 15.3k |
+| kb/integrations/api-expansion-and-pagination.md | 14.4k |
+| kb/how-tos/unify-certificates-across-fog-servers.md | 13.9k |
+| kb/how-tos/secure-boot-mok-enrollment.md | 13.3k |
+| installation/network-setup/dhcp-server-settings.md | 11.9k |
+| kb/how-tos/firewall.md | 11.1k |
+| kb/reference/fog-client-installation-options.md | 10.5k |
+| kb/troubleshooting/troubleshoot-ftp.md | 10.2k |
+| kb/reference/secure-boot-technical-details.md | 10.0k |
+| installation/server/command-line-options.md | 9.8k |
+| development/fos-release-workflows.md | 9.8k |
+| management/server/install-fogsettings.md | 9.3k |
+| kb/how-tos/secure-boot-setup-mode-enrollment.md | 8.1k |
 
-Suggested order: `management/web/ldap.md` finishes the `management/web/*`
-cluster (everything else in it is done), then `kb/how-tos`, then
-`kb/reference`, then `development` (contributor-facing, lowest priority), and
-the four big ones last.
+Suggested order: the Secure Boot cluster reads as one story
+(`secure-boot-setup-mode-enrollment` → `secure-boot-mok-enrollment` →
+`secure-boot-technical-details` → `secure-boot-signing`), so translating them
+together keeps the terminology consistent. Then the remaining `installation/`
+and `kb/troubleshooting` pages, which readers hit early. `development/` is
+contributor-facing and lowest priority.
 
 ## Gotchas already paid for — don't rediscover these
 
@@ -256,7 +234,7 @@ docs should stop resolving, delete the branch *and* add an RTD redirect
 > per-page rules, and the gotchas. The `## Translations` section of `CLAUDE.md`
 > has the design.
 >
-> French is at 47 of 99 pages and the pipeline is confirmed working live on the
+> French is at 77 of 99 pages and the pipeline is confirmed working live on the
 > RTD test pair, including the language selector and the remapped heading
 > anchors. The plan is to finish seeding French on this branch, merge to
 > `master`, go live with a real `fog-docs-fr` RTD project, then add the other six
