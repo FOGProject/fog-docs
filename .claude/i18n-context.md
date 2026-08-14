@@ -210,8 +210,29 @@ contributor-facing and lowest priority.
 - **`stable` and `1.5.9` versions fail on any new RTD project.** No tags exist,
   so RTD reads the version-shaped *branch* `1.5.9` as a release and designates it
   `stable`; that branch is Sphinx-era and its config predates RTD requiring
-  `build.os`/`build.tools`. Deactivate both versions on every new project, or add
-  an Automation Rule matching `^(1\.5\.9|stable)$`.
+  `build.os`/`build.tools`. **Deactivate both in Admin → Versions on every new
+  project.** Inactive is the right state: RTD's docs say inactive versions "have
+  their documentation content deleted and builds cannot be triggered", which is
+  exactly what stops the failure.
+- **An Automation Rule cannot do that job — don't reach for one.** This was
+  written here as an alternative and it is wrong on two counts:
+  1. **There is no "Deactivate version" action.** The actions are Activate,
+     Hide, Make public, Make private, Set as default, Delete version, and
+     Trigger build. **"Hide version" is the trap** — hidden versions are only
+     dropped from the flyout and search; they still build, so the failing build
+     still fails.
+  2. **Rules only evaluate on newly created versions**, never retroactively. RTD
+     creates `1.5.9` and `stable` during the project's first repo sync, before
+     any rule can exist, so a rule would never fire for them.
+
+  "Delete version" is the only action that would stop a build, but it is aimed
+  at cleaning up versions whose branch is gone — pointing it at a branch that
+  still exists is fighting the version sync rather than configuring it.
+
+  The manual deactivation is two clicks per project, seven projects, once each.
+  The only change that removes the chore for *all* projects at once is dealing
+  with the `1.5.9` branch itself — see the next section, which is a separate
+  decision because those URLs are live.
 
 ## The 1.5.9 branch — analyzed, leave it alone for now
 
@@ -233,7 +254,9 @@ docs should stop resolving, delete the branch *and* add an RTD redirect
   **`FOGProject`** → *Translations*. The `-fr` suffix matches the parent's
   existing naming; the slug is a free choice as far as the build is concerned
   (see below).
-- Repeat per language, adding an Automation Rule each time.
+- Deactivate `stable` and `1.5.9` on the new project (Admin → Versions). Not an
+  Automation Rule — see the gotcha above for why that cannot work.
+- Repeat per language.
 
 ---
 
