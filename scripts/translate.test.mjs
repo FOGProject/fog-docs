@@ -15,10 +15,13 @@ import {
   checkStructure,
   chunkBody,
   getScalar,
+  headingSlugs,
   parsePo,
   selectGlossary,
   setScalar,
+  slugifyHeading,
   splitFrontmatter,
+  stripBanner,
 } from "./translate.mjs"
 
 // A cut-down catalog in the exact shape fogproject emits: msgcat --no-wrap,
@@ -206,4 +209,60 @@ test("banner is a well-formed callout linking to the English original", () => {
 test("banner maps index pages to their folder URL", () => {
   assert.ok(banner("fr", "installation/index.md").includes("/en/latest/installation)"))
   assert.ok(banner("fr", "index.md").includes("/en/latest)"))
+})
+
+test("stripBanner removes the banner and nothing else", () => {
+  const body = banner("fr", "index.md") + "# Titre\n\ncorps\n"
+  assert.equal(stripBanner(body, "fr"), "# Titre\n\ncorps\n")
+})
+
+test("stripBanner leaves a page that has no banner alone", () => {
+  assert.equal(stripBanner("# Titre\n", "fr"), "# Titre\n")
+})
+
+test("slugifyHeading matches how Quartz builds heading ids", () => {
+  assert.equal(slugifyHeading("Updating an existing install"), "updating-an-existing-install")
+  // Punctuation is dropped, accents are kept -- both matter, because the
+  // translated slug is what the rewritten anchor has to equal.
+  assert.equal(slugifyHeading("Mettre à jour une installation existante"), "mettre-à-jour-une-installation-existante")
+  assert.equal(slugifyHeading("FOG Client & Server: notes!"), "fog-client--server-notes")
+})
+
+test("headingSlugs returns every heading in document order", () => {
+  const slugs = headingSlugs("# One\n\ntext\n\n## Two Words\n\n### Three\n")
+  assert.deepEqual(slugs, ["one", "two-words", "three"])
+})
+
+test("headingSlugs disambiguates repeated headings the way github-slugger does", () => {
+  assert.deepEqual(headingSlugs("## Notes\n## Notes\n## Notes\n"), ["notes", "notes-1", "notes-2"])
+})
+
+test("headings line up by position between a page and its translation", () => {
+  // This is the invariant the anchor remapping rests on: checkStructure
+  // enforces equal heading counts, so the Nth heading of a translation is the
+  // translation of the Nth heading of its source, and an anchor can be moved
+  // across languages by index without parsing either one.
+  const english = "# Install FOG server\n\n## Prerequisite\n\n### Updating an existing install\n"
+  const french = "# Installer le serveur FOG\n\n## Prérequis\n\n### Mettre à jour une installation existante\n"
+
+  const from = headingSlugs(english)
+  const to = headingSlugs(french)
+
+  assert.equal(from.length, to.length)
+  assert.equal(to[from.indexOf("updating-an-existing-install")], "mettre-à-jour-une-installation-existante")
+})
+
+test("checkStructure ignores heading fragments on wikilinks", () => {
+  // Fragments are heading references, and headings get translated on purpose --
+  // relinkLanguage rewrites them, danglingAnchors checks them. What must never
+  // change is the page part before the '#'.
+  assert.deepEqual(checkStructure("see [[hosts#Kernel|K]]", "voir [[hosts#Noyau|N]]"), [])
+})
+
+test("checkStructure still catches a translated page target with a fragment", () => {
+  assert.ok(checkStructure("see [[hosts#Kernel]]", "voir [[machines#Noyau]]").length > 0)
+})
+
+test("checkStructure ignores same-page anchors", () => {
+  assert.deepEqual(checkStructure("[x](#a-heading)", "[y](#un-titre)"), [])
 })

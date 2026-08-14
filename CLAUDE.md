@@ -178,6 +178,16 @@ Rules that matter when touching any of this:
   buttons that do not exist on the reader's screen.
 - **Every translated page carries a machine-translation warning callout**
   linking to the English original, injected by code rather than by the model.
+- **Headings are translated, so heading anchors are rewritten.** Translating a
+  heading changes the id Quartz generates for it, which would break every
+  `](#anchor)` and `[[page#Heading]]` link pointing at it — 115 of them across
+  this repo, none of which the build warns about (the link renders and just
+  lands at the top of the page). `translate.mjs <lang> --relink` remaps them by
+  heading *position*, which works because `checkStructure` guarantees a
+  translation has the same headings in the same order as its source. It runs
+  automatically after translating, is idempotent, and leaves anchors into
+  not-yet-translated pages alone — those pages are served in English, so the
+  English anchor is the live one.
 - **Human edits to a translation survive until the English page changes**, at
   which point the page is regenerated and the edit is lost. Fixes belong
   upstream in `docs/`. Run `node scripts/translate.mjs <lang> --verify` after

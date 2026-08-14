@@ -69,6 +69,16 @@ jobs:
           TRANSLATE_LIMIT: ${{ inputs.limit || '40' }}
         run: node scripts/translate.mjs "${{ inputs.language || 'all' }}"
 
+      # translate.mjs relinks the language it just worked on, but an anchor's
+      # correct form depends on whether its *target* page is translated -- so a
+      # page landing in one language can leave a stale anchor in another that
+      # this run did not touch. Cheap, no network, idempotent.
+      - name: Re-resolve heading anchors
+        run: node scripts/translate.mjs all --relink
+
+      - name: Verify translations against docs/
+        run: node scripts/translate.mjs all --verify
+
       - name: Commit
         run: |
           if [ -z "$(git status --porcelain translations)" ]; then

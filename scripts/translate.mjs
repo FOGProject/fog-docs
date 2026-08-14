@@ -39,6 +39,7 @@
 //   node scripts/translate.mjs all --limit 20     # every language, 20 requests total
 //   node scripts/translate.mjs fr --dry-run       # show the work, call nothing
 //   node scripts/translate.mjs fr --verify        # re-check what is on disk, call nothing
+//   node scripts/translate.mjs fr --relink        # re-resolve heading anchors, call nothing
 //   node scripts/translate.mjs fr --reindex       # accept the tree on disk as current
 //   node scripts/translate.mjs fr --file installation/server/requirements.md
 //
@@ -420,22 +421,205 @@ async function translateFrontmatterValues({ token, targetLanguage, glossary, val
   return Object.fromEntries(keys.map((key, i) => [key, lines[i]]))
 }
 
+// --------------------------------------------------------------------- anchors
+
+// Translating a heading changes the id Quartz generates for it, which breaks
+// every link pointing at that heading -- 75 same-page `](#anchor)` links and 40
+// `[[page#Heading]]` wikilinks across this repo. Nothing warns about it: the
+// link still renders, it just lands at the top of the page instead of at the
+// section, so the failure is invisible unless someone clicks it.
+//
+// The remapping relies on an invariant checkStructure already enforces: a
+// translation has the same number of headings as its source, in the same order.
+// So the Nth heading of a translation is the translation of the Nth heading of
+// its source, and an anchor can be remapped by position without either side
+// having to understand the other's language.
+
+// Approximates github-slugger, which is what Quartz builds heading ids with.
+function slugifyHeading(text) {
+  return text
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\p{Pc}\p{Pd}\s]/gu, "")
+    // One hyphen per whitespace character, not per run. github-slugger does not
+    // collapse runs, so "Client & Server" -- whose "&" is dropped above, leaving
+    // two spaces -- becomes "client--server". Collapsing here would generate an
+    // anchor Quartz never emits, which is worse than not rewriting at all.
+    .replace(/\s/g, "-")
+}
+
+// Ordered, with github-slugger's -1/-2 suffixes for repeated headings.
+function headingSlugs(markdown) {
+  const seen = new Map()
+  return [...markdown.matchAll(/^#{1,6}\s+(.+)$/gm)].map((match) => {
+    const base = slugifyHeading(match[1])
+    const count = seen.get(base) ?? 0
+    seen.set(base, count + 1)
+    return count ? `${base}-${count}` : base
+  })
+}
+
+function headingTexts(markdown) {
+  return [...markdown.matchAll(/^#{1,6}\s+(.+)$/gm)].map((match) => match[1].trim())
+}
+
+function translatedBodyOf(lang, docPath) {
+  const filePath = path.join(translationsDir, lang, docPath)
+  if (!existsSync(filePath)) return undefined
+  return stripBanner(splitFrontmatter(readFileSync(filePath, "utf8")).body.trimStart(), lang)
+}
+
+function buildHeadingIndex(lang) {
+  const index = new Map()
+  for (const docPath of listSourceDocs()) {
+    const english = readFileSync(path.join(docsDir, docPath), "utf8")
+    const translated = translatedBodyOf(lang, docPath)
+    index.set(docPath, {
+      english: headingSlugs(english),
+      translated: translated ? headingSlugs(translated) : null,
+      translatedText: translated ? headingTexts(translated) : null,
+    })
+  }
+  return index
+}
+
+// Resolves a page reference the way Quartz's crawl-links does with
+// markdownLinkResolution: shortest -- "hosts" means whichever page is hosts.md.
+function resolveDocPath(reference, fromDocPath, index) {
+  if (!reference) return fromDocPath
+
+  const normalized = reference.replace(/^\.?\//, "").replace(/\.md$/, "")
+  const candidates = [...index.keys()]
+
+  const exact = candidates.find((p) => p.replace(/\.md$/, "") === normalized)
+  if (exact) return exact
+
+  const byBasename = candidates.filter((p) => path.basename(p, ".md") === path.basename(normalized))
+  return byBasename.length === 1 ? byBasename[0] : undefined
+}
+
+// Returns the translated heading an English-written anchor should point at, or
+// undefined to leave the anchor alone. Leaving it alone is correct in two
+// cases: the anchor is already translated (so this is idempotent and safe to
+// re-run), and the target page has no translation yet (so the composed tree
+// serves it in English and the English anchor is the live one).
+function remapAnchor(fragment, targetDoc, index) {
+  const entry = index.get(targetDoc)
+  if (!entry?.translated) return undefined
+
+  const wanted = slugifyHeading(fragment)
+  if (entry.translated.includes(wanted)) return undefined
+
+  const position = entry.english.indexOf(wanted)
+  if (position === -1 || position >= entry.translatedText.length) return undefined
+
+  return { slug: entry.translated[position], text: entry.translatedText[position] }
+}
+
+function relinkFile(lang, docPath, index) {
+  const filePath = path.join(translationsDir, lang, docPath)
+  const original = readFileSync(filePath, "utf8")
+  let text = original
+
+  // [[page#Heading|Text]] and [[#Heading]] -- Obsidian writes the fragment as
+  // heading text, so it is replaced with the translated heading text.
+  text = text.replace(
+    /(!?\[\[)([^\]\n#|]*)#([^\]\n|]+)(\|[^\]\n]*)?\]\]/g,
+    (whole, open, page, fragment, label) => {
+      const targetDoc = resolveDocPath(page, docPath, index)
+      if (!targetDoc) return whole
+      const mapped = remapAnchor(fragment, targetDoc, index)
+      return mapped ? `${open}${page}#${mapped.text}${label ?? ""}]]` : whole
+    },
+  )
+
+  // [text](#anchor) -- same page, and already a slug, so a slug goes back.
+  text = text.replace(/\]\(#([^)\s]+)\)/g, (whole, fragment) => {
+    const mapped = remapAnchor(fragment, docPath, index)
+    return mapped ? `](#${mapped.slug})` : whole
+  })
+
+  if (text !== original) writeFileSync(filePath, text)
+  return text !== original
+}
+
+// Runs over the whole tree rather than per page inside translateDoc, because
+// whether an anchor needs rewriting depends on if its *target* page is
+// translated yet -- which changes as other pages land.
+function relinkLanguage(lang) {
+  const index = buildHeadingIndex(lang)
+  let changed = 0
+  for (const docPath of listTranslatedDocs(lang)) {
+    if (index.has(docPath) && relinkFile(lang, docPath, index)) changed++
+  }
+  console.log(`  relinked heading anchors in ${changed} file(s)`)
+}
+
+// Anchors that translation broke.
+//
+// Only regressions are reported. An anchor that resolves to no heading in the
+// English page either is not a heading reference at all (docs/tags.md's
+// [[tags#1_6-changes]] points into the generated tag listing, not a heading) or
+// is already broken upstream -- neither is this pipeline's business, and
+// reporting them would bury the ones it did cause.
+function danglingAnchors(lang, docPath, index) {
+  const text = readFileSync(path.join(translationsDir, lang, docPath), "utf8")
+  const problems = []
+
+  const broken = (targetDoc, fragment) => {
+    const entry = index.get(targetDoc)
+    // No translation of the target means it is served in English, anchors and
+    // all, so an anchor written in English is the correct one.
+    if (!entry?.translated) return false
+
+    const slug = slugifyHeading(fragment)
+    if (entry.translated.includes(slug)) return false
+    return entry.english.includes(slug)
+  }
+
+  for (const [, page, fragment] of text.matchAll(/!?\[\[([^\]\n#|]*)#([^\]\n|]+)(?:\|[^\]\n]*)?\]\]/g)) {
+    const targetDoc = resolveDocPath(page, docPath, index)
+    if (targetDoc && broken(targetDoc, fragment)) {
+      problems.push(`wikilink anchor "${page}#${fragment}" still points at the English heading`)
+    }
+  }
+
+  for (const [, fragment] of text.matchAll(/\]\(#([^)\s]+)\)/g)) {
+    if (broken(docPath, fragment)) {
+      problems.push(`anchor "#${fragment}" still points at the English heading`)
+    }
+  }
+
+  return problems
+}
+
 // ------------------------------------------------------------------- verifying
 
 // [^\]\n] rather than [^\]] on purpose: a wikilink broken across a newline is
 // not a wikilink as far as Quartz is concerned -- it renders as literal
 // [[page|Text]] on the page with no build warning -- so this must not match one
 // either, or the wrapped-link failure sails through the comparison below.
+//
+// The #fragment is dropped because it is a heading reference, and headings do
+// get translated -- relinkLanguage rewrites those deliberately. What must never
+// change is the page part, which is a slug. Fragments are checked separately by
+// danglingAnchors, which can see the whole tree and knows what a valid heading
+// reference looks like after translation.
 function wikilinkTargets(text) {
-  return [...text.matchAll(/!?\[\[([^\]\n]+)\]\]/g)].map((m) => m[1].split("|")[0].trim()).sort()
+  return [...text.matchAll(/!?\[\[([^\]\n]+)\]\]/g)]
+    .map((m) => m[1].split("|")[0].split("#")[0].trim())
+    .sort()
 }
 
 function codeBlocks(text) {
   return [...text.matchAll(/```[\s\S]*?```/g)].map((m) => m[0])
 }
 
+// Same-page anchors are excluded for the same reason wikilink fragments are:
+// they point at headings, which get translated, so relinkLanguage rewrites them
+// on purpose. danglingAnchors checks them instead.
 function markdownLinkTargets(text) {
-  return [...text.matchAll(/\]\(([^)\s]+)/g)].map((m) => m[1]).sort()
+  return [...text.matchAll(/\]\(([^)\s]+)/g)].map((m) => m[1]).filter((t) => !t.startsWith("#")).sort()
 }
 
 const sameList = (a, b) => a.length === b.length && a.every((value, i) => value === b[i])
@@ -577,6 +761,7 @@ function pruneOrphans(lang, sourceDocs, state) {
 // (a wikilink that renders as literal text) is invisible in the build.
 function verifyLanguage(lang) {
   const sourceDocs = new Set(listSourceDocs())
+  const headingIndex = buildHeadingIndex(lang)
   let checked = 0
   let bad = 0
 
@@ -591,6 +776,7 @@ function verifyLanguage(lang) {
     const translated = splitFrontmatter(readFileSync(path.join(translationsDir, lang, docPath), "utf8"))
 
     const problems = checkStructure(source.body, stripBanner(translated.body.trimStart(), lang))
+    problems.push(...danglingAnchors(lang, docPath, headingIndex))
 
     // The banner is the reader's only signal that a page is machine output; a
     // page missing it looks like a reviewed human translation.
@@ -621,6 +807,11 @@ async function runLanguage({ lang, budget, options }) {
 
   if (options.verify) {
     verifyLanguage(lang)
+    return 0
+  }
+
+  if (options.relink) {
+    relinkLanguage(lang)
     return 0
   }
 
@@ -728,6 +919,11 @@ async function runLanguage({ lang, budget, options }) {
   }
 
   writeState(lang, state)
+
+  // Anchors have to be resolved against the finished tree: a page that landed
+  // in this run can be the target of an anchor in a page translated weeks ago.
+  relinkLanguage(lang)
+
   if (failures) {
     // Loud but not fatal: one bad page should not stop the other languages, and
     // the page stays stale so the next run retries it.
@@ -748,7 +944,7 @@ async function main() {
   const target = positional[0]
   if (!target) {
     console.error(
-      "usage: translate.mjs <language|all> [--limit N] [--dry-run] [--verify] [--reindex] [--file path]",
+      "usage: translate.mjs <language|all> [--limit N] [--dry-run] [--verify] [--relink] [--reindex] [--file path]",
     )
     process.exit(1)
   }
@@ -765,6 +961,7 @@ async function main() {
     dryRun: flag("--dry-run"),
     reindex: flag("--reindex"),
     verify: flag("--verify"),
+    relink: flag("--relink"),
     file: value("--file"),
   }
   // Shared across languages on purpose: the rate limit is per account, not per
@@ -780,4 +977,16 @@ async function main() {
 // splitFrontmatter) can be imported and exercised without running a translation.
 if (import.meta.url === pathToFileURL(process.argv[1]).href) await main()
 
-export { chunkBody, checkStructure, parsePo, selectGlossary, splitFrontmatter, getScalar, setScalar, banner }
+export {
+  banner,
+  checkStructure,
+  chunkBody,
+  getScalar,
+  headingSlugs,
+  parsePo,
+  selectGlossary,
+  setScalar,
+  slugifyHeading,
+  splitFrontmatter,
+  stripBanner,
+}
