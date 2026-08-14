@@ -1,0 +1,4 @@
+{
+  "$comment": "Written by scripts/translate.mjs. Maps each docs/ page to the sha256 of the English source it was last translated from; a page is retranslated when its source hash moves. Delete an entry to force that page to be retranslated.",
+  "entries": {}
+}
