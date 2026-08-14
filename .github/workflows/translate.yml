@@ -4,12 +4,23 @@
 # regenerates that page in every language and commits the result. Nothing here
 # ever writes to docs/.
 #
-# !! BROKEN: this workflow has no model provider. !!
+# !! This workflow needs TRANSLATE_API_KEY configured before it will run. !!
 #
 # It was built on GitHub Models, reached with the workflow's own GITHUB_TOKEN
-# via the `models: read` permission below -- no API key, no billing, no org
-# secret to rotate. GitHub retired that service on 30 July 2026. Every request
-# now returns 410, so every run fails at the first page.
+# and a `models: read` permission -- no API key, no billing, no secret to
+# rotate. GitHub retired that service on 30 July 2026. Every request now
+# returns 410, so every run fails at the first page until a provider is set.
+#
+# Azure Foundry Models is the intended replacement. It is OpenAI-compatible and
+# takes the same bearer header this already sends, so it is a configuration
+# change rather than a code change: set TRANSLATE_ENDPOINT, TRANSLATE_MODEL and
+# TRANSLATE_API_KEY (see the Translate step below).
+#
+# Azure Translator is a different API under the same Foundry umbrella, and the
+# one with the F0 free tier. It is not usable here: it takes no prompt, so the
+# gettext glossary that pins FOG's terminology has nowhere to go, and its
+# textType is plain/html only, so markdown structure does not survive the round
+# trip. checkStructure would reject essentially every page.
 #
 # That failure is deliberate and new: the run previously counted a dead backend
 # as an ordinary per-page failure and exited 0, so the first run after the
@@ -49,9 +60,10 @@ on:
         required: false
         default: "40"
 
+# `models: read` is gone with GitHub Models. The provider is now reached with
+# TRANSLATE_API_KEY, a repository secret.
 permissions:
   contents: write
-  models: read
 
 # Not cancel-in-progress: a cancelled run can leave the state file describing
 # translations it did not finish writing. Queueing instead costs a few minutes
@@ -76,9 +88,17 @@ jobs:
       - name: Check the translator's helpers
         run: node --test "scripts/*.test.mjs"
 
+      # Configure these once in the repository settings and this step needs no
+      # further edits: TRANSLATE_API_KEY as a secret, the other two as variables.
+      #
+      # For Azure Foundry Models (OpenAI-compatible, same bearer header):
+      #   TRANSLATE_ENDPOINT  https://<resource>.openai.azure.com/openai/v1/chat/completions
+      #   TRANSLATE_MODEL     <your deployment name>
       - name: Translate
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRANSLATE_API_KEY: ${{ secrets.TRANSLATE_API_KEY }}
+          TRANSLATE_ENDPOINT: ${{ vars.TRANSLATE_ENDPOINT }}
+          TRANSLATE_MODEL: ${{ vars.TRANSLATE_MODEL }}
           TRANSLATE_LIMIT: ${{ inputs.limit || '40' }}
         run: node scripts/translate.mjs "${{ inputs.language || 'all' }}"
 

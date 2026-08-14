@@ -171,6 +171,15 @@ and is safe to delete and regenerate.
   Everything that does not call a model still works: `--dry-run` reports which
   pages have drifted, and `--verify`/`--relink` are unaffected. Seeding by hand
   and running those checks is how the French tree was built.
+- **Azure Foundry Models is the intended replacement**, and is a configuration
+  change rather than a code one — it is OpenAI-compatible and takes the same
+  bearer header the script already sends. Set `TRANSLATE_API_KEY` (secret) plus
+  `TRANSLATE_ENDPOINT` and `TRANSLATE_MODEL` (variables):
+  `https://<resource>.openai.azure.com/openai/v1/chat/completions` and the
+  deployment name. **Azure Translator is a different API under the same Foundry
+  umbrella** — it is the one with the F0 2M-characters/month free tier, and it
+  is not usable here: no prompt means no glossary, and `textType` is plain/html
+  only, so markdown structure does not survive. `checkStructure` rejects it.
 
 Rules that matter when touching any of this:
 

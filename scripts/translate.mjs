@@ -44,10 +44,24 @@
 //   node scripts/translate.mjs fr --file installation/server/requirements.md
 //
 // Environment:
-//   GITHUB_TOKEN        token with `models: read` (set automatically in Actions)
-//   TRANSLATE_MODEL     default openai/gpt-4o-mini
-//   TRANSLATE_ENDPOINT  default https://models.github.ai/inference/chat/completions
+//   TRANSLATE_API_KEY   credential for the endpoint below, sent as a bearer token
+//   TRANSLATE_ENDPOINT  an OpenAI-compatible chat/completions URL
+//   TRANSLATE_MODEL     model (or, on Azure Foundry, the deployment name)
 //   TRANSLATE_LIMIT     default 40 model requests per run
+//
+// The defaults below point at GitHub Models, which GitHub retired on
+// 30 July 2026 -- they are kept only so the failure names something real.
+// For Azure Foundry Models, which is OpenAI-compatible and takes the same
+// bearer header this already sends:
+//
+//   TRANSLATE_ENDPOINT=https://<resource>.openai.azure.com/openai/v1/chat/completions
+//   TRANSLATE_MODEL=<your-deployment-name>
+//   TRANSLATE_API_KEY=<resource key>
+//
+// Note that Azure Translator (the F0 tier with 2M free characters/month) is a
+// different API under the same Foundry umbrella: no prompt, so no glossary,
+// and textType is plain/html only, so markdown structure does not survive.
+// checkStructure would reject its output. It is not a drop-in for this.
 import { createHash } from "node:crypto"
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs"
 import path from "node:path"
@@ -970,9 +984,16 @@ async function runLanguage({ lang, budget, options }) {
     return 0
   }
 
-  const token = process.env.GITHUB_TOKEN ?? process.env.MODELS_TOKEN
+  // TRANSLATE_API_KEY is the provider-neutral name and takes precedence.
+  // GITHUB_TOKEN/MODELS_TOKEN stay as fallbacks so a checkout that still sets
+  // them keeps working, but GitHub Models itself is retired -- see the header.
+  const token = process.env.TRANSLATE_API_KEY ?? process.env.GITHUB_TOKEN ?? process.env.MODELS_TOKEN
   if (!token) {
-    console.error("  GITHUB_TOKEN (or MODELS_TOKEN) is not set -- cannot reach GitHub Models")
+    console.error(
+      `  TRANSLATE_API_KEY is not set -- cannot reach ${ENDPOINT}
+` +
+        "  Set TRANSLATE_API_KEY, and TRANSLATE_ENDPOINT/TRANSLATE_MODEL to match your provider.",
+    )
     process.exitCode = 1
     return 0
   }
