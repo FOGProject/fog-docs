@@ -163,7 +163,7 @@ renouvelez la feuille et plus aucune machine n'a besoin d'être touchée — le 
 bénéfice dont la clé auto-générée de FOG profite déjà automatiquement. Sans
 `--secureboot-ca-cert`, faire cela avec votre propre autorité impose de signer
 et de publier à la main : suivez
-[[secure-boot-technical-details#signing-the-fos-kernels|la signature des noyaux FOS]]
+[[secure-boot-technical-details#Signer les noyaux FOS|la signature des noyaux FOS]]
 en ajoutant `--addcert` à l'appel de `sbsign`, et enrôlez le certificat de
 l'autorité plutôt qu'une feuille.
 
