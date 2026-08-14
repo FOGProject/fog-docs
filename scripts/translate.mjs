@@ -72,6 +72,13 @@ const MAX_CHUNK_CHARS = Number(process.env.TRANSLATE_CHUNK_CHARS ?? 5000)
 // builds are not worth translating.
 const IGNORED_SEGMENTS = new Set(["private", "templates", ".obsidian"])
 
+// docs/tags.md is a leftover from the MkDocs era: its body is the text "[TAGS]",
+// a macro the old plugin expanded. Under Quartz, @quartz-community/tag-page
+// generates /tags/ itself and this file's content never reaches the built page
+// in any language -- confirmed by grepping the English build for its body text.
+// Translating it spends requests on something no reader can see.
+const SUPERSEDED_BY_PLUGIN = new Set(["tags.md"])
+
 const STATE_FILE = ".translation-state.json"
 const GLOSSARY_MAX_TERMS = 40
 
@@ -95,8 +102,9 @@ function listSourceDocs() {
       const full = path.join(dir, entry)
       if (statSync(full).isDirectory()) {
         if (!IGNORED_SEGMENTS.has(entry)) walk(full)
-      } else if (entry.endsWith(".md") && isTranslatable(full)) {
-        found.push(path.relative(docsDir, full).split(path.sep).join("/"))
+      } else if (entry.endsWith(".md")) {
+        const docPath = path.relative(docsDir, full).split(path.sep).join("/")
+        if (!SUPERSEDED_BY_PLUGIN.has(docPath) && isTranslatable(full)) found.push(docPath)
       }
     }
   }
