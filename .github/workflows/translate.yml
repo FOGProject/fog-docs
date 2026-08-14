@@ -4,14 +4,27 @@
 # regenerates that page in every language and commits the result. Nothing here
 # ever writes to docs/.
 #
-# Translation runs on GitHub Models, reached with the workflow's own
-# GITHUB_TOKEN via the `models: read` permission below -- no API key, no
-# billing, no org secret to rotate. The free tier is rate limited per account
-# rather than per repository, so scripts/translate.mjs works to a request
-# budget shared across all languages and leaves whatever it could not finish
-# for the next run. The nightly schedule is what drains that backlog: without
-# it, a large docs sweep would translate a slice on push and then sit
-# half-finished until someone happened to touch docs/ again.
+# !! BROKEN: this workflow has no model provider. !!
+#
+# It was built on GitHub Models, reached with the workflow's own GITHUB_TOKEN
+# via the `models: read` permission below -- no API key, no billing, no org
+# secret to rotate. GitHub retired that service on 30 July 2026. Every request
+# now returns 410, so every run fails at the first page.
+#
+# That failure is deliberate and new: the run previously counted a dead backend
+# as an ordinary per-page failure and exited 0, so the first run after the
+# retirement reported success having translated nothing. scripts/translate.mjs
+# now aborts and exits non-zero when the provider itself is unusable.
+#
+# To revive this, point TRANSLATE_ENDPOINT and TRANSLATE_MODEL at a replacement
+# with an OpenAI-compatible chat/completions API and give the Translate step
+# whatever credential it needs. Note that doing so gives up the property this
+# design was built around -- no key, no billing, nothing to rotate -- so it is
+# a decision worth making deliberately rather than by picking the nearest API.
+#
+# Everything else here still works offline and is worth keeping: the rate-limit
+# budget, the nightly drain, --relink and --verify. `--dry-run` still reports
+# exactly which pages have drifted from docs/ without calling anything.
 #
 # The push trigger is scoped to docs/**, which is also what stops this from
 # retriggering itself -- the only thing it ever commits is translations/**.

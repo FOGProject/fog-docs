@@ -161,9 +161,16 @@ and is safe to delete and regenerate.
   `translations/<lang>/.translation-state.json`, and
   `.github/workflows/translate.yml` runs it on every push to `master` that
   touches `docs/**`, plus nightly to drain whatever the rate limit deferred.
-  Translation runs on GitHub Models via the workflow's own `GITHUB_TOKEN`
-  (`models: read`) — free, no API key, but rate limited per account, which is
-  why the script works to a request budget and the nightly drain exists.
+- **The automated translation has no provider right now.** It was built on
+  GitHub Models via the workflow's own `GITHUB_TOKEN` (`models: read`) — free,
+  no API key — and GitHub retired that service on 30 July 2026. Every request
+  returns 410 and the workflow fails at the first page. Pointing
+  `TRANSLATE_ENDPOINT`/`TRANSLATE_MODEL` at any OpenAI-compatible endpoint
+  revives it, but costs the "no key, no billing, nothing to rotate" property
+  the design was built around, so it is an open decision rather than a fix.
+  Everything that does not call a model still works: `--dry-run` reports which
+  pages have drifted, and `--verify`/`--relink` are unaffected. Seeding by hand
+  and running those checks is how the French tree was built.
 
 Rules that matter when touching any of this:
 

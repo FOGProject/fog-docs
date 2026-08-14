@@ -84,6 +84,24 @@ const GLOSSARY_MAX_TERMS = 40
 
 class RateLimited extends Error {}
 
+// A failure that is not about the page being translated: the endpoint is gone,
+// the token is not accepted, the service is down. Retrying the next page cannot
+// help, and every page will fail the same way -- so this aborts the run and
+// exits non-zero instead of reporting a green tick over a no-op.
+//
+// This distinction was added after GitHub Models was retired (30 July 2026).
+// Every request came back `410 github_models_retirement_brownout`, every page
+// was counted as an ordinary per-page failure, and the workflow went green
+// having translated nothing. A dead backend has to look like a broken build.
+class ProviderUnavailable extends Error {}
+
+// 429 is the documented rate limit and is handled separately. Everything in
+// here means the provider itself is not usable: authentication, a retired or
+// moved endpoint, or the service being down.
+function providerIsUnavailable(status) {
+  return status === 401 || status === 403 || status === 404 || status === 410 || status >= 500
+}
+
 // --------------------------------------------------------------------- files
 
 // `unlisted` pages are kept out of the nav and the search index -- in this repo
@@ -416,6 +434,8 @@ async function callModel({ token, targetLanguage, glossary, text, isFirstChunk }
   })
 
   if (response.status === 429) throw new RateLimited("model request rate limited")
+  if (providerIsUnavailable(response.status))
+    throw new ProviderUnavailable(`HTTP ${response.status} ${(await response.text()).slice(0, 300)}`)
   if (!response.ok) throw new Error(`model request failed: HTTP ${response.status} ${await response.text()}`)
 
   const payload = await response.json()
@@ -458,6 +478,8 @@ async function translateFrontmatterValues({ token, targetLanguage, glossary, val
   })
 
   if (response.status === 429) throw new RateLimited("model request rate limited")
+  if (providerIsUnavailable(response.status))
+    throw new ProviderUnavailable(`HTTP ${response.status} ${(await response.text()).slice(0, 300)}`)
   if (!response.ok) throw new Error(`front matter request failed: HTTP ${response.status}`)
 
   const payload = await response.json()
@@ -985,6 +1007,11 @@ async function runLanguage({ lang, budget, options }) {
         console.log("  rate limited; stopping here and leaving the rest for the nightly run")
         break
       }
+      // Not this page's fault and not survivable -- every remaining page and
+      // every remaining language would fail identically. Surface it as a build
+      // failure rather than grinding through the backlog printing the same
+      // error once per page.
+      if (error instanceof ProviderUnavailable) throw error
       failures++
       console.warn(`  FAILED ${docPath}: ${error.message}`)
     }
@@ -1041,7 +1068,22 @@ async function main() {
   const budget = { remaining: Number(value("--limit") ?? DEFAULT_LIMIT) }
 
   for (const lang of targets) {
-    budget.remaining -= await runLanguage({ lang, budget, options })
+    try {
+      budget.remaining -= await runLanguage({ lang, budget, options })
+    } catch (error) {
+      if (!(error instanceof ProviderUnavailable)) throw error
+      console.error(
+        `\nThe translation provider is not usable: ${error.message}\n\n` +
+          `Every page would fail the same way, so this run stopped instead of\n` +
+          `reporting success over a no-op. Nothing was written.\n\n` +
+          `Endpoint: ${ENDPOINT}\n` +
+          `Model:    ${MODEL}\n\n` +
+          `If this is a 410, the endpoint has been retired -- GitHub Models was\n` +
+          `retired on 30 July 2026. Point TRANSLATE_ENDPOINT and TRANSLATE_MODEL\n` +
+          `at a replacement and give the workflow whatever credential it needs.`,
+      )
+      process.exit(1)
+    }
   }
 }
 
@@ -1059,6 +1101,7 @@ export {
   getScalar,
   headingSlugs,
   parsePo,
+  providerIsUnavailable,
   selectGlossary,
   setScalar,
   slugifyHeading,

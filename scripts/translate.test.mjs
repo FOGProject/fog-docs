@@ -21,6 +21,7 @@ import {
   setScalar,
   slugifyHeading,
   splitFrontmatter,
+  providerIsUnavailable,
   stripBanner,
   unparseableFrontmatter,
 } from "./translate.mjs"
@@ -333,4 +334,20 @@ test("unparseableFrontmatter ignores list items and nested keys", () => {
     unparseableFrontmatter("aliases:\n    - Secure Boot Technical Details\ndescription: see https://x/y"),
     [],
   )
+})
+
+test("providerIsUnavailable separates a dead backend from a rate limit", () => {
+  // GitHub Models' retirement returned 410 on every request. Classified as an
+  // ordinary per-page failure it produced a green workflow that translated
+  // nothing, which is the failure mode this predicate exists to prevent.
+  for (const status of [401, 403, 404, 410, 500, 502, 503]) {
+    assert.equal(providerIsUnavailable(status), true, `${status} should abort the run`)
+  }
+  // 429 is the documented rate limit and has its own handling: stop politely,
+  // leave the backlog for the nightly drain, exit clean.
+  assert.equal(providerIsUnavailable(429), false)
+  // A page-specific failure should not take the whole run down.
+  for (const status of [200, 400, 422]) {
+    assert.equal(providerIsUnavailable(status), false, `${status} should not abort the run`)
+  }
 })
