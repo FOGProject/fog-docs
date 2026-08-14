@@ -312,5 +312,5 @@ FOG. Pour cela, procédez comme suit :
 -   Cliquez sur l'icône de téléchargement
 -   Choisissez un nom de fichier pour votre noyau ; pour en faire le noyau par défaut, laissez le nom **bzImage**
        * *!!! tip
-	    Si vous lui donnez un autre nom, vous pouvez configurer une machine pour qu'elle l'utilise dans [[hosts#Kernel]]
+	    Si vous lui donnez un autre nom, vous pouvez configurer une machine pour qu'elle l'utilise dans [[hosts#Noyau]]
 -   Cliquez sur le bouton **Next**

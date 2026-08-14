@@ -35,7 +35,7 @@ tags:
 
 1.  **Gestion des groupes** → **Create New Group**
 2.  La section des machines de FOG, à partir de recherches ; pour savoir comment
-    créer des groupes, veuillez consulter [[hosts#Creating Host Groups]]
+    créer des groupes, veuillez consulter [[hosts#Créer des groupes de machines]]
 
 ## Gérer les groupes
 
