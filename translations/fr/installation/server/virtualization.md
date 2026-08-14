@@ -33,7 +33,7 @@ et de conseils, et éventuellement de problèmes connus.
 Assurez-vous que le commutateur virtuel auquel votre VM est connectée dispose
 d'une route vers FOG !
 
-Assistant de création de VM :octicons-arrow-right-24: Options d'installation : sélectionnez « Installer un
+Assistant de création de VM → Options d'installation : sélectionnez « Installer un
 système d'exploitation à partir d'un serveur d'installation réseau »
 
 **VM existante :**
@@ -41,7 +41,7 @@ système d'exploitation à partir d'un serveur d'installation réseau »
 Assurez-vous que le commutateur virtuel auquel votre VM est connectée dispose
 d'une route vers FOG !
 
-Clic droit sur la VM :octicons-arrow-right-24: Paramètres :octicons-arrow-right-24: BIOS
+Clic droit sur la VM → Paramètres → BIOS
 
 Placez « Carte réseau » (parfois nommée « Carte réseau héritée ») en tête de
 l'ordre de démarrage.
@@ -50,7 +50,7 @@ l'ordre de démarrage.
 
 L'UEFI et le démarrage sécurisé sont proposés par Hyper-V sur Server 2012 pour
 les VM de génération 2. Ils sont activés par défaut et peuvent être désactivés
-dans Paramètres de la VM :octicons-arrow-right-24:
+dans Paramètres de la VM →
 Microprogramme : décochez le démarrage sécurisé.
 
 Merci à [moses](https://forums.fogproject.org/user/moses)
@@ -177,4 +177,4 @@ démarrage PXE est coché et que le bon réseau est sélectionné.
 
 Voir les forums
 
--   [FOG 0.30 VM-Virtualbox](Running_pre-built_virtual_machines_in_Virtualbox)   
+-   [FOG 0.30 VM-Virtualbox](Running_pre-built_virtual_machines_in_Virtualbox)

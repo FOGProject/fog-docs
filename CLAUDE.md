@@ -100,6 +100,11 @@ node scripts/rtd-build.mjs --language fr -o /tmp/fr-site
     the sentence around the link instead. Worth grepping the built HTML for
     `[[` after adding links (`grep -o '\[\[' quartz/public/**/*.html`); the
     only legitimate hits are inside code blocks.
+- **Arrows in menu paths are the literal `→` character.** Quartz has no
+  icon-shortcode support, so mkdocs-material's `:octicons-arrow-right-24:`
+  renders as that raw text on the published page. All 76 occurrences were
+  converted to `→`, which needs no renderer support and reads correctly in
+  Obsidian. Don't reintroduce the shortcode form.
 - **Callouts, not raw admonitions**: write Obsidian callout syntax —
   ```
   >[!note]

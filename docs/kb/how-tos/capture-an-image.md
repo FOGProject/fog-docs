@@ -85,7 +85,7 @@ Then the client is rebooted. Shut down the computer.
 
 ## Register the image at FOG
 
-Log in on the Fog Web UI and go to 'Image Management' :octicons-arrow-right-24: 'Create New
+Log in on the Fog Web UI and go to 'Image Management' → 'Create New
 Image':
 
 ![[capture_image_management.png]]
@@ -100,7 +100,7 @@ and deployed.
 
 ## Associate the image with the machine
 
-Now to go 'Host Management' :octicons-arrow-right-24: 'List All Hosts' and click on the
+Now to go 'Host Management' → 'List All Hosts' and click on the
 machine you just have registered:
 
 ![[capture_host_management_1.png]]

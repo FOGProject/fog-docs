@@ -70,7 +70,7 @@ run the snapin on our machine.
     just download it. Go to <https://www.7-zip.org/download.html> and
     download the MSI for 64-bit windows.
 -   Go to the Fog Web UI and log in
--   Go to 'Snapin' :octicons-arrow-right-24: 'Create New Snapin':
+-   Go to 'Snapin' → 'Create New Snapin':
 
 Fill in the following fields:
 
@@ -96,7 +96,7 @@ command that is actually going to be executed by the FOG Client.
 
 Now it's time to run the snapin on the machine
 
--   In the FOG Web UI, go to 'Host Management' :octicons-arrow-right-24: 'List all Hosts'
+-   In the FOG Web UI, go to 'Host Management' → 'List all Hosts'
 -   Click on the 'Task list' icon on the right of the host:
 
 -   Click on 'Advanced' and choose 'Single Snapin' from below

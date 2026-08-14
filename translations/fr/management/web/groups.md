@@ -33,7 +33,7 @@ tags:
 
 -   Les groupes se créent à deux endroits :
 
-1.  **Gestion des groupes** \-:octicons-arrow-right-24: **Create New Group**
+1.  **Gestion des groupes** → **Create New Group**
 2.  La section des machines de FOG, à partir de recherches ; pour savoir comment
     créer des groupes, veuillez consulter [[hosts#Creating Host Groups]]
 

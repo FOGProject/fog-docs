@@ -57,8 +57,8 @@ tags:
 -   It will display all the queued, running, etc\... tasks and updates
     at the same interval as the Bandwidth graph.
 -   You can also edit which type of tasks get counted toward the "queue".
-      -   This edit can be performed by going to 
-        **FOGConfiguration** ![[Config.png]]\-:octicons-arrow-right-24: **FOG Settings**\-:octicons-arrow-right-24: **General Settings** \-:octicons-arrow-right-24:**FOG_USED_TASKS**.
+      -   This edit can be performed by going to
+        **FOGConfiguration** ![[Config.png]] → **FOG Settings** → **General Settings** → **FOG_USED_TASKS**.
         -   The text field is numeric values (so you'll need to know which task id's are which type.
         -   This text field is a CSV setup. If you type (1,2,3,4,5) it will display all tasks of Deploy, Capture, Debug, Memtest, and Testdisk as queued/active depending on their current state.
         -   The exception to this rule, is Task Type ID 8 (multicast) in

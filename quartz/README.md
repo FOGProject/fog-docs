@@ -29,6 +29,7 @@ See `quartz.config.yaml` (the file Quartz actually reads; `quartz.config.default
 ## Known, accepted gaps
 
 - 14 files using raw MkDocs `!!! type "title"` admonition syntax render as plain text (Quartz only understands Obsidian's `> [!type]` callout syntax).
+- ~~mkdocs-material's `:octicons-arrow-right-24:` icon shortcode rendered as raw text~~ — fixed: all 76 occurrences across 13 files are now the literal `→` character, which needs no renderer support. Same class of gap as the admonitions above, but with a fix that can't regress.
 - 3 files with a `context-id` (hyphen, not underscore) front-matter typo silently lack a short permalink — this is pre-existing MkDocs-era behavior, not a Quartz regression.
 - `{ .red }`/`{ .orange }`/`{ .yellow }` inline attr_list color-class syntax has no Quartz equivalent (and isn't supported in Obsidian either) — documented, not built.
 - A handful of pages `master` still served at the time of the cutover merge (a stale full user-guide, a dead-link blog roundup, a FOG-1.2-only boot-menu doc, and two pages whose content was merged forward into other pages) were restored as short stub/redirect pages rather than fully un-archived, so their old URLs keep working. The originals remain in `wikiArchive/Not-Migrating/` for reference.

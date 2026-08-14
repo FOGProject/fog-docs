@@ -121,7 +121,7 @@ cause de l'échec.
 ## Approuver la machine
 
 -   Lancez un navigateur, allez sur l'interface web de FOG et connectez-vous.
--   Allez dans « Gestion des machines » :octicons-arrow-right-24: « List all Hosts » et cliquez sur la
+-   Allez dans « Gestion des machines » → « List all Hosts » et cliquez sur la
     machine sur laquelle vous venez d'installer le client FOG.
 
 Si le système Windows n'a pas été déployé avec FOG, le client FOG n'est pas

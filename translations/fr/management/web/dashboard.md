@@ -62,7 +62,7 @@ tags:
     jour au même intervalle que le graphique de bande passante.
 -   Vous pouvez également modifier quels types de tâches sont comptabilisés dans la « file d'attente ».
       -   Cette modification s'effectue dans
-        **FOGConfiguration** ![[Config.png]]\-:octicons-arrow-right-24: **FOG Settings**\-:octicons-arrow-right-24: **General Settings** \-:octicons-arrow-right-24:**FOG_USED_TASKS**.
+        **FOGConfiguration** ![[Config.png]] → **FOG Settings** → **General Settings** → **FOG_USED_TASKS**.
         -   Le champ texte contient des valeurs numériques (vous devrez donc savoir quels identifiants de tâche correspondent à quels types).
         -   Ce champ texte est au format CSV. Si vous saisissez (1,2,3,4,5), toutes les tâches de type Déploiement, Capture, Débogage, Memtest et Testdisk seront affichées comme en attente ou actives selon leur état courant.
         -   L'exception à cette règle est le type de tâche 8 (multicast), auquel

@@ -60,7 +60,7 @@ as CSV files from each object's **Import** / **Export** page — see
 ## Exporting
 
 Each object type has an **Export** page (for example *Hosts
-:octicons-arrow-right-24: Export Hosts*) with a row of buttons above the table:
+ → Export Hosts*) with a row of buttons above the table:
 
 - **CSV (All)** — the recommended way to get a complete, import‑ready file. It
   exports **every** item that matches the current search, server‑side, as a CSV

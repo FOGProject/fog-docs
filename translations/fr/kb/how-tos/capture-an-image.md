@@ -88,7 +88,7 @@ Le client redémarre ensuite. Éteignez l'ordinateur.
 
 ## Enregistrer l'image dans FOG
 
-Connectez-vous à l'interface web de FOG et allez dans « Gestion des images » :octicons-arrow-right-24: « Create New
+Connectez-vous à l'interface web de FOG et allez dans « Gestion des images » → « Create New
 Image » (créer une nouvelle image) :
 
 ![[capture_image_management.png]]
@@ -102,7 +102,7 @@ toutes les partitions du disque seront capturées puis déployées.
 
 ## Associer l'image à la machine
 
-Allez maintenant dans « Gestion des machines » :octicons-arrow-right-24: « List All Hosts » (lister toutes
+Allez maintenant dans « Gestion des machines » → « List All Hosts » (lister toutes
 les machines) et cliquez sur la machine que vous venez d'enregistrer :
 
 ![[capture_host_management_1.png]]

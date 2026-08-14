@@ -28,7 +28,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
 
 ### Method 1: Adding a new host via Full registration
 
--   
+-
 
     This is the preferred method, and maybe the easiest method for getting a host into the FOG database, but it requires you to visit the host.
 
@@ -77,7 +77,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
     is selected. (OS is now associated within the image so no need to
     select an OS)
 
-7.  
+7.
 
     Change **FOG_QUICKREG_SYS_NAME** to what you would like to name you new machines, where `*` will be replaced by a number.
 
@@ -85,7 +85,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
             **LAB300-**\*\* which would result with **LAB300-03** or
             **LAB300-09**.
 
-8.  
+8.
 
     Set **FOG_QUICKREG_SYS_NUMBER** to the first number you would like to use.
 
@@ -122,7 +122,7 @@ A host consists of the following __Required__{ .red } Fields:
 > `00:11:22:33:44:55`.
 
 > [!NOTE]
-> The MAC Address has a description field. This can currently only be set via the api and can be whatever you want it to be. 
+> The MAC Address has a description field. This can currently only be set via the api and can be whatever you want it to be.
 > For example you could use the [FOGApi powershell module](https://github.com/darksidemilk/FogApi) to set the mac descriptions to the make/model of the adapter like so
 
 ```
@@ -232,7 +232,7 @@ scan](https://forums.fogproject.org/topic/9560/creating-a-csv-host-import-from-a
 ``` {.powershell emphasize-lines="3,12"}
 # examples, just gotta put subnets minus the final .x in a string array
 # Could also be params if this was a function
-$subnets = @("192.168.1", "192.168.2", "10.2.114", "192.168.0"); 
+$subnets = @("192.168.1", "192.168.2", "10.2.114", "192.168.0");
 $subnets | ForEach-Object { # loop through each subnet
     for ($i=0; $i -lt 255; $i++) { # loop through 0 to 255 of the subnet
         $hn = nslookup "$_.$i"; # run nslookup on the current ip in the loop
@@ -277,16 +277,16 @@ $subnets | ForEach-Object { # loop through each subnet
     wireless and other wired connections. Also, an additional MAC can
     also be added directly under the Host definition.
 
--   
+-
 
     These new MAC Addresses will need to be approved before FOG will take advantage of them.
 
-    :   1.  **Host Management** \-:octicons-arrow-right-24: **\[Selected Host\]**
-            \-:octicons-arrow-right-24:*Additional MAC*
-        2.  **Fog Configuration** \-:octicons-arrow-right-24: **MAC Address List**
-            \-:octicons-arrow-right-24:*Approve Pending Addresses*
+    :   1.  **Host Management** → **\[Selected Host\]**
+ → *Additional MAC*
+        2.  **Fog Configuration** → **MAC Address List**
+ → *Approve Pending Addresses*
 
--   **Fog Configuration** \-:octicons-arrow-right-24: **MAC Address List** At this location
+-   **Fog Configuration** → **MAC Address List** At this location
     you can also *"Update Current Listings"* giving updated
     information on the MAC Addresses and their manufactures, listing it
     under the Host.
@@ -309,7 +309,7 @@ $subnets | ForEach-Object { # loop through each subnet
     client using the FQDN, like:
 
         #Replace forproject.org with your domain suffix
-        ping somehostname.fogproject.org 
+        ping somehostname.fogproject.org
 
 -   Then you will need to adjust the DNS **Search domains:** setting on
     your sever. After making this change you will need to restart the
@@ -319,12 +319,12 @@ $subnets | ForEach-Object { # loop through each subnet
     be due to a firewall issue with the clients. In this case, client
     specific configuration changes might be needed.
 
--   
+-
 
     With an increase in Hosts(250+) this "ping" will delay the loading of the List *All Hosts* page. Disabling this feature will help in loading this page.
 
-    :   1.  **Fog Configuration** \-:octicons-arrow-right-24: **Fog Settings** \-:octicons-arrow-right-24: **General
-            Settings** \-:octicons-arrow-right-24: Untick *FOG_HOST_LOOKUP*
+    :   1.  **Fog Configuration** → **Fog Settings** → **General
+            Settings** → Untick *FOG_HOST_LOOKUP*
 
 ### Creating Host Groups
 

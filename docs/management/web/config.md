@@ -19,7 +19,7 @@ much more content is needed here
 
 ## Multicast Settings
 
-The settings under **FOG Settings :octicons-arrow-right-24: Multicast Settings**
+The settings under **FOG Settings → Multicast Settings**
 control how many multicast sessions may run at the same time, which ports and
 addresses they use, and how long a session waits for its clients before it starts
 transmitting.
@@ -39,7 +39,7 @@ The management list and export tables (Hosts, Images, Snapins, and so on) can
 page through records in one of two ways, controlled by a single install‑wide
 setting:
 
-> Other Settings :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: FOG View Settings :octicons-arrow-right-24: FOG_TABLE_SCROLL_MODE
+> Other Settings → FOG Settings → FOG View Settings → FOG_TABLE_SCROLL_MODE
 
 - **infinite** *(default)* — virtual scroll: rows load in chunks as you scroll
   and there is no page‑number bar. Best for quickly skimming large lists.
@@ -58,136 +58,136 @@ browser or workflow.
 It is possible to change the keymap or keyboard layout of the linux boot
 image. In order to change the key map, go to:
 
-> Other Settings :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: General Settings :octicons-arrow-right-24: FOG_KEYMAP
+> Other Settings → FOG Settings → General Settings → FOG_KEYMAP
 
 You can expand the possible values for keymaps below, if left blank it
 will default to **us**.
 
-``` 
-azerty 
-be-latin1 
-fr-latin0 
-fr-latin1 
-fr-latin9 
-fr 
-fr-old 
-fr-pc 
-wangbe2 
-wangbe 
-ANSI-dvorak 
-dvorak-l 
-dvorak 
-dvorak-r 
-tr_f-latin5 
-trf 
-bg_bds-cp1251 
-bg_bds-utf8 
-bg-cp1251 
-bg-cp855 
-bg_pho-cp1251 
-bg_pho-utf8 
-br-abnt2 
-br-abnt 
-br-latin1-abnt2 
-br-latin1-us 
-by 
-cf 
-cz-cp1250 
-cz-lat2 
-cz-lat2-prog 
-cz 
-defkeymap 
-defkeymap_V1.0 
-dk-latin1 
-dk 
-emacs2 
-emacs 
-es-cp850 
-es 
-et 
-et-nodeadkeys 
-fi-latin1 
-fi-latin9 
-fi 
-fi-old 
-gr 
-gr-pc 
-hu101 
-hypermap.m4 
-il-heb 
-il 
-il-phonetic 
-is-latin1 
-is-latin1-us 
-it2 
-it-ibm 
-it 
-jp106 
-ko 
-la-latin1 
-lt.baltic 
-lt.l4 
-lt 
-mk0 
-mk-cp1251 
-mk 
-mk-utf 
-nl2 
-nl 
-no-latin1.doc 
-no-latin1 
-no 
-pc110 
-pl2 
-pl 
-pt-latin1 
-pt-latin9 
-pt 
-ro 
-ro_win 
-ru1 
-ru2 
-ru3 
-ru4 
-ru-cp1251 
-ru 
-ru-ms 
-ru_win 
-ru-yawerty 
-se-fi-ir209 
-se-fi-lat6 
-se-ir209 
-se-lat6 
-se-latin1 
-sk-prog-qwerty 
-sk-qwerty 
-sr-cy 
-sr-latin 
-sv-latin1 
-tralt 
-tr_q-latin5 
-trq 
-ua 
-ua-utf 
-ua-utf-ws 
-ua-ws 
-uk 
-us-acentos 
-us 
-croat 
-cz-us-qwertz 
-de_CH-latin1 
-de-latin1 
-de-latin1-nodeadkeys 
-de 
-fr_CH-latin1 
-fr_CH 
-hu 
-sg-latin1-lk450 
-sg-latin1 
-sg 
-sk-prog-qwertz 
-sk-qwertz 
+```
+azerty
+be-latin1
+fr-latin0
+fr-latin1
+fr-latin9
+fr
+fr-old
+fr-pc
+wangbe2
+wangbe
+ANSI-dvorak
+dvorak-l
+dvorak
+dvorak-r
+tr_f-latin5
+trf
+bg_bds-cp1251
+bg_bds-utf8
+bg-cp1251
+bg-cp855
+bg_pho-cp1251
+bg_pho-utf8
+br-abnt2
+br-abnt
+br-latin1-abnt2
+br-latin1-us
+by
+cf
+cz-cp1250
+cz-lat2
+cz-lat2-prog
+cz
+defkeymap
+defkeymap_V1.0
+dk-latin1
+dk
+emacs2
+emacs
+es-cp850
+es
+et
+et-nodeadkeys
+fi-latin1
+fi-latin9
+fi
+fi-old
+gr
+gr-pc
+hu101
+hypermap.m4
+il-heb
+il
+il-phonetic
+is-latin1
+is-latin1-us
+it2
+it-ibm
+it
+jp106
+ko
+la-latin1
+lt.baltic
+lt.l4
+lt
+mk0
+mk-cp1251
+mk
+mk-utf
+nl2
+nl
+no-latin1.doc
+no-latin1
+no
+pc110
+pl2
+pl
+pt-latin1
+pt-latin9
+pt
+ro
+ro_win
+ru1
+ru2
+ru3
+ru4
+ru-cp1251
+ru
+ru-ms
+ru_win
+ru-yawerty
+se-fi-ir209
+se-fi-lat6
+se-ir209
+se-lat6
+se-latin1
+sk-prog-qwerty
+sk-qwerty
+sr-cy
+sr-latin
+sv-latin1
+tralt
+tr_q-latin5
+trq
+ua
+ua-utf
+ua-utf-ws
+ua-ws
+uk
+us-acentos
+us
+croat
+cz-us-qwertz
+de_CH-latin1
+de-latin1
+de-latin1-nodeadkeys
+de
+fr_CH-latin1
+fr_CH
+hu
+sg-latin1-lk450
+sg-latin1
+sg
+sk-prog-qwertz
+sk-qwertz
 slovene
 ```
 
@@ -202,7 +202,7 @@ and cached values are automatically re-read once the cache **TTL** expires
 
 You can inspect and control the cache at the bottom of:
 
-> FOG Configuration :octicons-arrow-right-24: FOG Settings
+> FOG Configuration → FOG Settings
 
 ### Viewing the cache
 
