@@ -117,7 +117,7 @@ matériel physique.**
 >Vous ne pouvez pas non plus pointer le DHCP directement sur `mmx64.efi` pour
 >obtenir le même effet. Il est signé par iPXE, non par Microsoft : le
 >micrologiciel — qui contrôle le premier binaire au regard de `db` seul (voir
->[[secure-boot-signing#the-chain-you-are-building|la chaîne]]) — refusera de le
+>[[secure-boot-signing#La chaîne que vous construisez|la chaîne]]) — refusera de le
 >lancer. Il ne démarre ici que parce qu'iPXE le charge *via le protocole de
 >vérification du shim*, et que le shim fait confiance au certificat d'iPXE.
 

@@ -88,7 +88,7 @@ Le modèle dépassé, antérieur à l'intermédiaire : un unique certificat de
 signature de code, auto-signé et `CA:FALSE`, qui était à la fois l'ancre
 enrôlée et le signataire. Il n'a existé qu'à l'état de démonstration précoce
 et n'a jamais été livré dans une version stable — voir la note dans
-[[secure-boot-signing#the-old-flat-mok|le guide Secure Boot]] si vous devez
+[[secure-boot-signing#L'ancien MOK plat|le guide Secure Boot]] si vous devez
 vous en remettre.
 
 ### Paire de clés de communication client

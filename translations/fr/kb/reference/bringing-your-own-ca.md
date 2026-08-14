@@ -70,7 +70,7 @@ certificat devient à la fois le signataire et ce que vous enrôlez — le modè
 plat, comme avant l'existence de la séparation autorité/feuille pour la clé
 propre à FOG. Renouveler ensuite une clé plate impose de réenrôler chaque
 machine — voir
-[[secure-boot-signing#rotating-or-removing-a-key|Renouveler ou retirer une clé]].
+[[secure-boot-signing#Renouveler ou retirer une clé|Renouveler ou retirer une clé]].
 
 ### Générer une feuille vous-même
 

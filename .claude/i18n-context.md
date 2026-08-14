@@ -192,6 +192,14 @@ contributor-facing and lowest priority.
   English build gives the same 52** — they're all pre-existing English defects
   (unescaped pipes in tables, a few wikilinks wrapped across a newline). Compare
   the two counts rather than reading a nonzero count as a translation bug.
+- **Mermaid diagram labels stay English.** A ```mermaid block is a fenced code
+  block, so `checkStructure` compares it byte-for-byte and `--verify` rejects a
+  translated one ("fenced code blocks differ"). That is the correct call for
+  every other fenced block, so the rule was left alone rather than special-cased
+  — but it does mean the flowchart on `secure-boot-signing` renders in English
+  on a translated page. One diagram repo-wide today. If more appear, the fix is
+  a deliberate, tested change to `codeBlocks()` that exempts `mermaid`, not an
+  ad-hoc edit that quietly weakens the check.
 - **The slugifier emits one hyphen per whitespace character**, matching
   github-slugger — `"Client & Server"` → `client--server`. Collapsing runs
   produces anchors Quartz never generates.
