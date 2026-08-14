@@ -43,8 +43,9 @@ No more test projects — one test pair was enough to prove the mechanism.
 2. ~~PR `i18n-translations` → `master`~~ — PR #108 is open. Merging activates
    `.github/workflows/translate.yml` (the `schedule:` trigger only fires from
    the default branch, so it is inert until then).
-3. Create the real `fog-docs-fr` RTD project against `master` and add it as a
-   translation of `fog-docs`. **Go live with French.**
+3. Create the real **`FOGProject-fr`** RTD project against `master` and add it
+   as a translation of **`FOGProject`** (the parent project's slug — *not*
+   `fog-docs`, which is the repo name). **Go live with French.**
 4. Add the remaining six languages **on the live site**, one project at a time,
    seeding each language's pages first.
 
@@ -199,6 +200,13 @@ contributor-facing and lowest priority.
 - **Menu-path arrows are the literal `→`.** `:octicons-arrow-right-24:` has no
   Quartz equivalent and printed as raw text. All 76 were converted. Don't
   reintroduce the shortcode.
+- **The RTD project slug does not reach the build.** `rtd-build.mjs` reads only
+  `$READTHEDOCS_LANGUAGE` (which language to compose) and
+  `$READTHEDOCS_CANONICAL_URL` (the baseUrl). Both come from the project's
+  *settings*, not its name, so a project can be called anything —
+  `FOGProject-fr` matching the parent's naming, or `fog-docs-fr` matching the
+  repo — with no code change either way. The machine-translation banner links
+  to the `docs.fogproject.org` custom domain, so it is unaffected too.
 - **`stable` and `1.5.9` versions fail on any new RTD project.** No tags exist,
   so RTD reads the version-shaped *branch* `1.5.9` as a release and designates it
   `stable`; that branch is Sphinx-era and its config predates RTD requiring
@@ -221,8 +229,10 @@ docs should stop resolving, delete the branch *and* add an RTD redirect
 
 - Deactivate `stable` and `1.5.9` on `fog-docs-lang-test` and `-fr` (or just
   delete those projects once French is live).
-- Create `fog-docs-fr` after the merge; set Language: French; add it on
-  `fog-docs` → *Translations*.
+- Create **`FOGProject-fr`** after the merge; set Language: French; add it on
+  **`FOGProject`** → *Translations*. The `-fr` suffix matches the parent's
+  existing naming; the slug is a free choice as far as the build is concerned
+  (see below).
 - Repeat per language, adding an Automation Rule each time.
 
 ---
@@ -237,7 +247,7 @@ docs should stop resolving, delete the branch *and* add an RTD redirect
 > French is at 77 of 99 pages and the pipeline is confirmed working live on the
 > RTD test pair, including the language selector and the remapped heading
 > anchors. The plan is to finish seeding French on this branch, merge to
-> `master`, go live with a real `fog-docs-fr` RTD project, then add the other six
+> `master`, go live with a real `FOGProject-fr` RTD project, then add the other six
 > languages on the live site — no more test projects.
 >
 > Keep seeding French, working through the remaining-pages table in the context
