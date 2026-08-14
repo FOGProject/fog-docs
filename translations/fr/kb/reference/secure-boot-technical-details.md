@@ -1,5 +1,5 @@
 ---
-title: Secure Boot : détails techniques
+title: "Secure Boot : détails techniques"
 aliases:
     - Secure Boot Technical Details
 description: Détails techniques plus poussés sur la chaîne Secure Boot de FOG -- servir le shim signé, signer les noyaux FOS, et signer vos propres compilations de FOS

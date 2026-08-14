@@ -192,10 +192,34 @@ function getScalar(frontmatter, key) {
   return match[1].trim().replace(/^["'](.*)["']$/, "$1")
 }
 
+// A bare YAML scalar cannot start with an indicator character or contain ": ",
+// which would make the parser read it as a nested mapping. setScalar quotes on
+// exactly this condition; unquotedScalarNeedsQuotes checks the same rule from
+// the other side, so a hand-edited page is held to what the generator emits.
+const unquotedScalarNeedsQuotes = (value) => /^[\s>|&*!%@`{[]|: |:$|#/.test(value)
+
 function setScalar(frontmatter, key, value) {
-  const needsQuoting = /^[\s>|&*!%@`{[]|: |:$|#/.test(value)
-  const emitted = needsQuoting ? `"${value.replace(/"/g, '\\"')}"` : value
+  const emitted = unquotedScalarNeedsQuotes(value) ? `"${value.replace(/"/g, '\\"')}"` : value
   return frontmatter.replace(new RegExp(`^(${key}:)[ \\t]*.*$`, "m"), `$1 ${emitted}`)
+}
+
+// Front matter that YAML cannot parse fails the Quartz build outright, with an
+// error naming the temp-dir copy rather than the file in the repo. Everything
+// else --verify reports is a silent defect, so this one is worth catching here
+// purely to shorten the trip from symptom to cause.
+function unparseableFrontmatter(frontmatter) {
+  const problems = []
+  for (const line of frontmatter.split("\n")) {
+    const match = /^([A-Za-z_][\w-]*):[ \t]+(.*)$/.exec(line)
+    if (!match) continue
+    const [, key, raw] = match
+    const value = raw.trim()
+    if (!value || /^["'[{]/.test(value)) continue
+    if (unquotedScalarNeedsQuotes(value)) {
+      problems.push(`front matter ${key} needs quoting (a bare scalar cannot contain ": ")`)
+    }
+  }
+  return problems
 }
 
 // -------------------------------------------------------------------- chunking
@@ -837,6 +861,7 @@ function verifyLanguage(lang) {
         problems.push(`${key} does not match the English page`)
       }
     }
+    problems.push(...unparseableFrontmatter(translated.frontmatter))
 
     checked++
     if (problems.length) {
@@ -1039,4 +1064,5 @@ export {
   slugifyHeading,
   splitFrontmatter,
   stripBanner,
+  unparseableFrontmatter,
 }

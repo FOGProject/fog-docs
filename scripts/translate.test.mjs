@@ -22,6 +22,7 @@ import {
   slugifyHeading,
   splitFrontmatter,
   stripBanner,
+  unparseableFrontmatter,
 } from "./translate.mjs"
 
 // A cut-down catalog in the exact shape fogproject emits: msgcat --no-wrap,
@@ -301,4 +302,35 @@ test("CRLF and LF sources compare as equal content", () => {
   const lf = "# T\n\n```\nfog install\n```\n"
   const crlf = lf.replace(/\n/g, "\r\n").replace(/\r\n/g, "\n")
   assert.deepEqual(checkStructure(lf, crlf), [])
+})
+
+test("unparseableFrontmatter catches a bare scalar containing a colon", () => {
+  // Hand-writing a translation bypasses setScalar, which would have quoted
+  // this. YAML reads "Secure Boot : details" as a nested mapping and the whole
+  // Quartz build dies, naming the composed temp-dir copy rather than the file
+  // in the repo -- so catching it here is what makes the error findable.
+  const problems = unparseableFrontmatter('title: Secure Boot : détails techniques\ncontext_id: x')
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /title/)
+})
+
+test("unparseableFrontmatter accepts the quoted form setScalar emits", () => {
+  const quoted = setScalar("title: placeholder", "title", "Secure Boot : détails techniques")
+  assert.deepEqual(unparseableFrontmatter(quoted), [])
+})
+
+test("unparseableFrontmatter leaves ordinary front matter alone", () => {
+  assert.deepEqual(
+    unparseableFrontmatter("title: Gestion des machines\ndescription: page d'index\ncontext_id: hosts"),
+    [],
+  )
+})
+
+test("unparseableFrontmatter ignores list items and nested keys", () => {
+  // "    - Secure Boot: signing" is a sequence entry, not a mapping line, and a
+  // URL in a description is a colon without a following space.
+  assert.deepEqual(
+    unparseableFrontmatter("aliases:\n    - Secure Boot Technical Details\ndescription: see https://x/y"),
+    [],
+  )
 })
