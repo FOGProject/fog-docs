@@ -61,7 +61,7 @@ Ils sont distincts à dessein. Activer du code qu'un administrateur a déjà
 choisi de placer sur le serveur, et ajouter du nouveau code à celui-ci,
 sont deux prérogatives différentes — un rôle qui gère les greffons n'a
 donc pas pour autant le droit d'en ajouter un. Voir
-[[plugins#Installing a plugin from an archive|Greffons]].
+[[plugins#Installer un greffon depuis une archive|Greffons]].
 
 Par exemple, un rôle de service d'assistance pourrait disposer d'un accès
 complet aux Machines et aux Imprimantes, ainsi que de la possibilité de
