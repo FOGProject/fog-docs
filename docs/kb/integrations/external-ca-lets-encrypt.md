@@ -66,7 +66,7 @@ Let's Encrypt certificate without any FOG-side change — see below.
 
 - [How FOG uses certificates](#how-fog-uses-certificates)
 - [How iPXE validates HTTPS](#how-ipxe-validates-https)
-- [What `--external-ca` does](#what-external-ca-does)
+- [What `--external-ca` does](#what---external-ca-does)
 - [Recommended: internal ACME CA (step-ca)](#recommended-internal-acme-ca-step-ca)
 - [Public Let's Encrypt: caveats](#public-lets-encrypt-caveats)
 - [Renewal and rotation](#renewal-and-rotation)
@@ -181,8 +181,8 @@ Enable it with `--external-ca`, or answer the interactive prompt during install:
 >`--web-ca-*` as the currently-recommended form if it's available to you,
 >and `--external-ca` as the form to reach for otherwise. Either way, this
 >only replaces the **Web** zone — the Client Communication keypair is not
->replaceable this way; see [[pki-zones#bringing-your-own-ca|Bringing your
->own CA]] for why.
+>replaceable this way; see
+>[[pki-zones#bringing-your-own-ca|Bringing your own CA]] for why.
 
 What the installer does with these files:
 

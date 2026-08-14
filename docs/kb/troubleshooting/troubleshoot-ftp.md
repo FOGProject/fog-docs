@@ -17,7 +17,7 @@ tags:
 >[!note]
 >It seems that greater than 90% of FOG FTP problems are caused by
 >bad/mismatched credentials. Because of this, we recommend skipping
->straight to the [[#Credentials / Passwords]] section first. 
+>straight to the [[#Credentials / Passwords]] section first.
 
 
 ## FTP's roles in FOG
@@ -45,10 +45,10 @@ Linux machine (this example uses Fedora).
 -   Create a test file with some data in it to send later.
 -   Start ftp (may need installed first).
 -   Open connection to FOG server.
--   Provide username (found in Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24:
-    \[NodeName\] :octicons-arrow-right-24: Management Username).
--   Provide password (found in Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24:
-    \[NodeName\] :octicons-arrow-right-24: Management Password).
+-   Provide username (found in Web Interface → Storage Management →
+    \[NodeName\] → Management Username).
+-   Provide password (found in Web Interface → Storage Management →
+    \[NodeName\] → Management Password).
 -   Change to /images directory.
 -   List directory contents.
 -   Upload file.
@@ -113,10 +113,10 @@ Linux machine (this example uses Fedora).
 -   Create a file with some data
 -   Start FTP
 -   Open connection to FOG server
--   Enter username (found in Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24:
-    \[NodeName\] :octicons-arrow-right-24: Management Username).
--   Enter password (found in Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24:
-    \[NodeName\] :octicons-arrow-right-24: Management Password).
+-   Enter username (found in Web Interface → Storage Management →
+    \[NodeName\] → Management Username).
+-   Enter password (found in Web Interface → Storage Management →
+    \[NodeName\] → Management Password).
 -   Upload file
 -   List directory to verify
 -   Download file
@@ -305,10 +305,10 @@ Check the status of the firewall:
 If disabled, the output should look like this:
 
     Chain INPUT (policy ACCEPT)
-    target prot opt source destination 
+    target prot opt source destination
 
     Chain FORWARD (policy ACCEPT)
-    target prot opt source destination 
+    target prot opt source destination
 
     Chain OUTPUT (policy ACCEPT)
     target prot opt source destination
@@ -344,8 +344,8 @@ Comment out this line like so:
 
 ### Windows 7
 
-Start :octicons-arrow-right-24: Control Panel :octicons-arrow-right-24: View by "Small icons" :octicons-arrow-right-24: Windows Firewall
-:octicons-arrow-right-24: Turn Windows Firewall On or Off (Turn off all three.)
+Start → Control Panel → View by "Small icons" → Windows Firewall
+ → Turn Windows Firewall On or Off (Turn off all three.)
 
 ### Configuring Firewall on Linux
 
@@ -359,14 +359,14 @@ should match exactly.
 
 -   There are a few places where all the credentials (on a standard
     install) should match exactly.
--   Web Interface :octicons-arrow-right-24: Storage Management :octicons-arrow-right-24: \[Your storage node\] :octicons-arrow-right-24:
+-   Web Interface → Storage Management → \[Your storage node\] →
     Management Username & Management Password
--   Web Interface :octicons-arrow-right-24: FOG Configuration :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: TFTP Server
-    :octicons-arrow-right-24: FOG_TFTP_FTP_USERNAME & FOG_TFTP_FTP_PASSWORD
+-   Web Interface → FOG Configuration → FOG Settings → TFTP Server
+ → FOG_TFTP_FTP_USERNAME & FOG_TFTP_FTP_PASSWORD
 -   The local 'fogproject' user's password on the Linux FOG server
--   Server file: /opt/fog/.fogsettings :octicons-arrow-right-24: password (For FOG Trunk
+-   Server file: /opt/fog/.fogsettings → password (For FOG Trunk
     versions 1.3.0 and higher)
--   Server file: /opt/fog/.fogsettings :octicons-arrow-right-24: username (For FOG Trunk
+-   Server file: /opt/fog/.fogsettings → username (For FOG Trunk
     versions 1.3.0 and higher)
 
 All of those should match (again, on a standard installation).

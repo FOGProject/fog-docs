@@ -20,20 +20,20 @@ to authenticate.
 ## Basics
 
 To be able to use the API via external calls it needs to be enabled in the FOG
-web UI (FOG Configuration :octicons-arrow-right-24: FOG Settings
-:octicons-arrow-right-24: API System) first.
+web UI (FOG Configuration → FOG Settings
+ → API System) first.
 
 ## Authentication
 
 ### Tokens
 
 **API global token** &mdash; a header named `fog-api-token`. You can find yours
-via FOG Configuration :octicons-arrow-right-24: FOG Settings
-:octicons-arrow-right-24: API System.
+via FOG Configuration → FOG Settings
+ → API System.
 
 **API user token** (*highly recommended*) &mdash; a header named
-`fog-user-token`. You can find yours via Users :octicons-arrow-right-24: List
-All Users :octicons-arrow-right-24: *your username* :octicons-arrow-right-24:
+`fog-user-token`. You can find yours via Users → List
+All Users → *your username* →
 API. The user's **User API Enable** checkbox on that tab must be ticked, or the
 token is rejected even when sent.
 

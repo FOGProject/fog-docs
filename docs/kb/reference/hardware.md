@@ -33,8 +33,8 @@ community-maintained compatibility list.
 
 The FOS kernel bundles drivers for a very wide range of hardware. When a
 brand-new machine isn't recognized, the usual fix is a newer kernel — see
-[[manual-kernel-upgrade|Manual Kernel Upgrade]], or [[compile-fos-kernel|Compile
-the FOS Kernel]] to build your own.
+[[manual-kernel-upgrade|Manual Kernel Upgrade]], or
+[[compile-fos-kernel|Compile the FOS Kernel]] to build your own.
 
 ## Community compatibility list
 

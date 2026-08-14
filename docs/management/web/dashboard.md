@@ -57,8 +57,8 @@ tags:
 -   It will display all the queued, running, etc\... tasks and updates
     at the same interval as the Bandwidth graph.
 -   You can also edit which type of tasks get counted toward the "queue".
-      -   This edit can be performed by going to 
-        **FOGConfiguration** ![[Config.png]]\-:octicons-arrow-right-24: **FOG Settings**\-:octicons-arrow-right-24: **General Settings** \-:octicons-arrow-right-24:**FOG_USED_TASKS**.
+      -   This edit can be performed by going to
+        **FOGConfiguration** ![[Config.png]] → **FOG Settings** → **General Settings** → **FOG_USED_TASKS**.
         -   The text field is numeric values (so you'll need to know which task id's are which type.
         -   This text field is a CSV setup. If you type (1,2,3,4,5) it will display all tasks of Deploy, Capture, Debug, Memtest, and Testdisk as queued/active depending on their current state.
         -   The exception to this rule, is Task Type ID 8 (multicast) in
@@ -93,7 +93,7 @@ Menu Logo | Name | Description
  ![[users-ico.png]] | **[User Management](users.md)** |  Individual administrators of the FOG resources.
 ![[hosts-ico.png]] | **[hosts](hosts.md)** |  This section houses the hosts, which are the pcs to be imaged or to extract images from.
 ![[groups.ico.png]] | **[groups](groups.md)** | This section houses groups, which are similar PCS' that need tasks done en-masse.
-![[images-ico.png]] | **[[management/web/images| Image Management]]** | This section allows you to manage the image files stored on the FOG server.
+![[images-ico.png]] | **[[management/web/images\| Image Management]]** | This section allows you to manage the image files stored on the FOG server.
 ![[Storage-ico.png]] | **[storage-node](storage-node.md)** | This section allows you to add/remove storage nodes from the FOG system.
 ![[snapin-ico.png]] | **[Snapin Management](snapins.md)** | This section provides ways to automate various post-imaging tasks such as silently installing programs
 ![[printer-ico.png]] | **[printers](printers.md)** | This section allows for management of printers, allowing you create printer objects that can later be assigned to hosts or groups.

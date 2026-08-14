@@ -29,14 +29,14 @@ collection of hints and tricks plus maybe issues we know about.
 
 Ensure the virtual switch your VM is connected to has a route to FOG!
 
-Create VM Wizard :octicons-arrow-right-24: Installation Options: Select "Install an operating
+Create VM Wizard → Installation Options: Select "Install an operating
 system from network-based installation server"
 
 **Existing VM:**
 
 Ensure the virtual switch your VM is connected to has a route to FOG!
 
-Right click VM :octicons-arrow-right-24: Settings :octicons-arrow-right-24: BIOS
+Right click VM → Settings → BIOS
 
 Move "Network Adapter" (sometimes labeled "Legacy Network Adapter")
 to the top of the boot order.
@@ -44,7 +44,7 @@ to the top of the boot order.
 **UEFI:**
 
 UEFI/Secure Boot is an option with Hyper-V on Server 2012 on Generation
-2 VMs. It is enabled by default, and can be disabled in VM Settings :octicons-arrow-right-24:
+2 VMs. It is enabled by default, and can be disabled in VM Settings →
 Firmware: Uncheck secure boot.
 
 Thanks to [moses](https://forums.fogproject.org/user/moses)
@@ -169,4 +169,4 @@ that the correct network is selected.
 
 See forums
 
--   [FOG 0.30 VM-Virtualbox](Running_pre-built_virtual_machines_in_Virtualbox)   
+-   [FOG 0.30 VM-Virtualbox](Running_pre-built_virtual_machines_in_Virtualbox)

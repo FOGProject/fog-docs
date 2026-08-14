@@ -79,8 +79,8 @@ The following are the steps to install the client on a host
 
 
 > [!note]
-> You may get a 'Windows protected your PC' popup. In that case you have to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'. 
-  
+> You may get a 'Windows protected your PC' popup. In that case you have to convince windows that this installer is safe to run. Click on 'More info' and 'Run anyway'.
+
 -   At the Welcome screen, click on 'Next'
 -   Accept the terms in the License Agreement (it's the GPL license, so
     why not) and click on 'Next'
@@ -119,7 +119,7 @@ failed.
 ## Approve the machine
 
 -   Start a browser, go to the Fog Web UI and log in
--   Go to 'Host Management' :octicons-arrow-right-24: 'List all Hosts' and click on the
+-   Go to 'Host Management' → 'List all Hosts' and click on the
     machine you have just installed the FOG client on.
 
 If the Windows OS was not deployed with FOG, then the FOG client is not
@@ -182,7 +182,7 @@ Reference:
 | -h or -https   | Use https for server communication                  |
 | -r or -rootlog | Put fog.log in the root of the filesystem           |
 | -s or --start | Automatically start the service after installation. |
-  
+
 #### Linux only switches
 
 | Switch             | Value                                       |

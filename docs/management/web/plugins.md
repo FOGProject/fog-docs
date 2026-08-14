@@ -289,7 +289,7 @@ its state, so a plugin moves from one to the next as you work on it:
 
 | Plugin | What it does |
 |---|---|
-| **accesscontrol** | Restrict what users can see and do. **Replaced in 1.6** by native roles and permissions — see [[roles|Roles & Permissions]] |
+| **accesscontrol** | Restrict what users can see and do. **Replaced in 1.6** by native roles and permissions — see [[roles\|Roles & Permissions]] |
 | **example** | The skeleton example plugin, equivalent to 1.6's `helloworld` |
 | **fileintegrity** | Records checksums, modification dates and locations for files on storage nodes |
 | **hoststatus** | Adds a live power/OS status entry to the host edit page. Needs TCP 445 open on the client |

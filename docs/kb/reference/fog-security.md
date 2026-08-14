@@ -46,14 +46,15 @@ You get the following out of the box — no configuration required:
 The single highest-impact thing you can do is run FOG over HTTPS. You can enable
 it during installation; when enabled, the web server redirects HTTP to HTTPS
 and sends HSTS. Whether netboot itself also goes over HTTPS depends on which
-CA issued your web certificate — see [[pki-zones#https-and-netboot|HTTPS and
-netboot]] for the current behavior and trade-offs.
+CA issued your web certificate — see
+[[pki-zones#https-and-netboot|HTTPS and netboot]] for the current behavior and
+trade-offs.
 
 FOG's certificates are split into independent zones (web, Secure Boot, and
 client communication) so that replacing one doesn't put the others at risk —
-see [[pki-zones|FOG's Certificate Zones]] and [[pki-glossary|the PKI
-glossary]]. For setting up a trusted web certificate (including free Let's
-Encrypt certificates), see
+see [[pki-zones|FOG's Certificate Zones]] and
+[[pki-glossary|the PKI glossary]]. For setting up a trusted web certificate
+(including free Let's Encrypt certificates), see
 [[external-ca-lets-encrypt|Using an external CA / Let's Encrypt]]. For
 signing FOS kernels under UEFI Secure Boot, see
 [[secure-boot-signing|Secure Boot signing]].

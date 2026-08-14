@@ -29,6 +29,7 @@ See `quartz.config.yaml` (the file Quartz actually reads; `quartz.config.default
 ## Known, accepted gaps
 
 - 14 files using raw MkDocs `!!! type "title"` admonition syntax render as plain text (Quartz only understands Obsidian's `> [!type]` callout syntax).
+- ~~mkdocs-material's `:octicons-arrow-right-24:` icon shortcode rendered as raw text~~ — fixed: all 76 occurrences across 13 files are now the literal `→` character, which needs no renderer support. Same class of gap as the admonitions above, but with a fix that can't regress.
 - 3 files with a `context-id` (hyphen, not underscore) front-matter typo silently lack a short permalink — this is pre-existing MkDocs-era behavior, not a Quartz regression.
 - `{ .red }`/`{ .orange }`/`{ .yellow }` inline attr_list color-class syntax has no Quartz equivalent (and isn't supported in Obsidian either) — documented, not built.
 - A handful of pages `master` still served at the time of the cutover merge (a stale full user-guide, a dead-link blog roundup, a FOG-1.2-only boot-menu doc, and two pages whose content was merged forward into other pages) were restored as short stub/redirect pages rather than fully un-archived, so their old URLs keep working. The originals remain in `wikiArchive/Not-Migrating/` for reference.
@@ -37,5 +38,16 @@ See `quartz.config.yaml` (the file Quartz actually reads; `quartz.config.default
 ## Deployment
 
 Quartz needs Node, which Read the Docs doesn't support natively — `.readthedocs.yml` fully overrides the default build via `build.commands` to install Node, run Quartz, and drop the result where RTD expects its output. This was proven out against a side `fog-docs-quartz-test` RTD project before the cutover merge; the real fog-docs RTD project now builds this directly from `master`.
+
+The build entry point is `scripts/rtd-build.mjs`, not a bare `quartz build` — the site is published in several languages and the build has to vary by language. RTD serves translations as one project per language, all pointed at this same repo and branch; each project's Language setting arrives as `$READTHEDOCS_LANGUAGE`, and the script uses it to pick the Quartz UI locale and to compose the content tree (`../docs` with `../translations/<lang>/` laid over it, so untranslated pages fall back to English). It also derives `baseUrl` from `$READTHEDOCS_CANONICAL_URL` instead of the hardcoded value the config used to carry, and restores `quartz.config.yaml` after patching it. See the script's header and the `## Translations` section of the repo's `CLAUDE.md`.
+
+To build a language locally:
+
+```
+cd quartz
+node scripts/rtd-build.mjs --language fr -o /tmp/fr-site
+```
+
+Two things about that build worth knowing before changing it. The composed content tree is written to the OS temp dir rather than inside the repo, because Quartz globs content with `globby(..., { gitignore: true })` — a gitignored content root inside the working tree yields "Found 0 input files" and a clean-exiting build that publishes a site with no pages in it. And because the tree sits outside the repo, the `created-modified-date` plugin can't read dates from git for translated builds and falls back to filesystem mtimes, so translated pages carry weaker date information than English ones.
 
 Quartz's link-resolution strips the `.html` extension from internal links unconditionally, assuming the host does clean-URL rewriting (the way GitHub Pages/Cloudflare Pages do). RTD's `build.commands` hosting serves by exact path instead, so a post-build fix-up (`quartz/scripts/rtd-fix-links.mjs`) promotes leaf pages to `foo/index.html` — see that script and `.readthedocs.yml` for details.

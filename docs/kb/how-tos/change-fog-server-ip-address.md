@@ -32,13 +32,13 @@ tags:
     chain line i.e
     `chain https://x.x.x.x/fog/service/ipxe/boot.php##params`)
 -   Update the IP address for the storage node on the FOG system where
-    you changed the IP address Web Interface :octicons-arrow-right-24: Storage Management
+    you changed the IP address Web Interface → Storage Management
 -   Update the IP address on a any master storage node that may
-    reference this FOG server Web Interface :octicons-arrow-right-24: Storage Management
--   (For master server) Update the FOG_WEB_HOST value Web Interface :octicons-arrow-right-24:
-    FOG Configuration :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: Web Server :octicons-arrow-right-24: FOG_WEB_HOST
--   (For master server) Update the FOG_TFTP_HOST value Web Interface :octicons-arrow-right-24:
-    FOG Configuration :octicons-arrow-right-24: FOG Settings :octicons-arrow-right-24: TFTP Server :octicons-arrow-right-24: FOG_TFTP_HOST
+    reference this FOG server Web Interface → Storage Management
+-   (For master server) Update the FOG_WEB_HOST value Web Interface →
+    FOG Configuration → FOG Settings → Web Server → FOG_WEB_HOST
+-   (For master server) Update the FOG_TFTP_HOST value Web Interface →
+    FOG Configuration → FOG Settings → TFTP Server → FOG_TFTP_HOST
 
 Optionaly if you have configured a dhcpd:
 

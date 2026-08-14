@@ -80,8 +80,8 @@ prompt to go back and re-enter the name instead.
 
 ## Watching a session
 
-Active sessions appear under **Task Management :octicons-arrow-right-24: Active
-Multicast Tasks**, and under **Image Management :octicons-arrow-right-24:
+Active sessions appear under **Task Management → Active
+Multicast Tasks**, and under **Image Management →
 Multicast** for named sessions.
 
 The client column reads **joined / expected** — for example `7 / 30` means seven
@@ -139,8 +139,8 @@ sender — and each site images at local network speed.
 
 ## Settings
 
-All of these live under **FOG Configuration :octicons-arrow-right-24: FOG
-Settings :octicons-arrow-right-24: Multicast Settings**.
+All of these live under **FOG Configuration → FOG
+Settings → Multicast Settings**.
 
 ### FOG_MULTICAST_PORT_OVERRIDE
 

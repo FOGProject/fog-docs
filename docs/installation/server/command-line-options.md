@@ -142,9 +142,9 @@ does not quietly reverse the decision.
 >machine entirely. Import the CA into the browser yourself; it is published at
 >`https://<your-fog-server>/fog/management/other/ca.cert.der`.
 
-For the per-zone mechanism in full see [[bringing-your-own-ca|Bringing your own
-CA]]. To point **several** FOG servers at a single CA so one import covers all
-of them, see
+For the per-zone mechanism in full see
+[[bringing-your-own-ca|Bringing your own CA]]. To point **several** FOG servers
+at a single CA so one import covers all of them, see
 [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]].
 
 ## Secure Boot options

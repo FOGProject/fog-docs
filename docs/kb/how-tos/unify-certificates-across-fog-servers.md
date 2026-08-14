@@ -212,7 +212,7 @@ is a poor fit for fog-client specifically.
 | --- | --- | --- |
 | Web / HTTPS certificate | **Yes** | what these options target |
 | fog-client communication | No | each server keeps its own; clients pin per server |
-| Secure Boot signing | No | see [[secure-boot-signing|Secure Boot: signing FOS with your own key]] |
+| Secure Boot signing | No | see [[secure-boot-signing\|Secure Boot: signing FOS with your own key]] |
 
 **fog-client is deliberately left alone.** It pins the CA of the server it
 registered against, and that CA is *not* replaced here — which is exactly what

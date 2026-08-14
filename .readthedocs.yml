@@ -12,11 +12,22 @@
 # pointed at the pre-merge quartz-docs branch; the real fog-docs RTD
 # project now builds this directly from master.
 #
+# The build is not inlined here because it has to vary by language.
+# Translations are served as one RTD project per language, all pointed at this
+# same repo and branch and linked from the parent project's Translations page;
+# the only thing that differs between them is the project's Language setting,
+# which RTD passes to the build as $READTHEDOCS_LANGUAGE.
+# quartz/scripts/rtd-build.mjs reads that, composes the right content tree
+# (docs/ with translations/<lang>/ laid over it, so untranslated pages fall
+# back to English), builds with the matching Quartz UI locale, and takes
+# baseUrl from $READTHEDOCS_CANONICAL_URL rather than a hardcoded value.
+#
+# It also runs the post-build fix-up that used to be the last command here.
 # Quartz's link-resolution core unconditionally strips the .html extension
 # when generating internal hrefs (no config toggle for this) — it assumes
 # the host does clean-URL rewriting the way GitHub Pages/Cloudflare Pages
 # do. RTD's custom build.commands hosting serves by exact path instead, so
-# every internal link 404s without the post-build fix-up below.
+# every internal link 404s without it.
 # See quartz/scripts/rtd-fix-links.mjs for details.
 
 version: 2
@@ -28,5 +39,4 @@ build:
   commands:
     - cd quartz && npm ci
     - cd quartz && npm run install-plugins
-    - cd quartz && node quartz/bootstrap-cli.mjs build --directory ../docs -o "$READTHEDOCS_OUTPUT/html"
-    - cd quartz && node scripts/rtd-fix-links.mjs "$READTHEDOCS_OUTPUT/html"
+    - cd quartz && node scripts/rtd-build.mjs

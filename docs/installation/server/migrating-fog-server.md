@@ -279,8 +279,8 @@ pinned CA alone, which is what makes it safe to do on a live fleet. On
 working-1.6, `--external-ca` with `--ca-cert`/`--ca-key`/`--ca-root` is an
 older spelling of the same three options. If the goal is to stop importing one
 CA per server across several FOG servers,
-[[unify-certificates-across-fog-servers|Unifying certificates across several
-FOG servers]] covers that case specifically.
+[[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]]
+covers that case specifically.
 
 # Migrating the Secure Boot signing material
 
@@ -345,9 +345,10 @@ cd /path/to/fogproject/bin
   --secure-boot-cert   /path/to/your/sign.pem
 ```
 
-See [[secure-boot-signing#switching-to-a-key-you-supply|Switching to a key you
-supply]] for what that run does, and [[bringing-your-own-ca|Bringing your own
-CA]] for building the CA/leaf pair by hand.
+See
+[[secure-boot-signing#switching-to-a-key-you-supply|Switching to a key you supply]]
+for what that run does, and [[bringing-your-own-ca|Bringing your own CA]] for
+building the CA/leaf pair by hand.
 
 After either path, confirm the fingerprint on the new server's **Secure Boot**
 page matches what the old server showed, before decommissioning it — that
