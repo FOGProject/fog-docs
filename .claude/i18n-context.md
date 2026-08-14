@@ -12,8 +12,8 @@ what already bit us.
 
 ## Where things stand
 
-Branch **`i18n-translations`**, pushed to `origin`. Six commits, nothing on
-`master`.
+Branch **`i18n-translations`**. Twelve commits, nothing on `master`. The last
+six are not yet pushed to `origin`.
 
 **Confirmed working in production hosting.** Two throwaway RTD projects,
 `fog-docs-lang-test` (English parent) and `fog-docs-lang-test-fr` (French
@@ -28,8 +28,8 @@ translation), build from this branch. Verified live on
   matches a real `id=` on the built page.
 - Untranslated pages fall back to English content inside French UI chrome.
 
-**French: 35 of 99 pages.** All section landing pages, the whole
-getting-started path, and the core management pages.
+**French: 47 of 99 pages.** All section landing pages, the whole
+getting-started path, and all of `management/web/` except `ldap.md`.
 
 ## The plan from here (decided by the user)
 
@@ -95,12 +95,28 @@ grep -A1 -x 'msgid "Storage Node"' messages.po
 Confirmed so far: Host → **Machine** (not "Hôte"), Hosts → **Machines**,
 Storage Node → **Nœud de stockage**, Basic Tasks → **Tâches basiques**,
 Host Image → **Image machine**, Update → **Mettre à jour**, Task → **Tâche**,
-Primary User → **Utilisateur principal**, Host Name → **Nom de machine**.
+Primary User → **Utilisateur principal**, Host Name → **Nom de machine**,
+Plugin → **Greffon** (not "Plugin"), Storage Group → **Groupe de stockage**,
+Master Node → **Nœud maître**, Is Master Node → **Est nœud maître**,
+Log Viewer → **Visionneuse de journaux**, Hostname Changer → **Renommage
+machine**, Snapin Pack → **Paquet Snapin**, Location → **Emplacement**,
+Role → **Rôle**, Printer → **Imprimante**, Site → **Site**,
+Site Association → **Association de site**, FOG Settings → **Paramètres de
+FOG**, FOG Configuration → **Configuration FOG**, Dashboard → **Tableau de
+bord**, Active Multicast Tasks → **Tâches Multicast actives**.
 Snapin and Multicast stay as-is.
+
+**A term absent from the catalog is evidence, not a gap.** It means the UI
+shows English there, so the docs should too. That is why every FOG task-type
+name (Fast Wipe, Memory Test, Deploy - Multicast, …) and every 1.6-era button
+(Activate selected, Forget selected, Plugin Management, Add New Host) is left
+in English on the pages seeded so far, while the older strings the catalog
+does cover are translated.
 
 ## Remaining French pages, largest first
 
 The four at the top are the expensive ones and were deliberately deferred.
+Regenerate this table any time with `node scripts/translate.mjs fr --dry-run`.
 
 | Page | Size |
 |---|---|
@@ -116,11 +132,8 @@ The four at the top are the expensive ones and were deliberately deferred.
 | kb/reference/csv_import_export.md | 16.7k |
 | kb/how-tos/bios-and-uefi-co-existence.md | 15.6k |
 | kb/integrations/api-expansion-and-pagination.md | 14.7k |
-| management/web/plugins.md | 14.5k |
 | kb/how-tos/unify-certificates-across-fog-servers.md | 14.2k |
-| management/web/service.md | 13.8k |
 | kb/how-tos/secure-boot-mok-enrollment.md | 13.6k |
-| management/web/hosts.md | 12.9k |
 | installation/network-setup/dhcp-server-settings.md | 12.2k |
 | kb/how-tos/firewall.md | 11.4k |
 | kb/reference/fog-client-installation-options.md | 10.8k |
@@ -128,18 +141,11 @@ The four at the top are the expensive ones and were deliberately deferred.
 | kb/reference/secure-boot-technical-details.md | 10.3k |
 | installation/server/command-line-options.md | 10.0k |
 | development/fos-release-workflows.md | 10.0k |
-| management/web/multicast.md | 9.9k |
 | development/version-sync-automation.md | 9.8k |
-| management/web/tasks.md | 9.7k |
-| management/web/printers.md | 9.6k |
 | management/server/install-fogsettings.md | 9.5k |
 | kb/reference/bringing-your-own-ca.md | 9.5k |
-| management/web/storage-node.md | 9.3k |
 | kb/reference/sector-size-imaging.md | 9.1k |
 | kb/reference/lvm-imaging.md | 8.8k |
-| management/web/config.md | 8.3k |
-| management/web/snapins.md | 8.3k |
-| management/web/roles.md | 8.3k |
 | kb/how-tos/secure-boot-setup-mode-enrollment.md | 8.3k |
 | development/plugin-schema-migrations.md | 8.0k |
 | kb/how-tos/add-extend-a-2nd-virtual-hdd.md | 8.0k |
@@ -149,10 +155,8 @@ The four at the top are the expensive ones and were deliberately deferred.
 | kb/reference/compile_ipxe_binaries.md | 6.5k |
 | kb/troubleshooting/primary-mac-address-issues.md | 6.5k |
 | kb/reference/group-shared-state.md | 6.4k |
-| management/web/ad-integration.md | 6.1k |
 | management/fos/using-fog-boot-menu.md | 5.6k |
 | kb/reference/fog-security.md | 5.1k |
-| management/web/site-scoping.md | 4.8k |
 | kb/reference/pki-glossary.md | 4.8k |
 | kb/how-tos/post-download-scripts.md | 4.8k |
 | development/stable-release-workflow.md | 4.5k |
@@ -169,9 +173,10 @@ The four at the top are the expensive ones and were deliberately deferred.
 | kb/how-tos/change-fog-server-ip-address.md | 1.9k |
 | kb/reference/vi.md | 1.2k |
 
-Suggested order: the `management/web/*` cluster next (readers land there most,
-and the glossary is densest there), then `kb/how-tos`, then `kb/reference`, then
-`development` (contributor-facing, lowest priority), and the four big ones last.
+Suggested order: `management/web/ldap.md` finishes the `management/web/*`
+cluster (everything else in it is done), then `kb/how-tos`, then
+`kb/reference`, then `development` (contributor-facing, lowest priority), and
+the four big ones last.
 
 ## Gotchas already paid for — don't rediscover these
 
@@ -190,6 +195,24 @@ and the glossary is densest there), then `kb/how-tos`, then `kb/reference`, then
   every link into it (115 across the repo, no build warning). `--relink` remaps
   them by heading *position*, which is only sound because `checkStructure`
   guarantees equal heading counts in order. Don't weaken that check.
+- **`--relink` covers three link forms**, and it grew the third one late:
+  same-page `](#anchor)`, wikilink `[[page#Heading]]`, and cross-page
+  `](page.md#anchor)`. That last form was unhandled until the roles/site-scoping
+  batch, and it failed silently in exactly the way the whole mechanism exists to
+  prevent. `markdownLinkTargets` therefore drops the fragment on a `.md` target
+  (it keeps them on external URLs, which nothing rewrites).
+- **A translated page's anchors move again when a page pointing *at* it gets
+  translated later** — and vice versa. This is why `--relink` sweeps the whole
+  tree instead of running per page: seeding `hosts.md` rewrote anchors in
+  `config.md` and `groups.md`, which had been translated batches earlier. Always
+  run it after a batch, never assume a finished page stays finished.
+- **A `|` inside a wikilink inside a table cell breaks the link**, because the
+  pipe ends the cell. `docs/` escapes it as `[[ldap\|LDAP Authentication]]` in
+  some tables and forgets to in others; a translation must copy whichever form
+  the source used. Grepping the built HTML for `[[` gives 52 hits, and **the
+  English build gives the same 52** — they're all pre-existing English defects
+  (unescaped pipes in tables, a few wikilinks wrapped across a newline). Compare
+  the two counts rather than reading a nonzero count as a translation bug.
 - **The slugifier emits one hyphen per whitespace character**, matching
   github-slugger — `"Client & Server"` → `client--server`. Collapsing runs
   produces anchors Quartz never generates.
@@ -233,7 +256,7 @@ docs should stop resolving, delete the branch *and* add an RTD redirect
 > per-page rules, and the gotchas. The `## Translations` section of `CLAUDE.md`
 > has the design.
 >
-> French is at 35 of 99 pages and the pipeline is confirmed working live on the
+> French is at 47 of 99 pages and the pipeline is confirmed working live on the
 > RTD test pair, including the language selector and the remapped heading
 > anchors. The plan is to finish seeding French on this branch, merge to
 > `master`, go live with a real `fog-docs-fr` RTD project, then add the other six
