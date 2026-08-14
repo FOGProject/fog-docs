@@ -470,7 +470,7 @@ To remove trust for a certificate from a single MOK-enrolled machine, see
 ### If the private key is compromised
 
 **There is no remote revocation.** If the compromised key is the auto-
-generated leaf, rotate it per [above](#rotating-fogs-own-auto-generated-leaf-the-normal-case)
+generated leaf, rotate it per [above](#rotating-fogs-own-auto-generated-leaf--the-normal-case)
 and nothing else needs to happen. If the compromised key is the CA itself
 (or a flat admin-supplied key), every machine that enrolled it needs a
 physical visit to remove it and enroll the replacement's fingerprint, exactly

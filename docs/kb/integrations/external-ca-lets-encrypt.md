@@ -66,7 +66,7 @@ Let's Encrypt certificate without any FOG-side change — see below.
 
 - [How FOG uses certificates](#how-fog-uses-certificates)
 - [How iPXE validates HTTPS](#how-ipxe-validates-https)
-- [What `--external-ca` does](#what-external-ca-does)
+- [What `--external-ca` does](#what---external-ca-does)
 - [Recommended: internal ACME CA (step-ca)](#recommended-internal-acme-ca-step-ca)
 - [Public Let's Encrypt: caveats](#public-lets-encrypt-caveats)
 - [Renewal and rotation](#renewal-and-rotation)

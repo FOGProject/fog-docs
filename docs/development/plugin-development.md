@@ -15,7 +15,7 @@ tags:
 # Building a FOG Plugin — Start to Finish
 
 This guide walks you from an empty directory to a working, installable FOG
-plugin on the **working‑1.6** framework. It uses a complete, runnable example
+plugin on the **working-1.6** framework. It uses a complete, runnable example
 plugin — **`helloworld`** — which lives in
 [`FOGProject/fog-plugins`](https://github.com/FOGProject/fog-plugins) and
 lands at `packages/web/lib/plugins/helloworld/` once the plugins are fetched.
@@ -27,9 +27,9 @@ Copy that directory, rename it, and you have a head start.
 > pins — which the installer does for you. Run it by hand if you just want the
 > tree.
 
-> **Scope:** this targets the working‑1.6 plugin framework (the `formFields` /
+> **Scope:** this targets the working-1.6 plugin framework (the `formFields` /
 > `makeInput` page helpers, the `addPost`/`editPost` JSON pattern, and the
-> non‑destructive `schema()` migration contract). The 1.5.x line renders pages
+> non-destructive `schema()` migration contract). The 1.5.x line renders pages
 > differently (raw HTML strings, `*page.class.php` file names) and lacks the
 > `schema()` migration mechanism; this guide does not cover it.
 
@@ -38,7 +38,7 @@ Copy that directory, rename it, and you have a head start.
 ## 1. What a plugin is
 
 A FOG plugin is just a directory containing PHP classes that FOG
-auto‑discovers. There is no build step and no registration list to edit — drop
+auto-discovers. There is no build step and no registration list to edit — drop
 the directory in, activate the plugin in the UI (**Plugin Management**), and it
 works.
 
@@ -46,8 +46,8 @@ There are two places that directory can live, and which one you pick matters:
 
 | Root | For | Survives a FOG upgrade? |
 |---|---|---|
-| `packages/web/lib/plugins/<name>/` | plugins bundled with FOG itself, sourced from `FOGProject/fog-plugins` | No — the tarball re‑lays this tree |
-| `/opt/fog/plugins/<name>/` (`FOG_PLUGIN_DIR`) | **everything third‑party** | Yes |
+| `packages/web/lib/plugins/<name>/` | plugins bundled with FOG itself, sourced from `FOGProject/fog-plugins` | No — the tarball re-lays this tree |
+| `/opt/fog/plugins/<name>/` (`FOG_PLUGIN_DIR`) | **everything third-party** | Yes |
 
 The installer's `configureHttpd()` does `rm -rf` on the web root before laying
 the new one down, so a plugin installed into `lib/plugins/` is deleted by the
@@ -71,7 +71,7 @@ A typical plugin provides:
 - a **manager** (the table + its migrations),
 - a **page** (the UI and its form POST handlers),
 - **hooks** (menu entry, JS injection, API exposure, …),
-- **JS** files (one per sub‑page).
+- **JS** files (one per sub-page).
 
 The running example, `helloworld`, manages a trivial entity with a `name` and a
 `description`, end to end.
@@ -92,16 +92,16 @@ The running example, `helloworld`, manages a trivial entity with a `name` and a
   > `class HelloWorldManagement` ⇒ `helloworldmanagement.page.php`.
   > `class AddHelloWorldJS` ⇒ `addhelloworldjs.hook.php`.
 
-  (Class names in code are PascalCase; the files on disk are all‑lowercase.)
+  (Class names in code are PascalCase; the files on disk are all-lowercase.)
 - **Routing.** The whole UI is driven by `?node=<x>&sub=<y>&id=<n>`. `node` maps
   to a page class (`helloworld` → `HelloWorldManagement`, matched by its
   `public $node = 'helloworld'`), and `sub` maps to a method on it
   (`sub=add` → `add()`, `sub=addPost` → `addPost()`, `sub=list` → the inherited
   DataTables list).
 - **ORM.** Models declare `$databaseTable` and `$databaseFields`
-  (friendly‑name → column). You then use `get()/set()/save()/load()/destroy()`,
-  or `new HelloWorld(42)` to auto‑load by id.
-- **Hooks/events.** Cross‑cutting integration is done by registering callbacks
+  (friendly-name → column). You then use `get()/set()/save()/load()/destroy()`,
+  or `new HelloWorld(42)` to auto-load by id.
+- **Hooks/events.** Cross-cutting integration is done by registering callbacks
   against named events: `self::$HookManager->register('EVENT', [$this, 'fn'])`
   and firing with `processEvent('EVENT', ['data' => &$data])`.
 
@@ -176,7 +176,7 @@ existed keeps working untouched.
 - If a FOG upgrade moves the server out of the range of a plugin that is
   already active, the next boot **deactivates it** and logs why. `installed` and
   `pSchema` are left alone, so its tables and applied migrations survive and
-  re‑activating once you ship a compatible build is one click.
+  re-activating once you ship a compatible build is one click.
 - Only the **numeric core** of a version is compared. `FOG_VERSION` is
   `1.6.0-beta.3318` on a beta and `version_compare()` sorts that *below*
   `1.6.0`, so comparing raw would refuse `fog_min = '1.6.0'` on the entire beta
@@ -186,7 +186,7 @@ existed keeps working untouched.
 
 > `menuicon_hover` and `entrypoint` used to appear here. Nothing ever read
 > either one — no plugin has ever shipped the `html/run.php` that `entrypoint`
-> named, and routing goes through the `node` → page‑class mapping. Both are
+> named, and routing goes through the `node` → page-class mapping. Both are
 > gone; if your manifest still sets them they are simply ignored.
 
 ### 4.2 Model — `class/helloworld.class.php`
@@ -299,7 +299,7 @@ public function addPost()
 }
 ```
 
-> Set `$serverFault = true` **only** when the failure is server‑side (a failed
+> Set `$serverFault = true` **only** when the failure is server-side (a failed
 > `save()`), so genuine failures return `500` and validation errors return
 > `400`. Getting this backwards is a real bug we've fixed before.
 
@@ -330,10 +330,10 @@ The example ships three hooks:
 
 - **Menu** (`AddHelloWorldMenuItem`) — `MAIN_MENU_DATA` adds the sidebar entry;
   `SEARCH_PAGES` makes it searchable; `PAGES_WITH_OBJECTS` enables the
-  edit/delete object flow. (`SUB_MENULINK_DATA` would add extra sub‑links such
+  edit/delete object flow. (`SUB_MENULINK_DATA` would add extra sub-links such
   as Export/Import — omitted here.)
 - **JS** (`AddHelloWorldJS`) — `PAGE_JS_FILES` injects `fog.<node>.<sub>.js` for
-  the current sub‑page.
+  the current sub-page.
 - **API** (`AddHelloWorldAPI`) — `API_VALID_CLASSES` exposes the node over REST
   so `/fog/helloworld` reuses the same ORM as the UI.
 
@@ -367,8 +367,8 @@ The example ships three hooks:
 
 ### 4.6 JavaScript — `js/fog.helloworld.*.js`
 
-One file per sub‑page (`list`, `add`, `edit`), each an IIFE. The **list** file
-registers the server‑side DataTable and the create modal; its `columns[].data`
+One file per sub-page (`list`, `add`, `edit`), each an IIFE. The **list** file
+registers the server-side DataTable and the create modal; its `columns[].data`
 keys must match the list endpoint (`mainlink`, then your field names) and their
 order must match `$headerData`. The **add**/**edit** files wire the form buttons
 to `processForm()` (which POSTs and shows notifications) and, on edit, the delete
@@ -382,13 +382,13 @@ Shared helpers you'll use: `Common.node`, `Common.id`, `Common.search`,
 
 ## 5. Database & migrations (the important part)
 
-FOG has **no automatic per‑column migration**. `Schema::createTable()` emits
+FOG has **no automatic per-column migration**. `Schema::createTable()` emits
 `CREATE TABLE IF NOT EXISTS`, which does nothing on a table that already
 exists — so simply adding a column to `createSql()` will **not** reach existing
 installs. Use the **`schema()` contract** instead — covered in depth in
 [[plugin-schema-migrations|Plugin Schema Migrations]].
 
-**`schema()` returns an ordered, append‑only list of steps.** Each step is a SQL
+**`schema()` returns an ordered, append-only list of steps.** Each step is a SQL
 string (or a closure returning SQL). On install/upgrade the framework
 (`Plugin::installdb()`) calls:
 
@@ -415,7 +415,7 @@ public function schema()
 ```
 
 `applyUpdates()` is defensive: it ignores "already exists / duplicate column /
-duplicate key / unknown column / duplicate entry" errors, so re‑running is
+duplicate key / unknown column / duplicate entry" errors, so re-running is
 safe. A closure step may return a string to signal a hard error and stop.
 
 Seed data (e.g. default `globalSettings` rows) is just another step — return the
@@ -442,7 +442,7 @@ Seed data (e.g. default `globalSettings` rows) is just another step — return t
    `requires` say it cannot run here.
 3. **Install / upgrade.** `Plugin::installdb()` runs `schema()` via
    `applyUpdates()` and tracks `pSchema`. This is idempotent and
-   non‑destructive — safe to run on every upgrade.
+   non-destructive — safe to run on every upgrade.
 4. **Uninstall.** Inherited `uninstall()` drops the table; override it if you
    need to clean up settings, associations, or users you created.
 5. **Code removed.** Deleting the plugin directory does **not** delete its row.
@@ -472,12 +472,12 @@ Global configuration lives in the `globalSettings` table.
 
 ## 8. Security & output conventions
 
-- **Output:** wrap every user‑controlled value with `Initiator::e($value)` when
+- **Output:** wrap every user-controlled value with `Initiator::e($value)` when
   echoing into HTML. All output also passes through the global
   `sanitizeOutput` buffer.
-- **Input:** use `filter_input(INPUT_POST, 'key')` (or the already‑sanitized
+- **Input:** use `filter_input(INPUT_POST, 'key')` (or the already-sanitized
   superglobals) — never raw `$_POST`/`$_GET`.
-- **CSRF/auth:** call `self::checkAuthAndCSRF()` at the top of every state‑
+- **CSRF/auth:** call `self::checkAuthAndCSRF()` at the top of every state-
   changing POST handler.
 - **Instantiation:** prefer `self::getClass('HelloWorld')` /
   `self::getClass('HelloWorldManager')` over `new`.
@@ -507,8 +507,8 @@ Global configuration lives in the `globalSettings` table.
 
 | Event | Purpose |
 |---|---|
-| `MAIN_MENU_DATA` | add the top‑level sidebar entry (`hook_main[node] = [label, icon]`) |
-| `SUB_MENULINK_DATA` | add sub‑links (Export/Import/…) under the node |
+| `MAIN_MENU_DATA` | add the top-level sidebar entry (`hook_main[node] = [label, icon]`) |
+| `SUB_MENULINK_DATA` | add sub-links (Export/Import/…) under the node |
 | `SEARCH_PAGES` | make the node searchable |
 | `PAGES_WITH_OBJECTS` | enable the object (edit/delete) flow for the node |
 | `PAGE_JS_FILES` | inject JS files for the current page |
@@ -518,7 +518,7 @@ Global configuration lives in the `globalSettings` table.
 | `<NODE>_ADD_FIELDS` / `_GENERAL_FIELDS` | let others extend your forms |
 | `<NODE>_ADD_POST` / `_EDIT_POST` / `_ADD_SUCCESS` / `_ADD_FAIL` | extension points around your saves |
 
-Fire your own events with `&`‑by‑reference args so listeners can mutate them
+Fire your own events with `&`-by-reference args so listeners can mutate them
 (see the example's `HELLOWORLD_*` events).
 
 ---
@@ -532,11 +532,11 @@ Fire your own events with `&`‑by‑reference args so listeners can mutate them
   install refuses outright if `class/<name>manager.class.php` exists and does
   not declare `<Name>Manager`, because the fallback used to make the install
   report success having created nothing.
-- **`menuicon`** beginning with `fa` is rendered as a font‑awesome icon;
+- **`menuicon`** beginning with `fa` is rendered as a font-awesome icon;
   anything else is treated as an `<img>` `src`.
-- **`$serverFault`** must be `true` only for server‑side failures, so HTTP
+- **`$serverFault`** must be `true` only for server-side failures, so HTTP
   status codes are honest (`500` vs `400`).
-- **Hook constructors must early‑return** when the node isn't in
+- **Hook constructors must early-return** when the node isn't in
   `$pluginsinstalled`, or your hooks run for a plugin that isn't enabled.
 - **List columns** in the JS must match `$headerData` order and the keys the
   router emits (`mainlink`, `id`, friendly field names).
@@ -644,7 +644,7 @@ on disk and adding new executable code to the server are different authorities.
 - **`helloworld`** — this guide's minimal, complete CRUD example.
 - **`subnetgroup`** — a clean real CRUD plugin (model→class relationship,
   Export/Import, `schema()`).
-- **`site`** — a five‑table plugin, and the reference for object scoping via
+- **`site`** — a five-table plugin, and the reference for object scoping via
   `OBJECT_SCOPE_CHECK`. Its `schema()` shows how to retire a table you shipped
   (steps are immutable: step 3 creates it, step 4 drops it).
 - **`persistentgroups`** — a plugin that is nothing but a `schema()` closure

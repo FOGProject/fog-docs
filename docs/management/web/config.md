@@ -36,14 +36,14 @@ These are documented in full, with their upgrade implications, on the
 ## Table display mode (infinite scroll vs. paging)
 
 The management list and export tables (Hosts, Images, Snapins, and so on) can
-page through records in one of two ways, controlled by a single install‑wide
+page through records in one of two ways, controlled by a single install-wide
 setting:
 
 > Other Settings → FOG Settings → FOG View Settings → FOG_TABLE_SCROLL_MODE
 
 - **infinite** *(default)* — virtual scroll: rows load in chunks as you scroll
-  and there is no page‑number bar. Best for quickly skimming large lists.
-- **paged** — the classic page‑number pager with a per‑page length selector.
+  and there is no page-number bar. Best for quickly skimming large lists.
+- **paged** — the classic page-number pager with a per-page length selector.
 
 The setting applies to every management table on the next page load. Choose
 **paged** if you prefer page numbers, or if infinite scroll doesn't suit your
@@ -51,7 +51,7 @@ browser or workflow.
 
 >[!note]
 >A few tables — such as the FOG Settings table itself — always use paging
->regardless of this setting, because they are grouped and search‑driven.
+>regardless of this setting, because they are grouped and search-driven.
 
 ## Boot Image Key Map
 
