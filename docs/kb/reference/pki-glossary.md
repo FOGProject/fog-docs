@@ -15,8 +15,9 @@ tags:
 
 # PKI &amp; Secure Boot glossary
 
-Short definitions for terms used across [[pki-zones|FOG's Certificate
-Zones]], [[secure-boot-signing|Secure Boot signing]], and
+Short definitions for terms used across
+[[pki-zones|FOG's Certificate Zones]],
+[[secure-boot-signing|Secure Boot signing]], and
 [[external-ca-lets-encrypt|External CA & Let's Encrypt]]. If a term you hit
 in one of those pages isn't here, treat that as a gap in this page, not in
 your understanding.
@@ -43,8 +44,8 @@ impersonate anything outside it.
 ### Web leaf
 
 The certificate the web server (Apache/nginx) actually presents to
-browsers. Rotatable on its own — see [[pki-zones#leaf-renewal|Leaf
-renewal]] — without touching the Web CA.
+browsers. Rotatable on its own — see
+[[pki-zones#leaf-renewal|Leaf renewal]] — without touching the Web CA.
 
 ### Secure Boot CA
 
@@ -77,16 +78,17 @@ MOK*) — rotating the signer meant re-enrolling every machine in the fleet.
 The superseded, pre-intermediate model: a single self-signed, `CA:FALSE`,
 code-signing certificate that's simultaneously the enrolled anchor and the
 signer. Existed only as an early proof-of-concept and never shipped in a
-stable release — see the note in [[secure-boot-signing#the-old-flat-mok|the
-Secure Boot guide]] if you're recovering from one.
+stable release — see the note in
+[[secure-boot-signing#the-old-flat-mok|the Secure Boot guide]] if you're
+recovering from one.
 
 ### Client Communication keypair
 
 `.srvprivate.key`/`.srvpublic.crt`. A separate zone, signed directly by the
 root, used only for `FOGBase::certDecrypt()` — the encryption on
 fog-client's check-in handshake — never for TLS. Not replaceable by
-bringing your own CA; see [[pki-zones#bringing-your-own-ca|Bringing your own
-CA]].
+bringing your own CA; see
+[[pki-zones#bringing-your-own-ca|Bringing your own CA]].
 
 ### Fingerprint (aka thumbprint)
 
@@ -101,8 +103,8 @@ at.
 
 The web leaf when it's sourced from an external ACME client (e.g.
 `acme.sh`) instead of FOG's own Web CA, flagged via `acmeLeaf=yes` in
-`.fogsettings`. See [[external-ca-lets-encrypt|External CA & Let's
-Encrypt]].
+`.fogsettings`. See
+[[external-ca-lets-encrypt|External CA & Let's Encrypt]].
 
 ### Pinning (fog-client)
 

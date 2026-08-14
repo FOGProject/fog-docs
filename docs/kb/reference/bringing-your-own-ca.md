@@ -62,8 +62,7 @@ replacement, the same shape as FOG's own auto-generated pair. Without it,
 and the thing you enroll — the flat model, same as before the CA/leaf split
 existed for FOG's own key. Rotating a flat key later means re-enrolling
 every machine — see
-[[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a
-key]].
+[[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]].
 
 ### Generating a leaf yourself
 
@@ -149,8 +148,8 @@ with any leaf issued under it afterward: reissue or rotate the leaf and no
 machine needs to be touched again — the same benefit FOG's own auto-generated
 key already gets automatically. Without `--secureboot-ca-cert`, doing this
 with your own CA means signing and publishing by hand: follow
-[[secure-boot-technical-details#signing-the-fos-kernels|signing the FOS
-kernels]] with `--addcert` added to the `sbsign` call, and enroll the CA's
+[[secure-boot-technical-details#signing-the-fos-kernels|signing the FOS kernels]]
+with `--addcert` added to the `sbsign` call, and enroll the CA's
 certificate rather than a leaf.
 
 One thing this does **not** get you: a way to skip enrollment entirely by

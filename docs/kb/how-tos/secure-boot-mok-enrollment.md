@@ -106,8 +106,9 @@ in `Enroll key from disk` without you carrying anything to the machine.
 >
 >Nor can you point DHCP straight at `mmx64.efi` to get the same effect. It is
 >signed by iPXE, not Microsoft, so the firmware — which checks the first binary
->against `db` alone (see [[secure-boot-signing#the-chain-you-are-building|the
->chain]]) — will refuse to launch it. It boots here only because iPXE loads it
+>against `db` alone (see
+>[[secure-boot-signing#the-chain-you-are-building|the chain]]) — will refuse to
+>launch it. It boots here only because iPXE loads it
 >*through shim's verification protocol*, and shim trusts iPXE's certificate.
 
 You do **not** need Secure Boot currently enabled to do this, either — tested
@@ -177,8 +178,9 @@ are already standing at the machine when the enrollment happens.
 >console; nothing removes that.
 
 >[!tip] Which route to reach for
->If the firmware can be put into Setup Mode, **[[secure-boot-setup-mode-enrollment|Setup
->Mode enrollment]] is the one that scales** — it is the only route that does
+>If the firmware can be put into Setup Mode,
+>**[[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] is the one that
+>scales** — it is the only route that does
 >not end with a human pressing keys on every machine. Where it is not
 >available, Route B has far fewer moving parts and, since the network-delivery
 >change above, needs neither a live image nor a USB stick — try it first if

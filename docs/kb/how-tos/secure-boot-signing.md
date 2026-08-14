@@ -100,8 +100,8 @@ and still get FOG's boot behavior — which is the approach FOG takes.
 
 The alternative the firmware already provides is **MOK** (Machine Owner Key):
 a per-machine list of extra certificates that *you*, as the physical owner of
-the machine, choose to trust. That is what [[secure-boot-mok-enrollment|MOK
-enrollment]] uses.
+the machine, choose to trust. That is what
+[[secure-boot-mok-enrollment|MOK enrollment]] uses.
 
 >[!info] Why enrollment usually cannot be automated
 >MOK enrollment requires a human at the physical console pressing keys. That
@@ -109,8 +109,9 @@ enrollment]] uses.
 >could enroll a signing key, Secure Boot would be decorative. Budget for one
 >visit per machine, the same way you would for a firmware password. FOG 1.6
 >adds a way to skip this per-machine visit entirely by enrolling directly
->into firmware — see [[secure-boot-setup-mode-enrollment|Setup Mode
->enrollment]] — but it still requires touching each machine's firmware
+>into firmware — see
+>[[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — but it still
+>requires touching each machine's firmware
 >settings once; there is no way to enroll trust into a machine that has
 >never met you.
 
@@ -182,8 +183,8 @@ The iPXE shim decides what to load next **from its own filename**, by stripping
 directory it was itself loaded from; named `ipxe-shimx64.efi`, it loads
 `ipxe.efi`. Whichever you pick, the second-stage file has to be sitting beside
 it under exactly that name. Serving the signed chain and signing the kernels
-is covered in [[secure-boot-technical-details|Secure Boot technical
-details]].
+is covered in
+[[secure-boot-technical-details|Secure Boot technical details]].
 
 ---
 
@@ -218,8 +219,8 @@ flowchart TD
 >do it **before** setting up Secure Boot here, not after. Migrating an
 >already-enrolled Secure Boot setup is a viable, well-understood path — copy
 >the `pki/secureboot/` directory forward, per
->[[migrating-fog-server#migrating-the-secure-boot-signing-material|that guide's
->Secure Boot section]] — but it is still one more thing to get right, and
+>[[migrating-fog-server#migrating-the-secure-boot-signing-material|that guide's Secure Boot section]]
+>— but it is still one more thing to get right, and
 >getting it wrong means every already-enrolled client needs re-enrolling a
 >second time for no reason. Enrolling once, on the server you intend to keep,
 >is strictly less work than enrolling now and potentially again later.
@@ -464,8 +465,7 @@ That produces a new CA and leaf and re-signs the kernels with the new leaf.
 >step or something to do mid-troubleshooting.
 
 To remove trust for a certificate from a single MOK-enrolled machine, see
-[[secure-boot-mok-enrollment#withdrawing-a-key-from-one-machine|Withdrawing a
-key from one machine]].
+[[secure-boot-mok-enrollment#withdrawing-a-key-from-one-machine|Withdrawing a key from one machine]].
 
 ### If the private key is compromised
 
@@ -488,8 +488,9 @@ would put a root password; see [The signing key](#the-signing-key).
 - **One visit per machine, always** — for MOK enrollment. There is no
   supported way to enroll a MOK without physical presence — that is the
   security property, not an oversight. The enrollment kit makes the visit
-  short; it cannot remove it. [[secure-boot-setup-mode-enrollment|Setup Mode
-  enrollment]] enrolls into the firmware's own `db` instead, still
+  short; it cannot remove it.
+  [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] enrolls into the
+  firmware's own `db` instead, still
   per-machine, but without the shim/MokManager detour — in practice only
   Dell exposes a genuinely scriptable path for that, via Custom Mode in Dell
   Command | Configure and iDRAC.
@@ -552,8 +553,8 @@ would put a root password; see [The signing key](#the-signing-key).
 ## Still unverified
 
 If you've found a firmware where Route B's `Enroll key from disk` behaves
-differently than described in [[secure-boot-mok-enrollment|MOK
-enrollment]], or tested [[secure-boot-setup-mode-enrollment|Setup Mode]]
+differently than described in [[secure-boot-mok-enrollment|MOK enrollment]],
+or tested [[secure-boot-setup-mode-enrollment|Setup Mode]]
 against real firmware, please confirm it — good or bad — with a pull request
 against the relevant page (an inline GitHub edit is fine) or a post on the
 [FOG forums](https://forums.fogproject.org/).

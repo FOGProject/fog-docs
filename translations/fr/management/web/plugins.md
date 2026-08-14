@@ -314,7 +314,7 @@ La 1.5.x livre quatre greffons absents de la 1.6 :
 
 | Greffon | Ce qu'il fait |
 |---|---|
-| **accesscontrol** | Restreint ce que les utilisateurs peuvent voir et faire. **Remplacé en 1.6** par les rôles et permissions natifs — voir [[roles|Rôles et permissions]] |
+| **accesscontrol** | Restreint ce que les utilisateurs peuvent voir et faire. **Remplacé en 1.6** par les rôles et permissions natifs — voir [[roles\|Rôles et permissions]] |
 | **example** | Le greffon d'exemple squelette, équivalent du `helloworld` de la 1.6 |
 | **fileintegrity** | Enregistre les empreintes, dates de modification et emplacements des fichiers sur les nœuds de stockage |
 | **hoststatus** | Ajoute une entrée d'état d'alimentation et de système d'exploitation en direct sur la page d'édition de la machine. Nécessite le port TCP 445 ouvert sur le client |

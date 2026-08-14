@@ -97,7 +97,7 @@ Logo du menu | Nom | Description
  ![[users-ico.png]] | **[Gestion des utilisateurs](users.md)** |  Les administrateurs individuels des ressources FOG.
 ![[hosts-ico.png]] | **[machines](hosts.md)** |  Cette section regroupe les machines, c'est-à-dire les PC à cloner ou dont extraire des images.
 ![[groups.ico.png]] | **[groupes](groups.md)** | Cette section regroupe les groupes, c'est-à-dire des PC similaires sur lesquels effectuer des tâches en masse.
-![[images-ico.png]] | **[[management/web/images| Gestion des images]]** | Cette section vous permet de gérer les fichiers image stockés sur le serveur FOG.
+![[images-ico.png]] | **[[management/web/images\| Gestion des images]]** | Cette section vous permet de gérer les fichiers image stockés sur le serveur FOG.
 ![[Storage-ico.png]] | **[nœud de stockage](storage-node.md)** | Cette section vous permet d'ajouter ou de retirer des nœuds de stockage du système FOG.
 ![[snapin-ico.png]] | **[Gestion des snapins](snapins.md)** | Cette section propose des moyens d'automatiser diverses tâches post-clonage, comme l'installation silencieuse de programmes.
 ![[printer-ico.png]] | **[imprimantes](printers.md)** | Cette section permet de gérer les imprimantes, en créant des objets imprimante qui pourront ensuite être affectés à des machines ou à des groupes.

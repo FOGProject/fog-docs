@@ -130,7 +130,7 @@ directly.
 | `ca.cert.der` | **unchanged** — no client re-pins |
 | `.srvprivate.key` | **unchanged** — client authentication is unaffected |
 | the web certificate | **new**, issued by the Web CA, on its own keypair |
-| the Secure Boot MOK | **new** — see [[secure-boot-signing|the Secure Boot guide]], this one needs action |
+| the Secure Boot MOK | **new** — see [[secure-boot-signing\|the Secure Boot guide]], this one needs action |
 
 The only endpoint-visible change is Secure Boot.
 
@@ -379,8 +379,8 @@ unattended).
 >A server that generated a self-signed MOK under an earlier build is moved
 >onto the intermediate, and any machine that enrolled the old key must
 >enroll once more. This only affects very early testers of the redesign —
->see [[secure-boot-signing#the-old-flat-mok|the note in the Secure Boot
->guide]].
+>see
+>[[secure-boot-signing#the-old-flat-mok|the note in the Secure Boot guide]].
 
 ## Still unverified
 

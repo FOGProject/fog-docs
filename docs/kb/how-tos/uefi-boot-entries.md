@@ -111,8 +111,9 @@ can branch on the host or image if a fix-up should only apply to certain
 machines.
 
 See [[post-download-scripts|Post Download Scripts]] for the broader post-download
-mechanism, and [[deploy-dual-boot-multi-disk-image|Deploying a Dual-Boot
-Multi-Disk Image]] for the dual-boot walkthrough this came from.
+mechanism, and
+[[deploy-dual-boot-multi-disk-image|Deploying a Dual-Boot Multi-Disk Image]] for
+the dual-boot walkthrough this came from.
 
 ## References
 

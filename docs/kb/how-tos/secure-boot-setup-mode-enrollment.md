@@ -23,8 +23,9 @@ tags:
 
 Many firmwares support **Setup Mode** — a state that lets you write
 certificates directly into UEFI's own trust database (`PK`, `KEK`, `db`),
-bypassing shim and MokManager entirely. This is Route C: [[secure-boot-mok-enrollment|Routes
-A and B]] both end at a human pressing keys, because MOK enrollment is
+bypassing shim and MokManager entirely. This is Route C:
+[[secure-boot-mok-enrollment|Routes A and B]] both end at a human pressing
+keys, because MOK enrollment is
 *designed* to require one. Route C sidesteps that by not using MOK at all: if
 the platform is in Setup Mode, the running OS can write the real Secure Boot
 databases directly, and FOS does it unattended.
@@ -35,8 +36,8 @@ split), start at [[secure-boot-signing|Secure Boot signing]].
 ## Running it
 
 Schedule the **Enroll Secure Boot Key** task exactly as in
-[[secure-boot-mok-enrollment#route-b-from-the-fog-boot-menu-no-operating-system-and-no-usb-stick|Route
-B]]. FOS decides which route to take by itself — it reads the firmware state
+[[secure-boot-mok-enrollment#route-b-from-the-fog-boot-menu-no-operating-system-and-no-usb-stick|Route B]].
+FOS decides which route to take by itself — it reads the firmware state
 at boot, and only takes this path if it finds Setup Mode. Anything else falls
 back to staging a MOK request, so scheduling the task against a mixed fleet
 is safe.
@@ -138,8 +139,8 @@ intermediate, whether that intermediate was enrolled as `MOK.der` through
 MokManager or written into `db` through this path. That verification
 predates the name-constraints extension now carried on the Secure Boot
 CA — re-confirm on hardware before relying on it, and use
-`--no-sb-name-constraints` (see [[pki-zones#name-constraints|Name
-constraints]]) if a fleet rejects the chain.
+`--no-sb-name-constraints` (see
+[[pki-zones#name-constraints|Name constraints]]) if a fleet rejects the chain.
 
 >[!note] Validation status
 >Route C has been validated end to end in VirtualBox: Setup Mode → task
