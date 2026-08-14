@@ -84,7 +84,7 @@ class RateLimited extends Error {}
 // documentation anyone reads. `draft` pages are not built at all. Neither is
 // worth a request against a rate-limited budget.
 function isTranslatable(absPath) {
-  const head = readFileSync(absPath, "utf8").slice(0, 600)
+  const head = readDoc(absPath).slice(0, 600)
   return !/^unlisted:\s*true\s*$/m.test(head) && !/^draft:\s*true\s*$/m.test(head)
 }
 
@@ -117,6 +117,23 @@ function listTranslatedDocs(lang) {
   }
   walk(root)
   return found.sort()
+}
+
+// Every read of a Markdown file goes through here.
+//
+// The repo stores LF, but a Windows working tree can hold CRLF for individual
+// files (9 of the 104 in docs/ do, and git reports the tree clean because the
+// index side is LF either way). Left alone, that shows up as a false "fenced
+// code blocks differ" on a translation that is byte-perfect apart from its
+// line endings -- comparing content means comparing content, not whichever
+// line endings this particular checkout happens to have.
+//
+// It also keeps the source hashes in .translation-state.json stable, so a file
+// whose line endings change locally is not mistaken for one whose text did.
+//
+// Translations are always written LF, matching what the repo stores.
+function readDoc(absPath) {
+  return readFileSync(absPath, "utf8").replace(/\r\n/g, "\n")
 }
 
 const sha256 = (text) => createHash("sha256").update(text, "utf8").digest("hex")
@@ -466,13 +483,13 @@ function headingTexts(markdown) {
 function translatedBodyOf(lang, docPath) {
   const filePath = path.join(translationsDir, lang, docPath)
   if (!existsSync(filePath)) return undefined
-  return stripBanner(splitFrontmatter(readFileSync(filePath, "utf8")).body.trimStart(), lang)
+  return stripBanner(splitFrontmatter(readDoc(filePath)).body.trimStart(), lang)
 }
 
 function buildHeadingIndex(lang) {
   const index = new Map()
   for (const docPath of listSourceDocs()) {
-    const english = readFileSync(path.join(docsDir, docPath), "utf8")
+    const english = readDoc(path.join(docsDir, docPath))
     const translated = translatedBodyOf(lang, docPath)
     index.set(docPath, {
       english: headingSlugs(english),
@@ -518,7 +535,7 @@ function remapAnchor(fragment, targetDoc, index) {
 
 function relinkFile(lang, docPath, index) {
   const filePath = path.join(translationsDir, lang, docPath)
-  const original = readFileSync(filePath, "utf8")
+  const original = readDoc(filePath)
   let text = original
 
   // [[page#Heading|Text]] and [[#Heading]] -- Obsidian writes the fragment as
@@ -563,7 +580,7 @@ function relinkLanguage(lang) {
 // is already broken upstream -- neither is this pipeline's business, and
 // reporting them would bury the ones it did cause.
 function danglingAnchors(lang, docPath, index) {
-  const text = readFileSync(path.join(translationsDir, lang, docPath), "utf8")
+  const text = readDoc(path.join(translationsDir, lang, docPath))
   const problems = []
 
   const broken = (targetDoc, fragment) => {
@@ -690,7 +707,7 @@ function stripBanner(body, lang) {
 // ----------------------------------------------------------------- translating
 
 async function translateDoc({ lang, docPath, token, glossaryEntries }) {
-  const source = readFileSync(path.join(docsDir, docPath), "utf8")
+  const source = readDoc(path.join(docsDir, docPath))
   const { frontmatter, body } = splitFrontmatter(source)
   const targetLanguage = languages.languages[lang].name
   const glossary = selectGlossary(glossaryEntries, source)
@@ -772,8 +789,8 @@ function verifyLanguage(lang) {
       continue
     }
 
-    const source = splitFrontmatter(readFileSync(path.join(docsDir, docPath), "utf8"))
-    const translated = splitFrontmatter(readFileSync(path.join(translationsDir, lang, docPath), "utf8"))
+    const source = splitFrontmatter(readDoc(path.join(docsDir, docPath)))
+    const translated = splitFrontmatter(readDoc(path.join(translationsDir, lang, docPath)))
 
     const problems = checkStructure(source.body, stripBanner(translated.body.trimStart(), lang))
     problems.push(...danglingAnchors(lang, docPath, headingIndex))
@@ -824,7 +841,7 @@ async function runLanguage({ lang, budget, options }) {
     for (const docPath of sourceDocs) {
       if (!translated.has(docPath)) continue
       state.entries[docPath] = {
-        sourceHash: sha256(readFileSync(path.join(docsDir, docPath), "utf8")),
+        sourceHash: sha256(readDoc(path.join(docsDir, docPath))),
         translatedAt: new Date().toISOString(),
       }
       indexed++
@@ -841,7 +858,7 @@ async function runLanguage({ lang, budget, options }) {
   let stale = sourceDocs.filter((docPath) => {
     const entry = state.entries[docPath]
     if (!entry || !translatedOnDisk.has(docPath)) return true
-    return entry.sourceHash !== sha256(readFileSync(path.join(docsDir, docPath), "utf8"))
+    return entry.sourceHash !== sha256(readDoc(path.join(docsDir, docPath)))
   })
 
   // An explicit --file is a request, not a filter: retranslate it whether or
@@ -903,7 +920,7 @@ async function runLanguage({ lang, budget, options }) {
         continue
       }
       state.entries[docPath] = {
-        sourceHash: sha256(readFileSync(path.join(docsDir, docPath), "utf8")),
+        sourceHash: sha256(readDoc(path.join(docsDir, docPath))),
         translatedAt: new Date().toISOString(),
       }
       writeState(lang, state)
@@ -975,7 +992,10 @@ async function main() {
 
 // Guarded so the pure helpers above (parsePo, chunkBody, checkStructure,
 // splitFrontmatter) can be imported and exercised without running a translation.
-if (import.meta.url === pathToFileURL(process.argv[1]).href) await main()
+// argv[1] is undefined when this is imported rather than run (node -e, node
+// --import, a test runner that loads it as a module), and pathToFileURL throws
+// on undefined rather than returning something falsy.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main()
 
 export {
   banner,

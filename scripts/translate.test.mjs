@@ -266,3 +266,20 @@ test("checkStructure still catches a translated page target with a fragment", ()
 test("checkStructure ignores same-page anchors", () => {
   assert.deepEqual(checkStructure("[x](#a-heading)", "[y](#un-titre)"), [])
 })
+
+test("CRLF input does not corrupt heading slugs", () => {
+  // JS `.` matches \r, so `^#{1,6} (.+)$` captures the carriage return on a
+  // CRLF file. slugifyHeading trims before slugifying, which absorbs it -- this
+  // pins that, since losing the trim would put a trailing hyphen on every
+  // anchor of every CRLF page.
+  assert.deepEqual(headingSlugs("## Notes\r\n## Autres\r\n"), ["notes", "autres"])
+})
+
+test("CRLF and LF sources compare as equal content", () => {
+  // 9 of the 104 files in docs/ sit in the working tree as CRLF while git
+  // stores LF, so without normalization on read a byte-perfect translation
+  // fails checkStructure with "fenced code blocks differ".
+  const lf = "# T\n\n```\nfog install\n```\n"
+  const crlf = lf.replace(/\n/g, "\r\n").replace(/\r\n/g, "\n")
+  assert.deepEqual(checkStructure(lf, crlf), [])
+})
