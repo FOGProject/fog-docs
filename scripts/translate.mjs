@@ -564,6 +564,14 @@ function relinkFile(lang, docPath, index) {
     return mapped ? `](#${mapped.slug})` : whole
   })
 
+  // [text](other.md#anchor) -- another page, still a slug on both sides.
+  text = text.replace(/\]\(([^)\s#]+\.md)#([^)\s]+)\)/g, (whole, page, fragment) => {
+    const targetDoc = resolveDocPath(page, docPath, index)
+    if (!targetDoc) return whole
+    const mapped = remapAnchor(fragment, targetDoc, index)
+    return mapped ? `](${page}#${mapped.slug})` : whole
+  })
+
   if (text !== original) writeFileSync(filePath, text)
   return text !== original
 }
@@ -615,6 +623,13 @@ function danglingAnchors(lang, docPath, index) {
     }
   }
 
+  for (const [, page, fragment] of text.matchAll(/\]\(([^)\s#]+\.md)#([^)\s]+)\)/g)) {
+    const targetDoc = resolveDocPath(page, docPath, index)
+    if (targetDoc && broken(targetDoc, fragment)) {
+      problems.push(`anchor "${page}#${fragment}" still points at the English heading`)
+    }
+  }
+
   return problems
 }
 
@@ -642,9 +657,16 @@ function codeBlocks(text) {
 
 // Same-page anchors are excluded for the same reason wikilink fragments are:
 // they point at headings, which get translated, so relinkLanguage rewrites them
-// on purpose. danglingAnchors checks them instead.
+// on purpose. danglingAnchors checks them instead. A fragment on a *.md target
+// is the same thing pointing at another page -- relinkLanguage rewrites those
+// too -- so only the page part, which is a slug, is compared. Fragments on
+// external URLs stay in the comparison: nothing rewrites those.
 function markdownLinkTargets(text) {
-  return [...text.matchAll(/\]\(([^)\s]+)/g)].map((m) => m[1]).filter((t) => !t.startsWith("#")).sort()
+  return [...text.matchAll(/\]\(([^)\s]+)/g)]
+    .map((m) => m[1])
+    .filter((t) => !t.startsWith("#"))
+    .map((t) => t.replace(/^([^#]+\.md)#.*$/, "$1"))
+    .sort()
 }
 
 const sameList = (a, b) => a.length === b.length && a.every((value, i) => value === b[i])

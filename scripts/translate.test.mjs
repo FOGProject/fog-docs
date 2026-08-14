@@ -267,6 +267,25 @@ test("checkStructure ignores same-page anchors", () => {
   assert.deepEqual(checkStructure("[x](#a-heading)", "[y](#un-titre)"), [])
 })
 
+test("checkStructure ignores heading fragments on cross-page markdown links", () => {
+  // relinkLanguage rewrites these the same way it rewrites wikilink fragments,
+  // so comparing them would fail every page that links into a translated
+  // heading by relative path.
+  assert.deepEqual(checkStructure("see [x](roles.md#api-tokens)", "voir [y](roles.md#jetons-dapi)"), [])
+})
+
+test("checkStructure still catches a translated page target with a markdown fragment", () => {
+  assert.ok(checkStructure("see [x](roles.md#api-tokens)", "voir [y](roles-fr.md#jetons-dapi)").length > 0)
+})
+
+test("checkStructure keeps fragments on external URLs", () => {
+  // Nothing rewrites an anchor into someone else's site, so a changed one is a
+  // real difference.
+  assert.ok(
+    checkStructure("[x](https://example.org/p#one)", "[y](https://example.org/p#deux)").length > 0,
+  )
+})
+
 test("CRLF input does not corrupt heading slugs", () => {
   // JS `.` matches \r, so `^#{1,6} (.+)$` captures the carriage return on a
   // CRLF file. slugifyHeading trims before slugifying, which absorbs it -- this
