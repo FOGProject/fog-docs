@@ -78,11 +78,11 @@ Choisissez ce qui correspond à votre situation :
    qui prend en charge la taille de secteur de l'image, FOS propose de le
    reformater à bas niveau pour la faire correspondre, après une fenêtre
    d'annulation de 60 secondes. Voir
-   [[sector-size-imaging#nvme-targets-can-be-reformatted-to-match|Les cibles NVMe peuvent être reformatées pour correspondre]].
+   [[sector-size-imaging#Les cibles NVMe peuvent être reformatées pour correspondre|Les cibles NVMe peuvent être reformatées pour correspondre]].
    NVMe est le seul type de périphérique pour lequel cela fonctionne — pas les
    cibles SATA/SAS, eMMC/SD, UFS ou USB, ni les disques NVMe exclusivement 4Kn.
    Voir
-   [[sector-size-imaging#sector-sizes-by-device-type|Tailles de secteur par type de périphérique]]
+   [[sector-size-imaging#Tailles de secteur par type de périphérique|Tailles de secteur par type de périphérique]]
    pour le détail par type.
 
 4. **Cible sur machine virtuelle ?** La taille de secteur logique du disque est
