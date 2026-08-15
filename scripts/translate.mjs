@@ -767,8 +767,11 @@ function checkStructure(source, translated) {
   // A wikilink the model wrapped to respect a line width is the failure this
   // whole check exists for, and it survives the target comparison above only
   // because the regex would not have matched it at all -- so look for the
-  // opener directly.
-  const unclosed = (translated.match(/\[\[/g) ?? []).length !== translatedLinks.length
+  // opener directly. Fenced code is excluded first: `[[], []]` in PHP or a
+  // bash `[[ -d ... ]]` is not a wikilink, and the blocks themselves are
+  // already compared byte-for-byte above.
+  const outsideCode = translated.replace(/```[\s\S]*?```/g, "")
+  const unclosed = (outsideCode.match(/\[\[/g) ?? []).length !== wikilinkTargets(outsideCode).length
   if (unclosed) problems.push("a wikilink appears to be unclosed or broken across lines")
 
   return problems

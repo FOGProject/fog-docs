@@ -187,6 +187,14 @@ test("checkStructure catches a wikilink wrapped across a newline", () => {
   assert.ok(checkStructure("see [[a-page|A page]] ok", "voir [[a-page|Une\npage]] ok").length > 0)
 })
 
+test("checkStructure does not read [[ inside fenced code as a broken wikilink", () => {
+  // PHP `[[], []]` and bash `[[ -d x ]]` are code, not wikilinks; the block
+  // itself is compared byte-for-byte by the code-block check.
+  const page = "```php\n$a = [[], []];\n```\n\nsee [[a-page|A page]]"
+  const fr = "```php\n$a = [[], []];\n```\n\nvoir [[a-page|Une page]]"
+  assert.deepEqual(checkStructure(page, fr), [])
+})
+
 test("checkStructure catches a rewritten code block", () => {
   assert.ok(checkStructure("```\nfog install\n```", "```\nfog installer\n```").length > 0)
 })
