@@ -992,13 +992,18 @@ async function runLanguage({ lang, budget, options }) {
   // GITHUB_TOKEN/MODELS_TOKEN stay as fallbacks so a checkout that still sets
   // them keeps working, but GitHub Models itself is retired -- see the header.
   const token = process.env.TRANSLATE_API_KEY ?? process.env.GITHUB_TOKEN ?? process.env.MODELS_TOKEN
+  // No credential at all is "not wired up yet", not "broken". Those are
+  // different situations and only one of them is worth a red tick: this
+  // workflow is scheduled nightly, so failing while a provider decision is
+  // still open would train everyone to ignore it -- and then the loud failure
+  // added for a *dead* provider would be ignored along with it.
+  //
+  // Exits 0 deliberately. A configured provider that stops working still
+  // aborts with ProviderUnavailable and exits 1.
   if (!token) {
-    console.error(
-      `  TRANSLATE_API_KEY is not set -- cannot reach ${ENDPOINT}
-` +
-        "  Set TRANSLATE_API_KEY, and TRANSLATE_ENDPOINT/TRANSLATE_MODEL to match your provider.",
-    )
-    process.exitCode = 1
+    console.log(`  no translation provider configured -- skipping ${stale.length} stale page(s)`)
+    console.log("  Set TRANSLATE_API_KEY, TRANSLATE_ENDPOINT and TRANSLATE_MODEL to enable this.")
+    console.log("  Everything that does not call a model (--dry-run, --verify, --relink) still works.")
     return 0
   }
 
