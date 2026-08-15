@@ -159,7 +159,7 @@ que celui-ci ait été enrôlé sous forme de `MOK.der` via MokManager ou écrit
 `db` par ce chemin. Cette vérification est antérieure à l'extension de
 contraintes de nom que porte désormais l'autorité Secure Boot — reconfirmez sur
 matériel avant de vous y fier, et utilisez `--no-sb-name-constraints` (voir
-[[pki-zones#name-constraints|Contraintes de nom]]) si un parc rejette la chaîne.
+[[pki-zones#Contraintes de noms|Contraintes de nom]]) si un parc rejette la chaîne.
 
 >[!note] État de la validation
 >La voie C a été validée de bout en bout sous VirtualBox : Setup Mode → la tâche

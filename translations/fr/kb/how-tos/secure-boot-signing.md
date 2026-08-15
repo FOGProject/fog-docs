@@ -137,7 +137,7 @@ C'est ce qu'utilise [[secure-boot-mok-enrollment|l'enrôlement MOK]].
 >shim de l'équation : signez ce que vous voulez et le micrologiciel le charge.
 >C'est la seule voie si vous avez besoin, en même temps, du démarrage réseau
 >HTTPS avec l'autorité de FOG ou votre autorité interne sous Secure Boot ; voir
->[[pki-zones#https-and-netboot|HTTPS et démarrage réseau]].
+>[[pki-zones#HTTPS et netboot|HTTPS et démarrage réseau]].
 
 ---
 
@@ -239,7 +239,7 @@ flowchart TD
 >route, faites-la **avant** de mettre en place le Secure Boot ici, et non après.
 >Migrer une installation Secure Boot déjà enrôlée est une voie praticable et bien
 >comprise — recopiez le répertoire `pki/secureboot/`, selon
->[[migrating-fog-server#migrating-the-secure-boot-signing-material|la section Secure Boot de ce guide]]
+>[[migrating-fog-server#Migrer le matériel de signature Secure Boot|la section Secure Boot de ce guide]]
 >— mais c'est une chose de plus à réussir, et la rater signifie que chaque client
 >déjà enrôlé devra être réenrôlé une seconde fois pour rien. Enrôler une fois,
 >sur le serveur que vous comptez conserver, représente strictement moins de
@@ -299,7 +299,7 @@ présence ne change donc rien pour vos clients existants.
 >l'autorité de certification propre à FOG le sautent** — ce sont des binaires
 >génériques d'amont, ils ne peuvent donc pas embarquer l'autorité de votre
 >serveur, et un binaire signé ne peut pas être recompilé sans invalider la
->signature. Voir [[pki-zones#https-and-netboot|HTTPS et démarrage réseau]] pour
+>signature. Voir [[pki-zones#HTTPS et netboot|HTTPS et démarrage réseau]] pour
 >le contournement, et notez qu'une autorité publique sur le vhost évite
 >entièrement ce compromis. Sinon, le téléchargement a échoué — ce n'est
 >délibérément pas fatal — et l'installeur l'aura signalé. Relancez-le.
@@ -544,7 +544,7 @@ root ; voir [La clé de signature](#la-clé-de-signature).
   contraignants ensemble qu'on ne le croirait.** Un certificat web issu d'une
   **autorité publique** (par exemple Let's Encrypt) sur un FQDN vous donne le
   démarrage réseau HTTPS sans recompilation et sans perdre le shim Secure Boot
-  signé — voir [[pki-zones#https-and-netboot|HTTPS et démarrage réseau]] pour
+  signé — voir [[pki-zones#HTTPS et netboot|HTTPS et démarrage réseau]] pour
   comprendre pourquoi. Seules l'autorité propre à FOG ou votre autorité interne
   (non publiquement approuvée) imposent de choisir entre un iPXE recompilé avec
   `TRUST=` (démarrage réseau HTTPS, pas de shim signé) et le shim signé (Secure

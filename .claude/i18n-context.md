@@ -29,9 +29,8 @@ translation), build from this branch. Verified live on
   matches a real `id=` on the built page.
 - Untranslated pages fall back to English content inside French UI chrome.
 
-**French: 87 of 99 pages.** All section landing pages, the whole
-getting-started path, all of `management/web/`, and most of `kb/`. The 22 left
-are listed below.
+**French: 99 of 99 pages — seeding is COMPLETE.** Nothing remains untranslated;
+`--dry-run` reports zero pages and `--verify` passes clean across the tree.
 
 ## The plan from here (decided by the user)
 
@@ -118,34 +117,15 @@ name (Fast Wipe, Memory Test, Deploy - Multicast, …) and every 1.6-era button
 in English on the pages seeded so far, while the older strings the catalog
 does cover are translated.
 
-## Remaining French pages, largest first
+## Remaining French pages
 
-These 12 are what is left. The big four at the top were deliberately deferred
-throughout; the rest of this list is mostly Secure Boot and contributor-facing
-material. Regenerate this table any time with
-`node scripts/translate.mjs fr --dry-run`.
+None — all 99 pages are seeded (final batch of 12 landed 2026-08-15).
+Regenerate the list any time with `node scripts/translate.mjs fr --dry-run`.
 
-| Page | Size |
-|---|---|
-| installation/network-setup/proxy-dhcp.md | 29.3k |
-| development/plugin-development.md | 28.4k |
-| installation/server/migrating-fog-server.md | 26.5k |
-| development/install-script-architecture.md | 23.7k |
-| kb/troubleshooting/troubleshoot-tftp.md | 22.7k |
-| kb/integrations/external-ca-lets-encrypt.md | 18.6k |
-| kb/reference/pki-zones.md | 17.8k |
-| kb/reference/csv_import_export.md | 16.2k |
-| kb/how-tos/bios-and-uefi-co-existence.md | 15.3k |
-| kb/integrations/api-expansion-and-pagination.md | 14.4k |
-| kb/how-tos/unify-certificates-across-fog-servers.md | 13.9k |
-| installation/network-setup/dhcp-server-settings.md | 11.9k |
-
-Suggested order: the Secure Boot cluster reads as one story
-(`secure-boot-setup-mode-enrollment` → `secure-boot-mok-enrollment` →
-`secure-boot-technical-details` → `secure-boot-signing`), so translating them
-together keeps the terminology consistent. Then the remaining `installation/`
-and `kb/troubleshooting` pages, which readers hit early. `development/` is
-contributor-facing and lowest priority.
+Also done that day: `translations/README.md` is the human how-to for creating
+the Cloudflare account/token and wiring `TRANSLATE_API_KEY`/`TRANSLATE_ENDPOINT`/
+`TRANSLATE_MODEL` into GitHub — the remaining human step before the workflow
+can hold the line on drift.
 
 ## Gotchas already paid for — don't rediscover these
 
@@ -186,10 +166,17 @@ contributor-facing and lowest priority.
   block, so `checkStructure` compares it byte-for-byte and `--verify` rejects a
   translated one ("fenced code blocks differ"). That is the correct call for
   every other fenced block, so the rule was left alone rather than special-cased
-  — but it does mean the flowchart on `secure-boot-signing` renders in English
-  on a translated page. One diagram repo-wide today. If more appear, the fix is
+  — but it does mean mermaid flowcharts render in English on translated pages.
+  Several exist now: `secure-boot-signing`, `install-script-architecture` (two),
+  `pki-zones`. If English-labeled diagrams become a real complaint, the fix is
   a deliberate, tested change to `codeBlocks()` that exempts `mermaid`, not an
   ad-hoc edit that quietly weakens the check.
+- **`[[` inside fenced code no longer trips the unclosed-wikilink check.**
+  `plugin-development` (PHP `[[], []]`) and `migrating-fog-server` (bash
+  `[[ -d … ]]`) were the first translated pages whose *code* contains `[[`,
+  which the raw opener-count in `checkStructure` misread as a broken wikilink.
+  The check now strips fenced blocks first (they're compared byte-for-byte
+  separately); covered by a test in `translate.test.mjs`.
 - **The slugifier emits one hyphen per whitespace character**, matching
   github-slugger — `"Client & Server"` → `client--server`. Collapsing runs
   produces anchors Quartz never generates.

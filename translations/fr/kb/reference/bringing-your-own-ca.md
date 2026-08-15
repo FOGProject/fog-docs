@@ -181,7 +181,7 @@ Rien de tout cela ne s'étend non plus à HTTPS. La confiance accordée au noyau
 à shim d'une part, et le magasin de racines TLS d'iPXE d'autre part, sont deux
 mécanismes sans rapport — enrôler une autorité ici ne change rien aux serveurs
 HTTPS depuis lesquels un client Secure Boot acceptera de télécharger. Voir
-[[pki-zones#https-and-netboot|HTTPS et démarrage réseau]].
+[[pki-zones#HTTPS et netboot|HTTPS et démarrage réseau]].
 
 >[!warning] Générez une clé neuve — ne réutilisez pas le MOK que vous avez déjà
 >Si cette machine a déjà compilé un module DKMS, elle possède déjà un MOK, et il

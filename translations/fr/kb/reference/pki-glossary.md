@@ -49,7 +49,7 @@ usurper quoi que ce soit en dehors de celui-ci.
 
 Le certificat que le serveur web (Apache/nginx) présente effectivement aux
 navigateurs. Renouvelable seul — voir
-[[pki-zones#leaf-renewal|Renouvellement de la feuille]] — sans toucher à
+[[pki-zones#Renouvellement des feuilles|Renouvellement de la feuille]] — sans toucher à
 l'autorité de certification web.
 
 ### Autorité de certification Secure Boot
@@ -98,7 +98,7 @@ par la racine, utilisée uniquement par `FOGBase::certDecrypt()` — le
 chiffrement de la poignée de main d'enregistrement de fog-client — jamais
 pour du TLS. Non remplaçable en apportant votre propre autorité de
 certification ; voir
-[[pki-zones#bringing-your-own-ca|Apporter votre propre autorité de certification]].
+[[pki-zones#Apporter votre propre CA|Apporter votre propre autorité de certification]].
 
 ### Empreinte (aussi appelée thumbprint)
 

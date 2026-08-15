@@ -227,10 +227,10 @@ signature du noyau n'est pas acceptée. Par ordre de probabilité :
 | Symptôme | Cause |
 | --- | --- |
 | `Security Policy Violation` | Certificat non enrôlé sur *cette* machine, ou feuille signée sous une autorité différente de celle qui est enrôlée |
-| `Security Policy Violation`, alors que le certificat *figure* bien dans `mokutil --list-enrolled` | La clé porte l'OID « signature de modules uniquement » — voir [[secure-boot-signing#Apporter votre propre clé|Apporter votre propre clé]] |
-| Échoue sur toutes les machines, y compris celles qui sont enrôlées | shim n'est pas dans la chaîne de démarrage — voir [[secure-boot-signing#La chaîne que vous construisez|la chaîne]] |
+| `Security Policy Violation`, alors que le certificat *figure* bien dans `mokutil --list-enrolled` | La clé porte l'OID « signature de modules uniquement » — voir [[secure-boot-signing#Apporter votre propre clé\|Apporter votre propre clé]] |
+| Échoue sur toutes les machines, y compris celles qui sont enrôlées | shim n'est pas dans la chaîne de démarrage — voir [[secure-boot-signing#La chaîne que vous construisez\|la chaîne]] |
 | Fonctionnait hier, échoue aujourd'hui | Quelque chose a remplacé les noyaux sans les resigner. L'installeur resigne toujours à l'installation et à la mise à niveau — suspectez tout ce qui copie dans `service/ipxe/` en dehors de lui — vérifiez avec `sbverify` et relancez l'installeur |
-| Toutes les machines cessent de fonctionner après un changement | Soit l'autorité de certification a été régénérée, soit vous êtes passé à une autre clé plate fournie par l'administrateur. L'enrôlement se fait par autorité (ou par clé plate) : tous les clients doivent donc être réenrôlés — voir [[secure-boot-signing#Renouveler ou retirer une clé|Renouveler ou retirer une clé]] |
+| Toutes les machines cessent de fonctionner après un changement | Soit l'autorité de certification a été régénérée, soit vous êtes passé à une autre clé plate fournie par l'administrateur. L'enrôlement se fait par autorité (ou par clé plate) : tous les clients doivent donc être réenrôlés — voir [[secure-boot-signing#Renouveler ou retirer une clé\|Renouveler ou retirer une clé]] |
 | Se plaint du format, pas de la signature | Le noyau n'a pas `CONFIG_EFI_STUB` |
 
 ## Voir aussi
