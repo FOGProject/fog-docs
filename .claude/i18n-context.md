@@ -242,6 +242,22 @@ docs should stop resolving, delete the branch *and* add an RTD redirect
 - Deactivate `stable` and `1.5.9` on the new project (Admin → Versions). Not an
   Automation Rule — see the gotcha above for why that cannot work.
 - Repeat per language.
+- **Short-URL redirects (Exact Redirects, fire on 404 only — leave "Force"
+  off).** On the parent `FOGProject` project add `/*` → `/en/latest/:splat`
+  (RTD's own documented version-less-URL recipe), so
+  `docs.fogproject.org/<context_id>` resolves via the alias-redirect stub.
+  Per language add `/fr/*` → `/fr/latest/:splat` — RTD says translations need
+  their own rules, so add it on `FOGProject-fr` first and test one URL; if the
+  parent turns out to handle the 404, move it there instead. **Ordering: if
+  both rules land on the same project, `/fr/*` must sit above `/*`** (first
+  match wins; otherwise `/fr/foo` → `/en/latest/fr/foo`). One rule per
+  language + the catch-all = 8 rules, cap is 100/project. Known cosmetic cost:
+  a genuine 404 like `/en/latest/typo` now redirects once to a doubled path
+  before 404ing. These rules also unlock short *visible* permalinks
+  (`/{context_id}`, `/fr/{context_id}`) if `context-id-permalink` is ever
+  changed to emit them — old `/en/latest/{context_id}` links keep working
+  regardless, because the alias stubs stay in the build and redirects never
+  touch URLs that resolve.
 
 ---
 
