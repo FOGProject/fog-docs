@@ -29,7 +29,7 @@ translation), build from this branch. Verified live on
   matches a real `id=` on the built page.
 - Untranslated pages fall back to English content inside French UI chrome.
 
-**French: 77 of 99 pages.** All section landing pages, the whole
+**French: 87 of 99 pages.** All section landing pages, the whole
 getting-started path, all of `management/web/`, and most of `kb/`. The 22 left
 are listed below.
 
@@ -120,7 +120,7 @@ does cover are translated.
 
 ## Remaining French pages, largest first
 
-These 22 are what is left. The big four at the top were deliberately deferred
+These 12 are what is left. The big four at the top were deliberately deferred
 throughout; the rest of this list is mostly Secure Boot and contributor-facing
 material. Regenerate this table any time with
 `node scripts/translate.mjs fr --dry-run`.
@@ -129,7 +129,6 @@ material. Regenerate this table any time with
 |---|---|
 | installation/network-setup/proxy-dhcp.md | 29.3k |
 | development/plugin-development.md | 28.4k |
-| kb/how-tos/secure-boot-signing.md | 28.1k |
 | installation/server/migrating-fog-server.md | 26.5k |
 | development/install-script-architecture.md | 23.7k |
 | kb/troubleshooting/troubleshoot-tftp.md | 22.7k |
@@ -139,16 +138,7 @@ material. Regenerate this table any time with
 | kb/how-tos/bios-and-uefi-co-existence.md | 15.3k |
 | kb/integrations/api-expansion-and-pagination.md | 14.4k |
 | kb/how-tos/unify-certificates-across-fog-servers.md | 13.9k |
-| kb/how-tos/secure-boot-mok-enrollment.md | 13.3k |
 | installation/network-setup/dhcp-server-settings.md | 11.9k |
-| kb/how-tos/firewall.md | 11.1k |
-| kb/reference/fog-client-installation-options.md | 10.5k |
-| kb/troubleshooting/troubleshoot-ftp.md | 10.2k |
-| kb/reference/secure-boot-technical-details.md | 10.0k |
-| installation/server/command-line-options.md | 9.8k |
-| development/fos-release-workflows.md | 9.8k |
-| management/server/install-fogsettings.md | 9.3k |
-| kb/how-tos/secure-boot-setup-mode-enrollment.md | 8.1k |
 
 Suggested order: the Secure Boot cluster reads as one story
 (`secure-boot-setup-mode-enrollment` → `secure-boot-mok-enrollment` →
