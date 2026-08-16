@@ -253,9 +253,11 @@ docs should stop resolving, delete the branch *and* add an RTD redirect
   match wins; otherwise `/fr/foo` → `/en/latest/fr/foo`). One rule per
   language + the catch-all = 8 rules, cap is 100/project. Known cosmetic cost:
   a genuine 404 like `/en/latest/typo` now redirects once to a doubled path
-  before 404ing. These rules also unlock short *visible* permalinks
-  (`/{context_id}`, `/fr/{context_id}`) if `context-id-permalink` is ever
-  changed to emit them — old `/en/latest/{context_id}` links keep working
+  before 404ing. **The visible "Permalink" link now depends on these rules**:
+  `context-id-permalink` emits the short form (`/{context_id}` for English,
+  `/{lang}/{context_id}` for translations, language read from `cfg.baseUrl`),
+  confirmed working for en and fr on 2026-08-15. Deleting the rules 404s every
+  visible permalink. Old `/en/latest/{context_id}` links keep working
   regardless, because the alias stubs stay in the build and redirects never
   touch URLs that resolve.
 
