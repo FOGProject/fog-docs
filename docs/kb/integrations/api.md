@@ -17,6 +17,18 @@ tags:
 In here you'll find some practical API examples. But first, let's explain how
 to authenticate.
 
+> [!tip] Looking for the full endpoint list?
+> On FOG 1.6 and newer the server describes its own API. **API Documentation** in
+> the main menu renders every endpoint your install exposes, with field types, the
+> permission each one needs, and a working *try it* console. The same document is
+> machine-readable at `/fog/swagger.json`, so you can generate a client from it in
+> any language. See [[api-openapi-reference|API Documentation Page & OpenAPI Spec]].
+>
+> That reference is generated from the running server, so it stays accurate as
+> classes and routes change. The examples below are still the best starting point
+> for *how* to call the API; the generated document is where to look up *what* is
+> callable.
+
 ## Basics
 
 To be able to use the API via external calls it needs to be enabled in the FOG
