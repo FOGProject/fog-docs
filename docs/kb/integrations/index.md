@@ -14,5 +14,6 @@ tags:
 This sections contains articles related to known integrations with fog, especially with the API.
 
 - [[api|API]]
+- [[api-openapi-reference|API Documentation Page & OpenAPI Spec]]
 - [[api-expansion-and-pagination|API Pagination, Expansion & Plugin Items]]
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]]
