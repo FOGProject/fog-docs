@@ -18,7 +18,7 @@ tags:
 # API Documentation Page & OpenAPI Spec
 
 FOG 1.6 describes its own REST API. The server generates an
-[OpenAPI 3.1](https://spec.openapis.org/oas/v3.1.0) document from its live routing and model
+[OpenAPI 3.0.3](https://spec.openapis.org/oas/v3.0.3) document from its live routing and model
 metadata, and renders it in the web UI with Swagger UI, so you can read every endpoint and try
 calls against your own server without leaving it.
 
@@ -60,7 +60,20 @@ The document is generated per request rather than shipped as a file, which means
 server serving it — including any classes a plugin has added. A file baked at build time would
 describe the classes FOG ships with instead, which on a server running plugins is a different list.
 
-A typical install produces around 390 paths across 50-odd classes.
+A typical install produces around 510 paths and 716 operations across some 69 classes.
+
+### Why 3.0.3 and not 3.1
+
+The document uses no JSON Schema feature that 3.0.3 cannot express, and declaring 3.1 costs about a
+second of frozen page every time you expand an operation: Swagger UI resolves a 3.1 document through
+its JSON-Schema-2020-12 resolver, which re-resolves the whole document on each subtree request, so
+the cost tracks the size of the document rather than the size of the thing you clicked. On a
+document this size that is 1798ms per expansion against 156ms. Nullable fields are therefore spelled
+3.0's `nullable: true`, and the handful of genuinely multi-type fields as `oneOf`.
+
+The side benefit is reach: client generators still have open bugs handling 3.1's
+`type: [x, "null"]`, so a 3.0.3 document generates working clients in more places than a 3.1 one
+would.
 
 ## Using it with other tools
 
@@ -92,12 +105,22 @@ collection from it.
 
 ## What the document does and does not cover
 
-Generated from three sources that FOG already reads at runtime, so they cannot drift from the
-behaviour they describe:
+Three things are read live at generation time, so they cannot drift from the behaviour they
+describe:
 
-- the router's class list and route table, for every path and method
+- the router's class lists, for which classes appear and which of them accept tasks or expose an
+  active list
 - each model's field metadata, for property names, required fields and types
 - the permission registry, for the permission each operation needs, published as `x-fog-permission`
+
+Add a class to the router and its whole set of operations appears here with no further work,
+including a class contributed by a plugin.
+
+The *shape* of each operation is written by hand, though — the ten generic routes every class gets,
+and the fixed `system/*` endpoints. An endpoint that follows neither pattern has to be described
+deliberately, so a route added without that step is served but not documented. Two are in that
+state today: `POST /snapin/createwithfile` and `POST /storagegroup/{id}/uploadsnapinfiles`, both
+multipart uploads rather than the JSON bodies the rest of the API takes.
 
 Some things are described in prose on the operations they affect rather than as strict schema,
 because no metadata backs them:
