@@ -4,7 +4,11 @@
 # regenerates that page in every language and commits the result. Nothing here
 # ever writes to docs/.
 #
-# !! This workflow needs TRANSLATE_API_KEY configured before it will run. !!
+# !! This workflow is OFF until a provider is configured: the job is gated on
+# !! the TRANSLATE_ENDPOINT repository variable being set. Setting it (plus
+# !! TRANSLATE_MODEL and the TRANSLATE_API_KEY secret) turns it on -- no
+# !! workflow edit needed. translations/README.md is the step-by-step for
+# !! creating the Cloudflare account and token.
 #
 # It was built on GitHub Models, reached with the workflow's own GITHUB_TOKEN
 # and a `models: read` permission -- no API key, no billing, no secret to
@@ -85,6 +89,11 @@ concurrency:
 
 jobs:
   translate:
+    # Off switch: without a configured provider every real run would fail at
+    # the first model call (the GitHub Models default answers 410), so skip
+    # cleanly until the repository variable exists. A skipped run is green in
+    # the Actions tab, not a red X on every docs/ push.
+    if: vars.TRANSLATE_ENDPOINT != ''
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
