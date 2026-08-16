@@ -21,7 +21,9 @@ import {
   setScalar,
   slugifyHeading,
   splitFrontmatter,
+  providerIsUnavailable,
   stripBanner,
+  unparseableFrontmatter,
 } from "./translate.mjs"
 
 // A cut-down catalog in the exact shape fogproject emits: msgcat --no-wrap,
@@ -185,6 +187,14 @@ test("checkStructure catches a wikilink wrapped across a newline", () => {
   assert.ok(checkStructure("see [[a-page|A page]] ok", "voir [[a-page|Une\npage]] ok").length > 0)
 })
 
+test("checkStructure does not read [[ inside fenced code as a broken wikilink", () => {
+  // PHP `[[], []]` and bash `[[ -d x ]]` are code, not wikilinks; the block
+  // itself is compared byte-for-byte by the code-block check.
+  const page = "```php\n$a = [[], []];\n```\n\nsee [[a-page|A page]]"
+  const fr = "```php\n$a = [[], []];\n```\n\nvoir [[a-page|Une page]]"
+  assert.deepEqual(checkStructure(page, fr), [])
+})
+
 test("checkStructure catches a rewritten code block", () => {
   assert.ok(checkStructure("```\nfog install\n```", "```\nfog installer\n```").length > 0)
 })
@@ -301,4 +311,51 @@ test("CRLF and LF sources compare as equal content", () => {
   const lf = "# T\n\n```\nfog install\n```\n"
   const crlf = lf.replace(/\n/g, "\r\n").replace(/\r\n/g, "\n")
   assert.deepEqual(checkStructure(lf, crlf), [])
+})
+
+test("unparseableFrontmatter catches a bare scalar containing a colon", () => {
+  // Hand-writing a translation bypasses setScalar, which would have quoted
+  // this. YAML reads "Secure Boot : details" as a nested mapping and the whole
+  // Quartz build dies, naming the composed temp-dir copy rather than the file
+  // in the repo -- so catching it here is what makes the error findable.
+  const problems = unparseableFrontmatter('title: Secure Boot : détails techniques\ncontext_id: x')
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /title/)
+})
+
+test("unparseableFrontmatter accepts the quoted form setScalar emits", () => {
+  const quoted = setScalar("title: placeholder", "title", "Secure Boot : détails techniques")
+  assert.deepEqual(unparseableFrontmatter(quoted), [])
+})
+
+test("unparseableFrontmatter leaves ordinary front matter alone", () => {
+  assert.deepEqual(
+    unparseableFrontmatter("title: Gestion des machines\ndescription: page d'index\ncontext_id: hosts"),
+    [],
+  )
+})
+
+test("unparseableFrontmatter ignores list items and nested keys", () => {
+  // "    - Secure Boot: signing" is a sequence entry, not a mapping line, and a
+  // URL in a description is a colon without a following space.
+  assert.deepEqual(
+    unparseableFrontmatter("aliases:\n    - Secure Boot Technical Details\ndescription: see https://x/y"),
+    [],
+  )
+})
+
+test("providerIsUnavailable separates a dead backend from a rate limit", () => {
+  // GitHub Models' retirement returned 410 on every request. Classified as an
+  // ordinary per-page failure it produced a green workflow that translated
+  // nothing, which is the failure mode this predicate exists to prevent.
+  for (const status of [401, 403, 404, 410, 500, 502, 503]) {
+    assert.equal(providerIsUnavailable(status), true, `${status} should abort the run`)
+  }
+  // 429 is the documented rate limit and has its own handling: stop politely,
+  // leave the backlog for the nightly drain, exit clean.
+  assert.equal(providerIsUnavailable(429), false)
+  // A page-specific failure should not take the whole run down.
+  for (const status of [200, 400, 422]) {
+    assert.equal(providerIsUnavailable(status), false, `${status} should not abort the run`)
+  }
 })

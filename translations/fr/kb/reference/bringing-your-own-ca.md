@@ -70,7 +70,7 @@ certificat devient à la fois le signataire et ce que vous enrôlez — le modè
 plat, comme avant l'existence de la séparation autorité/feuille pour la clé
 propre à FOG. Renouveler ensuite une clé plate impose de réenrôler chaque
 machine — voir
-[[secure-boot-signing#rotating-or-removing-a-key|Renouveler ou retirer une clé]].
+[[secure-boot-signing#Renouveler ou retirer une clé|Renouveler ou retirer une clé]].
 
 ### Générer une feuille vous-même
 
@@ -163,7 +163,7 @@ renouvelez la feuille et plus aucune machine n'a besoin d'être touchée — le 
 bénéfice dont la clé auto-générée de FOG profite déjà automatiquement. Sans
 `--secureboot-ca-cert`, faire cela avec votre propre autorité impose de signer
 et de publier à la main : suivez
-[[secure-boot-technical-details#signing-the-fos-kernels|la signature des noyaux FOS]]
+[[secure-boot-technical-details#Signer les noyaux FOS|la signature des noyaux FOS]]
 en ajoutant `--addcert` à l'appel de `sbsign`, et enrôlez le certificat de
 l'autorité plutôt qu'une feuille.
 
@@ -181,7 +181,7 @@ Rien de tout cela ne s'étend non plus à HTTPS. La confiance accordée au noyau
 à shim d'une part, et le magasin de racines TLS d'iPXE d'autre part, sont deux
 mécanismes sans rapport — enrôler une autorité ici ne change rien aux serveurs
 HTTPS depuis lesquels un client Secure Boot acceptera de télécharger. Voir
-[[pki-zones#https-and-netboot|HTTPS et démarrage réseau]].
+[[pki-zones#HTTPS et netboot|HTTPS et démarrage réseau]].
 
 >[!warning] Générez une clé neuve — ne réutilisez pas le MOK que vous avez déjà
 >Si cette machine a déjà compilé un module DKMS, elle possède déjà un MOK, et il

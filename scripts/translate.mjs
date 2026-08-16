@@ -44,10 +44,28 @@
 //   node scripts/translate.mjs fr --file installation/server/requirements.md
 //
 // Environment:
-//   GITHUB_TOKEN        token with `models: read` (set automatically in Actions)
-//   TRANSLATE_MODEL     default openai/gpt-4o-mini
-//   TRANSLATE_ENDPOINT  default https://models.github.ai/inference/chat/completions
+//   TRANSLATE_API_KEY   credential for the endpoint below, sent as a bearer token
+//   TRANSLATE_ENDPOINT  an OpenAI-compatible chat/completions URL
+//   TRANSLATE_MODEL     model (or, on Azure Foundry, the deployment name)
 //   TRANSLATE_LIMIT     default 40 model requests per run
+//
+// The defaults below point at GitHub Models, which GitHub retired on
+// 30 July 2026 -- they are kept only so the failure names something real.
+// Cloudflare Workers AI keeps this free, which an open-source project needs.
+// It is OpenAI-compatible and takes the same bearer header already sent here:
+//
+//   TRANSLATE_ENDPOINT=https://api.cloudflare.com/client/v4/accounts/<id>/ai/v1/chat/completions
+//   TRANSLATE_MODEL=@cf/zai-org/glm-4.7-flash
+//   TRANSLATE_API_KEY=<API token with Workers AI read>
+//
+// 10,000 Neurons/day on the Workers Free plan, resetting 00:00 UTC -- enough to
+// track docs/ changes, not enough to seed a language from nothing. That is what
+// the request budget and the nightly drain are already shaped around.
+//
+// Azure Translator is NOT usable here despite having a bigger free tier: it
+// takes no prompt, so the glossary has nowhere to go, and its textType is
+// plain/html only, so markdown structure does not survive. Azure Foundry Models
+// would drop in but is pay-per-token.
 import { createHash } from "node:crypto"
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs"
 import path from "node:path"
@@ -83,6 +101,24 @@ const STATE_FILE = ".translation-state.json"
 const GLOSSARY_MAX_TERMS = 40
 
 class RateLimited extends Error {}
+
+// A failure that is not about the page being translated: the endpoint is gone,
+// the token is not accepted, the service is down. Retrying the next page cannot
+// help, and every page will fail the same way -- so this aborts the run and
+// exits non-zero instead of reporting a green tick over a no-op.
+//
+// This distinction was added after GitHub Models was retired (30 July 2026).
+// Every request came back `410 github_models_retirement_brownout`, every page
+// was counted as an ordinary per-page failure, and the workflow went green
+// having translated nothing. A dead backend has to look like a broken build.
+class ProviderUnavailable extends Error {}
+
+// 429 is the documented rate limit and is handled separately. Everything in
+// here means the provider itself is not usable: authentication, a retired or
+// moved endpoint, or the service being down.
+function providerIsUnavailable(status) {
+  return status === 401 || status === 403 || status === 404 || status === 410 || status >= 500
+}
 
 // --------------------------------------------------------------------- files
 
@@ -192,10 +228,34 @@ function getScalar(frontmatter, key) {
   return match[1].trim().replace(/^["'](.*)["']$/, "$1")
 }
 
+// A bare YAML scalar cannot start with an indicator character or contain ": ",
+// which would make the parser read it as a nested mapping. setScalar quotes on
+// exactly this condition; unquotedScalarNeedsQuotes checks the same rule from
+// the other side, so a hand-edited page is held to what the generator emits.
+const unquotedScalarNeedsQuotes = (value) => /^[\s>|&*!%@`{[]|: |:$|#/.test(value)
+
 function setScalar(frontmatter, key, value) {
-  const needsQuoting = /^[\s>|&*!%@`{[]|: |:$|#/.test(value)
-  const emitted = needsQuoting ? `"${value.replace(/"/g, '\\"')}"` : value
+  const emitted = unquotedScalarNeedsQuotes(value) ? `"${value.replace(/"/g, '\\"')}"` : value
   return frontmatter.replace(new RegExp(`^(${key}:)[ \\t]*.*$`, "m"), `$1 ${emitted}`)
+}
+
+// Front matter that YAML cannot parse fails the Quartz build outright, with an
+// error naming the temp-dir copy rather than the file in the repo. Everything
+// else --verify reports is a silent defect, so this one is worth catching here
+// purely to shorten the trip from symptom to cause.
+function unparseableFrontmatter(frontmatter) {
+  const problems = []
+  for (const line of frontmatter.split("\n")) {
+    const match = /^([A-Za-z_][\w-]*):[ \t]+(.*)$/.exec(line)
+    if (!match) continue
+    const [, key, raw] = match
+    const value = raw.trim()
+    if (!value || /^["'[{]/.test(value)) continue
+    if (unquotedScalarNeedsQuotes(value)) {
+      problems.push(`front matter ${key} needs quoting (a bare scalar cannot contain ": ")`)
+    }
+  }
+  return problems
 }
 
 // -------------------------------------------------------------------- chunking
@@ -392,6 +452,8 @@ async function callModel({ token, targetLanguage, glossary, text, isFirstChunk }
   })
 
   if (response.status === 429) throw new RateLimited("model request rate limited")
+  if (providerIsUnavailable(response.status))
+    throw new ProviderUnavailable(`HTTP ${response.status} ${(await response.text()).slice(0, 300)}`)
   if (!response.ok) throw new Error(`model request failed: HTTP ${response.status} ${await response.text()}`)
 
   const payload = await response.json()
@@ -434,6 +496,8 @@ async function translateFrontmatterValues({ token, targetLanguage, glossary, val
   })
 
   if (response.status === 429) throw new RateLimited("model request rate limited")
+  if (providerIsUnavailable(response.status))
+    throw new ProviderUnavailable(`HTTP ${response.status} ${(await response.text()).slice(0, 300)}`)
   if (!response.ok) throw new Error(`front matter request failed: HTTP ${response.status}`)
 
   const payload = await response.json()
@@ -703,8 +767,11 @@ function checkStructure(source, translated) {
   // A wikilink the model wrapped to respect a line width is the failure this
   // whole check exists for, and it survives the target comparison above only
   // because the regex would not have matched it at all -- so look for the
-  // opener directly.
-  const unclosed = (translated.match(/\[\[/g) ?? []).length !== translatedLinks.length
+  // opener directly. Fenced code is excluded first: `[[], []]` in PHP or a
+  // bash `[[ -d ... ]]` is not a wikilink, and the blocks themselves are
+  // already compared byte-for-byte above.
+  const outsideCode = translated.replace(/```[\s\S]*?```/g, "")
+  const unclosed = (outsideCode.match(/\[\[/g) ?? []).length !== wikilinkTargets(outsideCode).length
   if (unclosed) problems.push("a wikilink appears to be unclosed or broken across lines")
 
   return problems
@@ -837,6 +904,7 @@ function verifyLanguage(lang) {
         problems.push(`${key} does not match the English page`)
       }
     }
+    problems.push(...unparseableFrontmatter(translated.frontmatter))
 
     checked++
     if (problems.length) {
@@ -923,10 +991,22 @@ async function runLanguage({ lang, budget, options }) {
     return 0
   }
 
-  const token = process.env.GITHUB_TOKEN ?? process.env.MODELS_TOKEN
+  // TRANSLATE_API_KEY is the provider-neutral name and takes precedence.
+  // GITHUB_TOKEN/MODELS_TOKEN stay as fallbacks so a checkout that still sets
+  // them keeps working, but GitHub Models itself is retired -- see the header.
+  const token = process.env.TRANSLATE_API_KEY ?? process.env.GITHUB_TOKEN ?? process.env.MODELS_TOKEN
+  // No credential at all is "not wired up yet", not "broken". Those are
+  // different situations and only one of them is worth a red tick: this
+  // workflow is scheduled nightly, so failing while a provider decision is
+  // still open would train everyone to ignore it -- and then the loud failure
+  // added for a *dead* provider would be ignored along with it.
+  //
+  // Exits 0 deliberately. A configured provider that stops working still
+  // aborts with ProviderUnavailable and exits 1.
   if (!token) {
-    console.error("  GITHUB_TOKEN (or MODELS_TOKEN) is not set -- cannot reach GitHub Models")
-    process.exitCode = 1
+    console.log(`  no translation provider configured -- skipping ${stale.length} stale page(s)`)
+    console.log("  Set TRANSLATE_API_KEY, TRANSLATE_ENDPOINT and TRANSLATE_MODEL to enable this.")
+    console.log("  Everything that does not call a model (--dry-run, --verify, --relink) still works.")
     return 0
   }
 
@@ -960,6 +1040,11 @@ async function runLanguage({ lang, budget, options }) {
         console.log("  rate limited; stopping here and leaving the rest for the nightly run")
         break
       }
+      // Not this page's fault and not survivable -- every remaining page and
+      // every remaining language would fail identically. Surface it as a build
+      // failure rather than grinding through the backlog printing the same
+      // error once per page.
+      if (error instanceof ProviderUnavailable) throw error
       failures++
       console.warn(`  FAILED ${docPath}: ${error.message}`)
     }
@@ -1016,7 +1101,22 @@ async function main() {
   const budget = { remaining: Number(value("--limit") ?? DEFAULT_LIMIT) }
 
   for (const lang of targets) {
-    budget.remaining -= await runLanguage({ lang, budget, options })
+    try {
+      budget.remaining -= await runLanguage({ lang, budget, options })
+    } catch (error) {
+      if (!(error instanceof ProviderUnavailable)) throw error
+      console.error(
+        `\nThe translation provider is not usable: ${error.message}\n\n` +
+          `Every page would fail the same way, so this run stopped instead of\n` +
+          `reporting success over a no-op. Nothing was written.\n\n` +
+          `Endpoint: ${ENDPOINT}\n` +
+          `Model:    ${MODEL}\n\n` +
+          `If this is a 410, the endpoint has been retired -- GitHub Models was\n` +
+          `retired on 30 July 2026. Point TRANSLATE_ENDPOINT and TRANSLATE_MODEL\n` +
+          `at a replacement and give the workflow whatever credential it needs.`,
+      )
+      process.exit(1)
+    }
   }
 }
 
@@ -1034,9 +1134,11 @@ export {
   getScalar,
   headingSlugs,
   parsePo,
+  providerIsUnavailable,
   selectGlossary,
   setScalar,
   slugifyHeading,
   splitFrontmatter,
   stripBanner,
+  unparseableFrontmatter,
 }

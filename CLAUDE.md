@@ -161,9 +161,35 @@ and is safe to delete and regenerate.
   `translations/<lang>/.translation-state.json`, and
   `.github/workflows/translate.yml` runs it on every push to `master` that
   touches `docs/**`, plus nightly to drain whatever the rate limit deferred.
-  Translation runs on GitHub Models via the workflow's own `GITHUB_TOKEN`
-  (`models: read`) — free, no API key, but rate limited per account, which is
-  why the script works to a request budget and the nightly drain exists.
+- **The automated translation is off until a provider is configured.** It was
+  built on GitHub Models via the workflow's own `GITHUB_TOKEN` (`models: read`)
+  — free, no API key — and GitHub retired that service on 30 July 2026 (every
+  request returns 410). The workflow's job is now gated on the
+  `TRANSLATE_ENDPOINT` repository variable: unset, every run skips cleanly;
+  setting it (plus `TRANSLATE_MODEL` and the `TRANSLATE_API_KEY` secret) turns
+  the workflow on with no code change. `translations/README.md` is the
+  step-by-step for creating the Cloudflare account and token.
+  Everything that does not call a model still works: `--dry-run` reports which
+  pages have drifted, and `--verify`/`--relink` are unaffected. Seeding by hand
+  and running those checks is how the French tree was built — the full recipe
+  and its gotchas live in `translations/SEEDING.md`.
+- **Cloudflare Workers AI is the intended replacement**, chosen because it
+  keeps this free — an open-source project cannot carry a per-token bill. It is
+  OpenAI-compatible and takes the same bearer header the script already sends,
+  so reviving the workflow is configuration, not code. Set `TRANSLATE_API_KEY`
+  (secret) plus `TRANSLATE_ENDPOINT` and `TRANSLATE_MODEL` (variables):
+  `https://api.cloudflare.com/client/v4/accounts/<id>/ai/v1/chat/completions`
+  and `@cf/zai-org/glm-4.7-flash`. The Workers **Free** plan includes 10,000
+  Neurons/day, resetting 00:00 UTC — enough to track `docs/` changes, not
+  enough to seed a language from nothing, which is what the request budget and
+  nightly drain are already shaped around. Seed in bulk by hand; let the
+  workflow hold the line.
+- Two options that look right and are not: **Azure Translator** has the biggest
+  free tier (F0, 2M characters/month) and cannot do this job — it takes no
+  prompt, so the glossary has nowhere to go, and its `textType` is plain/html
+  only, so wikilinks and fenced code do not survive; `checkStructure` rejects
+  essentially every page. **Azure Foundry Models** would drop straight in but is
+  pay-per-token with no free allowance.
 
 Rules that matter when touching any of this:
 

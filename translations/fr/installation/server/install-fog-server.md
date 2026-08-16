@@ -180,7 +180,7 @@ L'installateur **doit être exécuté en tant que root**.
 ```
 
 >[!tip]
->L'installateur dispose également de diverses options pour une exécution silencieuse et plus encore, voir  [[command-line-options#Fog installer command line options|Options en ligne de commande de l'installateur FOG]]
+>L'installateur dispose également de diverses options pour une exécution silencieuse et plus encore, voir  [[command-line-options#Options de ligne de commande de l'installeur FOG|Options en ligne de commande de l'installateur FOG]]
 
 Avant l'installation de tous les composants, plusieurs questions vous sont
 posées afin que la configuration corresponde à votre situation et soit prête à

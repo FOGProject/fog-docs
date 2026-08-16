@@ -56,7 +56,7 @@ FOG en HTTPS. Vous pouvez l'activer pendant l'installation ; une fois activé, l
 serveur web redirige HTTP vers HTTPS et envoie HSTS. Le fait que le démarrage
 réseau passe lui aussi par HTTPS dépend de l'autorité qui a émis votre
 certificat web — voir
-[[pki-zones#https-and-netboot|HTTPS et démarrage réseau]] pour le comportement
+[[pki-zones#HTTPS et netboot|HTTPS et démarrage réseau]] pour le comportement
 actuel et les compromis.
 
 Les certificats de FOG sont répartis en zones indépendantes (web, Secure Boot

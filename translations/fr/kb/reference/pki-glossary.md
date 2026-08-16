@@ -49,7 +49,7 @@ usurper quoi que ce soit en dehors de celui-ci.
 
 Le certificat que le serveur web (Apache/nginx) présente effectivement aux
 navigateurs. Renouvelable seul — voir
-[[pki-zones#leaf-renewal|Renouvellement de la feuille]] — sans toucher à
+[[pki-zones#Renouvellement des feuilles|Renouvellement de la feuille]] — sans toucher à
 l'autorité de certification web.
 
 ### Autorité de certification Secure Boot
@@ -88,7 +88,7 @@ Le modèle dépassé, antérieur à l'intermédiaire : un unique certificat de
 signature de code, auto-signé et `CA:FALSE`, qui était à la fois l'ancre
 enrôlée et le signataire. Il n'a existé qu'à l'état de démonstration précoce
 et n'a jamais été livré dans une version stable — voir la note dans
-[[secure-boot-signing#the-old-flat-mok|le guide Secure Boot]] si vous devez
+[[secure-boot-signing#L'ancien MOK plat|le guide Secure Boot]] si vous devez
 vous en remettre.
 
 ### Paire de clés de communication client
@@ -98,7 +98,7 @@ par la racine, utilisée uniquement par `FOGBase::certDecrypt()` — le
 chiffrement de la poignée de main d'enregistrement de fog-client — jamais
 pour du TLS. Non remplaçable en apportant votre propre autorité de
 certification ; voir
-[[pki-zones#bringing-your-own-ca|Apporter votre propre autorité de certification]].
+[[pki-zones#Apporter votre propre CA|Apporter votre propre autorité de certification]].
 
 ### Empreinte (aussi appelée thumbprint)
 

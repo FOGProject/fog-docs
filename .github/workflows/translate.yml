@@ -4,14 +4,53 @@
 # regenerates that page in every language and commits the result. Nothing here
 # ever writes to docs/.
 #
-# Translation runs on GitHub Models, reached with the workflow's own
-# GITHUB_TOKEN via the `models: read` permission below -- no API key, no
-# billing, no org secret to rotate. The free tier is rate limited per account
-# rather than per repository, so scripts/translate.mjs works to a request
-# budget shared across all languages and leaves whatever it could not finish
-# for the next run. The nightly schedule is what drains that backlog: without
-# it, a large docs sweep would translate a slice on push and then sit
-# half-finished until someone happened to touch docs/ again.
+# !! This workflow is OFF until a provider is configured: the job is gated on
+# !! the TRANSLATE_ENDPOINT repository variable being set. Setting it (plus
+# !! TRANSLATE_MODEL and the TRANSLATE_API_KEY secret) turns it on -- no
+# !! workflow edit needed. translations/README.md is the step-by-step for
+# !! creating the Cloudflare account and token.
+#
+# It was built on GitHub Models, reached with the workflow's own GITHUB_TOKEN
+# and a `models: read` permission -- no API key, no billing, no secret to
+# rotate. GitHub retired that service on 30 July 2026. Every request now
+# returns 410, so every run fails at the first page until a provider is set.
+#
+# Cloudflare Workers AI replaces it, and keeps this free -- which matters for an
+# open-source project that cannot carry a per-token bill. It is OpenAI
+# compatible and takes the same bearer header this already sends, so reviving
+# this is configuration, not code: set TRANSLATE_ENDPOINT, TRANSLATE_MODEL and
+# TRANSLATE_API_KEY on the Translate step below.
+#
+# The Workers *Free* plan includes 10,000 Neurons per day, resetting at 00:00
+# UTC. That maps onto the design already here: the per-run request budget stops
+# before the allowance is gone, and the nightly schedule drains the backlog the
+# next day. It is sized for keeping up with docs/ changes, not for seeding a
+# language from nothing -- do bulk seeding by hand and let this hold the line.
+#
+# Two paths that look right and are not:
+#
+#   * Azure Translator is the Foundry tool with the F0 2M-characters/month free
+#     tier, and cannot do this job. It takes no prompt, so the gettext glossary
+#     that pins Host -> Machine has nowhere to go, and its textType is
+#     plain/html only, so wikilinks and fenced code do not survive the round
+#     trip. checkStructure rejects essentially every page.
+#   * Azure Foundry Models is OpenAI compatible and would drop straight in, but
+#     is pay-per-token with no free allowance.
+#
+# That failure is deliberate and new: the run previously counted a dead backend
+# as an ordinary per-page failure and exited 0, so the first run after the
+# retirement reported success having translated nothing. scripts/translate.mjs
+# now aborts and exits non-zero when the provider itself is unusable.
+#
+# To revive this, point TRANSLATE_ENDPOINT and TRANSLATE_MODEL at a replacement
+# with an OpenAI-compatible chat/completions API and give the Translate step
+# whatever credential it needs. Note that doing so gives up the property this
+# design was built around -- no key, no billing, nothing to rotate -- so it is
+# a decision worth making deliberately rather than by picking the nearest API.
+#
+# Everything else here still works offline and is worth keeping: the rate-limit
+# budget, the nightly drain, --relink and --verify. `--dry-run` still reports
+# exactly which pages have drifted from docs/ without calling anything.
 #
 # The push trigger is scoped to docs/**, which is also what stops this from
 # retriggering itself -- the only thing it ever commits is translations/**.
@@ -36,9 +75,10 @@ on:
         required: false
         default: "40"
 
+# `models: read` is gone with GitHub Models. The provider is now reached with
+# TRANSLATE_API_KEY, a repository secret.
 permissions:
   contents: write
-  models: read
 
 # Not cancel-in-progress: a cancelled run can leave the state file describing
 # translations it did not finish writing. Queueing instead costs a few minutes
@@ -49,6 +89,11 @@ concurrency:
 
 jobs:
   translate:
+    # Off switch: without a configured provider every real run would fail at
+    # the first model call (the GitHub Models default answers 410), so skip
+    # cleanly until the repository variable exists. A skipped run is green in
+    # the Actions tab, not a red X on every docs/ push.
+    if: vars.TRANSLATE_ENDPOINT != ''
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -63,9 +108,21 @@ jobs:
       - name: Check the translator's helpers
         run: node --test "scripts/*.test.mjs"
 
+      # Configure these once in the repository settings and this step needs no
+      # further edits: TRANSLATE_API_KEY as a secret, the other two as variables.
+      #
+      # For Cloudflare Workers AI (free tier, OpenAI-compatible):
+      #   TRANSLATE_ENDPOINT  https://api.cloudflare.com/client/v4/accounts/<account-id>/ai/v1/chat/completions
+      #   TRANSLATE_MODEL     @cf/zai-org/glm-4.7-flash
+      #   TRANSLATE_API_KEY   an API token with Workers AI read
+      #
+      # Other models on the free plan: @cf/google/gemma-4-26b-a4b-it,
+      # @cf/nvidia/nemotron-3-120b-a12b. A few are Paid-only and answer 403.
       - name: Translate
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRANSLATE_API_KEY: ${{ secrets.TRANSLATE_API_KEY }}
+          TRANSLATE_ENDPOINT: ${{ vars.TRANSLATE_ENDPOINT }}
+          TRANSLATE_MODEL: ${{ vars.TRANSLATE_MODEL }}
           TRANSLATE_LIMIT: ${{ inputs.limit || '40' }}
         run: node scripts/translate.mjs "${{ inputs.language || 'all' }}"
 
