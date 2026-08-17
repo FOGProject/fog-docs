@@ -15,7 +15,7 @@ tags:
 # Plugins
 
 Plugins add functionality that some FOG sites want and others do not — LDAP
-sign-in, per-site host visibility, Slack notifications, Windows product keys.
+and OpenID Connect sign-in, Slack notifications, Windows product keys.
 Each one is a directory of PHP that FOG discovers, activates on request, and
 gives its own entry in the sidebar.
 
@@ -225,10 +225,10 @@ how it differs on the older line.
 | **ldap** | Authenticate FOG users against an LDAP or Active Directory server. Needs your distribution's `php-ldap` package. See [[ldap\|LDAP Authentication]] |
 | **location** | Point hosts at the storage node local to their site, for sites with more than one place to fetch an image from |
 | **ntfy** | Notifications via ntfy.sh or your own ntfy server |
+| **oidc** | Sign in to FOG with an OpenID Connect identity provider (Entra ID, Keycloak, Okta, ...). See [[oidc\|OpenID Connect Sign-in]] |
 | **ou** | Predefine Active Directory OUs and associate them with hosts |
 | **persistentgroups** | When a host joins a group, copy image, AD, printer, snapin and location settings onto it from a template host named after that group |
 | **pushbullet** | Pushbullet notifications |
-| **site** | Group hosts into sites and limit which hosts each user sees. See [[site-scoping\|Site Scoping]] |
 | **slack** | Slack notifications |
 | **subnetgroup** | Assign hosts to groups automatically based on their IP subnet |
 | **taskstateedit** | Create and edit FOG's task states |
@@ -240,6 +240,11 @@ how it differs on the older line.
 >The Access Control plugin was replaced by native roles and permissions in
 >1.6. For what happens to plugin-era roles on upgrade, see
 >[[roles#Upgrading from the Access Control plugin|Roles & Permissions]].
+
+>[!note] Site is gone too, and for the same reason
+>Sites and per-site host visibility moved into 1.6 core, so there is no
+>longer a Site plugin to activate — the feature is simply there. See
+>[[site-scoping|Site Scoping]].
 
 ## On FOG 1.5.x
 

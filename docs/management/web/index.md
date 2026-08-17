@@ -21,6 +21,7 @@ Documentation related to how to use the web management ui.
 - [[roles|Roles & Permissions]]
 - [[site-scoping|Site Scoping]]
 - [[ldap|LDAP Authentication]]
+- [[oidc|OpenID Connect Sign-in]]
 - [[ad-integration|Active Directory Integration]]
 
 **Imaging Objects**
