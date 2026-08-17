@@ -174,7 +174,7 @@ plugins:
             "installation/server": ["requirements", "install-fog-server", "command-line-options", "virtualization", "migrating-fog-server"],
             "installation/network-setup": ["dhcp-server-settings", "proxy-dhcp"],
             "kb/how-tos": ["capture-an-image", "deploy-an-image", "fog-client-example-tasks", "change-fog-server-ip-address", "bios-and-uefi-co-existence", "uefi-boot-entries", "deploy-dual-boot-multi-disk-image", "add-extend-a-2nd-virtual-hdd", "post-download-scripts"],
-            "management/web": ["users", "roles", "site-scoping", "ldap", "ad-integration", "hosts", "groups", "images", "storage-node", "snapins", "printers", "tasks", "multicast", "reports", "dashboard", "service", "config", "plugins"],
+            "management/web": ["users", "roles", "site-scoping", "ldap", "oidc", "ad-integration", "hosts", "groups", "images", "storage-node", "snapins", "printers", "tasks", "multicast", "reports", "dashboard", "service", "config", "plugins"],
           }
 
           if (!a.isFolder && !b.isFolder) {
