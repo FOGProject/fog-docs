@@ -399,8 +399,10 @@ import and export, without patching core:
 
 The Location plugin (`addlocationimport.hook.php`) is the reference
 implementation, registering a single-valued `location` type for hosts and
-listening for `EXPORT_ASSOCIATIONS_PRIME` to batch that label. The Site plugin
-(`addsiteimport.hook.php`) follows the same pattern for a host's `site`.
+listening for `EXPORT_ASSOCIATIONS_PRIME` to batch that label. The retired
+Site plugin used to follow the same pattern for a host's `site`; sites moved
+into FOG itself in 1.6 and that hook did not move with them, so `site` is
+currently not a CSV association label for any class.
 
 ### Export performance
 
