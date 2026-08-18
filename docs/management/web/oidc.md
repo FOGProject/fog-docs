@@ -363,6 +363,15 @@ Where to put it: **Keycloak** — the client's *Valid post logout redirect
 URIs*. **Entra ID** — the app registration's *Front-channel logout URL*.
 **Okta** — the application's *Sign-out redirect URIs*.
 
+>[!tip] Keycloak may already accept it
+>Leave *Valid post logout redirect URIs* **empty** and Keycloak treats it
+>as `+`, meaning "the same list as the sign-in redirect URIs". So a client
+>registered with `https://fog.example.com/fog/*` already accepts this
+>value, and there is nothing to add. Fill the field in and that
+>inheritance stops — from then on the list is exactly what you typed, and
+>the sign-out value has to be in it. Check before you go looking for a
+>problem you do not have.
+
 >[!warning] This value changed in plugin v1.6.10
 >On v1.6.9 it was `…/management/login.php`. If you turned Single Logout on
 >at that version, re-register the new value — providers that follow the
