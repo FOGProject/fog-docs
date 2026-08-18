@@ -287,9 +287,10 @@ certificate table, an unsigned one does not:
 sbverify --list /tftpboot/secureboot/snponly.efi
 ```
 
-The signer should be **iPXE Secure Boot Intermediate G1A**. FOG's own
-`/tftpboot/ipxe.efi` and `/tftpboot/autoexec/snponly.efi` have no signature at
-all — if you see that, you are looking at the wrong file.
+The signer should be **iPXE Secure Boot Intermediate G1A**. FOG's own builds
+in the TFTP root — `/tftpboot/ipxe.efi`, `/tftpboot/snponly.efi` — are either
+unsigned or signed by **FOG Project Secure Boot Signing**, this server's own
+key. Either of those means you are looking at the wrong file.
 
 On arm64 the equivalents are `arm64-efi/snponly-shimaa64.efi` and
 `arm64-efi/snponly.efi`.

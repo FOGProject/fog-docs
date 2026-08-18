@@ -59,43 +59,81 @@ For older legacy models, these are the boot files to set
 
 You can find other pxe boot files in you `/tftpboot` directory on your fogserver.
 
-### The `autoexec/` boot files (UEFI only)
+### How UEFI clients get their boot script
 
-Alongside the files above, FOG ships a second set of UEFI binaries in
-`/tftpboot/autoexec/`. They are built from identical source, with one
-difference: the iPXE boot script is **not** compiled into the binary. Instead
-they download a plain text script — `autoexec.ipxe` — over TFTP from the same
-folder they were loaded from, and run that.
+Every UEFI binary FOG ships is built **without** its iPXE boot script compiled
+in. Each one downloads a plain text script — `autoexec.ipxe` — over TFTP from
+the folder it was loaded from, and runs that.
 
-The practical benefit is that the boot logic becomes a file you can edit on the
+The practical benefit is that the boot logic is a file you can edit on the
 server. Changing something like the menu timeout means editing
-`/tftpboot/autoexec/autoexec.ipxe`, not rebuilding binaries.
+`/tftpboot/autoexec.ipxe`, not rebuilding binaries. It is also the only shape
+that works under UEFI Secure Boot, where a compiled-in script is not permitted.
 
-To use them, prefix the file name in option 67 with `autoexec/`:
+A copy of `autoexec.ipxe` sits in every folder holding a UEFI binary — the
+`/tftpboot` root, `i386-efi/`, `arm64-efi/` and the `secureboot/` tree. They are
+hard links to one file, so editing any of them edits all of them.
 
-* `autoexec/snponly.efi`
-* `autoexec/ipxe.efi`
-* `autoexec/i386-efi/snponly.efi`
-* `autoexec/arm64-efi/snponly.efi`
-
-Option 66 does not change.
+Nothing about option 66 or option 67 changes for this. Point option 67 at
+`snponly.efi`, `i386-efi/snponly.efi` and so on exactly as above.
 
 > [!warning]
-> **This works for UEFI clients only.** Legacy BIOS boot files
-> (`undionly.kpxe`, `undionly.kkpxe`, `ipxe.kpxe`, `ipxe.kkpxe`) cannot use it.
-> The mechanism that fetches `autoexec.ipxe` exists only in iPXE's EFI startup
-> path; there is no BIOS equivalent, so a BIOS binary would simply ignore the
-> file. This is why no BIOS boot files are shipped in `autoexec/` — a copy there
-> would boot, but only because it still has the script compiled in, which makes
-> it look like the mechanism works for BIOS when it does not.
->
-> In a mixed environment, keep BIOS clients pointed at the root
-> (`undionly.kpxe`) and use `autoexec/` only for the UEFI classes.
+> **Legacy BIOS works the other way round.** BIOS boot files
+> (`undionly.kpxe`, `undionly.kkpxe`, `ipxe.kpxe`, `ipxe.kkpxe`) still have
+> their script compiled in, and they ignore `autoexec.ipxe` entirely — the
+> mechanism that fetches it exists only in iPXE's EFI startup path. Editing
+> `autoexec.ipxe` changes nothing for a BIOS client.
 
-Both sets are installed and kept in step with each other. The files in the root
-of `/tftpboot` remain the default and are what every existing FOG install uses;
-`autoexec/` is opt-in and behaves identically otherwise. If you are not sure
-which you want, use the root files.
+#### Upgrading from a 1.6.0 beta: the `autoexec/` folder is gone
+
+Earlier 1.6.0 betas shipped a *second*, opt-in set of UEFI binaries in
+`/tftpboot/autoexec/` — those were the ones without a compiled-in script, and
+the files in the root had one. That is now the other way round: the root binaries
+are the script-less ones, so the duplicate folder served no purpose and the
+installer removes it.
+
+**If any DHCP server hands out a boot filename beginning `autoexec/`, drop that
+prefix.** The file at the new path is the same build:
+
+| Old | New |
+|---|---|
+| `autoexec/snponly.efi` | `snponly.efi` |
+| `autoexec/ipxe.efi` | `ipxe.efi` |
+| `autoexec/i386-efi/snponly.efi` | `i386-efi/snponly.efi` |
+| `autoexec/arm64-efi/snponly.efi` | `arm64-efi/snponly.efi` |
+
+The installer cannot fix this for you, because the DHCP server handing out that
+name is often not the FOG server. Left unchanged, the client asks for a file
+that no longer exists and TFTP answers with an error most firmware renders as a
+generic PXE failure, with nothing in it to point you here.
+
+### Adding a delay before the first DHCP attempt
+
+Some switches take several seconds to bring a port out of STP listening or out
+of powersave, and iPXE's first DHCP request goes out before that — which looks
+like an intermittent "no DHCP answer" at boot.
+
+Pass `--boot-delay` to the installer to insert a sleep, in seconds, at the top
+of `autoexec.ipxe`:
+
+```bash
+./installfog.sh --boot-delay 10
+```
+
+The setting is remembered across upgrades. `--boot-delay 0` removes it again.
+
+> [!note]
+> **Legacy BIOS needs a different boot file for this, not the option.** With its
+> script compiled in there is nothing to edit, so the delay has to be a separate
+> build: that is what `/tftpboot/10secdelay/` holds. Setting a non-zero
+> `--boot-delay` makes FOG's generated DHCP configuration point BIOS clients
+> there automatically. That build is exactly ten seconds — no other value exists
+> — so `--boot-delay 7` gives UEFI clients seven seconds and BIOS clients ten,
+> and the installer says so when it runs.
+>
+> `/tftpboot/10secdelay/` holds BIOS files only. Booting a UEFI binary from
+> there would hang the client, which is why the installer removes any left over
+> from an earlier beta.
 
 ## Examples of DHCP server configurations
 
