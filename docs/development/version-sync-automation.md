@@ -100,15 +100,17 @@ It has **two entry points**:
   logic — calls it over `workflow_call` when a PR is merged into
   `working-1.6` or `dev-branch`, so the version is correct within minutes of
   a merge instead of at the next tick. One copy of that stub lives on each of
-  those branches, byte-identical; GitHub reads a `pull_request_target`
-  workflow from the PR's *base* branch, so each copy only ever acts on merges
-  into its own branch.
+  those branches, byte-identical; GitHub reads a `pull_request` workflow from
+  the PR's *base* branch, so each copy only ever acts on merges into its own
+  branch. A merged PR from a *fork* is skipped and left to the schedule —
+  see below.
 - **Daily at 10:10 UTC**, plus `workflow_dispatch` for a one-off or
   all-branches run — just over an hour before
   [`stable-releases.yml`](stable-release-workflow.md)'s monthly 11:11 UTC run,
   so a release day never reads a stale version. This is the only cover for
-  direct pushes, and for `rc-*`/`feature-*` branches, which are deliberately
-  left off the merge path (see below).
+  direct pushes, for merged pull requests from forks, and for
+  `rc-*`/`feature-*` branches, which are deliberately left off the merge path
+  (see below).
 
 Each run:
 
@@ -208,9 +210,10 @@ The rule that came out of the incident is not "the trigger must be a cron".
 It is that **version syncing must not be triggered by any event the sync bot's
 own push can raise**. A cron passes that test because it cannot see what was
 last pushed. `push` fails it: the bot pushes its fixup directly to the branch,
-the trigger fires, and the workflow feeds itself. `pull_request_target:
-closed` passes it for a different reason — a direct push is not a PR merge, so
-the bot cannot raise the event that would call the workflow again.
+the trigger fires, and the workflow feeds itself. A merge event —
+`pull_request: types: [closed]` — passes it for a different reason: a direct
+push is not a PR merge, so the bot cannot raise the event that would call the
+workflow again.
 
 So the loop is closed by the shape of the event, not by an actor-name guard
 that has to be kept correct as bot identities change. The two fixes above
@@ -222,6 +225,31 @@ guarantee those would converge; with it, there is no second run to converge.
 
 Apply that one question to any new trigger, rather than pattern-matching on
 this list of examples.
+
+#### A second question: which ref is the trigger read from?
+
+Safety is not the only thing that decides whether a trigger works, and the
+first attempt at the merge path got this wrong. It used
+`pull_request_target`, which is the obvious choice because it is the variant
+that receives secrets on a fork PR — and it never fired once.
+
+GitHub reads a `pull_request_target` workflow from the repository's **default**
+branch, which here is `stable`, rather than from the pull request's base
+branch. A stub living on `working-1.6` and `dev-branch` is therefore never
+consulted, however correct it is: it did not appear in the repository's
+Actions workflow list at all, and four pull requests merged into
+`working-1.6` without producing a run. Most events behave this way —
+`schedule` and `workflow_dispatch` among them. `push`, `create` and
+`pull_request` are the ones that resolve per-ref.
+
+`pull_request` is what the stub uses now, for exactly that reason. The cost is
+that `pull_request` withholds secrets from a fork PR, so the App token cannot
+be minted there; the stub skips merged fork PRs with a same-repo guard and the
+daily schedule picks them up, the same way it covers direct pushes.
+
+Worth checking deliberately, because a workflow that is correct but never runs
+looks identical to one that ran and found nothing to do. Confirm a new trigger
+actually produced a run.
 
 Two further refinements landed the same day, both about *how often* and
 *how visibly* this runs rather than the formula itself:
