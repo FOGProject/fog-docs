@@ -7,6 +7,7 @@ aliases:
     - SSO
     - Entra ID Login
     - Keycloak Login
+    - Google Workspace Login
 description: How the OpenID Connect plugin lets people sign in to FOG with an identity provider, and which role each one receives
 context_id: oidc
 tags:
@@ -94,6 +95,141 @@ constant. `email` is the usual alternative.
 
 Whatever you choose has to match the FOG **username**, not the display
 name.
+
+## Setting up your provider
+
+Three worked examples. The FOG half is the same every time — name,
+issuer, client ID, client secret, tick **Enabled** — so what follows is
+mostly what to do at the provider, and the one trap each of them has.
+
+Before you start, copy the redirect URI from the FOG provider page. You
+need it in all three.
+
+### Keycloak
+
+The example this section was written against, and the easiest one to
+stand up if you want to try the plugin before committing to a company
+directory.
+
+1. **Clients → Create client.** Client type *OpenID Connect*, Client ID
+   `fog-web`.
+2. On the next step turn **Client authentication** *on* — that makes it
+   a confidential client, which is what issues a secret. Leave *Standard
+   flow* ticked and turn the rest off.
+3. **Valid redirect URIs**: paste the value from FOG. A wildcard such as
+   `https://fog.example.com/fog/*` also works while you are testing.
+4. **Credentials** tab → copy the **Client secret**.
+5. **Client scopes → `fog-web-dedicated` → Add mapper → By configuration
+   → Group Membership.** Name it `groups`, set **Token Claim Name** to
+   `groups`, and turn **Full group path** *off* unless you intend to map
+   full paths.
+
+>[!warning] Full group path is on by default
+>Left on, Keycloak sends `/fog-admins`, not `fog-admins`, and a mapping
+>written as the bare name silently matches nothing. Either turn it off,
+>or write your FOG mappings with the leading slash — but be consistent.
+
+In FOG:
+
+| Field | Value |
+|---|---|
+| Issuer | `https://keycloak.example.com/realms/<realm>` |
+| Client ID | `fog-web` |
+| Client Secret | from the Credentials tab |
+| Username Claim | `preferred_username` |
+| Group Claim | `groups` |
+
+### Microsoft Entra ID (Microsoft 365)
+
+1. **Entra admin centre → App registrations → New registration.**
+2. **Redirect URI**: platform **Web**, and paste the value from FOG. It
+   must be the *Web* platform — not *Single-page application*, which
+   issues no client secret.
+3. Copy the **Application (client) ID** and the **Directory (tenant)
+   ID** from the Overview page.
+4. **Certificates & secrets → New client secret.** Copy the *Value*, not
+   the Secret ID, and note the expiry — an expired secret is an outage.
+5. **Token configuration → Add groups claim** if you want group
+   mapping. Pick which groups to emit, and open **ID** →
+   *Customize token properties by type* to choose what identifies them.
+
+>[!warning] Use the tenant issuer, never `common`
+>`https://login.microsoftonline.com/common/v2.0` publishes its issuer as
+>the literal string `https://login.microsoftonline.com/{tenantid}/v2.0`
+>— a template, not a URL. FOG checks that the token's `iss` matches the
+>issuer you configured, so every sign-in through `common` fails. Use
+>your tenant's own GUID:
+>
+>```
+>https://login.microsoftonline.com/<tenant-guid>/v2.0
+>```
+>
+>You can confirm what any tenant publishes by fetching
+>`https://login.microsoftonline.com/<your-domain>/v2.0/.well-known/openid-configuration`
+>and reading the `issuer` value back out.
+
+| Field | Value |
+|---|---|
+| Issuer | `https://login.microsoftonline.com/<tenant-guid>/v2.0` |
+| Client ID | Application (client) ID |
+| Client Secret | the secret *Value* |
+| Username Claim | `preferred_username` |
+| Group Claim | `groups` |
+
+Entra's `groups` claim carries group **object IDs** — GUIDs — unless you
+configure it otherwise, so that GUID is what goes in the FOG provider
+group. See [[#Getting the group values right]].
+
+>[!note] Large group memberships
+>Entra omits the `groups` claim entirely for a user in more than about
+>200 groups, substituting a pointer to the Graph API that FOG does not
+>follow. Such a user signs in and receives nothing. Emit only the groups
+>you need rather than all of them.
+
+### Google Workspace
+
+1. **Google Cloud console → APIs & Services → OAuth consent screen.**
+   Configure it as *Internal* for a Workspace domain.
+2. **Credentials → Create credentials → OAuth client ID.** Application
+   type **Web application**.
+3. **Authorised redirect URIs**: paste the value from FOG.
+4. Copy the **Client ID** and **Client secret**.
+
+| Field | Value |
+|---|---|
+| Issuer | `https://accounts.google.com` |
+| Client ID | ends in `.apps.googleusercontent.com` |
+| Client Secret | from the same page |
+| Username Claim | `email` |
+| Group Claim | leave as is; nothing will match it |
+
+>[!warning] Google sends no groups, so group mapping does not work
+>A Google ID token carries `email`, `name` and the rest of the profile —
+>it has no groups claim of any kind, and Workspace group membership is
+>only readable through the Admin SDK, which is a separate API call FOG
+>does not make. Nothing in the plugin can map a Google group to a role.
+>
+>Use Google for **authentication only**: leave **Create Users On First
+>Login** off, create each FOG account yourself, and assign its role by
+>hand. If you turn provisioning on, every account it creates will have
+>no role and see nothing until somebody assigns one.
+
+>[!note] `preferred_username` is empty on Google
+>Set the Username Claim to `email`, or every sign-in fails to resolve an
+>account. The FOG username then has to be the full email address.
+
+### GitHub is not an option
+
+GitHub is not an OpenID Connect provider. GitHub OAuth Apps speak plain
+OAuth 2.0: there is no discovery document at
+`https://github.com/.well-known/openid-configuration`, no ID token, and
+no key set to verify one against. FOG has nothing to check, so there is
+nothing this plugin could do with it.
+
+(GitHub does publish an OIDC issuer at
+`token.actions.githubusercontent.com`, but that exists so a GitHub
+Actions workflow can prove what it is to a cloud provider. It does not
+authenticate people.)
 
 ## What FOG stores for a provider user
 
@@ -248,6 +384,7 @@ administrator made keeps whatever API setting it already had.
 | *The ID token was issued to someone else* | Wrong **Client ID**, or the redirect URI registered at the provider belongs to a different application. |
 | *This identity is linked to a different FOG account* | The recorded subject and the username claim disagree. Somebody's username was probably reassigned; remove the stale identity link from the user. |
 | *The sign-in took too long; please start again* | More than ten minutes between clicking the button and coming back. |
+| *Unknown identity provider*, on a provider that is configured and enabled | The provider row failed validation, or the sign-in URL arrived without its `?provider=` parameter. Both were fixed during 1.6 development; update the server and the bundled plugins. |
 | *That identity provider is not enabled* | Checked on the way back as well as on the way out, so disabling a provider ends sign-ins already in progress. |
 | Signs in fine but sees nothing | No mapped group, or the group value does not match what the provider sends. See [[#Getting the group values right]]. |
 
