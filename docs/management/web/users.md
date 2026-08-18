@@ -56,6 +56,41 @@ FOG accounts can be modified from within the users section.
         -   Use the tabbed navigation to find the general, password, and
             api settings
 
+## Accounts that sign in through a directory
+
+An account created by — or handed to — an identity provider does not have
+a **Password** tab. FOG refuses a local password for those accounts by
+design, so a password typed there could only ever be one that nothing
+would accept, and being told *"User updated!"* about it is worse than not
+being offered the box.
+
+Instead, the **General** tab shows a read-only **Signs In With** field
+naming the source, so you can tell at a glance which accounts these are.
+
+### Returning an account to a FOG password
+
+On that same tab, tick **Return To Local Login** and press **Update**. The
+Password tab appears on the next page load, and you can set a password.
+
+>[!warning] Set the password straight afterwards
+>Whether the account can still sign in through its provider once you do
+>this depends on the provider:
+>
+>- **[[ldap|LDAP]]** sign-in **stops working**. FOG only accepts LDAP's
+>  word for an account that carries the source stamp — that restriction is
+>  what stops a plugin authenticating a local account — so removing the
+>  stamp removes the LDAP login too.
+>- **[[oidc|OpenID Connect]]** sign-in is **unaffected**. It never goes
+>  through FOG's password check at all.
+>
+>Either way, an account with no auth source and no password set cannot
+>sign in with a password. Do both steps in one sitting.
+
+There is no way to go the other direction from this page. Handing an
+account *to* a directory takes its local password away, which is how an
+install locks itself out, and that is not something a general-details form
+should do as a side effect. See [[local-login|The Local Login Page]].
+
 ## Restricting what a user can do
 
 Starting with FOG 1.6, each user account has a **Roles** tab where you

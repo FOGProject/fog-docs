@@ -91,6 +91,12 @@ An account can sign in here if it has a **local password**. In practice:
 That distinction is the whole of your break-glass plan, and it is worth
 checking rather than assuming.
 
+You can change it. On a user's **General** tab, tick **Return To Local
+Login** and press **Update**, then set a password on the Password tab that
+appears. See
+[[users#Returning an account to a FOG password|Returning an account to a FOG password]]
+— including which providers keep working afterwards and which do not.
+
 ## Make sure at least one account can use it
 
 FOG enforces a floor, and you will meet it as a refusal:
