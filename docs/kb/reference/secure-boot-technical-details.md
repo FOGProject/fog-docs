@@ -36,7 +36,9 @@ both binaries already carry signatures the firmware and shim trust.
 >front and the signature on the kernel.
 
 Because upstream's `snponly.efi` has no boot script compiled in, it fetches one
-over TFTP, and **where it looks is not a single fixed path**. iPXE asks for the
+over TFTP, and **where it looks is not a single fixed path**. Since FOG 1.6.1
+this is true of *every* UEFI binary FOG ships, not just upstream's — none of
+them embed a script any more. iPXE asks for the
 bare name `autoexec.ipxe` and tries two locations in order:
 
 1. relative to its *current working URI* — the TFTP directory the running
@@ -51,10 +53,10 @@ autoexec.ipxe...  Not found
 ```
 
 The installer satisfies both. It hard-links `autoexec.ipxe` into every
-directory an EMBED-less binary can be booted from — the TFTP root,
-`autoexec/`, `autoexec/i386-efi/`, `autoexec/arm64-efi/`, `secureboot/` and
-`secureboot/arm64-efi/`. All six are one file, so editing any of them changes
-all of them and there is no copy left quietly running the old script.
+directory a script-less binary can be booted from — the TFTP root,
+`i386-efi/`, `arm64-efi/`, `secureboot/` and `secureboot/arm64-efi/`. All five
+are one file, so editing any of them changes all of them and there is no copy
+left quietly running the old script.
 
 A hard link rather than a symlink because some TFTP daemons refuse to follow
 symlinks, while a hard link is indistinguishable from a regular file to all of
@@ -64,11 +66,11 @@ If a link has been broken — an older install, or the file was replaced by an
 editor that writes-and-renames — re-running the installer restores it, or:
 
 ```bash
-sudo ln -f /tftpboot/autoexec/autoexec.ipxe /tftpboot/secureboot/autoexec.ipxe
+sudo ln -f /tftpboot/autoexec.ipxe /tftpboot/secureboot/autoexec.ipxe
 ```
 
 You can check they really are one file: every copy should report the same
-inode and a link count of 6.
+inode and a link count of 5.
 
 ```bash
 find /tftpboot -name autoexec.ipxe -printf '%i  links=%n  %p\n'
@@ -84,11 +86,13 @@ at the TFTP root, and non-Secure-Boot machines keep booting it. The signed copy
 lives under `secureboot/` and is reached only by machines you point there.
 
 >[!note] Both files are called `snponly.efi`, and that is fine
->`/tftpboot/snponly.efi` is FOG's own build — the boot script compiled in, no
->signature. `/tftpboot/secureboot/snponly.efi` is upstream's signed build,
->which reads its script from `autoexec.ipxe` instead. They are different
->binaries doing the same job by different means, which is why the signed one
->gets its own directory rather than replacing the other.
+>`/tftpboot/snponly.efi` is FOG's own build. `/tftpboot/secureboot/snponly.efi`
+>is upstream's, signed by the iPXE project. Both read their script from
+>`autoexec.ipxe`; what differs is who vouches for the binary — upstream's is
+>trusted through shim and Microsoft's key, FOG's through the MOK this server
+>publishes. That is why the signed one gets its own directory rather than
+>replacing the other, and which you point DHCP at decides which trust root the
+>client has to have enrolled.
 
 ### If the chain loads but the network never comes up
 
