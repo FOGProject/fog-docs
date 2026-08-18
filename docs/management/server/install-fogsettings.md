@@ -1,6 +1,6 @@
 ---
 title: The .fogsettings file
-description: Details on the special .fogsettings file that configures future installs/upgrades and contains general configuration information of fog
+description: What .fogsettings holds, how each value gets there, what every setting means, and which of them are safe to edit by hand
 context_id: install-fogsettings
 aliases:
     - .fogsettings
@@ -17,325 +17,401 @@ tags:
     - linux
     - server
     - server-management
-    - in-progress
-    - updating-content
 ---
 
 # The .fogsettings file
 
-The low-level settings that are used during installation and some
-settings that simply cannot be stored in the database are contained in
-the /opt/fog/.fogsettings file.
-
-This file contains the setup of variables used within the installer
-during upgrades and installs.
-
-## Example .fogsettings file
-
-An example .fogsettings file :
-
-    ## Start of FOG Settings
-    ## Created by the FOG Installer
-    ## Find more information about this file in the FOG Project wiki:
-    ##     https://wiki.fogproject.org/wiki/index.php?title=.fogsettings
-    ## Version: 1.5.4.8
-    ## Install time: Wed 01 Aug 2018 06:57:53 PM CDT
-    ipaddress='10.0.0.39'
-    copybackold='0'
-    interface='ens3'
-    submask='255.255.255.0'
-    routeraddress='10.0.0.1'
-    plainrouter='10.0.0.1'
-    dnsaddress='208.67.222.222'
-    username='fog'
-    password='pgyf0wC7N1Gl7RmkNuG0uNKPnM8KYYn28phazwnrwQs='
-    osid='2'
-    osname='Debian'
-    dodhcp='N'
-    bldhcp='0'
-    dhcpd=''
-    blexports='1'
-    installtype='N'
-    snmysqluser='root'
-    snmysqlpass=''
-    snmysqlhost='localhost'
-    installlang='0'
-    storageLocation='/images'
-    fogupdateloaded=1
-    docroot='/var/www/'
-    webroot='/fog/'
-    caCreated='yes'
-    httpproto='http'
-    startrange=''
-    endrange=''
-    bootfilename='undionly.kpxe'
-    packages='apache2 bc build-essential cpp curl g++ gawk gcc genisoimage gzip htmldoc isolinux lftp libapache2-mod-php7.0 libc6 libcurl3 liblzma-dev m4 mysql-client mysql-server net-tools nfs-kernel-server openssh-server php7.0 php7.0-bcmath php7.0-cli php7.0-curl php7.0-fpm php7.0-gd php7.0-json php7.0-mbstring php7.0-mcrypt php7.0-mysql php-gettext sysv-rc-conf tar tftpd-hpa tftp-hpa unzip vsftpd wget xinetd zlib1g '
-    noTftpBuild=''
-    notpxedefaultfile=''
-    sslpath='/opt/fog/snapins/ssl/'
-    backupPath='/home/'
-    php_ver='7.0'
-    php_verAdds='-7.0'
-    sslprivkey='/opt/fog/snapins/ssl//.srvprivate.key'
-    ## End of FOG Settings
-
-## .fogsettings file options
-
-### Header
-
-Only gives some simplistic information to help users. Does no actions
-just gives some information. :
-
-    ## Start of FOG Settings
-    ## Created by the FOG Installer
-    ## Version: 7625
-    ## Install time: Sat 14 May 2016 08:05:18 PM EDT
-
-### Footer
-
-Does no actions, just tells where FOG's default variables are setup Any
-new items will go below this, and you can add your own variables. You
-can add variables wherever you want. :
-
-    ## End of FOG Settings
-
-### IP Address
-
-Defines the IP address of the node/server. This is also used on servers
-to setup the default.ipxe file. :
-
-    ipaddress='192.168.1.5'
-
-### Interface
-
-This just sets the storage nodes/server interface as it will be stored
-in the Database. This used to be used for multicast setups and for the
-bandwidth graph. This is now setup so it is only used on the bandwidth
-graph as we already know the ip address anyway. Multicast tasks can get
-their own interface instead of relying on user entry. :
-
-    interface='eth0'
-
-### Username
-
-This variable is the user setup for the linux user on the server. This
-allows a user to login to the server/node under this username through
-linux. The purpose of this is more specifically setup for FTP usage. :
-
-    username='fog'
-
-### Password
-
-This is the linux fog user password. It is randomly generated if the
-value is not already defined. Every update will reset the password to
-what is in this field. You should, if you predefined a fog user and the
-installation is the first time, create the /opt/fog/.fogsettings file.
-Only add the password field to ensure your password doesn't get changed
-accidentally. :
-
-    password='Some!random_Password\here0918358'
-
-### OS Identifier
-
-This is the OS identifier used during the installation. The value is
-numeric.
-
-Valid Values are: 1. Redhat based. 2. Debian based. 3. Arch :
-
-    osid='2'
-
-### OS Name
-
-This is the name of the OS as it's being installed. :
-
-    osname='Debian'
-
-### DNS Address
-
-Used for DHCP setup. :
-
-    dnsaddress='192.168.1.5'
-
-### dnsbootimage
-
-No longer used. It's purpose was originally because the FOS (Fog
-Operating System \-- init.xz/init_32.xz/init.gz) did not dynamically get
-the dns address from DHCP as dhcp was not called. :
-
-    dnsbootimage='192.168.1.5'
-
-### Subnet Mask
-
-This defines the subnet mask to use if the system is to be used as a
-DHCP server. It will assume the subnet mask of the interface being used,
-but can be changed later if you see fit. :
-
-    submask='255.255.255.0'
-
-### Router Address
-
-This will setup the router address to use if the system is to be used as
-a DHCP server. It currently only sets as an ip address, but in the past
-contained the whole dhcp configuration string. The config string was
-removed as it would only work on isc-dhcp-server, when some might be
-using dnsmasq or another dhcp server. :
-
-    routeraddress='192.168.1.1'
-
-### Plain Router
-
-Very similar to the Router Address elements above, but can be used to
-redirect to maybe another router/switch other than the main. ::
-plainrouter='192.168.1.1'
-
-### dodhcp
-
-Just tells if we want fog to install dhcp. :
-
-    dodhcp='N'
-
-### bldhcp
-
-Same, more or less, as dodhcp :
-
-    bldhcp='0'
-
-### dhcpd
-
-Defines what package to install for dhcp server. :
-
-    dhcpd='isc-dhcp-server'
-
-### startrange
-
-::
-
-:   startrange=''
-
-### endrange
-
-    endrange=''
-
-### bootfilename
-
-    bootfilename='undionly.kpxe'
-
-### NFS
-
-Defines if the installer should rebuild the exports every time. Setting
-to 0 will ensure the exports file for nfs does not get rebuilt. Setting
-to 1 will update the exports file. :
-
-    blexports='1'
-
-### Type of installation
-
-Just tells the installer if this is going to be a full server, or a
-node. If it's a node, the value will be S. If it's a full server, the
-value will be N. :
-
-    installtype='N'
-
-### MySQL User
-
-This is the username to connect to the database as. Blank will default
-to connecting as user root. :
-
-    snmysqluser=''
-
-MySQL Password This is the password to connect to the database. :
-
-    snmysqlpass=''
-
-### MySQL Host
-
-This is the host to connect to the database. Blank will default to
-localhost/127.0.0.1. :
-
-    snmysqlhost=''
-
-### Language
-
-Language packs for the OS can be installed. This enables more
-appropriate translations of information. :
-
-    installlang='0'
-
-### Donate
-
-Donate seems a bit strange a name for this. What it does, however, is
-not pass money. It's a different method that tells the server if it's
-going to allow mining of bitcoins during the imaging phases. Donation
-can be disabled later and this value will have no more effect during
-updates. It only operates to define setting during fresh installs. :
-
-    donate='0'
-
-### Image storage
-
-This defines the location for image storage. This is just a string value
-to the path of your images location. :
-
-    storageLocation='/images'
-
-### Updating
-
-This defines if the update file is loaded. 1 is the set value after
-fresh install. When the .fogsettings file is loaded this value is
-checked and tells the system to perform an update. If this isn't 1 or
-the variable is not found, it requests "input" from the user (unless
-you're running with the -y argument). :
-
-    fogupdateloaded=1
-
-### docroot
-
-This value tells httpd where the document root will be for the GUI. For
-example, when you go to <http://127.0.0.1/> The document root is looking
-on the server at the docroot location for files to present to the user.
-:
-
-    docroot='/var/www/html/'
-
-### webroot
-
-This value tells FOG where the webroot is. Webroot is the link to
-actually get to the FOG GUI. If the value is just '/' you would be
-accessing the FOG GUI with the link <http://127.0.0.1/>. If it's
-'fog/' you are accessing the GUI as <http://127.0.0.1/fog/>. :
-
-    webroot='fog/'
-
-### caCreated
-
-    caCreated='yes'
-
-### packages
-
-Lists all packages that need to be installed
-
-Debian 9 example as of August 1st, 2018. This requires the Remi
-repository to be installed (which the fog installer sets up for you). :
-
-    packages='apache2 bc build-essential cpp curl g++ gawk gcc genisoimage gzip htmldoc isolinux lftp libapache2-mod-php7.0 libc6 libcurl3 liblzma-dev m4 mysql-client mysql-server net-tools nfs-kernel-server openssh-server php7.0 php7.0-bcmath php7.0-cli php7.0-curl php7.0-fpm php7.0-gd php7.0-json php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-mysqlnd php-gettext sysv-rc-conf tar tftpd-hpa tftp-hpa unzip vsftpd wget xinetd zlib1g'
-
-CentOS 7 example as of August 1st, 2018. These packages require the epel
-repository (which the fog installer sets up for you). :
-
-    packages='bc curl gcc gcc-c++ genisoimage gzip httpd lftp m4 make mod_ssl mtools mysql mysql-server net-tools nfs-utils php php-bcmath php-cli php-common php-fpm php-gd php-ldap php-mbstring php-mcrypt php-mysqlnd php-process syslinux tar tftp-server unzip vsftpd wget xinetd xz-devel'
-
-### noTftpBuild
-
-    noTftpBuild=''
-
-### nopxedefaultfile
-
-    notpxedefaultfile=''
-
-### sslpath
-
-    sslpath='/opt/fog/snapins/ssl/'
-
-### backupPath
-
-    backupPath='/home/'
+`.fogsettings` is what makes an *upgrade* different from a *reinstall*. Every
+answer you gave the installer, every option you passed, and everything it worked
+out for itself is written there at the end of a run and read back at the start of
+the next one — so re-running the installer on an existing server goes straight to
+work instead of asking eighty questions again.
+
+- **Path:** `/opt/fog/.fogsettings` (or `$fogprogramdir/.fogsettings` if you
+  installed elsewhere)
+- **Format:** shell. The installer *sources* it, so it is `key='value'`, one per
+  line. A stray quote breaks the next install rather than being ignored.
+- **Permissions:** `0600 root:root` — it holds two cleartext passwords. See
+  [[install-fogsettings#Security|Security]].
+
+>[!warning] Do not paste this file into a forum post or a bug report
+>It contains your `fogproject` account password (which is also the FTP account
+>used for image replication, so it is fleet-wide) and your database password.
+>Redact `password` and `snmysqlpass` first.
+
+## Example
+
+```bash
+## Start of FOG Settings
+## Created by the FOG Installer
+## Find more information about this file in the FOG Project wiki:
+##     https://wiki.fogproject.org/wiki/index.php?title=.fogsettings
+## Version: 1.6.0
+## Install time: Mon 17 Aug 2026 05:13:02 PM CDT
+ipaddress='10.0.0.39'
+copybackold='0'
+interface='ens3'
+submask='255.255.255.0'
+hostname='fog.example.lan'
+routeraddress='10.0.0.1'
+plainrouter='10.0.0.1'
+dnsaddress='208.67.222.222'
+username='fogproject'
+password='<redacted>'
+osid='1'
+osname='Redhat'
+dodhcp='N'
+bldhcp='0'
+dhcpd='dhcpd'
+blexports='1'
+installtype='N'
+snmysqluser='fogmaster'
+snmysqlpass='<redacted>'
+snmysqlhost='localhost'
+mysqldbname='fog'
+installlang='0'
+storageLocation='/images'
+fogupdateloaded=1
+docroot='/var/www/html/'
+webroot='/fog/'
+caCreated='yes'
+httpproto='http'
+sslpath='/opt/fog/snapins/ssl'
+backupPath='/home/'
+php_ver='8.3'
+sslprivkey='/opt/fog/pki/web/leaf/.webLeaf.key'
+sslcapem='/opt/fog/pki/web/ca/.fogWebCA.pem'
+rootCAPem='/opt/fog/snapins/ssl/CA/.fogCA.pem'
+secureboot='1'
+secureBootKey='/opt/fog/pki/secureboot/leaf/sign.key'
+fwconfigure='configure'
+netbootproto='http'
+webserver='nginx'
+sendreports='Y'
+## End of FOG Settings
+```
+
+>[!note] Your file will have keys after the `## End of FOG Settings` line
+>That marker is cosmetic. When an upgrade introduces a new setting the installer
+>appends it to the end of the file, so on any server that has been upgraded a few
+>times there are live settings below the marker. See
+>[[install-fogsettings#How the file is rewritten|How the file is rewritten]].
+
+## Where each value comes from
+
+Each setting is filled in from the first source below that supplies a value.
+**Highest precedence first:**
+
+1. **An installer option on this run** — see [[command-line-options|Fog installer command line options]].
+2. **An exported environment variable**, for scripted installs.
+3. **`.fogsettings` from the previous install** — unless you pass `-U`.
+4. **An interactive prompt.** `-y` skips the prompts and takes each default.
+5. **The distribution defaults** — package lists, web server, paths.
+
+Two consequences worth knowing:
+
+- **An option always beats the stored value.** The installer applies your
+  command line *after* reading `.fogsettings`, so you never have to clear a
+  setting before overriding it.
+- **Repeatable options replace rather than add.** `--extra-server-name`,
+  `--internal-domain` and `--internal-subnet` each replace the stored list, so
+  re-running with a shorter list genuinely shortens it.
+
+### Where the install lives
+
+`.fogsettings` cannot record its own location, because it lives *inside* it. The
+installer keeps a one-line pointer at `/etc/fog/fog.conf` instead:
+
+```bash
+fogprogramdir='/opt/fog'
+```
+
+`fogprogramdir` also appears in `.fogsettings`, but only as a record — the
+installer recomputes it. To move an install, re-run with `--fogprogramdir`; do
+not edit either file. `fog_git_path` is a record in the same sense.
+
+## How the file is rewritten
+
+The installer rewrites `.fogsettings` at the end of every successful run.
+
+If the file already exists and looks valid, it is **merged in place**:
+
+- Settings the installer manages are updated **where they already are**.
+- Retired settings are **deleted** (see below).
+- **Everything else is left exactly as it is** — your comments, your blank lines,
+  and any variable you added yourself. Nothing you put in this file is lost.
+- Managed settings that were not already present are **appended at the end**,
+  which is why upgraded servers have live settings after the footer.
+
+If there is no file, or it has no recognizable header, it is written fresh in the
+canonical order.
+
+Two steps then finish the run:
+
+1. `.fogsettings` is set to `0600 root:root`.
+2. `.fogsettings.pub` is written beside it (`0644`), holding only the handful of
+   facts the `/api/whoami` endpoint publishes. See
+   [[install-fogsettings#Security|Security]].
+
+### Settings the installer removes
+
+These were written by older versions and are stripped on upgrade. If a guide
+tells you to set one of them, that guide predates FOG 1.6:
+
+| Removed | Why |
+|---|---|
+| `bootfilename`, `notpxedefaultfile` | Replaced by per-architecture boot file selection |
+| `storageftpuser`, `storageftppass` | Storage node FTP credentials moved into the database |
+| `php_verAdds` | Folded into the distribution package lists |
+| `pkiMode`, `fogClientCACN` | Belonged to the retired four-tier certificate layout |
+| `dnsbootimage`, `donate` | Long dead; FOS gets DNS from DHCP, and telemetry is `sendreports` |
+
+## Settings reference
+
+### Network and host identity
+
+| Setting | Meaning |
+|---|---|
+| `interface` | The NIC FOG binds services to and takes its address from |
+| `ipaddress` | The server's **primary** address. Everything that needs "the FOG server" uses this |
+| `ipaddresses` | **Every** address on that interface. Used for certificate names, `server_name`/`ServerAlias`, and the maintenance allow list |
+| `submask` | Netmask, used when FOG runs DHCP |
+| `hostname` | The name put in the web certificate and vhost. **This does not set your system hostname.** Change it with `--hostname` |
+| `extraServerNames` | Additional names this server answers to. Set with `--extra-server-name` |
+
+### DHCP
+
+| Setting | Meaning |
+|---|---|
+| `dodhcp` / `bldhcp` | Whether FOG runs DHCP — the same answer as `Y`/`N` and as `1`/`0` |
+| `dhcpengine` | `isc` or `kea`. Leave blank to let FOG detect; it prefers Kea only where ISC is unavailable and never switches an existing install |
+| `dhcpd` | The DHCP service name on your distribution |
+| `routeraddress` / `dnsaddress` | Handed to DHCP clients. When DHCP is off these hold a literal comment string, because the value is written straight into a config file |
+| `plainrouter` | The router address without that comment fallback |
+| `startrange` / `endrange` | The DHCP pool, set with `-s` and `-e` |
+
+### Install shape
+
+| Setting | Meaning |
+|---|---|
+| `installtype` | `N` for a full server, `S` for a storage node |
+| `osid` / `osname` | `1` Redhat, `2` Debian, `3` Alpine (experimental), `4` Arch |
+| `packages` | What was installed on this box, as a record |
+| `php_ver` | The PHP version found, e.g. `8.3` |
+| `webserver` | `apache`, `httpd` or `nginx` |
+| `installlang` | Whether the extra language packs were installed |
+| `sendreports` | `Y`/`N` — send OS name, OS version and FOG version to the project. This is anonymous version telemetry and nothing else |
+| `fogupdateloaded` | `1` once a first install has completed; lets later runs skip the full question set |
+| `copybackold` | Copy the old web directory aside before replacing it (`-o`) |
+| `fog_update_channel` | Which channel this server tracks: `stable`, `staging` or `dev` |
+| `fogprogramdir`, `fog_git_path` | Records of where things are. The installer recomputes both |
+
+>[!warning] `osid` changed meaning between 1.5 and 1.6
+>In FOG 1.5, Arch was `3`. In 1.6, `3` is Alpine and Arch is `4`. An Arch server
+>upgrading from 1.5 carries the old value; the installer corrects it, but do not
+>set `osid='3'` by hand expecting Arch.
+
+### Paths
+
+| Setting | Meaning |
+|---|---|
+| `docroot` | The web server's document root |
+| `webroot` | The URL path FOG is served under — `/fog/`, or `/` to serve at the site root |
+| `storageLocation` | Where images are kept, normally `/images` |
+| `backupPath` | Where the database is dumped before a schema change |
+| `sslpath` | Holds uploaded snapin SSL material and the client communication certificate. **Not** where FOG's own certificate authorities live any more |
+
+### Database
+
+| Setting | Meaning |
+|---|---|
+| `mysqldbname` | The database name, normally `fog` |
+| `snmysqlhost` | Where the database is. On a storage node, this is the main server |
+| `snmysqluser` | `fogmaster` on a server, `fogstorage` on a node |
+| `snmysqlpass` | That user's password, generated on first install |
+| `snmysqlexternal` | Set to `1` when the database is on a host FOG does not administer. The installer then only verifies the connection, and skips the backup, the user management and the grants |
+
+### Web and certificates
+
+| Setting | Meaning |
+|---|---|
+| `httpproto` | `http` or `https` for the web interface |
+| `netbootproto` | The protocol iPXE uses to reach `boot.php`. On a new HTTPS install using FOG's own CA this stays `http`, because HTTPS netboot needs an iPXE rebuilt to trust that CA. Override with `--netboot-proto` |
+| `caCreated` | Set once FOG's certificate authority exists |
+| `catrust` | Whether FOG adds its own CA to *this server's* trust store. On by default; without it FOG's HTTPS calls to itself fail to verify |
+| `externalca`, `extcacert`, `extcakey`, `extcaroot` | Your own certificate authority. See [[external-ca-lets-encrypt\|External CA & Let's Encrypt Certificates]] |
+| `webExtCACert`, `webExtCAKey`, `webExtCARoot` | The same, for the web certificates only |
+| `rootCAPem`, `rootCAKey` | The trust anchor — what `ca.cert.der` publishes and what the fog-client pins |
+| `sslcapem`, `sslcakey`, `sslcachain` | The web certificate authority |
+| `sslprivkey`, `sslpubcert`, `sslcsr` | The web server's own certificate and key |
+| `internalDomains`, `internalSubnets` | Which names FOG's authorities may issue for. Anything you list in `internalSubnets` **replaces** the default of all private ranges rather than adding to it |
+| `acmeLeaf` | Set to `yes` **by hand** when your web certificate is managed by certbot, acme.sh or a corporate process |
+
+>[!important] `acmeLeaf` is not optional if you use ACME
+>Nothing sets it for you. Without it the installer regenerates the web
+>certificate from the original request while your ACME client owns the key,
+>producing a certificate/key mismatch that stops the web server. See
+>[[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]].
+
+>[!note] Name constraints are fixed when a CA is first created
+>`internalDomains` and `internalSubnets` only take effect when the authority is
+>issued, and FOG never re-issues one. Changing them on an existing server does
+>nothing until the intermediate is removed as well — which is why the installer
+>stops asking once `caCreated='yes'`.
+
+### Services
+
+| Setting | Meaning |
+|---|---|
+| `username` | FOG's system account, `fogproject`. Also the FTP account used for replication |
+| `password` | That account's password, generated on first install |
+| `blexports` | Whether to rebuild `/etc/exports` for NFS |
+| `noTftpBuild` | Set to leave the TFTP configuration alone |
+| `tftpAdvOpts` | Extra options for `in.tftpd` |
+| `fwconfigure` | `configure`, `disable` or `skip` for the local firewall. Remembered so an upgrade cannot quietly reverse your choice |
+| `kernelBackupGenerations` | How many previous kernel sets to keep. Default 3 |
+| `inetConnectTimeout`, `inetMaxTime` | Bounds on the installer's downloads — 5s to connect, 15s total. Raise them only for a genuinely slow link |
+
+### Secure Boot
+
+| Setting | Meaning |
+|---|---|
+| `secureboot` | `1`/`0`. On by default |
+| `secureBootKey`, `secureBootCert` | The key and certificate that **sign** the FOS kernels |
+| `secureBootMokCert` | The certificate **enrolled in firmware** — not always the same file |
+| `sbNameConstraints` | Set to `no` to issue the Secure Boot CA without name constraints, if your firmware rejects the chain |
+
+## Secure Boot
+
+This is the part of `.fogsettings` most worth understanding, because getting it
+wrong produces machines that will not boot, and the failure shows up at the
+*client* as a Security Policy Violation with nothing on the server to explain it.
+
+### Signing and enrollment are different keys
+
+| Setting | Role | Cost of changing it |
+|---|---|---|
+| `secureBootKey` + `secureBootCert` | The **signing key**. What actually signs kernels | None. Re-sign and carry on |
+| `secureBootMokCert` | The **enrolled certificate**. What firmware trusts | A physical trip to **every machine** |
+
+FOG creates a Secure Boot certificate authority and enrolls *that*, then issues a
+separate signing key beneath it. Because firmware trusts the issuer, the signing
+key can be rotated — or issued per storage node — and your fleet keeps booting.
+
+>[!warning] Servers upgrading from the older layout must re-enroll once
+>FOG used to enroll the signing certificate itself, which made the thing you must
+>never change and the thing you want to rotate the same object. Upgrading moves
+>you onto the certificate authority, so **every machine that enrolled the old key
+>must enroll once more**. The installer prints a notice when this happens. After
+>that, no future signing key change needs a firmware trip. Your previous key is
+>left on disk so you can still re-sign with it.
+
+### Why these are remembered
+
+An upgrade that quietly replaced signed kernels with unsigned ones is the main
+way this breaks, so the settings persist and every later upgrade re-signs without
+you passing anything. `secureboot='0'` persists for the mirror reason: opting out
+must not be undone by the next upgrade.
+
+>[!important] The signing key is never regenerated once it exists
+>A new key silently invalidates enrollment everywhere, and you would not find out
+>until a client failed to boot. Even `--recreate-keys` deliberately leaves Secure
+>Boot material alone. To force a new one, remove the directory — the installer
+>then reports the recorded key as missing and generates a fresh one.
+
+### Bringing your own key
+
+Both forms work. Supplying only the signing pair enrolls that certificate, as it
+always did:
+
+```bash
+./installfog.sh --secure-boot-key /path/sign.key --secure-boot-cert /path/sign.pem
+```
+
+Supplying your own authority as well lets you rotate signing keys under a
+certificate that stays enrolled:
+
+```bash
+./installfog.sh --secureboot-ca-cert /path/your-sb-ca.pem \
+                --secure-boot-key    /path/leaf.key \
+                --secure-boot-cert   /path/leaf.pem
+```
+
+The key and certificate must be given together; supplying one alone is refused
+rather than leaving your kernels unsigned.
+
+>[!note] Your files are copied, and your originals are never touched
+>FOG copies the pair into its own directory and points `.fogsettings` at the
+>copy. This matters if you keep them under the web root, which is rebuilt during
+>the install — without the copy they would be deleted before the kernels were
+>ever signed.
+
+Full walkthrough: [[secure-boot-signing|Secure Boot - signing FOS with your own key]].
+
+## Security
+
+`.fogsettings` is `0600 root:root`, because it holds two cleartext passwords:
+`password` (the `fogproject` account, which is also the replication FTP account)
+and `snmysqlpass` (the database).
+
+It used to be world-readable, so any local account on the server could read both.
+That was not simple carelessness — FOG's `/api/whoami` endpoint read the file
+directly and needed it readable. The two jobs are now separate:
+
+| File | Permissions | Contents |
+|---|---|---|
+| `/opt/fog/.fogsettings` | `0600 root:root` | Everything, including the passwords |
+| `/opt/fog/.fogsettings.pub` | `0644 root:root` | Only `ipaddress`, `hostname`, `osid`, `osname`, `installtype` |
+
+Re-running the installer is the whole migration — it corrects the permissions and
+writes the public file, on servers and storage nodes alike.
+
+>[!tip] Which file to read from a script
+>If you only need to know *which server this is*, read `.fogsettings.pub` and
+>stay unprivileged. Reading `.fogsettings` needs root.
+
+Two habits worth keeping:
+
+- **Never copy `.fogsettings` between servers** to clone a configuration. The
+  credentials in it belong to the machine that generated them. To move a server,
+  follow [[migrating-fog-server|Migrating FOG Server]].
+- **Redact before sharing.** `.fogsettings.pub` is safe to post; `.fogsettings`
+  is not.
+
+## Editing it by hand
+
+Some settings exist only for you to set — nothing in the installer writes them:
+
+| Setting | When you would |
+|---|---|
+| `acmeLeaf='yes'` | Your web certificate is managed by certbot or acme.sh |
+| `snmysqlexternal='1'` | Your database is on a host FOG does not administer |
+| `dhcpengine='kea'` or `'isc'` | Force a DHCP engine instead of letting FOG detect one |
+| `tftpAdvOpts` | Extra `in.tftpd` options |
+| `fwconfigure` | Change your mind about the firewall without being asked again |
+| `inetConnectTimeout`, `inetMaxTime` | Your link is genuinely slower than 5s/15s |
+
+This works because FOG reads `.fogsettings` before applying its own defaults, and
+the in-place merge never touches a line it does not manage.
+
+Before you edit:
+
+1. **You need root**, and you should leave the permissions at `0600`.
+2. **Keep the `key='value'` form.** An unbalanced quote breaks the next install.
+3. **Managed settings are overwritten on the next run.** Editing `ipaddress` or
+   `hostname` here changes nothing — use the installer option instead. To change
+   the server's address properly, follow [[change-fog-server-ip-address|Change FOG Server IP Address]].
+4. **Take a copy first.** The installer rewrites the file with no backup.
+5. **Do not edit `.fogsettings.pub`** — it is regenerated from `.fogsettings`
+   every run.
+
+## Related
+
+- [[command-line-options|Fog installer command line options]] — every option that writes a setting here
+- [[install-fog-server|Install FOG Server]] — the install itself
+- [[install-script-architecture|Install Script Architecture]] — how the installer is put together
+- [[secure-boot-signing|Secure Boot - signing FOS with your own key]]
+- [[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]]
+- [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]]
+- [[migrating-fog-server|Migrating FOG Server]]
+- [[uninstall-fog-server|Uninstalling the Fog server]]
