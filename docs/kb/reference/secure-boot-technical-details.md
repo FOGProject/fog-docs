@@ -36,7 +36,7 @@ both binaries already carry signatures the firmware and shim trust.
 >front and the signature on the kernel.
 
 Because upstream's `snponly.efi` has no boot script compiled in, it fetches one
-over TFTP, and **where it looks is not a single fixed path**. Since FOG 1.6.1
+over TFTP, and **where it looks is not a single fixed path**. In FOG 1.6.0
 this is true of *every* UEFI binary FOG ships, not just upstream's — none of
 them embed a script any more. iPXE asks for the
 bare name `autoexec.ipxe` and tries two locations in order:

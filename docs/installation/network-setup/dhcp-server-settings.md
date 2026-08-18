@@ -84,9 +84,9 @@ Nothing about option 66 or option 67 changes for this. Point option 67 at
 > mechanism that fetches it exists only in iPXE's EFI startup path. Editing
 > `autoexec.ipxe` changes nothing for a BIOS client.
 
-#### Upgrading from FOG 1.6.0 or earlier: the `autoexec/` folder is gone
+#### Upgrading from a 1.6.0 beta: the `autoexec/` folder is gone
 
-Earlier releases shipped a *second*, opt-in set of UEFI binaries in
+Earlier 1.6.0 betas shipped a *second*, opt-in set of UEFI binaries in
 `/tftpboot/autoexec/` — those were the ones without a compiled-in script, and
 the files in the root had one. That is now the other way round: the root binaries
 are the script-less ones, so the duplicate folder served no purpose and the
@@ -132,8 +132,8 @@ The setting is remembered across upgrades. `--boot-delay 0` removes it again.
 > and the installer says so when it runs.
 >
 > `/tftpboot/10secdelay/` holds BIOS files only. Booting a UEFI binary from
-> there would hang the client, which is why FOG 1.6.1 removes any left over from
-> an earlier release.
+> there would hang the client, which is why the installer removes any left over
+> from an earlier beta.
 
 ## Examples of DHCP server configurations
 
