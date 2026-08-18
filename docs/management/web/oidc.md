@@ -8,6 +8,8 @@ aliases:
     - Entra ID Login
     - Keycloak Login
     - Google Workspace Login
+    - Single Logout
+    - Forced SSO
 description: How the OpenID Connect plugin lets people sign in to FOG with an identity provider, and which role each one receives
 context_id: oidc
 tags:
@@ -58,6 +60,8 @@ turn off — see [[#Break-glass]].
 | **Username Claim** | Which claim names the FOG account. Defaults to `preferred_username` |
 | **Group Claim** | Which claim carries group membership. Defaults to `groups` |
 | **Enabled** | Off until you switch it on |
+| **Single Logout** | Signing out of FOG also ends the session at the provider. Off by default — see [[#Signing out]] |
+| **Redirect Login To This Provider** | Send everyone straight to the provider instead of showing FOG's login form. Off by default — read [[#Sending everyone straight to the provider]] before ticking it |
 
 You do not enter the authorization, token or key endpoints. FOG reads
 them from `<issuer>/.well-known/openid-configuration` on every sign-in,
@@ -322,12 +326,133 @@ Deleting a mapping revokes it too, at everyone's next sign-in. FOG keeps
 a record of what it granted each person precisely so that removing a
 mapping does what it looks like it does.
 
+## Signing out
+
+By default, **Log out** ends FOG's session and nothing else. Your provider's
+own session is untouched, so clicking the provider button again signs the
+same person straight back in with no prompt. That is the standard behaviour
+of single sign-on and is often what people expect.
+
+It is a problem in one case: an account owned by a provider cannot sign in
+with a local password, so on a shared computer there is no way to hand over
+to somebody else short of clearing cookies.
+
+Tick **Single Logout** on the provider to end the provider's session too.
+It ships **off**, deliberately: it is only the right answer where FOG is
+the only application behind that provider. If you share an identity
+provider with your mail, your ticket system and your VPN, then signing out
+of FOG signing people out of all of them is a surprise reaching
+applications FOG has nothing to do with.
+
+### Register the post-logout redirect URI
+
+The provider needs to know where to send people after it ends their
+session, and — like the sign-in redirect URI — it will only accept a value
+you have registered in advance. Most providers refuse an unregistered one
+and show their own error page instead of coming back, which looks exactly
+like FOG being broken.
+
+FOG shows the exact value on the provider's page, next to the setting.
+Copy it from there. It looks like:
+
+```
+https://fog.example.com/fog/management/index.php
+```
+
+Where to put it: **Keycloak** — the client's *Valid post logout redirect
+URIs*. **Entra ID** — the app registration's *Front-channel logout URL*.
+**Okta** — the application's *Sign-out redirect URIs*.
+
+>[!warning] This value changed in plugin v1.6.10
+>On v1.6.9 it was `…/management/login.php`. If you turned Single Logout on
+>at that version, re-register the new value — providers that follow the
+>spec refuse an unregistered one and show their own error page instead of
+>coming back to FOG.
+
+That is FOG's ordinary login page, and on an install that also has the
+redirect below turned on it sends you back to the provider. That is the
+point: the provider session was just ended, so it asks who you are instead
+of waving you through. Signing out and signing in as somebody else is one
+journey.
+
+If the provider publishes no `end_session_endpoint`, FOG cannot do this at
+all. It logs that to the web server's error log and signs you out of FOG
+only, which is otherwise indistinguishable from the setting being off.
+
+## Sending everyone straight to the provider
+
+On an install where every account lives at your provider, FOG's username
+and password box is a dead end — it cannot accept those credentials, so all
+it does is add a click. Tick **Redirect Login To This Provider** and an
+anonymous visitor goes straight to the provider instead.
+
+>[!warning] Read this before you tick it
+>This setting can lock every administrator out of your server. If the
+>provider becomes unreachable, its certificate expires, its client secret
+>is rotated, or its issuer was mistyped, a login page that unconditionally
+>redirects has no way back through a browser.
+>
+>**The way back is [[local-login|The Local Login Page]]:**
+>`https://fog.example.com/fog/management/login.php`, which always shows
+>FOG's own form and can never be redirected. FOG prints that URL next to
+>the checkbox. Bookmark it, and confirm a local administrator can sign in
+>there, before you turn this on.
+
+It ships **off**, and a newly created provider always has it off.
+
+Three things it deliberately does not do:
+
+- **It does not affect anyone already signed in.** The redirect happens
+  only when an anonymous visitor is about to be shown the login form.
+- **It does not interfere with the sign-in coming back.** The callback is a
+  different route and is never redirected.
+- **It does not trap you in a loop when the provider refuses.** A failed
+  sign-in lands on the local login page with the reason attached, rather
+  than bouncing straight back out to the provider that just said no.
+
+### Two providers cannot both do it
+
+If more than one enabled provider has this ticked, FOG **refuses to
+redirect at all** and shows its normal login form, naming the providers
+involved in the web server's error log.
+
+That is on purpose. The login page cannot redirect to two places, and
+silently picking one would send everybody to a provider that was never
+chosen — on the one page you are least able to debug. Showing the form is a
+working login for everybody and visibly not what you asked for.
+
+If you want this behaviour, pick one provider and untick the others.
+
+### Logging out with this on
+
+**Turn [[#Signing out|Single Logout]] on as well.** With both on, signing
+out ends the provider session and returns you here, which sends you back to
+the provider — and because its session is genuinely gone, it asks for
+credentials. That is the behaviour people expect from "log out".
+
+If Single Logout is **off**, that same journey would sign you straight back
+in: your provider session is untouched, so the redirect is answered
+silently. FOG avoids that by sending you to
+[[local-login|the local login page]] instead. You are signed out of FOG,
+still signed in at the provider, and looking at a form rather than back
+where you started — correct, but a little surprising, and the reason to
+turn Single Logout on.
+
+A **failed** sign-in always lands on the local login page too, whatever
+these settings say. Bouncing back to a provider that just refused you is a
+loop.
+
 ## Break-glass
 
 **Local password login can never be turned off.** There is no setting
 for it. That is deliberate: an expired client secret, a mistyped issuer
 or a provider outage must not be able to lock you out of your own
 server.
+
+It has its own page, because it is the thing to reach for when everything
+here has gone wrong: [[local-login|The Local Login Page]], at
+`https://fog.example.com/fog/management/login.php`. That URL always shows
+FOG's own form and can never be redirected to a provider.
 
 Two rules back it up, and you will meet them as refusals:
 
@@ -387,6 +512,11 @@ administrator made keeps whatever API setting it already had.
 | *Unknown identity provider*, on a provider that is configured and enabled | The provider row failed validation, or the sign-in URL arrived without its `?provider=` parameter. Both were fixed during 1.6 development; update the server and the bundled plugins. |
 | *That identity provider is not enabled* | Checked on the way back as well as on the way out, so disabling a provider ends sign-ins already in progress. |
 | Signs in fine but sees nothing | No mapped group, or the group value does not match what the provider sends. See [[#Getting the group values right]]. |
+| The login page never appears — it always goes to the provider | **Redirect Login To This Provider** is on. Use [[local-login\|the local login page]] to get in and untick it. |
+| The login page still appears although the redirect is ticked | More than one enabled provider has it ticked, so FOG refused to choose. Check the web server's error log; untick all but one. |
+| Logging out leaves you signed in — the provider button lets you straight back | **Single Logout** is off. That is the default. |
+| Log out ends at the provider's error page instead of returning to FOG | The post-logout redirect URI is not registered at the provider. See [[#Register the post-logout redirect URI]]. |
+| Log out signs you out but does not end the provider session, with **Single Logout** on | The provider publishes no `end_session_endpoint`. FOG logs this to the web server's error log. |
 
 Anything the person in the browser should not see — a signature failure,
 an unreachable endpoint, a refused subject — is written to the web
