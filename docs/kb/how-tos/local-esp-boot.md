@@ -20,10 +20,15 @@ tags:
 Some machines cannot netboot. The network card has no PXE option ROM, the
 switch takes too long to bring the link up, DHCP belongs to someone who will not
 add option 66, or the firmware's PXE stack is simply broken. For those, FOG
-publishes a set of ready-made archives you copy onto the machine's own **EFI
-System Partition (ESP)**. The machine then boots iPXE from its own disk and
-joins FOG from there — everything after that first hop is identical to a network
-boot.
+publishes a set of ready-made archives holding everything needed to start iPXE
+from local storage — the machine's own **EFI System Partition (ESP)**, or a USB
+stick. It boots iPXE from there and joins FOG; everything after that first hop is
+identical to a network boot.
+
+The archive is deliberately more than one route. Depending on what the machine
+lets you do, you can lay it on the ESP, run it off a stick from a UEFI shell,
+have rEFInd present it as a menu entry, or use it purely to enrol a Secure Boot
+key on a machine that cannot reach the network yet.
 
 >[!note] Terms used on this page
 >**ESP — EFI System Partition.** A small FAT32 partition every UEFI machine has,
@@ -91,10 +96,48 @@ way, which is why you should read it rather than guessing the extension.
 >`service/localboot/` is deleted and regenerated each time the installer runs.
 >It is a publication point, not somewhere to keep anything.
 
-## Installing onto the ESP
+## Where to put the files
 
-Mount the EFI System Partition and copy the **contents** of the extracted
-folder into a directory on it. `\EFI\FOG\` is the conventional place:
+**This is a kit, not a procedure.** The same files work from the machine's own
+ESP, from a USB stick, or launched by a boot manager — the point is that you can
+pick whichever route the machine in front of you actually allows.
+
+Whatever you choose: copy the **contents** of the extracted folder, keep the
+`local/` and `refind/` subdirectories, and put them somewhere identifiable.
+`\EFI\FOG\` is the conventional place.
+
+>[!warning] Do not flatten the layout
+>The subdirectories are load-bearing. The archive root and `local/` each hold
+>their own `autoexec.ipxe`, and merging them stops the machine booting — see
+>[why there are two](#why-there-are-two-autoexecipxe-files).
+
+### On Windows, with FogApi
+
+Windows does not mount the ESP by default. The
+[FogApi](https://github.com/darksidemilk/FogApi) PowerShell module has a helper
+for it:
+
+```powershell
+Install-Module -Name FogApi -Scope AllUsers     # once, from the PowerShell Gallery
+
+Mount-WinEfi                                    # mounts the ESP at A:
+New-Item -ItemType Directory A:\EFI\FOG -Force
+Copy-Item .\fog-esp-x86_64\* A:\EFI\FOG\ -Recurse -Force
+Dismount-WinEFI
+```
+
+`Mount-WinEfi` defaults to `A:` and takes `-mountLtr` for a different letter. It
+wraps `mountvol.exe /S`, and if the ESP is already mounted somewhere else it
+dismounts and remounts it where you asked. `Get-EfiMountLetter` reports where it
+currently is. Without the module, `mountvol A: /S` from an elevated prompt does
+the mounting part and the rest is an ordinary copy.
+
+>[!note] A single command for this is planned, not released
+>A FogApi command to do the whole job — lay the kit down and point the firmware
+>at it — is expected, in the same shape as its host-boot helpers. It does not
+>exist yet, so use the steps above.
+
+### On Linux
 
 ```bash
 sudo mount /dev/sda1 /mnt/esp          # your ESP, usually the small FAT32 one
@@ -103,13 +146,39 @@ sudo cp -r fog-esp-x86_64/* /mnt/esp/EFI/FOG/
 sudo umount /mnt/esp
 ```
 
-Keep the `local/` and `refind/` subdirectories — the layout is load-bearing, and
-flattening it stops the machine booting. See below for why.
+### On a USB stick
 
-Then add a firmware boot entry pointing at one of the entry points below — see
-[[uefi-boot-entries|Managing UEFI Boot Entries (efibootmgr)]] — or copy the
-entry point to `\EFI\BOOT\bootx64.efi` if you want it to be the machine's
-default.
+Format it FAT32 and unpack the archive onto it. Nothing needs mounting and
+nothing on the machine's own disk changes — this is the route for a machine you
+cannot log into, or whose ESP you would rather not touch. Two ways to use it:
+
+- **From a UEFI shell**, if the firmware offers one: change to the stick's
+  filesystem and run the entry point directly.
+- **From the firmware boot menu**, if it will boot removable media: copy the
+  entry point to `\EFI\BOOT\bootx64.efi` on the stick and it shows up as a
+  bootable device.
+
+A USB copy is also the most direct way to **enrol Secure Boot material on a
+machine that cannot netboot at all**. `MOK.der` and the `.auth` files travel
+inside the archive, so one stick carries both the enrolment material and
+something to boot in order to enrol it.
+
+### Letting rEFInd choose
+
+If you can get rEFInd running — from the ESP, from the stick, or because it is
+already the machine's boot manager — it scans for EFI binaries and lists them as
+a menu. That includes the shim, so you can **select `snponly-shimx64.efi` and get
+into FOG without adding a firmware boot entry or touching the boot order**.
+
+Useful when the firmware's own boot menu is awkward, locked down, or simply will
+not show a file you added by hand.
+
+### Making it permanent
+
+To turn any of the above into a real boot entry, see
+[[uefi-boot-entries|Managing UEFI Boot Entries (efibootmgr)]] — or copy the entry
+point to `\EFI\BOOT\bootx64.efi`, which is the path firmware falls back to when
+nothing else is configured.
 
 ## Which entry point
 
