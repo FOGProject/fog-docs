@@ -63,7 +63,7 @@ them can be given on its own.
 | --- | --- |
 | `--netboot-proto http\|https` | The protocol iPXE uses to fetch `boot.php`. Defaults to `http`; moves to `https` when the certificate is public or iPXE was rebuilt with your CA. Passing it explicitly is **remembered**, so a later run will not re-derive it |
 | `--public-web-cert` | States that the web certificate chains to a **public** root, so iPXE can validate it with no rebuild. Needs an FQDN, not an IP. Also stops FOG re-issuing the leaf |
-| `--rebuild-ipxe-with-my-ca` | Recompiles iPXE with the configured CA embedded, for HTTPS netboot behind a **private** CA. Adds 10–25 minutes to this and every future install |
+| `--rebuild-ipxe-with-my-ca` | Recompiles iPXE with the configured CA embedded, for HTTPS netboot behind a **private** CA. The build takes 10–25 minutes but is stamped against the pinned iPXE version and the CA, so it re-runs only when one of those changes — not on every install |
 | `-S`, `--force-https`, `--https-redirect` | Redirect HTTP to HTTPS, **and send HSTS**. All three spellings are the same option |
 | `--no-force-https`, `--no-https-redirect` | Serve both HTTP and HTTPS without redirecting. This is the default |
 | `--boot-delay <0-120>` | Seconds a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. `0` writes no delay. Any non-zero value gives BIOS clients exactly ten seconds, because that is the only pre-built BIOS binary |
