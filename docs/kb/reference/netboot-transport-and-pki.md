@@ -183,9 +183,17 @@ netboot at all, which is a different and harder ordering than the usual one,
 where a machine netboots first and enrols afterwards. See
 [[secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
 
-**It costs 10–25 minutes on every install and every update**, with no warm path.
-The rebuild is skipped only when the iPXE release, the embedded CA and the
-staged binaries are all unchanged.
+**The build takes 10–25 minutes when it runs** — it is a full compile with no
+incremental path. But it does **not** run on every install. FOG stamps the TFTP
+tree with the pinned iPXE version, a hash of the embedded CA and a hash of the
+staged binary; if all three still match, the build is skipped. A routine upgrade
+therefore costs nothing extra, and you pay the 10–25 minutes when one of these
+changes:
+
+- the **pinned iPXE version** moves, which a FOG upgrade may bring with it
+- your **CA changes** — rotated, replaced, or swapped for an external one
+- the **staged binaries** were replaced, e.g. by the published tarball
+- there is **no stamp yet**, which is the first build on a server
 
 **It is not needed for a public certificate.** If your certificate chains to a
 public root, `public-cert` gets you the same HTTPS netboot with no rebuild and
@@ -220,11 +228,22 @@ or constrain it with `dNSName`/`iPAddress` subtrees only. See
 
 `httpsRedirect` is not part of any mode, and no mode turns it on.
 
-Trust in FOG's own certificate authority reaches a client machine when
-**fog-client installs it into that machine's trusted root store**. On a fresh
-server nothing has fog-client yet, so those machines have no inherited trust —
-and a forced redirect would break exactly the machines that cannot fix
-themselves. It is a setting to turn on once trust is in place, not a default.
+A redirect only helps machines that already trust the certificate they are being
+redirected to. So the question is how trust got there, and **you have several
+routes** — the default is off because FOG cannot know which one you have used
+yet, not because there is only one.
+
+| Route | Trust arrives when |
+|---|---|
+| **fog-client** | The client installs FOG's root into the machine's trusted store as part of its own setup. Many sites already have this on every managed machine, which makes it the common answer |
+| **Your own deployment tooling** | You push FOG's root yourself — Group Policy, Intune, Jamf, Ansible, a package. The certificate is published at `/fog/management/other/ca.cert.der` |
+| **Your own CA, pushed the same way** | You gave FOG an external CA (`--web-ca-*`), and your fleet already trusts that root because your organisation put it there |
+| **A public CA** | Nothing to push. Browsers and operating systems trust it out of the box — see [[external-ca-lets-encrypt\|External CA & Let's Encrypt Certificates]] |
+
+**Turn the redirect on once one of those is true for the machines that matter.**
+Left on from the start on a fresh server with FOG's own CA, it breaks exactly the
+machines that have no way to fix themselves yet — which is why it is not the
+default, and why it is a deliberate step rather than an assumption.
 
 The redirect also carries HSTS, which is the sharper half: a browser that has
 seen an HSTS header refuses plain HTTP for months from its own cache, and no
