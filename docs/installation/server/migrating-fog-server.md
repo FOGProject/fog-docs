@@ -334,8 +334,8 @@ re-enrolling.
 `--secure-boot-key`/`--secure-boot-cert`): make those same files available to
 the new server — copied to the same path, or anywhere else — and pass the same
 flags when installing it. Post-PKI those two flags name the code-signing
-**leaf**, and `--secureboot-ca-cert` (working-1.6) names the intermediate that
-is actually enrolled in firmware:
+**leaf**, and `--secureboot-ca-cert` names the intermediate that is actually
+enrolled in firmware:
 
 ```bash
 cd /path/to/fogproject/bin

@@ -26,3 +26,12 @@ More advanced/situational guides:
 - [[deploy-dual-boot-multi-disk-image|Deploying a Dual-Boot Multi-Disk Image]]
 - [[add-extend-a-2nd-virtual-hdd|Add & Extend a 2nd Virtual HDD]]
 - [[post-download-scripts|Post Download Scripts]]
+- [[local-esp-boot|Local ESP Boot]]
+- [[firewall|Firewall configuration for a FOG server]]
+
+Secure Boot:
+
+- [[secure-boot-signing|Secure Boot - signing FOS with your own key]]
+- [[secure-boot-mok-enrollment|Secure Boot - MOK enrollment (Routes A and B)]]
+- [[secure-boot-setup-mode-enrollment|Secure Boot - Setup Mode enrollment (Route C)]]
+- [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]]
