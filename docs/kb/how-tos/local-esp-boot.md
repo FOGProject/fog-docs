@@ -43,6 +43,9 @@ boot.
 >
 >**SNP — Simple Network Protocol.** The UEFI firmware's own network driver.
 >Binaries named `snp`/`snponly` use it instead of iPXE's built-in drivers.
+>
+>**rEFInd** is a third-party boot manager FOG can chainload when you *leave* the
+>FOG menu to boot the machine's installed operating system.
 
 >[!info] FOG 1.6
 >These archives are new in 1.6 and replace an earlier arrangement that published
@@ -70,20 +73,15 @@ If the `zip` command was not installed when FOG last ran, the same content is
 published as `.tar.gz` instead. The manifest records the real filename either
 way, which is why you should read it rather than guessing the extension.
 
->[!warning] The `-10sec` archives are currently not usable
->The manifest also lists `fog-esp-x86_64-10sec` and `fog-esp-arm64-10sec`,
->intended to carry binaries that wait ten seconds before their first DHCP
->attempt. As of the current release those two archives ship **without** FOG's
->own EFI binaries — the build they are sourced from is no longer produced — so
->the `autoexec.ipxe` inside them refers to files that are not there. Use the
->plain archive for your architecture. `--boot-delay` does not help here either;
->it adjusts the TFTP server's boot script, not an ESP.
-
 >[!note] Kernels are listed, not shipped
 >`manifest.json` has a `kernels` array describing `bzImage` and `init.xz` for
->each architecture, with paths relative to the manifest. Those are **not** in
->the archives — the machine fetches them from the FOG server at boot, as it
->would over PXE. The archive only has to get iPXE running.
+>each architecture. Those are **not** in the archives — the machine fetches them
+>from the FOG server at boot, as it would over PXE. The archive only has to get
+>iPXE running.
+
+>[!note] The directory is rebuilt on every install
+>`service/localboot/` is deleted and regenerated each time the installer runs.
+>It is a publication point, not somewhere to keep anything.
 
 ## Installing onto the ESP
 
@@ -97,42 +95,29 @@ sudo cp -r fog-esp-x86_64/* /mnt/esp/EFI/FOG/
 sudo umount /mnt/esp
 ```
 
+Keep the `local/` and `refind/` subdirectories — the layout is load-bearing, and
+flattening it stops the machine booting. See below for why.
+
 Then add a firmware boot entry pointing at one of the entry points below — see
 [[uefi-boot-entries|Managing UEFI Boot Entries (efibootmgr)]] — or copy the
 entry point to `\EFI\BOOT\bootx64.efi` if you want it to be the machine's
 default.
 
-Do not extract two archives into the same folder. The FOG binaries in each are
-named identically, so they would overwrite each other.
-
 ## Which entry point
 
 | Situation | Point the firmware at |
 |---|---|
-| Secure Boot **off** | `fogipxe.efi` |
+| Secure Boot **off** | `local/fogipxe.efi` |
 | Secure Boot **on**, via shim + MOK | `snponly-shimx64.efi` (or `ipxe-shimx64.efi`) |
-| Secure Boot **on**, via firmware Setup Mode | `fogipxe.efi`, after enrolling the `.auth` files |
+| Secure Boot **on**, via firmware Setup Mode | `local/fogipxe.efi`, after enrolling the `.auth` files |
 
 On arm64 the shim is `snponly-shimaa64.efi`. On i386 there is no shim at all —
 Microsoft signs none for 32-bit UEFI — so only the Secure Boot **off** and
 Setup Mode routes exist there.
 
-### The chain, once shim starts
-
-Shim establishes trust, then loads one of upstream's signed loaders from the
-same folder. That loader reads `autoexec.ipxe` out of the folder it was loaded
-from, and the script chains FOG's own build.
-
->[!note] Which loader shim picks is not worth worrying about
->Over the network, shim chooses its second stage by rewriting its own
->`-shim<arch>` suffix — so `snponly-shimx64.efi` loads `snponly.efi`. That
->rename happens on shim's network and HTTP boot paths; booted off a local
->filesystem it may instead fall back to its compiled-in default, `ipxe.efi`.
->Both loaders are in the archive precisely so that either behaviour works.
-
 The first time on a given machine, shim will not be able to verify FOG's binary
 and launches **MokManager** instead. Choose *Enroll key from disk*, select
-`MOK.der` from the same folder, and reboot. It boots unattended from then on.
+`MOK.der` from the archive root, and reboot. It boots unattended from then on.
 See [[secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
 
 For the Setup Mode route, put the firmware into Setup Mode and enrol `PK.auth`,
@@ -140,53 +125,136 @@ For the Setup Mode route, put the firmware into Setup Mode and enrol `PK.auth`,
 signed binaries directly and shim is not involved. See
 [[secure-boot-setup-mode-enrollment|Secure Boot Setup Mode Enrollment]].
 
+## Why there are two `autoexec.ipxe` files
+
+This is the part worth understanding, because it explains the whole layout.
+
+Since fog-ipxe `v2.0.0-fog.8`, **no EFI binary carries FOG's boot script inside
+it**. Each one *reads* a file called `autoexec.ipxe`, and iPXE resolves that
+name against the directory the running binary was loaded from. Two different
+binaries need two different scripts, so they live in two different directories:
+
+| File | Read by | What it does |
+|---|---|---|
+| `autoexec.ipxe` *(archive root)* | upstream's signed loader, after shim | A chain ladder. Tries `local/fogipxe.efi`, then `fogsnp`, `fogintel`, `fogrealtek`, `fogsnponly` |
+| `local/autoexec.ipxe` | whichever `local/fog*.efi` runs | **FOG's real boot logic** — walks `net0`/`net1`/`net2` for DHCP, handles proxyDHCP and `next-server`, then chains `default.ipxe` |
+
+Neither binary can reach the other's script, which is exactly the point. A flat
+archive gave the FOG binaries the *ladder* instead of the boot logic, so
+`fogipxe.efi` read `chain fogipxe.efi` — itself — and via shim came up with no
+FOG script at all.
+
+>[!important] `ipxe.efi` in the archive root is upstream's, not FOG's
+>It carries iPXE's own NIC drivers, and booted locally off an ESP it **does not
+>load them**. It works only as a chain stage on the way to `local/fog*.efi`.
+>Nothing in either source tree predicts this; it took a machine to find. This is
+>the single most likely thing to trip you up if you rearrange the archive.
+
+>[!tip] `local/autoexec.ipxe` is a plain text file you can edit
+>It is FOG's boot logic sitting on the ESP, not baked into a binary. Change it
+>and the next boot picks it up — nothing to rebuild and nothing to re-download.
+
 ## What is in an archive
+
+**Archive root** — upstream's signed material and the enrolment kit:
 
 | File | What it is |
 |---|---|
 | `snponly-shim<arch>.efi`, `ipxe-shim<arch>.efi` | Upstream's Microsoft-signed shim, under two names |
 | `snponly.efi`, `ipxe.efi` | Upstream's signed iPXE loaders, which shim vouches for |
 | `mmx64.efi` / `mmaa64.efi` | MokManager, for enrolling the key |
-| `fogipxe.efi` | FOG's build, all NIC drivers |
-| `fogsnp.efi` | FOG's build, firmware SNP |
-| `fogintel.efi`, `fogrealtek.efi` | FOG's build, single-vendor drivers |
-| `fogsnponly.efi` | FOG's build, SNP on the load device only |
-| `autoexec.ipxe` | The script the signed loader runs |
+| `autoexec.ipxe` | The chain ladder the signed loader runs |
 | `MOK.der`, `PK.auth`, `KEK.auth`, `db.auth` | Enrolment material for each route |
 | `fog-enroll-mok.sh`, `fog-enroll-mok.desktop` | Helpers for enrolling from a running Linux |
-| `MANIFEST.json`, `README.txt` | Inventory and instructions for this archive |
+| `README.txt`, `MANIFEST.json` | Instructions and inventory for this archive |
 
-The `fog` prefix is not cosmetic. `snponly.efi` and `ipxe.efi` are reserved for
-upstream's signed loaders, because those are the exact bytes shim's embedded
-certificate vouches for — FOG's own builds cannot use those names.
+**`local/`** — FOG's own builds and FOG's boot script:
+
+| File | Driver set |
+|---|---|
+| `fogipxe.efi` | All NIC drivers |
+| `fogsnp.efi` | Firmware SNP |
+| `fogintel.efi`, `fogrealtek.efi` | Single vendor |
+| `fogsnponly.efi` | SNP on the load device only |
+| `autoexec.ipxe` | FOG's boot logic |
+
+**`refind/`** — `refind.efi` (or the right arch's variant) plus `refind.conf`,
+in its own directory because rEFInd reads its config from wherever it was
+loaded from.
+
+>[!note] What is missing, and when
+>An **i386** archive has no shim, no upstream loader, no MokManager and **no
+>root `autoexec.ipxe`** — nothing in it would read one. It does have
+>`local/autoexec.ipxe`, because its `fog*.efi` still needs a boot script. The
+>same shape appears on any architecture if the server's Secure Boot download
+>failed. A server with no rEFInd simply has no `refind/` directory rather than
+>an empty one, and a server with Secure Boot declined ships neither `MOK.der`
+>nor the `.auth` files.
+
+The `fog` prefix on FOG's builds is historical — `snponly.efi` and `ipxe.efi`
+are reserved at the root for upstream's signed copies. The names are kept
+because they are in every bug report since GH-1117.
 
 `MANIFEST.json` records a `sha256`, a `role` and an `origin` for every file, and
 a `fogSigned` boolean that is *measured* from the file rather than assumed.
+Paths in it are relative to the archive root, so `local/fogipxe.efi` appears in
+full.
+
+## Adding a delay before DHCP
+
+If the switch runs STP or port power-save, the link may not be up by the time
+iPXE first asks for DHCP. Install with:
+
+```bash
+./installfog.sh --boot-delay 15        # whole seconds, 0-120
+```
+
+That writes a live `sleep` into `local/autoexec.ipxe` **and** into the server's
+own netboot copy, so one option covers both paths. With no delay configured the
+same two lines are present but commented out, so you can also fix it on a single
+machine at 2am by editing the file on its ESP.
+
+>[!note] BIOS clients always get exactly ten seconds
+>Any non-zero value gives BIOS clients ten seconds, because
+>`10secdelay/undionly.kkpxe` is the only pre-built BIOS binary with a delay. EFI
+>and ESP boot get the value you asked for. The installer says so when the two
+>differ.
 
 ## If the network never comes up
 
-Try the binaries in this order: `fogipxe.efi`, `fogsnp.efi`, `fogintel.efi`,
-`fogrealtek.efi`, `fogsnponly.efi`. `fogsnponly.efi` is last on purpose — it
-binds only the device iPXE was loaded from, which off an ESP is the disk, so it
-usually finds no NIC at all.
+Try the binaries in this order: `local/fogipxe.efi`, `local/fogsnp.efi`,
+`local/fogintel.efi`, `local/fogrealtek.efi`, `local/fogsnponly.efi`.
+`fogsnponly.efi` is last on purpose — it binds only the device iPXE was loaded
+from, which off an ESP is the disk, so it usually finds no NIC at all.
 
 >[!important] The fallback chain covers missing files, not wrong drivers
->`autoexec.ipxe` already tries those five in order, but `chain X || goto Y`
->branches **only when an image fails to load** — absent, malformed, or rejected
->by shim. Once a binary loads and runs, control never returns: one that starts
->cleanly and then binds no NIC stops at its own prompt, and the next branch is
->never reached.
+>The root `autoexec.ipxe` already tries those five in order, but
+>`chain X || goto Y` branches **only when an image fails to load** — absent,
+>malformed, or rejected by shim. Once a binary loads and runs, control never
+>returns: one that starts cleanly and then binds no NIC stops at its own prompt,
+>and the next branch is never reached.
 >
 >So the ladder tells you which files got copied, not which driver works. **If it
 >is the wrong driver you have to change which file is there** — point the
 >firmware directly at the one you want.
 
+## Leaving FOG
+
+From 1.6, a UEFI host exiting the FOG boot menu uses iPXE's own `sanboot`,
+which hands control back to firmware to boot the next entry. That needs nothing
+on the ESP.
+
+rEFInd is still in the archive because `refind_efi` remains selectable, including
+**per host**, and because an ESP assembled by hand may never talk to this server
+again — so the kit carries every route off FOG rather than only the one this
+server happens to be configured for today.
+
 ## What you give up
 
 Because these are archives rather than individual published files, **no single
-binary has a URL of its own** any more. Nothing under `service/localboot/` can
-be used as a UEFI HTTP Boot target or as an iPXE `chain` destination. If you
-need that, serve the file yourself from somewhere you control.
+binary has a URL of its own**. Nothing under `service/localboot/` can be used as
+a UEFI HTTP Boot target or as an iPXE `chain` destination. If you need that,
+unpack the archive and serve the file yourself.
 
 ## See also
 
