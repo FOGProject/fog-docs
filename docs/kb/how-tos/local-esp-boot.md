@@ -47,9 +47,17 @@ boot.
 >**rEFInd** is a third-party boot manager FOG can chainload when you *leave* the
 >FOG menu to boot the machine's installed operating system.
 
->[!info] FOG 1.6
->These archives are new in 1.6 and replace an earlier arrangement that published
->the same binaries loose in a browsable directory.
+>[!info] New in FOG 1.6
+>This is a **new capability**, not a change to an existing one — there is nothing
+>to migrate from. Booting FOG off a machine's own disk was previously something
+>you assembled yourself: find an iPXE binary that drives the hardware, write a
+>boot script for it, put both on the ESP, and keep them in step with the server
+>by hand. FOG now builds and publishes that for you, per architecture, signed,
+>with the enrolment material alongside.
+>
+>If you already have a hand-rolled ESP setup, it keeps working. These archives
+>are worth switching to mainly because the server regenerates them on every
+>upgrade, so the binaries and the boot script cannot drift out of step with it.
 
 ## Getting the archives
 
@@ -249,12 +257,12 @@ rEFInd is still in the archive because `refind_efi` remains selectable, includin
 again — so the kit carries every route off FOG rather than only the one this
 server happens to be configured for today.
 
-## What you give up
+## What the archives cannot do
 
-Because these are archives rather than individual published files, **no single
-binary has a URL of its own**. Nothing under `service/localboot/` can be used as
-a UEFI HTTP Boot target or as an iPXE `chain` destination. If you need that,
-unpack the archive and serve the file yourself.
+Everything is published inside an archive, so **no individual binary has a URL of
+its own**. Nothing under `service/localboot/` can be used as a UEFI HTTP Boot
+target or as an iPXE `chain` destination. If you need either, unpack the archive
+and serve the file yourself from somewhere you control.
 
 ## See also
 
