@@ -17,12 +17,32 @@ tags:
 
 # Local ESP boot
 
-Some machines cannot netboot. The NIC has no PXE option ROM, the switch takes
-too long to bring the link up, DHCP belongs to someone who will not add option
-66, or the firmware's PXE stack is simply broken. For those, FOG publishes a
-set of ready-made archives you copy onto the machine's own **EFI System
-Partition**. The machine then boots iPXE from its own disk and joins FOG from
-there — everything after that first hop is identical to a PXE boot.
+Some machines cannot netboot. The network card has no PXE option ROM, the
+switch takes too long to bring the link up, DHCP belongs to someone who will not
+add option 66, or the firmware's PXE stack is simply broken. For those, FOG
+publishes a set of ready-made archives you copy onto the machine's own **EFI
+System Partition (ESP)**. The machine then boots iPXE from its own disk and
+joins FOG from there — everything after that first hop is identical to a network
+boot.
+
+>[!note] Terms used on this page
+>**ESP — EFI System Partition.** A small FAT32 partition every UEFI machine has,
+>which the firmware reads boot loaders from. It is usually the first partition
+>on the disk and is normally not mounted while the operating system is running.
+>
+>**UEFI** is the firmware interface that replaced the traditional BIOS.
+>**PXE** is the network-boot mechanism this page is an alternative to.
+>
+>**shim** is a small, Microsoft-signed loader that Secure Boot machines will
+>accept, whose only job is to check and load the next stage.
+>
+>**MOK — Machine Owner Key.** A certificate you enrol into a machine's firmware
+>so Secure Boot will accept things signed by it — here, the binaries this FOG
+>server signed. **MokManager** is the little blue-screen tool shim launches to
+>let you enrol one.
+>
+>**SNP — Simple Network Protocol.** The UEFI firmware's own network driver.
+>Binaries named `snp`/`snponly` use it instead of iPXE's built-in drivers.
 
 >[!info] FOG 1.6
 >These archives are new in 1.6 and replace an earlier arrangement that published
