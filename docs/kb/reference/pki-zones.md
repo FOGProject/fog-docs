@@ -316,9 +316,12 @@ FOG's own CA the way fog-client is:
 
 | Web certificate issued by | Web UI / API / fog-client | iPXE netboot |
 |---|---|---|
-| Public CA (Let's Encrypt) | HTTPS, trusted natively | **HTTPS works**, FQDN only |
-| FOG's own PKI (this page) | HTTPS once `ca.cert.der` is trusted | HTTP |
-| Your internal PKI | HTTPS once your root is trusted | HTTP |
+| Public CA (Let's Encrypt) | HTTPS, trusted natively | **HTTPS with no rebuild**, FQDN only |
+| FOG's own PKI (this page) | HTTPS once `ca.cert.der` is trusted | HTTP by default; HTTPS with `embed-ca` |
+| Your internal PKI | HTTPS once your root is trusted | HTTP by default; HTTPS with `embed-ca` |
+
+The full decision, including what each install mode sets and what `embed-ca`
+costs, is in [[netboot-transport-and-pki|Netboot Transport and PKI]].
 
 Stock iPXE ships an unconditional public-CA fallback
 (`ca.ipxe.org`) that cross-signs real-world public roots — Let's Encrypt
@@ -329,20 +332,26 @@ So a web certificate from a public CA on an FQDN gets you HTTPS netboot with
 on a fully air-gapped network with no route to `ca.ipxe.org`.
 
 Getting HTTPS netboot to work with FOG's own or your internal (non-publicly
-trusted) CA instead means rebuilding iPXE with that CA baked in
-(`TRUST=`) — and that rebuilt binary is not upstream's signed one, so it
-forfeits the signed Secure Boot shim. The only way to get HTTPS netboot,
-Secure Boot, and an internal CA all at once is enrolling that CA directly
-into UEFI firmware (`db`/`KEK`/`PK`, "Setup Mode" — see
-[[secure-boot-signing|the Secure Boot guide]]), bypassing shim entirely.
-There is no mechanism for signing a custom-rebuilt iPXE binary with FOG's
-own Secure Boot signing certificate — the signed chain only ever covers
-upstream's unmodified binaries.
+trusted) CA instead means rebuilding iPXE with that CA baked in (`TRUST=`),
+which is what `--install-mode embed-ca` does. That rebuilt binary is not
+upstream's *Microsoft-signed* one — but it is not unsigned either. FOG signs
+every EFI binary in its own TFTP tree with this server's Secure Boot signing
+key, and upstream's signed shim will load it once that key has been enrolled
+as a MOK on the machine. So the trade is not "lose Secure Boot"; it is **enrol
+this server's key before the machine can netboot**, which reverses the usual
+order in which a machine netboots first and enrols afterwards. See
+[[secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
 
-On a **fresh** install with HTTPS enabled and FOG's own PKI, netboot stays
-on HTTP automatically while everything else is HTTPS, avoiding that trade
-by default. An **existing** server keeps whatever it's already doing.
-Override either way with `--netboot-proto http|https`.
+Enrolling your CA directly into UEFI firmware (`db`/`KEK`/`PK`, "Setup Mode" —
+see [[secure-boot-setup-mode-enrollment|Secure Boot Setup Mode Enrollment]]) is
+an alternative that bypasses shim entirely, not the only route.
+
+Netboot stays on HTTP unless something asks otherwise, on fresh installs and
+existing servers alike. It moves to HTTPS when the web certificate is declared
+public (`publicWebCert`) or the rebuild is requested (`rebuildIpxeWithMyCA`).
+A value FOG derived is re-derived on every run, so turning the trigger back off
+returns netboot to HTTP. Override either way with `--netboot-proto http|https`,
+which is remembered.
 
 >[!note]
 >Public Let's Encrypt for netboot works only on an FQDN in a domain you

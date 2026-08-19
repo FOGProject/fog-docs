@@ -196,9 +196,10 @@ What the installer does with these files:
 4. Exports the **intermediate** as `ca.cert.der` — this is what fog-client
    pins. (Pinning the root would break client validation, because the root
    is not what directly signs the server cert.)
-5. Passes the full chain to the web server, and — if you're baking a CA
-   into iPXE for HTTPS netboot, see
-   [[pki-zones#https-and-netboot|HTTPS and netboot]] — to the iPXE build.
+5. Passes the full chain to the web server, and — only if you asked for the
+   iPXE rebuild with `--rebuild-ipxe-with-my-ca` or `--install-mode embed-ca`
+   — to the iPXE build. A public certificate needs no rebuild; see
+   [[netboot-transport-and-pki|Netboot Transport and PKI]].
 
 The relevant values are persisted to `.fogsettings` so re-running the
 installer reuses them. If the source files are no longer readable on a
@@ -345,12 +346,15 @@ trust:
      regenerated against the new CA.
   2. Have every host's fog-client **re-pin** the new `ca.cert.der` (re-run
      the client installer or whatever your re-registration flow is).
-  3. If you're using a baked-in-CA iPXE build for netboot HTTPS, have PXE
-     clients pull the **rebuilt iPXE binaries** too.
+  3. If you run `embed-ca` — a baked-in-CA iPXE build for netboot HTTPS —
+     have PXE clients pull the **rebuilt iPXE binaries** too. Sites on a
+     public certificate have nothing to rebuild.
 
-There is currently **no** automated client re-pinning or iPXE-rebuild
-trigger on renewal. Plan your CA lifetimes accordingly: long-lived, stable
-intermediates, short-lived leaves.
+There is currently **no** automated client re-pinning on renewal, and nothing
+schedules an installer run. The rebuild itself is at least self-correcting: the
+installer stamps the CA it built against, so a changed CA forces a rebuild on
+the next run rather than leaving stale binaries in place. Plan your CA
+lifetimes accordingly: long-lived, stable intermediates, short-lived leaves.
 
 ---
 
@@ -362,8 +366,9 @@ existing web certificate no longer verifies against the new chain and
 prints a warning: the web cert is regenerated under the new CA, and **any
 host whose fog-client already pinned the old certificate will not trust the
 server until it re-pins**. Re-run the fog-client installer after the
-switch. If you're also relying on a baked-in-CA iPXE build for HTTPS
-netboot, reboot PXE clients so they pull the rebuilt binary too.
+switch. If you also run `embed-ca`, reboot PXE clients so they pull the
+rebuilt binary too — the rebuild happens on that same installer run, because
+the embedded CA changed.
 
 ---
 

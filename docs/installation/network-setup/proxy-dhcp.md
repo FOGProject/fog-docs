@@ -192,20 +192,31 @@ systemctl enable dnsmasq.service
 ## The client downloads iPXE but then fails to reach FOG
 
 dnsmasq's only job is to get the client to TFTP-download the iPXE binary
-(`undionly.kkpxe` / `snponly.efi`). After that, the iPXE binary chainloads
-`tftp://<fog_server_IP>/default.ipxe`, which in turn chainloads your FOG
-server's boot script over HTTP/HTTPS. If the client loads iPXE but then hangs
-or errors when contacting FOG, the dnsmasq config is usually fine and the
-problem is downstream:
+(`undionly.kkpxe` / `snponly.efi`). What happens next depends on the firmware
+mode. Every UEFI binary FOG ships is built **without** its boot script compiled
+in, so iPXE fetches `autoexec.ipxe` from the TFTP root and runs that; the BIOS
+builds carry their script internally and ignore the file — see
+[[dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
+Either way the script chainloads `tftp://<fog_server_IP>/default.ipxe`, which in
+turn chainloads your FOG server's boot script over HTTP or HTTPS. Which of those
+two it is depends on `netbootproto`, not on how you reach the web interface —
+see [[netboot-transport-and-pki|Netboot Transport and PKI]].
+
+If the client loads iPXE but then hangs or errors when contacting FOG, the
+dnsmasq config is usually fine and the problem is downstream:
 
 > [!note] FOG 1.6 + HTTPS
-> If you answered **yes** to enabling HTTPS during the FOG 1.6 install, the web
-> server is configured to redirect all HTTP traffic to HTTPS (plus HSTS). The
-> installer rebuilds the iPXE binaries to trust your server's certificate so the
-> HTTPS chainload works, but this only happens for the binaries served from that
-> server's own `/tftpboot`. Make sure dnsmasq's `tftp-root` points at the FOG
-> server's `/tftpboot` (or that the files are copied from it), not an older or
-> hand-built set of binaries — otherwise the HTTPS chainload will fail with a
+> A 1.6 install serves the web interface over HTTPS by default, but **netboot
+> stays on HTTP** unless you asked for otherwise — they are separate settings.
+> The HTTP→HTTPS redirect is off by default as well, and the installer only
+> recompiles the iPXE binaries if you chose `--install-mode embed-ca` or passed
+> `--rebuild-ipxe-with-my-ca`. See
+> [[netboot-transport-and-pki|Netboot Transport and PKI]] for which combination
+> you want.
+>
+> If netboot *is* on HTTPS, make sure dnsmasq's `tftp-root` points at the FOG
+> server's own `/tftpboot` (or that the files are copied from it), not an older
+> or hand-built set of binaries — otherwise the chainload will fail with a
 > certificate error after iPXE loads.
 
 ## Serving ProxyDHCP to multiple subnets
@@ -315,11 +326,17 @@ outright rather than half-completing it, and 1.6 hides the "Enroll Secure Boot
 Key" boot-menu entry from clients that booted in BIOS/CSM mode for the same
 reason: an option that cannot succeed should not be offered.
 
-> [!warning] Secure Boot and HTTPS are mutually exclusive
-> An HTTPS FOG install rebuilds iPXE locally so the binary trusts your server's
-> CA. A signed binary cannot be rebuilt without destroying its signature, so the
-> Secure Boot binaries are upstream's generic ones and cannot carry your CA. Use
-> one or the other, not both.
+> [!note] Secure Boot and HTTPS are not mutually exclusive
+> Earlier versions of this page said they were. They are not, and FOG 1.6 stages
+> the Secure Boot binaries in **every** install mode, HTTPS included.
+>
+> An HTTPS *web interface* has no bearing on netboot at all — netboot has its own
+> protocol setting. And HTTPS *netboot* only needs a rebuilt iPXE when your
+> certificate comes from a private CA: iPXE cross-certifies public roots on its
+> own, so a publicly-issued certificate on an FQDN needs no rebuild and keeps the
+> signed shim. Where a rebuild genuinely is required, FOG signs the result with
+> this server's own Secure Boot key and shim loads it once that key is enrolled.
+> See [[netboot-transport-and-pki|Netboot Transport and PKI]].
 
 > [!important] The boot file is only half of Secure Boot
 > Getting a signed iPXE to load is the part dnsmasq controls. The FOS kernel FOG

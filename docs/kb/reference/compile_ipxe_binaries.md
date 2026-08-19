@@ -2,146 +2,190 @@
 title: Compile iPXE binaries
 aliases:
     - Compile iPXE binaries
-description: index page for compile_ipxe_binaries
+    - Build iPXE
+    - buildipxe.sh
+description: How FOG builds its iPXE binaries, how to build your own, and what embedding a CA costs you under Secure Boot
 context_id: compile_ipxe_binaries
 tags:
-    - in-progress
+    - reference
     - ipxe
-    - how-to
+    - netboot
+    - secure-boot
     - linux
 ---
 
 # Compile iPXE binaries
 
-FOG is using the most current iPXE source code to build many different
-PXE binaries, some being undionly and others specific for NICs made by
-intel or realtek - BIOS and UEFI compatible. But still you might want to
-build your own binary to suit your needs (be it a custom script or
-debugging enabled). Here you'll find some hints on how to build your
-own iPXE binaries.
+FOG builds a set of iPXE binaries — `undionly.kkpxe` for BIOS, and `snponly`,
+`ipxe`, `snp`, `intel` and `realtek` variants for each UEFI architecture. You
+might want to build your own to embed a custom script, add a driver, or turn on
+debug output. This page covers how FOG does it and how to do it yourself.
 
-## Prerequisites
+>[!important] You almost certainly do not need to do this
+>A normal install **downloads** prebuilt binaries from the `fog-ipxe` release
+>matching this FOG version. The installer only compiles iPXE when you ask it to
+>with `--rebuild-ipxe-with-my-ca` or `--install-mode embed-ca`, which is needed
+>solely to embed a **private** CA for HTTPS netboot. A certificate from a public
+>CA needs no rebuild at all — see
+>[[netboot-transport-and-pki|Netboot Transport and PKI]].
 
-To be able to build iPXE from source you need tools to checkout and
-compile source code.
+## Where the source lives
 
-    debian/ubuntu# sudo apt-get install git build-essential zlib1g-dev binutils-dev
-    fedora/centos# sudo yum install git gcc gcc-c++ make zlib-devel binutils-devel genisoimage isomd5sum syslinux xz xz-devel
+FOG's iPXE is its own repository, **[FOGProject/fog-ipxe](https://github.com/FOGProject/fog-ipxe)**,
+pinned to an exact release tag by `FOG_IPXE_VERSION` in
+`packages/web/lib/fog/system.class.php`. The installer clones it to
+`/opt/fog/ipxe` and checks out that tag.
 
-## Build script
+It is not a fork that tracks upstream loosely. It is upstream iPXE at a fixed
+tag, plus three things:
 
--   PXE boot any computer and record the build code listed on the iPXE
-    banner. The build code is a hex number inside the brackets (e.g.
-    `iPXE 1.21.1+ (gc64d) ...`). We will compare this build code in a
-    later step to ensure your iPXE boot loader files have been updated.
--   Navigate to where you downloaded the FOG installer using git.
-    Depending on which directions you followed these files will be in
-    either /opt or /root. The parent directory we are looking for is
-    called fogproject. For the remainder of this tutorial I'll assume
-    the fogproject directory is in the /root directory, you will need to
-    adjust the file paths based on your fogproject path.
--   Navigate to `/root/fogproject/utils/FOGiPXE` directory
--   Run the compile script using this command `./buildipxe.sh`
-    (**Note:** your fog server will need internet access to recompile
-    iPXE. It should take about 10 minutes to recompile iPXE - depends on
-    the CPU/RAM in your machine.)
--   When the compile is done you will be presented with a command prompt
-    once again. Understand the buildipxe.sh script only compiles the
-    iPXE binaries. It does not install them in your production
-    environment.
--   The proper way to update your production environment is to re-run
-    the fog installer using all of the preselected options. Reinstalling
-    fog using the fog installer is not destructive, the installer
-    remembers your previous settings and just updates any new files into
-    your production environment.
--   The hacker way to update your production environment is to copy over
-    the updates files to the /tftpboot directory with this command
-    `cp -R /root/fogproject/packages/tftp/* /tftpboot` (**Note:** watch
-    the source path if your git fogproject directory is not in the
-    `/root/fogproject` directory)
--   Run the following command to ensure your iPXE files have a current
-    date on them: `ls -la /tftpboot/*.efi`
--   Now PXE boot the client and confirm that the build code (in the
-    brackets) has changed from the previous step. **Note:** The build
-    code does not change on every re-compile you do but only if there is
-    a newer version available.
+| Component | What it is |
+|---|---|
+| `src/config/` and `src-efi/config/` | Replacements for `console.h`, `general.h` and `settings.h` only |
+| `patches/` | C changes applied after a `git reset --hard`, against the pinned tag |
+| `buildipxe.sh` | The build driver FOG's installer calls |
+
+The config overlay deliberately **does not** touch `crypto.h`. That matters:
+upstream unconditionally defines a cross-signing endpoint there
+(`CROSSCERT "http://ca.ipxe.org/auto"`), which is what lets any iPXE binary —
+FOG's or upstream's — validate a publicly-issued certificate with nothing baked
+in. Replacing `crypto.h` would silently remove that.
+
+`patches/` currently carries `0001-x509-enforce-name-constraints.patch`, which
+teaches iPXE to *enforce* X.509 name constraints instead of refusing to parse
+them. Without it, FOG's own name-constrained Web CA cannot be read by iPXE at
+all and HTTPS netboot fails with `Operation not supported`. The build fails
+loudly if a patch stops applying, rather than quietly producing a binary
+without it.
+
+## Building with FOG's script
+
+```bash
+git clone https://github.com/FOGProject/fog-ipxe /opt/fog/ipxe
+cd /opt/fog/ipxe
+git checkout v2.0.0-fog.8          # match FOG_IPXE_VERSION for your install
+./buildipxe.sh <ca-certificate.pem> <output-directory>
+```
+
+The first argument is the CA certificate to embed; the second is where the
+binaries are written. The FOG installer passes its own trust anchor and its TFTP
+staging directory. Expect **10–25 minutes**; there is no incremental path.
+
+To then put the result into production, re-run the FOG installer with your
+existing options. That is non-destructive — it reuses your saved settings — and
+it also re-signs the binaries, which copying them by hand does not.
+
+## Embedding a CA, and what it costs
+
+Embedding is done with iPXE's `TRUST=` and `CERT=` build arguments. Two
+properties are worth knowing:
+
+- **`TRUST=` is additive, not exclusive.** Baking in your CA pins it as an extra
+  root; it does not remove the `ca.ipxe.org` fallback described above.
+- **A rebuilt binary is no longer Microsoft-signed.** Upstream's signed release
+  binaries are signed as-built; changing a byte voids that.
+
+>[!warning] A rebuild moves a Secure Boot machine's enrolment earlier
+>FOG signs every EFI binary in its TFTP tree with this server's own Secure Boot
+>signing key, so a rebuilt binary is not unsigned — upstream's signed shim will
+>load it once that key is enrolled as a MOK. But it has to be enrolled
+>**first**, before the machine can netboot at all, which reverses the usual
+>order. See [[secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
+
+If you build binaries yourself and copy them into `/tftpboot` by hand, they
+carry **no** FOG signature and Secure Boot clients will refuse them. Re-run the
+installer instead, or sign them yourself — see
+[[secure-boot-technical-details|Secure Boot Technical Details]].
+
+## Prerequisites for a manual build
+
+```bash
+# debian/ubuntu
+sudo apt-get install git build-essential zlib1g-dev binutils-dev liblzma-dev mtools
+# fedora/rhel
+sudo dnf install git gcc gcc-c++ make zlib-devel binutils-devel xz-devel mtools
+```
+
+Add `genisoimage`/`isomd5sum`/`syslinux` if you want the `.iso` targets, and
+`sbsigntools` if you intend to sign what you build.
 
 ## Manual compilation
 
-Checkout the code and download our config header files from github. The
-header files need to be a little different for BIOS and UEFI and
-therefore I usually checkout the source twice to have one ready for each
-platform.
+`buildipxe.sh` is the supported path. If you want to drive `make` directly, work
+inside a `fog-ipxe` checkout so you get the config overlay and the patches
+rather than assembling them yourself:
 
-    mkdir ~/projects/ipxe
-    cd ~/projects/ipxe
-    git clone git://git.ipxe.org/ipxe.git ipxe-bios
-    cd ipxe-bios/src/config
-    rm console.h general.h settings.h
-    wget -O console.h "https://github.com/FOGProject/fogproject/raw/master/src/ipxe/src/config/console.h"
-    wget -O general.h "https://github.com/FOGProject/fogproject/raw/master/src/ipxe/src/config/general.h"
-    wget -O settings.h "https://github.com/FOGProject/fogproject/raw/master/src/ipxe/src/config/settings.h"
-    cd ..
-    wget -O ipxescript "https://github.com/FOGProject/fogproject/raw/master/src/ipxe/src/ipxescript"
+```bash
+git clone https://github.com/FOGProject/fog-ipxe ~/projects/fog-ipxe
+cd ~/projects/fog-ipxe
+git checkout v2.0.0-fog.8
+```
 
-    cd ~/projects/ipxe
-    git clone git://git.ipxe.org/ipxe.git ipxe-efi
-    cd ipxe-efi/src/config
-    rm console.h general.h settings.h
-    wget -O console.h "https://github.com/FOGProject/fogproject/raw/master/src/ipxe/src-efi/config/console.h"
-    wget -O general.h "https://github.com/FOGProject/fogproject/raw/master/src/ipxe/src-efi/config/general.h"
-    wget -O settings.h "https://github.com/FOGProject/fogproject/raw/master/src/ipxe/src-efi/config/settings.h"
-    cd ..
-    wget -O ipxescript "https://github.com/FOGProject/fogproject/raw/master/src/ipxe/src-efi/ipxescript"
+BIOS targets are built from `src/` **with** the boot script compiled in:
 
-## Bake the cake
+```bash
+cd ~/projects/fog-ipxe/src
+make bin/undionly.kkpxe EMBED=ipxescript
+make bin/ipxe.pxe       EMBED=ipxescript
+make bin/intel.pxe      EMBED=ipxescript
+```
 
-Now you are ready to build your iPXE binaries from source. But how do
-you do that? One simple call but it can be heavily customized with
-parameters.
+UEFI targets are built from `src-efi/` **without** `EMBED=`:
 
-    # Build a simple BIOS binaries including an embedded script (executed right when iPXE comes up)
-    cd ~/projects/ipxe/ipxe-bios/src
-    make bin/undionly.kpxe EMBED=ipxescript
-    make bin/ipxe.pxe EMBED=ipxescript
-    make bin/undionly.kkpxe EMBED=ipxescript
-    make bin/intel.pxe EMBED=ipxescript
-    ...
+```bash
+cd ~/projects/fog-ipxe/src-efi
+make bin-x86_64-efi/snponly.efi
+make bin-x86_64-efi/ipxe.efi
+make bin-x86_64-efi/snp.efi
+make bin-i386-efi/snponly.efi
+make bin-arm64-efi/snponly.efi
+```
 
+>[!important] Do not add `EMBED=` to a UEFI target
+>Since `v2.0.0-fog.8` no EFI binary carries its script internally — they read
+>`autoexec.ipxe` from the directory they were loaded from. An `EMBED=`-marked
+>EFI binary still *downloads* `autoexec.ipxe` and then never runs it, and the
+>orphaned script gets concatenated ahead of `init.xz`, so the kernel panics with
+>`VFS: Unable to mount root fs on "/dev/ram0"`. BIOS builds have no such path
+>and still embed. See
+>[[dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
 
-    # simple 32 bit EFI binaries with embedded script
-    cd ~/projects/ipxe/ipxe-efi/src
-    make bin-i386-efi/ipxe.efi EMBED=ipxescript
-    make bin-i386-efi/snponly.efi EMBED=ipxescript
-    make bin-i386-efi/intel.efi EMBED=ipxescript
-    ...
+To embed a CA by hand, add it to either command:
 
-    # simple 64 bit EFI binaries
-    cd ~/projects/ipxe/ipxe-efi/src
-    make bin-x86_64-efi/ipxe.efi EMBED=ipxescript
-    make bin-x86_64-efi/snponly.efi EMBED=ipxescript
-    make bin-x86_64-efi/intel.efi EMBED=ipxescript
-    ...
+```bash
+make bin-x86_64-efi/snponly.efi TRUST=/opt/fog/pki/root/ca/.fogCA.pem
+```
 
 ## Debugging
 
-Now we are getting to the interesting part of adding debug output to
-iPXE to be able to better find issues. Each and every c-file in the iPXE
-source can be compiled with debug enabled. Here is an example:
+Every C file in the iPXE source can be compiled with debug output enabled:
 
-    make bin/realtek.kpxe EMBED=ipxescript DEBUG=realtek
+```bash
+make bin/realtek.kpxe EMBED=ipxescript DEBUG=realtek
+```
 
-Most of the native drivers consist of just one source file. Have a look
-at src/drivers/net to see them - 3c509, bnx2, forcedeth, intel, pcnet32,
-realtek, rhine and many more.
+Most native drivers are a single source file — see `src/drivers/net` for the
+list: 3c509, bnx2, forcedeth, intel, pcnet32, realtek, rhine and many more.
 
-The most commonly used binaries ipxe.pxe and ipxe.efi include UNDI
-interface as well as all the native drivers. You can add debugging
-selectively. Check out the source code. Here are some more examples:
+`ipxe.pxe` and `ipxe.efi` include the UNDI interface as well as all native
+drivers, so you can enable debugging selectively:
 
-    make ... DEBUG=dhcp
-    make ... DEBUG=device,efi_driver,efi_init,efi_pci,efi_snp
-    make ... DEBUG=snp,snponly,snpnet,netdevice
-    make ... DEBUG=intel:4
-    make ... DEBUG=undi
-    ...
+```bash
+make ... DEBUG=dhcp
+make ... DEBUG=device,efi_driver,efi_init,efi_pci,efi_snp
+make ... DEBUG=snp,snponly,snpnet,netdevice
+make ... DEBUG=intel:4
+make ... DEBUG=undi
+```
+
+To confirm a client actually picked up a new build, note the build code in the
+iPXE banner before and after — the hex string in brackets, e.g.
+`iPXE 1.21.1+ (gc64d) ...`. It only changes when the source does, not on every
+recompile.
+
+## See also
+
+- [[netboot-transport-and-pki|Netboot Transport and PKI]] — when a rebuild is and is not needed
+- [[secure-boot-technical-details|Secure Boot Technical Details]] — how FOG signs what it builds
+- [[pki-zones|FOG PKI Infrastructure]] — the CA you would be embedding
+- [[dhcp-server-settings|DHCP server settings]] — which binary to point clients at
