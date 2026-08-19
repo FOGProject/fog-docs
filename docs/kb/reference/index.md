@@ -17,6 +17,14 @@ Reference material i.e. information on settings files, command line options, etc
 - [[hardware|Supported Hardware]]
 - [[fog-security|FOG Security]]
 
+**Certificates & Secure Boot**
+
+- [[netboot-transport-and-pki|Netboot Transport and PKI]]
+- [[pki-zones|FOG PKI Infrastructure]]
+- [[pki-glossary|PKI Glossary]]
+- [[bringing-your-own-ca|Bringing Your Own CA]]
+- [[secure-boot-technical-details|Secure Boot Technical Details]]
+
 **Imaging internals**
 
 - [[lvm-imaging|LVM and Imaging]]
