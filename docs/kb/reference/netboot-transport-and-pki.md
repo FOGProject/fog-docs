@@ -29,6 +29,22 @@ This page covers that choice. For what the certificates themselves are and how
 they are laid out on disk, see [[pki-zones|FOG PKI Infrastructure]]. For the
 vocabulary, see [[pki-glossary|PKI Glossary]].
 
+>[!note] Terms used on this page
+>**Netboot** is the PXE/UEFI network boot: the client asks DHCP where to boot,
+>loads iPXE, and iPXE fetches FOG's boot script over HTTP or HTTPS.
+>
+>**FQDN — fully qualified domain name.** The server's complete DNS name, such
+>as `fog.example.com`, rather than a short name (`fog`) or an IP address.
+>
+>**MOK — Machine Owner Key.** A certificate enrolled into an individual
+>machine's firmware so Secure Boot will accept binaries signed by it. **shim**
+>is the Microsoft-signed loader that checks for it.
+>
+>**ACME** is the protocol certificate authorities like Let's Encrypt use to
+>issue and renew certificates automatically. **CA** is a certificate authority;
+>a **public** one is trusted out of the box by browsers and operating systems,
+>a **private** one is not.
+
 >[!info] FOG 1.6
 >Everything on this page is 1.6. In 1.5.x a single `httpproto` setting decided
 >the web protocol, the HTTP→HTTPS redirect and whether iPXE was recompiled, all
