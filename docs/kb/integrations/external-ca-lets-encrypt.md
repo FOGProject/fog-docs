@@ -105,6 +105,11 @@ section.
 >[[pki-glossary|the PKI glossary]] if the terms here and there don't line up
 >for you.
 
+>[!tip] Looking for the steps rather than the reasoning?
+>[[lets-encrypt-setup|Set up Let's Encrypt on a FOG server]] is the
+>walkthrough: issue the certificate, point FOG at it, get HTTPS netboot
+>working, and wire up renewal.
+
 ---
 
 ## How iPXE validates HTTPS

@@ -26,3 +26,4 @@ More advanced/situational guides:
 - [[deploy-dual-boot-multi-disk-image|Deploying a Dual-Boot Multi-Disk Image]]
 - [[add-extend-a-2nd-virtual-hdd|Add & Extend a 2nd Virtual HDD]]
 - [[post-download-scripts|Post Download Scripts]]
+- [[lets-encrypt-setup|Set up Let's Encrypt on a FOG server]]
