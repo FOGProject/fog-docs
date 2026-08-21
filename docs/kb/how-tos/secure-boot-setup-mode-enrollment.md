@@ -21,6 +21,13 @@ tags:
 >[[secure-boot-mok-enrollment|MOK enrollment]] instead — it needs a human at
 >the console, but works everywhere.
 
+>[!tip] Your firmware probably calls it "Custom"
+>**Setup Mode** is the UEFI specification's term — it is the `SetupMode`
+>variable. Dell, HP, Lenovo and AMI firmware menus almost all label it
+>**Custom** or **Custom mode** instead, so searching your own firmware for
+>"Setup Mode" tends to find nothing. Look for "Custom mode", "Erase all Secure
+>Boot settings" or "Clear Secure Boot keys".
+
 Many firmwares support **Setup Mode** — a state that lets you write
 certificates directly into UEFI's own trust database (`PK`, `KEK`, `db`),
 bypassing shim and MokManager entirely. This is Route C:
@@ -154,10 +161,50 @@ CA — re-confirm on hardware before relying on it, and use
 >bad — with a pull request against this page (an inline GitHub edit is fine)
 >or a post on the [FOG forums](https://forums.fogproject.org/).
 
+## Enrolling `db` by hand, without this task
+
+The task above writes all three variables from a client. If you are doing it by
+hand — at a firmware menu, or through a hypervisor — you want something different,
+and the difference has bitten people:
+
+**Firmware menus and hypervisors want a plain DER certificate, not the `.auth`
+files.** The `.auth` blobs this page describes are *signed EFI variable updates*.
+They are what FOS writes. A firmware file picker cannot read one. Hand it
+`MOK.der` from `<webroot>/service/secureboot/` or from any `fog-esp-*` archive.
+
+**And you only need `db`.** Not PK, not KEK. `db` is what firmware checks to verify
+a boot image; PK and KEK only control who may *change* `db`. An existing machine's
+UI usually asks for all three because, in User Mode, a `db` write must be
+authenticated by a KEK-signed update — so it offers the only write it can
+authenticate from a stranger, which is replacing the whole chain. You do not have
+to accept that.
+
+Confirmed working: `MOK.der` added to `db` alone, then a FOG-signed binary booted
+directly with no shim.
+
+On VMware, put `MOK.der` in the VM's directory and add to the `.vmx`:
+
+```
+uefi.secureBoot.dbDefault.file0 = "MOK.der"
+```
+
+On an existing VM, `uefi.allowAuthBypass = "TRUE"` allows the firmware UI route.
+
+>[!warning]
+>**Append, never replace.** `uefi.secureBoot.dbDefault.append = "FALSE"` drops
+>Microsoft's certificates and Windows stops booting.
+>
+>**Changing `db` is measured into TPM PCR 7**, so it can trigger BitLocker
+>recovery. Suspend BitLocker first.
+
+Full context, and what `db` enrolment unlocks beyond one machine, is in
+[[local-esp-boot#enrolling-fogs-certificate|Local ESP boot]].
+
 ## See also
 
 - [[secure-boot-signing|Secure Boot signing]] — start here for the concepts
 - [[secure-boot-mok-enrollment|MOK enrollment]] — the human-at-the-console alternative, works on any release
+- [[local-esp-boot|Boot FOG from a machine's own ESP]] — where `db` enrolment removes the shim entirely
 - [[secure-boot-technical-details|Secure Boot technical details]]
 - [[pki-zones|FOG's Certificate Zones]]
 - [[pki-glossary|PKI & Secure Boot Glossary]]

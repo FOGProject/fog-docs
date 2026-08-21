@@ -205,6 +205,20 @@ are already standing at the machine when the enrollment happens.
 >you likely missed MokManager's own ~10-second startup timeout — see the
 >warning above — rather than anything being misconfigured.
 
+## What a MOK does not cover
+
+A MOK is **shim's** trust store, and only shim reads it. Two consequences worth
+knowing before you plan a fleet around this:
+
+- **Firmware never reads MokList.** So a FOG-signed binary that the *firmware*
+  launches directly — booting `fog-ipxe\fogipxe.efi` off an ESP, with no shim in
+  the chain — is refused no matter how many MOKs are enrolled. Measured on
+  physical hardware, VMware and KVM. That case needs the certificate in `db`
+  instead; see [[local-esp-boot|Local ESP boot]].
+- **shim only launches MokManager when a MOK request is already pending.** A first
+  boot with nothing enrolled does not offer to enrol — it simply fails to load the
+  next stage. Enrolment has to be staged first, which is what the routes above do.
+
 ## Withdrawing a key from one machine
 
 To remove trust for a certificate from a single machine, without touching the
