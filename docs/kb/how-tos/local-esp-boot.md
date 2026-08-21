@@ -110,15 +110,33 @@ walkthrough.
 
 ### As the `db` certificate, for booting with no shim
 
-Add `MOK.der` to `db`. **`db` alone is enough — you do not need PK or KEK.**
+Add `MOK.der` to `db`. `db` is what firmware checks to verify a boot image; PK and
+KEK only control *who may change* `db`.
 
-`db` is what firmware checks to verify a boot image. PK and KEK only control *who
-may change* `db`. On an existing machine the firmware UI usually asks for all
-three, which reads as though `db` depends on them; it does not. Once a PK is
-present the platform is in User Mode and a `db` write must be authenticated by a
-KEK-signed update, so the UI is offering the only write it can authenticate from a
-stranger — replacing the whole chain. You do not have to accept that offer. You
-only need permission to write `db`.
+**How many variables you need depends on who performs the write.**
+
+| Enrolling via | Variables needed | Why |
+| --- | --- | --- |
+| The firmware's own tool, or a hypervisor setting, with the platform in Setup/Custom Mode | **`db` alone** | The write is unauthenticated, so nothing has to vouch for it |
+| A running OS — FOG's enrolment task, a Linux tool, PowerShell's Secure Boot cmdlets | **PK, KEK and `db`** | In User Mode a `db` write must be authenticated by a KEK-signed update, and the machine only trusts FOG's KEK if FOG's PK is enrolled too |
+
+Confirmed on the first row: `MOK.der` added to `db` by itself, no PK and no KEK,
+then a FOG-signed binary booted directly with no shim. That is why an existing
+machine's firmware UI asking for all three is not evidence that `db` depends on
+them — it is offering the only write it can authenticate from a stranger, which is
+replacing the whole chain. You do not have to accept that offer if you can write
+`db` directly.
+
+The second row is what FOG's own [[secure-boot-setup-mode-enrollment|Setup Mode
+enrollment]] task does, and why the `.auth` files exist.
+
+>[!note] Not every firmware has been tested either way
+>The routes above are confirmed on the hardware and hypervisors used during this
+>work, not exhaustively. If yours behaves differently — `db` alone rejected at a
+>firmware menu, or accepted from an OS tool — please report it, on the
+>[FOG forums](https://forums.fogproject.org/) or on
+>[issue 1267](https://github.com/FOGProject/fogproject/issues/1267), which is
+>collecting exactly this. The table should be corrected, not trusted.
 
 `MOK.der` is the intermediate, and FOG's signatures carry it inside them, so this
 one certificate covers every binary in the archive and the signing leaf can be
