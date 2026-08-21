@@ -75,17 +75,20 @@ fogupdateloaded=1
 docroot='/var/www/html/'
 webroot='/fog/'
 caCreated='yes'
-httpproto='http'
-sslpath='/opt/fog/snapins/ssl'
+httpProto='https'
+httpsRedirect='no'
+publicWebCert='no'
+rebuildIpxeWithMyCA='no'
+sslPath='/opt/fog/snapins/ssl'
 backupPath='/home/'
 php_ver='8.3'
-sslprivkey='/opt/fog/pki/web/leaf/.webLeaf.key'
-sslcapem='/opt/fog/pki/web/ca/.fogWebCA.pem'
+sslPrivKey='/opt/fog/pki/web/leaf/.webLeaf.key'
+sslCAPem='/opt/fog/pki/web/ca/.fogWebCA.pem'
 rootCAPem='/opt/fog/snapins/ssl/CA/.fogCA.pem'
-secureboot='1'
+secureBoot='1'
 secureBootKey='/opt/fog/pki/secureboot/leaf/sign.key'
 fwconfigure='configure'
-netbootproto='http'
+netbootProto='http'
 webserver='nginx'
 sendreports='Y'
 ## End of FOG Settings
@@ -103,10 +106,15 @@ Each setting is filled in from the first source below that supplies a value.
 **Highest precedence first:**
 
 1. **An installer option on this run** — see [[command-line-options|Fog installer command line options]].
-2. **An exported environment variable**, for scripted installs.
-3. **`.fogsettings` from the previous install** — unless you pass `-U`.
-4. **An interactive prompt.** `-y` skips the prompts and takes each default.
-5. **The distribution defaults** — package lists, web server, paths.
+2. **`--install-mode`**, which is a *preset*: it writes `httpProto`,
+   `netbootProto`, `publicWebCert` and `rebuildIpxeWithMyCA` in one go. It is
+   applied **before** the discrete options above, so
+   `--install-mode public-cert --no-rebuild-ipxe-with-my-ca` means what it reads
+   like — each discrete option overrides its own field and nothing else.
+3. **An exported environment variable**, for scripted installs.
+4. **`.fogsettings` from the previous install** — unless you pass `-U`.
+5. **An interactive prompt.** `-y` skips the prompts and takes each default.
+6. **The distribution defaults** — package lists, web server, paths.
 
 Two consequences worth knowing:
 
@@ -116,6 +124,20 @@ Two consequences worth knowing:
 - **Repeatable options replace rather than add.** `--extra-server-name`,
   `--internal-domain` and `--internal-subnet` each replace the stored list, so
   re-running with a shorter list genuinely shortens it.
+
+### Settings only you can set
+
+A few values the installer *reads* but never writes. They have no option and no
+prompt, so the only way to set one is to add the line to `.fogsettings`
+yourself. The installer preserves anything it does not manage, so it will stay.
+
+| Setting | What it does |
+|---|---|
+| `snapinLocation` | Where snapins live, if not under the default. `FOGBackup.sh` reads it and will tell you to add it by hand when it needs it |
+| `storageLocationCapture` | Where captured images land, if you want them off `storageLocation` |
+| `inetConnectTimeout`, `inetMaxTime` | Bounds on the installer's downloads — 5s to connect, 15s total |
+| `ftppasvmin`, `ftppasvmax` | The FTP passive port range |
+| `mcastportmin`, `mcastportmax` | The multicast port range |
 
 ### Where the install lives
 
@@ -164,7 +186,23 @@ tells you to set one of them, that guide predates FOG 1.6:
 | `storageftpuser`, `storageftppass` | Storage node FTP credentials moved into the database |
 | `php_verAdds` | Folded into the distribution package lists |
 | `pkiMode`, `fogClientCACN` | Belonged to the retired four-tier certificate layout |
-| `dnsbootimage`, `donate` | Long dead; FOS gets DNS from DHCP, and telemetry is `sendreports` |
+| `httpproto`, `netbootproto`, `bootdelay`, `catrust`, `secureboot`, `externalca`, `extcacert`, `extcakey`, `extcaroot`, `sslpath`, `sslprivkey`, `sslpubcert`, `sslcakey`, `sslcapem`, `sslcachain`, `sslcsr` | The pre-1.6 lower-case spellings of keys that still exist. Your value is copied onto the camelCase name once and the old line is then removed — see below |
+
+>[!note] The transport and PKI keys were renamed in 1.6
+>They used to be lower-case run-together names sitting beside camelCase ones
+>added later, which made one settings model look like two. They are all
+>camelCase now.
+>
+>**You do not need to do anything.** The first 1.6 installer run copies each old
+>value onto its new name and deletes the old line, so an existing
+>`.fogsettings` migrates itself. No aliases are kept — a file carrying two
+>spellings of one setting, with nothing to say which is live, is worse than a
+>rename. If you have scripts that read `.fogsettings` directly, they need the
+>new names.
+>
+>Two lookalikes are **not** affected, because they are not this file's keys: the
+>storage-node `sslpath` field used by the API and by CSV import/export, and
+>PHP's own `httpproto`.
 
 ## Settings reference
 
@@ -219,7 +257,7 @@ tells you to set one of them, that guide predates FOG 1.6:
 | `webroot` | The URL path FOG is served under — `/fog/`, or `/` to serve at the site root |
 | `storageLocation` | Where images are kept, normally `/images` |
 | `backupPath` | Where the database is dumped before a schema change |
-| `sslpath` | Holds uploaded snapin SSL material and the client communication certificate. **Not** where FOG's own certificate authorities live any more |
+| `sslPath` | Holds uploaded snapin SSL material and the client communication certificate. **Not** where FOG's own certificate authorities live any more |
 
 ### Database
 
@@ -233,24 +271,42 @@ tells you to set one of them, that guide predates FOG 1.6:
 
 ### Web and certificates
 
+The first six decide how FOG is reached and what its certificate is. They are
+independent — none of them silently changes another — and
+[[netboot-transport-and-pki|Netboot Transport and PKI]] explains which
+combinations make sense and what `--install-mode` sets them to.
+
 | Setting | Meaning |
 |---|---|
-| `httpproto` | `http` or `https` for the web interface |
-| `netbootproto` | The protocol iPXE uses to reach `boot.php`. On a new HTTPS install using FOG's own CA this stays `http`, because HTTPS netboot needs an iPXE rebuilt to trust that CA. Override with `--netboot-proto` |
+| `httpProto` | The protocol FOG uses for its **own non-netboot** URLs. A **record**, not a preference: the installer sets it to `https` on every run, because 443 listens on every install. `--install-mode http-only` lowers it for that run only and does not persist |
+| `netbootProto` | The protocol iPXE uses to reach `boot.php`. Defaults to `http`, and moves to `https` when **either** `publicWebCert=yes` or `rebuildIpxeWithMyCA=yes`. Re-derived on every run, so turning the trigger off puts it back |
+| `netbootProtoForced` | `yes` when `--netboot-proto` was passed explicitly. This is what protects a forced value from being re-derived — without it, "the admin chose this" and "a previous run worked this out" are the same thing |
+| `httpsRedirect` | Redirect HTTP to HTTPS, **and send HSTS**. Off by default, and no install mode turns it on — a redirect only helps machines that already trust the certificate, and FOG cannot know how you got that trust there. fog-client installing FOG's root is the common route, but your own deployment tooling, your own external CA, or a public CA all work. Turn it on once one of those is true |
+| `publicWebCert` | A statement that the web certificate chains to a **public** root. Steers netboot to HTTPS, and stops FOG re-issuing the leaf or locking its key away |
+| `rebuildIpxeWithMyCA` | Recompile iPXE with the configured CA embedded, so netboot can use HTTPS behind a **private** CA. The build takes 10–25 minutes, but is stamped against the pinned iPXE version and the CA, so it re-runs only when one of those changes — not on every upgrade |
 | `caCreated` | Set once FOG's certificate authority exists |
-| `catrust` | Whether FOG adds its own CA to *this server's* trust store. On by default; without it FOG's HTTPS calls to itself fail to verify |
-| `externalca`, `extcacert`, `extcakey`, `extcaroot` | Your own certificate authority. See [[external-ca-lets-encrypt\|External CA & Let's Encrypt Certificates]] |
+| `caTrust` | Whether FOG adds its own CA to *this server's* trust store. On by default; without it FOG's HTTPS calls to itself fail to verify |
+| `externalCA`, `extCACert`, `extCAKey`, `extCARoot` | Your own certificate authority. See [[external-ca-lets-encrypt\|External CA & Let's Encrypt Certificates]] |
 | `webExtCACert`, `webExtCAKey`, `webExtCARoot` | The same, for the web certificates only |
 | `rootCAPem`, `rootCAKey` | The trust anchor — what `ca.cert.der` publishes and what the fog-client pins |
-| `sslcapem`, `sslcakey`, `sslcachain` | The web certificate authority |
-| `sslprivkey`, `sslpubcert`, `sslcsr` | The web server's own certificate and key |
+| `sslCAPem`, `sslCAKey`, `sslCAChain` | The web certificate authority |
+| `sslPrivKey`, `sslPubCert`, `sslCSR` | The web server's own certificate and key |
 | `internalDomains`, `internalSubnets` | Which names FOG's authorities may issue for. Anything you list in `internalSubnets` **replaces** the default of all private ranges rather than adding to it |
-| `acmeLeaf` | Set to `yes` **by hand** when your web certificate is managed by certbot, acme.sh or a corporate process |
+| `acmeLeaf` | Your web certificate is managed outside FOG — certbot, acme.sh, a corporate process. Set it by hand; the installer may also infer it once from the certificate it finds, and records it when it does |
+| `webCertFile`, `webKeyFile` | Where that externally-managed leaf and key actually live, captured from the vhost. Empty means "FOG's own". FOG rewrites the vhost on every run, so without these it would point the web server back at its own certificate |
 
->[!important] `acmeLeaf` is not optional if you use ACME
->Nothing sets it for you. Without it the installer regenerates the web
->certificate from the original request while your ACME client owns the key,
->producing a certificate/key mismatch that stops the web server. See
+>[!important] `acmeLeaf` and `publicWebCert` answer different questions
+>`acmeLeaf` is **who renews the leaf**; `publicWebCert` is **what it chains
+>to**. All four combinations are real — an internal ACME server such as step-ca
+>is `acmeLeaf=yes` with `publicWebCert=no`. Either one on its own tells FOG the
+>certificate was issued elsewhere, so FOG will neither re-issue it nor lock its
+>private key away from whatever renews it. Neither implies the other.
+
+>[!important] Set `acmeLeaf` before your first ACME renewal
+>The installer infers it only from evidence it can see. If it has not, and you
+>do not set it, the installer regenerates the web certificate from the original
+>request while your ACME client owns the key — producing a certificate/key
+>mismatch that stops the web server. See
 >[[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]].
 
 >[!note] Name constraints are fixed when a CA is first created
@@ -268,6 +324,7 @@ tells you to set one of them, that guide predates FOG 1.6:
 | `blexports` | Whether to rebuild `/etc/exports` for NFS |
 | `noTftpBuild` | Set to leave the TFTP configuration alone |
 | `tftpAdvOpts` | Extra options for `in.tftpd` |
+| `bootDelay` | Seconds (0–120) a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. Set with `--boot-delay`; see [[dhcp-server-settings#Adding a delay before the first DHCP attempt\|Adding a delay before the first DHCP attempt]] |
 | `fwconfigure` | `configure`, `disable` or `skip` for the local firewall. Remembered so an upgrade cannot quietly reverse your choice |
 | `kernelBackupGenerations` | How many previous kernel sets to keep. Default 3 |
 | `inetConnectTimeout`, `inetMaxTime` | Bounds on the installer's downloads — 5s to connect, 15s total. Raise them only for a genuinely slow link |
@@ -276,7 +333,7 @@ tells you to set one of them, that guide predates FOG 1.6:
 
 | Setting | Meaning |
 |---|---|
-| `secureboot` | `1`/`0`. On by default |
+| `secureBoot` | `1`/`0`. On by default |
 | `secureBootKey`, `secureBootCert` | The key and certificate that **sign** the FOS kernels |
 | `secureBootMokCert` | The certificate **enrolled in firmware** — not always the same file |
 | `sbNameConstraints` | Set to `no` to issue the Secure Boot CA without name constraints, if your firmware rejects the chain |
@@ -310,7 +367,7 @@ key can be rotated — or issued per storage node — and your fleet keeps booti
 
 An upgrade that quietly replaced signed kernels with unsigned ones is the main
 way this breaks, so the settings persist and every later upgrade re-signs without
-you passing anything. `secureboot='0'` persists for the mirror reason: opting out
+you passing anything. `secureBoot='0'` persists for the mirror reason: opting out
 must not be undone by the next upgrade.
 
 >[!important] The signing key is never regenerated once it exists
