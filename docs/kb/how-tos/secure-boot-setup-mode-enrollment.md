@@ -144,10 +144,11 @@ same Secure Boot CA, not alternatives that conflict. Confirmed on real UEFI
 hardware: machines boot FOG's leaf-signed kernels while trusting only the
 intermediate, whether that intermediate was enrolled as `MOK.der` through
 MokManager or written into `db` through this path. That verification
-predates the name-constraints extension now carried on the Secure Boot
-CA — re-confirm on hardware before relying on it, and use
-`--no-sb-name-constraints` (see
-[[pki-zones#name-constraints|Name constraints]]) if a fleet rejects the chain.
+predates a name-constraints extension that the Secure Boot CA briefly carried
+and no longer does: FOG 1.6 took constraints off this zone entirely, precisely
+because a critical extension firmware mishandles costs a trip to every machine.
+There is no flag to re-enable them — `--no-sb-name-constraints` was removed with
+the setting behind it. See [[pki-zones#name-constraints|Name constraints]].
 
 >[!note] Validation status
 >Route C has been validated end to end in VirtualBox: Setup Mode → task

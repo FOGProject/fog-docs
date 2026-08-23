@@ -55,7 +55,7 @@ flowchart TD
         direction LR
         F{"Upgrading with a prior<br/>.fogsettings?"} -->|yes| G["source .fogsettings<br/>+ doOSSpecificIncludes()"]
         F -->|no| H
-        G --> H{"fogupdateloaded<br/>already set?"}
+        G --> H{"FOG_installed<br/>already set?"}
         H -->|no, fresh install| I["input.sh<br/>(incl. OS choice)"]
         I --> J["newinput.sh"]
         H -->|yes, already populated| J
@@ -67,21 +67,21 @@ flowchart TD
     end
     subgraph S4["4 · Install-type branch + shared services"]
         direction LR
-        P{installtype} -->|Normal server| Q["configureMySql → configureHttpd<br/>→ checkWebTier → backupDB → updateDB"]
+        P{FOG_install_type} -->|Normal server| Q["configureMySql → configureHttpd<br/>→ checkWebTier → backupDB → updateDB"]
         P -->|Storage node| R["checkDatabaseConnection<br/>→ backupReports → configureMinHttpd"]
         Q --> Sn["storage / DHCP / TFTP / FTP<br/>/ snapin / UDPCast setup"]
         R --> Sn
     end
     subgraph S5["5 · Services + finish"]
         direction LR
-        T["init scripts + FOG<br/>services + NFS"] --> U["writeUpdateFile<br/>→ linkOptFogDir"] --> V{installtype}
+        T["init scripts + FOG<br/>services + NFS"] --> U["writeUpdateFile<br/>→ linkOptFogDir"] --> V{FOG_install_type}
         V -->|Normal server| W["updateStorageNodeCredentials<br/>→ setupFogReporting"]
         V -->|Storage node| X["registerStorageNode<br/>→ updateStorageNodeCredentials"]
     end
     S1 --> S2 --> S3 --> S4 --> S5
 ```
 
-The two `installtype` branches diverge for a reason: a **Normal server**
+The two `FOG_install_type` branches diverge for a reason: a **Normal server**
 owns the database (`configureMySql`, `checkWebTier`, `backupDB`, `updateDB`
 deploy/verify the schema itself), while a **Storage Node** talks to an
 *existing* master instead (`checkDatabaseConnection` just pings it,
@@ -127,12 +127,13 @@ so a value already set (by a CLI flag, or by a prior `.fogsettings` on
 upgrade) is always left alone rather than overwritten. The variables every
 one of them defines:
 
-`packageQuery`, `packages`, `packageinstaller`, `packagelist`,
+`packageQuery`, `FOG_packages`, `packageinstaller`, `packagelist`,
 `packageupdater`, `packmanUpdate`, `langPackages`, `dhcpname`,
-`webdirdest`/`docroot`, `webredirect`, `apacheuser`, `apachelogdir`,
-`apacheerrlog`, `apacheacclog`, `etcconf`, `storageLocation`,
+`webdirdest`/`WEB_docroot`, `webredirect`, `apacheuser`, `apachelogdir`,
+`apacheerrlog`, `apacheacclog`, `etcconf`, `STORAGE_image_share_path`,
 `storageLocationCapture`, `dhcpconfig`, `dhcpconfigother`, `tftpdirdst`,
-`ftpconfig`, `snapindir`, `dhcpd`, `iscservice`, `keapackage`, `keaservice`.
+`ftpconfig`, `snapindir`, `DHCP_service_name`, `iscservice`, `keapackage`,
+`keaservice`.
 
 A few variables are **not** universal — an implementation adding a fourth
 OS should treat these as optional extras the other files happen to need,
@@ -172,9 +173,9 @@ passed, or `-y`/`--autoaccept` skips the prompt altogether).
 `input.sh` is the bulk of the interactive flow: network interface, router,
 DNS, DHCP range, install language, install type, storage-node DB
 credentials, HTTPS. But it's only sourced when
-`[[ ! $doupdate -eq 1 || ! $fogupdateloaded -eq 1 ]]` — i.e. it's **skipped
+`[[ ! $doupdate -eq 1 || ! $FOG_installed -eq 1 ]]` — i.e. it's **skipped
 entirely on an upgrade** where the loaded `.fogsettings` already has
-`fogupdateloaded=1`.
+`FOG_installed=1`.
 
 `newinput.sh` has no such guard — `installfog.sh` always sources it. It
 exists specifically so a prompt introduced *after* someone's `.fogsettings`
@@ -328,7 +329,7 @@ reading before changing the surrounding code:
 - **External/unprivileged database mode short-circuits several functions.**
   `backupDB()`, `updateDB()`'s `fogstorage`-grant step, and
   `checkDatabaseConnection()`'s local-auth path all explicitly skip work
-  when `$snmysqlexternal == 1`, rather than trying to make root-requiring
+  when `$DB_external == 1`, rather than trying to make root-requiring
   operations degrade gracefully.
 
 ## Debugging the installer

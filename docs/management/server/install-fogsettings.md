@@ -322,12 +322,12 @@ to set one of them, that guide predates FOG 1.6:
 |---|---|
 | Every pre-1.6 spelling of a setting that still exists | Renamed as above. Your value is copied onto the new name once, then the old line goes |
 | `caCreated` | Stood in for "the CA exists". Both of its readers already paired it with an existence check on the very file it named |
-| `acmeLeaf` | Now derived — see [[install-fogsettings#Certificates FOG did not issue|Certificates FOG did not issue]] |
+| `acmeLeaf` | Now derived — see [[install-fogsettings#Certificates FOG did not issue\|Certificates FOG did not issue]] |
 | `webCertFile`, `webKeyFile` | Folded into `PKI_web_vhost_cert`/`PKI_web_vhost_key`, which are now canonical paths |
 | `sslcsr` | Could only ever hold one path, and was re-derived to it every run |
 | `externalca` | Derivable from "is an import path set", and now scoped to the run rather than persisted |
 | `catrust` | FOG's CA is now always anchored in this server's own trust store |
-| `sbNameConstraints` | Name constraints come off the Secure Boot zone entirely — see [[install-fogsettings#Secure Boot|Secure Boot]] |
+| `sbNameConstraints` | Name constraints come off the Secure Boot zone entirely — see [[install-fogsettings#Secure Boot\|Secure Boot]] |
 | `extcacert`, `extcakey`, `extcaroot`, `webExtCACert`, `webExtCAKey`, `webExtCARoot` | Six keys that only ever held three values, reached two ways. Both spellings of the flag still work; they are run-scoped inputs now |
 | `bootfilename`, `notpxedefaultfile` | Replaced by per-architecture boot file selection |
 | `storageftpuser`, `storageftppass` | Storage node FTP credentials moved into the database |
@@ -360,7 +360,7 @@ to set one of them, that guide predates FOG 1.6:
 | `FOG_packages` | Record | What was installed on this box. Re-derived every run from the distribution package lists |
 | `FOG_git_path` | Record | Where the checkout is. Re-asserted from what the run actually resolved, so a moved or re-cloned tree cannot point `updatefog.sh` at a directory that is gone |
 | `FOG_update_channel` | Preference | Which channel this server tracks: `stable`, `staging` or `dev` |
-| `FOG_program_dir` | Record | Where this install lives, so `grep FOG_program_dir .fogsettings` answers the question. Not a control — see [[install-fogsettings#Where the install lives|Where the install lives]] |
+| `FOG_program_dir` | Record | Where this install lives, so `grep FOG_program_dir .fogsettings` answers the question. Not a control — see [[install-fogsettings#Where the install lives\|Where the install lives]] |
 
 >[!warning] `FOG_os_id` changed meaning between 1.5 and 1.6
 >In FOG 1.5, Arch was `3`. In 1.6, `3` is Alpine and Arch is `4`. An Arch server
@@ -433,7 +433,7 @@ they reach past certificates into the vhost and the maintenance allow list.
 | `BOOT_rebuild_ipxe_with_my_ca` | Preference | Recompile iPXE with the configured CA embedded, so netboot can use HTTPS behind a **private** CA. The build takes 10–25 minutes, but is stamped against the pinned iPXE version and the CA, so it re-runs only when one of those changes |
 | `BOOT_external_tftp_server` | Preference | Your TFTP server is elsewhere, so leave the TFTP configuration alone. Also keeps `69/udp` closed in the firewall |
 | `BOOT_tftp_options` | Hand-set | Extra options for `in.tftpd` |
-| `BOOT_dhcp_delay_seconds` | Preference | Seconds (0–120) a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. `0` writes no delay. See [[dhcp-server-settings|DHCP server settings]] |
+| `BOOT_dhcp_delay_seconds` | Preference | Seconds (0–120) a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. `0` writes no delay. See [[dhcp-server-settings\|DHCP server settings]] |
 | `BOOT_kernel_backups_kept` | Preference | How many previous kernel and init sets to keep. Default 3 |
 
 ### `STORAGE_` — image storage
@@ -466,7 +466,7 @@ it belongs to; [[pki-zones|FOG PKI Infrastructure]] explains the split.
 | `PKI_san_ip_addresses` | Preference | Every address this server answers on. Used for certificate names, `server_name`/`ServerAlias`, and the nginx maintenance allow list |
 | `PKI_san_dns_names` | Preference | Extra names this server answers to, set with `--extra-server-name`. Mirrored into `FOG_EXTRA_SERVER_NAMES` in the web UI |
 | `PKI_client_cert_dir` | Preference | Holds uploaded snapin SSL material and the client communication certificate. **Not** where FOG's own authorities live any more |
-| `PKI_sb_enabled` | Preference | `1`/`0`. On by default. See [[install-fogsettings#Secure Boot|Secure Boot]] |
+| `PKI_sb_enabled` | Preference | `1`/`0`. On by default. See [[install-fogsettings#Secure Boot\|Secure Boot]] |
 
 **Canonical paths** — these are records, under the `## Derived — do not edit`
 marker in the file:
