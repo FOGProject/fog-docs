@@ -37,19 +37,80 @@ web UI (FOG Configuration → FOG Settings
 
 ## Authentication
 
-### Tokens
+There are three ways to authenticate. Pick one &mdash; you do not combine them.
+
+| Method | What you send | Also needs `fog-api-token`? |
+| --- | --- | --- |
+| **Bearer token** (recommended) | `Authorization: Bearer <user token>` | **no** |
+| Token pair | `fog-api-token` + `fog-user-token` headers | yes |
+| HTTP Basic | `Authorization: Basic <base64 user:password>` | yes |
+
+Every method carries the same permissions: the acting user's roles are applied
+either way, so a user without `user.view` gets `403 Forbidden` from `/fog/user`
+however they signed in.
+
+### Bearer token (recommended)
+
+Send the **user** API token in the standard `Authorization` header and nothing
+else is required:
+
+```bash
+curl -H 'Authorization: Bearer yourusertoken' \
+     -X GET http://fogserver/fog/host
+```
+
+A user API token is a 512-bit random secret, so it stands on its own and does
+**not** need the server-wide `fog-api-token` beside it. This is the form most
+HTTP clients, API tools and generated SDKs expect, so it is the one to reach for
+in new integrations.
+
+Where to find the token: Users → List All Users
+→ *your username* → **API**. The
+**User API Token** field on that tab holds the value; tick **User API Enable**
+on the same tab or the token is rejected even when sent, and use **Reset Token**
+to roll it.
+
+!!! note "Copy the token value exactly as the UI shows it"
+    The **User API Token** field is already **base64-encoded**, and that is what
+    the server expects. Copy it verbatim.
+
+    Do not decode it first, and do not read the raw value out of the database.
+    A FOG token is hexadecimal, and hexadecimal is *itself* valid base64 &mdash;
+    so a raw token decodes "successfully" into something meaningless rather than
+    failing loudly. The request just comes back `401 Unauthorized` with no hint
+    as to why.
+
+!!! tip "`Bearer` with nothing after it"
+    If you build the header from a config value that turns out to be unset, you
+    send a bare `Authorization: Bearer`. FOG answers `401 Unauthorized` for that
+    specifically, rather than falling through to another method &mdash; so a 401
+    on a request you believe is authenticated is worth checking for an empty
+    token variable.
+
+!!! info "Availability"
+    Bearer authentication is available from FOG 1.6.0. On older servers, and on
+    1.5.x, use the token pair below. Both older methods keep working on 1.6 and
+    are not deprecated &mdash; nothing you have already built needs to change.
+
+### Token pair
+
+The original scheme, and the one to use on 1.5.x. **Both** headers are required
+together.
 
 **API global token** &mdash; a header named `fog-api-token`. You can find yours
 via FOG Configuration → FOG Settings
  → API System.
 
-**API user token** (*highly recommended*) &mdash; a header named
-`fog-user-token`. You can find yours via Users → List
-All Users → *your username* →
-API. The user's **User API Enable** checkbox on that tab must be ticked, or the
-token is rejected even when sent.
+**API user token** &mdash; a header named `fog-user-token`. You can find yours
+via Users → List All Users →
+*your username* → API. The user's **User API
+Enable** checkbox on that tab must be ticked, or the token is rejected even when
+sent.
 
-!!! note "Copy the token value as shown"
+The user token here is the same value the Bearer method uses; only the header it
+travels in differs.
+
+!!! note "Copy the token values as shown"
     The web UI already displays both tokens **base64-encoded**, which is exactly
     the form the server expects in the header. Copy the displayed value verbatim
     &mdash; the server base64-decodes the header before comparing it. A raw,
@@ -80,19 +141,28 @@ from an external directory (LDAP) can authenticate this way too, provided
 **Allow API** is enabled on the LDAP server.
 
 !!! warning "Upgrading an existing server: re-run the installer"
-    Basic auth depends on the `Authorization` header reaching PHP, and under
-    FastCGI it does not arrive on its own &mdash; nginx forwards only a fixed
-    parameter list, and Apache strips it before `proxy_fcgi`. The FOG installer
-    emits the necessary web server configuration, but a server installed before
-    this was fixed still has the old configuration on disk. If basic auth
-    returns `401 Unauthorized` with credentials you know are correct, re-run the
-    installer to refresh the web server configuration. Token authentication is
-    unaffected and needs no reinstall.
+    Basic auth **and Bearer** both depend on the `Authorization` header reaching
+    PHP, and under FastCGI it does not arrive on its own &mdash; nginx forwards
+    only a fixed parameter list, and Apache strips it before `proxy_fcgi`. The
+    FOG installer emits the necessary web server configuration, but a server
+    installed before this was fixed still has the old configuration on disk. If
+    either method returns `401 Unauthorized` with credentials you know are
+    correct, re-run the installer to refresh the web server configuration. The
+    `fog-api-token` / `fog-user-token` pair travels in its own headers, is
+    unaffected, and needs no reinstall &mdash; so it is also the quickest way to
+    tell this problem apart from a genuinely bad credential.
 
 ### Example
 
 While many different tools can be used to make API calls, `curl` is one of the
 most basic ones if you are on Linux and want to give it a try:
+
+```bash
+curl -H 'Authorization: Bearer yourusertoken' \
+     -X GET http://fogserver/fog/system/info
+```
+
+The same call using the token pair:
 
 ```bash
 curl -H 'fog-api-token: yourapitoken' \
