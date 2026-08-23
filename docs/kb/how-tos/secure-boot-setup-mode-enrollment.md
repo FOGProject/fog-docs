@@ -172,15 +172,28 @@ files.** The `.auth` blobs this page describes are *signed EFI variable updates*
 They are what FOS writes. A firmware file picker cannot read one. Hand it
 `MOK.der` from `<webroot>/service/secureboot/` or from any `fog-esp-*` archive.
 
-**And you only need `db`.** Not PK, not KEK. `db` is what firmware checks to verify
-a boot image; PK and KEK only control who may *change* `db`. An existing machine's
-UI usually asks for all three because, in User Mode, a `db` write must be
-authenticated by a KEK-signed update — so it offers the only write it can
-authenticate from a stranger, which is replacing the whole chain. You do not have
-to accept that.
+**And at a firmware menu you only need `db`** — not PK, not KEK. `db` is what
+firmware checks to verify a boot image; PK and KEK only control who may *change*
+`db`. With the platform in Setup/Custom Mode that write is unauthenticated, so
+nothing has to vouch for it. Confirmed: `MOK.der` added to `db` by itself, then a
+FOG-signed binary booted directly with no shim.
 
-Confirmed working: `MOK.der` added to `db` alone, then a FOG-signed binary booted
-directly with no shim.
+An existing machine's UI often asks for all three anyway, because in User Mode a
+`db` write must be authenticated by a KEK-signed update — so it offers the only
+write it can authenticate from a stranger, which is replacing the whole chain. You
+do not have to accept that if you can write `db` directly.
+
+>[!warning] This does not generalise to OS-side enrolment
+>The `db`-alone shortcut applies to the **firmware's own tool** and to hypervisor
+>settings. Writing Secure Boot variables from a running OS — the task this page
+>describes, a Linux tool, or PowerShell's Secure Boot cmdlets — is a User Mode
+>write and must be authenticated, so **expect to need PK, KEK and `db` together**.
+>That is precisely why the `.auth` files exist and why this page's task writes all
+>three.
+>
+>Neither route has been tested exhaustively across firmwares. If yours behaves
+>differently, please report it on the [FOG forums](https://forums.fogproject.org/)
+>or the issue tracker.
 
 On VMware, put `MOK.der` in the VM's directory and add to the `.vmx`:
 
