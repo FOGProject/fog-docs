@@ -163,7 +163,9 @@ just becomes permanent once done.
 Nor does any of this extend to HTTPS. Kernel/shim trust and iPXE's TLS root
 store are two unrelated mechanisms — enrolling a CA here changes nothing
 about which HTTPS servers a Secure Boot client will fetch from. See
-[[pki-zones#https-and-netboot|HTTPS and netboot]].
+[[pki-zones#https-and-netboot|HTTPS and netboot]], and
+[[netboot-transport-and-pki|Netboot transport and PKI]] for the four install
+modes those two mechanisms combine into.
 
 >[!warning] Generate a fresh key — do not reuse the MOK you already have
 >If this machine has ever built a DKMS module, it already has a MOK, and it is
@@ -203,6 +205,7 @@ Boot on its self-signed key. Nothing is silently broken.
 ## See also
 
 - [[pki-zones|FOG's Certificate Zones]]
+- [[netboot-transport-and-pki|Netboot transport and PKI]] — which install mode to pick, and what each one expects of the CA you supply
 - [[pki-glossary|PKI & Secure Boot Glossary]]
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
 - [[secure-boot-signing|Secure Boot signing]]

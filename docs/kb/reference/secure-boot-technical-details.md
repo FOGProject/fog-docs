@@ -220,6 +220,7 @@ is not being accepted. In order of likelihood:
 ## See also
 
 - [[secure-boot-signing|Secure Boot signing]]
+- [[netboot-transport-and-pki|Netboot transport and PKI]] — why no install mode disables Secure Boot, and which ones add an enrolment step
 - [[secure-boot-mok-enrollment|MOK enrollment]]
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]]
 - [[pki-zones|FOG's Certificate Zones]]

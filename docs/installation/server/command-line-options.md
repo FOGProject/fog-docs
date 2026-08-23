@@ -163,6 +163,11 @@ Usage: ./installfog.sh [-h?odEUHSCKYyXTFl] [-f <filename>] [-N <databasename>]
                                                 of all RFC1918 ranges
               --web-ca-cert/-key/-root  Bring your own CA for the WEB zone only
                                                 (equivalent to --external-ca --ca-*)
+              --client-cert/--client-key Your own CLIENT COMMUNICATION keypair,
+                                                the one every registered fog-client pins. Both
+                                                or neither. Swapping it warns and proceeds --
+                                                every client must then be reinstalled or
+                                                re-pinned
               --secureboot-ca-cert      Your own SECURE BOOT intermediate: the
                                                 certificate enrolled in firmware. Pair it with
                                                 --secure-boot-key/--secure-boot-cert, which name
@@ -263,6 +268,46 @@ than producing a server signed by the wrong thing.
 >else. The root that fog-client pinned at registration is untouched, which is
 >what makes this safe to do on a running fleet without re-registering a single
 >machine.
+
+### The client communication keypair
+
+`--web-ca-*` covers the certificate a browser and iPXE see. It does **not** cover
+the other keypair on this server: the one FOG uses to encrypt and decrypt what it
+exchanges with fog-client. Those are separate zones, and until 1.6 the client one
+was the only zone you could not point at your own files.
+
+| Option | Use it when |
+| --- | --- |
+| `--client-cert` + `--client-key` | You want FOG to use a client-communication keypair you supply, rather than the one it generates. **Both or neither** — half a pair is refused, and so is a pair whose key does not match its certificate. |
+
+>[!warning] Every registered client pins this keypair
+>Supplying a *different* valid pair on a server that already has one is allowed:
+>the installer warns and proceeds, because re-pinning a fleet is sometimes exactly
+>what you mean to do. But it means it — **every already-registered host must have
+>fog-client reinstalled or re-pinned**, and until it does, that host silently stops
+>checking in. Nothing on the server reports it.
+>
+>Passing the same pair again is not a re-pin and produces no warning, so an
+>ordinary upgrade that repeats the flags is safe.
+
+The paths are **recorded, not copied**. They persist in `.fogsettings` as
+`PKI_client_encrypt_cert` and `PKI_client_encrypt_key`, and FOG reads the files
+where you put them — only a keypair FOG generated itself lives in
+`pki/client/leaf/`. Two consequences:
+
+- **The files must stay put.** Moving or deleting them later breaks client
+  authentication, and `.fogsettings` still names the old location.
+- **The installer takes ownership of the private key**, `chown root:$apacheuser`
+  and `chmod 0640`, because `certDecrypt()` opens it on every fog-client
+  authorize and a stricter mode fails that as `Private key not readable` — per
+  client, with nothing naming the file. It does not adjust the **directory** you
+  put them in, so that directory has to be traversable by the web user. Somewhere
+  under `/opt/fog` is the easy answer; a path under a home directory usually is
+  not.
+
+See [[pki-zones|FOG's Certificate Zones]] for the zone layout, and
+[[netboot-transport-and-pki|Netboot transport and PKI]] for how the zones divide
+up the work.
 
 ### Name constraints
 
