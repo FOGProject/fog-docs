@@ -344,12 +344,15 @@ settings.
 
 | Field on the host | Column on the list | What it proves |
 |---|---|---|
-| **Last Successful Ping** | Last Ping | the machine was powered on and reachable on the configured port, at that time |
+| **Last Successful Ping** | Last Ping | the machine answered, at that time — it was powered on, on the network and routable from the server |
 | **Last Client Check-In** | Last Check-In | the FOG client was installed, running, and able to reach the server, at that time |
 
-A *failed* ping deliberately leaves Last Successful Ping alone, so a host that
-has been off for a month is still distinguishable from one that stopped
-answering ten minutes ago.
+"Answered" includes a **refused** connection: a host that is up with nothing
+listening on the port still sends a TCP reset, and only a live machine can do
+that. Those hosts show as **Up, port closed** and their Last Successful Ping
+advances normally. A ping that gets no answer at all leaves the field alone, so
+a host that has been off for a month is still distinguishable from one that
+stopped answering ten minutes ago.
 
 The pair is more useful than either half, because the interesting cases are
 where the two disagree:
@@ -358,7 +361,7 @@ where the two disagree:
 |---|---|---|
 | recent | recent | healthy |
 | recent | old or Never | the machine is up but **the FOG client is broken, stopped, or was never installed** |
-| old or Never | recent | the client is fine; the host simply does not answer on the configured port. Normal for Linux and firewalled hosts |
+| old or Never | recent | the client is fine; the host is silently dropping the connection rather than refusing it — a host firewall. Not a fault, but the ping cannot see this machine |
 | old | old | the machine has genuinely been off since the later of the two |
 
 The second row is the one worth acting on. Full detail, including how to pick a

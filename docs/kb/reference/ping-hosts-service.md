@@ -63,21 +63,52 @@ bugs over the years:
 
 | Setting | Default | What it does |
 |---|---|---|
-| `PINGHOSTPORT` | `445` | The TCP port to connect to. It must be a port your hosts actually listen on. |
+| `PINGHOSTPORT` | `445` | The TCP port to connect to. |
 | `PINGHOSTTIMEOUT` | `2` | Seconds to wait for an answer before recording the host as unreachable. |
 
 The defaults are exactly the old hardcoded values, so **upgrading changes
 nothing** until you edit them. Both are re-read at the start of every cycle, so
 a change takes effect on the next run without restarting the service.
 
-Choosing a port:
+Choosing a port matters less than it looks, for the reason in the next
+section — a host that *refuses* the connection has still proved it is alive.
+What you are really choosing is how much extra you learn:
 
 - **Mostly Windows** → leave it at `445`.
-- **Mostly Linux** → `22` is the usual choice.
-- **Mixed** → the test is a single port, so pick the one most of your fleet
-  answers and rely on the client check-in (below) for the rest.
-- **A port nothing listens on** makes every host permanently unreachable. If
-  every host in your fleet went red after an upgrade, check this setting first.
+- **Mostly Linux** → `22` is a reasonable choice.
+- **Mixed** → pick whichever the larger half answers. The other half will
+  mostly still be detected, as **Up, port closed**.
+- **The port only fails you against a host firewall that silently DROPs**
+  rather than rejecting, because then nothing comes back at all. That host is
+  indistinguishable from one that is switched off, and the client check-in is
+  the only thing that will tell you otherwise.
+
+### A refused connection means the host is up
+
+This is the single most useful thing to understand about the check.
+
+If a host is powered on but nothing is listening on the port, its kernel
+replies with a TCP reset and FOG records `Connection refused`. **That is proof
+of life** — a machine can only send that reset if it is on, on the network and
+routable from the server. It counts as reachable, it advances Last Successful
+Ping, and the host list shows it as **Up, port closed**.
+
+So the four states you will see in the Ping Status column are:
+
+| Badge | Means |
+|---|---|
+| **Online** | up, and something answered on `PINGHOSTPORT` |
+| **Up, port closed** | up — the host refused the connection. Normal for a Linux host on 445, or a Windows host on 22 |
+| *an error, e.g. Connection timed out* | nothing came back. Switched off, or a firewall dropping silently — genuinely unknown |
+| **Not pinged** | never tested |
+
+>[!note] One false positive worth knowing about
+>A firewall or middlebox configured to **reject** on a host's behalf sends the
+>same reset, so "Up, port closed" would really mean "the firewall in front of
+>it is up". A firewall that **drops** — the more common default — still times
+>out and is still reported correctly. The trade is deliberate: the alternative
+>mislabels every perfectly healthy host that happens not to run the service you
+>picked.
 
 ### Hosts are tested in parallel
 
@@ -133,12 +164,13 @@ columns on the host list.
 
 | Field | Column | Written by | What it proves |
 |---|---|---|---|
-| **Last Successful Ping** | Last Ping | `FOGPingHosts`, only on a **successful** connection | the machine was powered on and reachable on your chosen port |
+| **Last Successful Ping** | Last Ping | `FOGPingHosts`, whenever the host **answered** | the machine was powered on, on the network, and routable from the server |
 | **Last Client Check-In** | Last Check-In | the FOG client, on every check-in | the agent is installed, running, and can reach the server |
 
 Both read **Never** until the event in question has happened at least once.
 
-A failed ping deliberately does **not** touch Last Successful Ping. Overwriting
+"Answered" includes a refused connection — see above. A ping that got no
+answer at all deliberately does **not** touch Last Successful Ping. Overwriting
 it with the time of a failed attempt would make a host that has been off for a
 month indistinguishable from one that answered a minute ago, which is the whole
 reason the field exists.
@@ -154,7 +186,7 @@ time is precisely the **disagreement** between them:
 |---|---|---|
 | recent | recent | healthy, nothing to do |
 | recent | old or Never | machine is up, **the FOG client is broken, stopped, or never installed** |
-| old or Never | recent | client is fine — the host does not answer on `PINGHOSTPORT`. Normal for Linux hosts and firewalled Windows hosts; usually not a fault |
+| old or Never | recent | client is fine, and the host is silently dropping the connection rather than refusing it — a host firewall. Not a fault, but the ping cannot see this host |
 | old | old | the machine has genuinely been off since the later of the two |
 
 The second row is the one worth acting on, and a single "last seen" column
@@ -184,10 +216,10 @@ whatever was last recorded, and **Last Successful Ping** stops advancing.
 
 ## Troubleshooting
 
-**Every host shows unreachable.** Check `PINGHOSTPORT` first — a port your
-fleet does not listen on produces exactly this. Then confirm the server can
-resolve host names: the service looks hosts up by **name**, so it needs a DNS
-server that your DHCP server updates, or the names in `/etc/hosts`. Test with
+**Every host shows unreachable.** Start with DNS, not with the port — a wrong
+port normally produces **Up, port closed**, not "unreachable". The service
+looks hosts up by **name**, so it needs a DNS server that your DHCP server
+updates, or the names in `/etc/hosts`. Test with
 
 ```
 getent hosts somehostname
@@ -197,10 +229,16 @@ If that fails, the ping cannot succeed no matter what port you choose. Adding
 your domain to the server's DNS **search domains** is the usual fix when a host
 resolves as `somehostname.example.com` but not as `somehostname`.
 
-**A single host shows unreachable but you can reach it.** Almost always a host
-firewall blocking `PINGHOSTPORT`, or a service on the host that is not running.
-Check its **Last Client Check-In**: if that is current, the host is fine and
-only the port test is failing.
+**A single host shows unreachable but you can reach it.** A host firewall that
+silently drops the connection instead of refusing it. Check its **Last Client
+Check-In**: if that is current, the machine is fine and only the port test
+cannot see it. Allowing the port through that host's firewall — even to a
+closed port — is enough to make it show as **Up, port closed**.
+
+**A host shows "Up, port closed" and you expected "Online".** Working as
+intended: the machine is up and nothing is listening on `PINGHOSTPORT`. Change
+the port if you would rather test a service this host actually runs, or leave
+it — the liveness answer is the same either way.
 
 **Nothing is being pinged at all.** Check `PINGHOSTGLOBALENABLED`, then the
 service log at `/var/log/fog/pinghost.log` (or wherever
