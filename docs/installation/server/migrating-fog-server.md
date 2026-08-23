@@ -275,9 +275,9 @@ your organization's PKI — supply it at install time with
 `--web-ca-cert`/`--web-ca-key`/`--web-ca-root` instead of using FOG's
 generated one; see [[bringing-your-own-ca|Bringing your own CA]]. That
 replaces the **web** certificate only and deliberately leaves fog-client's
-pinned CA alone, which is what makes it safe to do on a live fleet. On
-working-1.6, `--external-ca` with `--ca-cert`/`--ca-key`/`--ca-root` is an
-older spelling of the same three options. If the goal is to stop importing one
+pinned CA alone, which is what makes it safe to do on a live fleet.
+`--external-ca` with `--ca-cert`/`--ca-key`/`--ca-root` is an older spelling of
+the same three options, and still works. If the goal is to stop importing one
 CA per server across several FOG servers,
 [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]]
 covers that case specifically.
@@ -334,8 +334,8 @@ re-enrolling.
 `--secure-boot-key`/`--secure-boot-cert`): make those same files available to
 the new server — copied to the same path, or anywhere else — and pass the same
 flags when installing it. Post-PKI those two flags name the code-signing
-**leaf**, and `--secureboot-ca-cert` (working-1.6) names the intermediate that
-is actually enrolled in firmware:
+**leaf**, and `--secureboot-ca-cert` names the intermediate that is actually
+enrolled in firmware:
 
 ```bash
 cd /path/to/fogproject/bin
