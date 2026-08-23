@@ -347,12 +347,19 @@ settings.
 | **Last Successful Ping** | Last Ping | the machine answered, at that time — it was powered on, on the network and routable from the server |
 | **Last Client Check-In** | Last Check-In | the FOG client was installed, running, and able to reach the server, at that time |
 
-"Answered" includes a **refused** connection: a host that is up with nothing
-listening on the port still sends a TCP reset, and only a live machine can do
-that. Those hosts show as **Up, port closed** and their Last Successful Ping
-advances normally. A ping that gets no answer at all leaves the field alone, so
-a host that has been off for a month is still distinguishable from one that
-stopped answering ten minutes ago.
+"Answered" covers three ways of answering, and Last Successful Ping advances
+for all of them:
+
+- it replied to a real **ICMP echo request** — since 1.6 that is tried first;
+- something answered on the TCP port FOG falls back to;
+- it **refused** that connection. A host that is up with nothing listening
+  still sends a TCP reset, and only a live machine can do that. Those show as
+  **Up, port closed**.
+
+Last Successful Ping records *how* the host answered, so it reads
+`2026-08-23 01:14:52 (ICMP)` or `(TCP)`. A ping that gets no answer at all
+leaves the field alone, so a host that has been off for a month is still
+distinguishable from one that stopped answering ten minutes ago.
 
 The pair is more useful than either half, because the interesting cases are
 where the two disagree:
@@ -361,7 +368,7 @@ where the two disagree:
 |---|---|---|
 | recent | recent | healthy |
 | recent | old or Never | the machine is up but **the FOG client is broken, stopped, or was never installed** |
-| old or Never | recent | the client is fine; the host is silently dropping the connection rather than refusing it — a host firewall. Not a fault, but the ping cannot see this machine |
+| old or Never | recent | the client is fine; the host is silently dropping both the echo request and the connection rather than refusing them — a host firewall. Not a fault, but the ping cannot see this machine |
 | old | old | the machine has genuinely been off since the later of the two |
 
 The second row is the one worth acting on. Full detail, including how to pick a

@@ -23,11 +23,13 @@ also stamps the **Last Successful Ping** field on each host.
 This page explains what that verdict actually measures — which is not what most
 people assume — and what changed in 1.6.
 
->[!warning] It is not an ICMP ping
->Despite the name, the service has never sent an ICMP echo request. It opens a
->**TCP connection to a single port** and records whether the connection
->succeeded. A host that answers `ping` at the command line but does not listen
->on that port is reported unreachable, and that is working as designed.
+>[!warning] Before 1.6, it was not an ICMP ping
+>Despite the name, the service never sent an ICMP echo request until 1.6. It
+>opened a **TCP connection to a single port** and recorded whether the
+>connection succeeded, so a host that answered `ping` at the command line but
+>did not listen on that port was reported unreachable — and that was working as
+>designed. Since 1.6 it sends a real echo request first and falls back to the
+>TCP check; see [[#It sends a real ping now]].
 
 ## What "up" meant before 1.6
 
@@ -57,6 +59,62 @@ bugs over the years:
 
 ## What changed in 1.6
 
+### It sends a real ping now
+
+Since 1.6 the service sends an **ICMP echo request** — an actual ping, the same
+thing `ping` at a command line sends. That asks the question the field is named
+after: *is this machine up?*, rather than *does this machine run a service on
+the one port we guessed at?*
+
+The TCP check has not gone away. It runs **second**, and only for the hosts the
+echo did not positively answer:
+
+1. Send an ICMP echo request to every host, all of them in flight at once.
+2. Anything that replies is **Online**, recorded as reached by ICMP.
+3. Everything else falls through to the TCP connection described below, and the
+   TCP result decides those.
+
+The fallback is the point. Plenty of healthy networks filter ICMP, so a host
+that does not answer an echo has told you nothing on its own — it is the TCP
+probe that gets the final say. That also means **upgrading cannot lose you a
+host**: anything detected before is still detected the same way, and hosts that
+only ever answered `ping` now appear as well.
+
+>[!note] No setup needed
+>The service already runs as root, so it can open the socket it needs on any
+>supported distribution. There is nothing to install, no `sysctl` to change and
+>no firewall rule to add on the FOG server.
+
+#### Turning it off
+
+| Setting | Default | What it does |
+|---|---|---|
+| `PINGHOSTUSEICMP` | on | Send an ICMP echo request before falling back to the TCP check. |
+
+Turn it off and the service behaves exactly as it did before — TCP only. Worth
+doing if your network floods on ICMP, or if a security policy forbids it.
+
+If ICMP is enabled but the server cannot open the socket, the service says so
+in its log **once per cycle** and carries on with the TCP check alone. It will
+not fail silently:
+
+```
+ * ICMP is enabled but no echo socket could be opened; falling back to the TCP check only
+```
+
+#### Which way a host answered
+
+FOG records *how* each host was reached, because on a mixed fleet "Online"
+alone hides a difference people ask about. You will see it in two places:
+
+- **Host Management** — the Ping Status badge reads **Online · ICMP** or
+  **Online · TCP**.
+- **The host's own page** — appended to Last Successful Ping, e.g.
+  `2026-08-23 01:14:52 (ICMP)`.
+
+A host that switches from `ICMP` to `TCP` between cycles is usually a firewall
+rule change, not a fault.
+
 ### The port and the timeout are yours to set
 
 **FOG Configuration → FOG Settings → Ping Host Settings**
@@ -70,9 +128,10 @@ The defaults are exactly the old hardcoded values, so **upgrading changes
 nothing** until you edit them. Both are re-read at the start of every cycle, so
 a change takes effect on the next run without restarting the service.
 
-Choosing a port matters less than it looks, for the reason in the next
-section — a host that *refuses* the connection has still proved it is alive.
-What you are really choosing is how much extra you learn:
+Choosing a port matters much less than it looks. Two reasons: the ICMP echo
+already answered for most of your fleet before the port is ever tried, and a
+host that *refuses* the connection has still proved it is alive. What you are
+really choosing is how the remainder gets detected:
 
 - **Mostly Windows** → leave it at `445`.
 - **Mostly Linux** → `22` is a reasonable choice.
@@ -93,14 +152,18 @@ of life** — a machine can only send that reset if it is on, on the network and
 routable from the server. It counts as reachable, it advances Last Successful
 Ping, and the host list shows it as **Up, port closed**.
 
-So the four states you will see in the Ping Status column are:
+So the states you will see in the Ping Status column are:
 
 | Badge | Means |
 |---|---|
-| **Online** | up, and something answered on `PINGHOSTPORT` |
+| **Online · ICMP** | up — it answered a real ping |
+| **Online · TCP** | up — it did not answer the ping, but something answered on `PINGHOSTPORT` |
 | **Up, port closed** | up — the host refused the connection. Normal for a Linux host on 445, or a Windows host on 22 |
-| *an error, e.g. Connection timed out* | nothing came back. Switched off, or a firewall dropping silently — genuinely unknown |
+| *an error, e.g. Connection timed out* | nothing came back at all. Switched off, or a firewall dropping silently — genuinely unknown |
 | **Not pinged** | never tested |
+
+A plain **Online** with no suffix is a host last pinged by an older version;
+it gets its suffix on the next cycle.
 
 >[!note] One false positive worth knowing about
 >A firewall or middlebox configured to **reject** on a host's behalf sends the
@@ -203,6 +266,7 @@ edit submits, so nothing you do on that form can alter them.
 | Setting | Category | Default |
 |---|---|---|
 | `PINGHOSTGLOBALENABLED` | FOG Linux Service Enabled | on |
+| `PINGHOSTUSEICMP` | Ping Host Settings | on |
 | `PINGHOSTPORT` | Ping Host Settings | `445` |
 | `PINGHOSTTIMEOUT` | Ping Host Settings | `2` |
 | `PINGHOSTSLEEPTIME` | FOG Linux Service Sleep Times | `300` |
@@ -239,6 +303,12 @@ closed port — is enough to make it show as **Up, port closed**.
 intended: the machine is up and nothing is listening on `PINGHOSTPORT`. Change
 the port if you would rather test a service this host actually runs, or leave
 it — the liveness answer is the same either way.
+
+**Every host shows "Online · TCP" and none shows ICMP.** Either
+`PINGHOSTUSEICMP` is off, or the echo socket could not be opened — look in the
+service log for `no echo socket could be opened`, which is written once per
+cycle. If neither applies, your network is filtering ICMP, and the TCP fallback
+is doing exactly what it is there for.
 
 **Nothing is being pinged at all.** Check `PINGHOSTGLOBALENABLED`, then the
 service log at `/var/log/fog/pinghost.log` (or wherever
