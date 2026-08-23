@@ -293,38 +293,76 @@ $subnets | ForEach-Object { # loop through each subnet
 
 ### Host Status
 
--   Host Status displays an indicator icon next to the host within the
-    FOG UI showing the status of the machine. This function executes a
-    ping based on the host's name. So in order for this to work you
-    must have an internal DNS server that is tied in with your DHCP
-    server, so that when a DHCP address is given out, the DNS server is
-    notified with the new IP. If that is setup correctly, you must make
-    sure your FOG server is able to ping a host from the command line
-    using:
+The **Ping Status** column on the host list shows whether the `FOGPingHosts`
+service could reach the machine the last time it ran.
 
-        ping somehostname
+>[!warning] It is not an ICMP ping
+>The check opens a **TCP connection to a single port** — port 445 by default —
+>and reports whether it succeeded. A host that answers `ping` at the command
+>line but does not listen on that port is reported unreachable, and that is
+>working as designed. Linux hosts, Windows hosts with file and printer sharing
+>off, and anything behind a host firewall are all affected.
+>
+>The port and the timeout are settings in 1.6: **FOG Configuration** →
+>**FOG Settings** → **Ping Host Settings**. See
+>[[ping-hosts-service|The Ping Hosts Service]] for how to choose them.
 
--   If the server isn't able to ping the client, then the status of the
-    host in the UI with always show as unreachable. If you can ping the
-    client using the FQDN, like:
+-   Hosts are looked up by **name**, so you need an internal DNS server tied in
+    with your DHCP server, so that when a DHCP address is handed out the DNS
+    server is notified of the new IP. Confirm the FOG server can resolve a host
+    with:
 
-        #Replace forproject.org with your domain suffix
-        ping somehostname.fogproject.org
+        getent hosts somehostname
 
--   Then you will need to adjust the DNS **Search domains:** setting on
-    your sever. After making this change you will need to restart the
-    apache server for it to take affect.
+-   If that fails, the check cannot succeed whatever port you pick, and the
+    host will always show as unreachable. If the name only resolves as a FQDN:
 
--   If after this, you still can't ping your clients, the problem may
-    be due to a firewall issue with the clients. In this case, client
-    specific configuration changes might be needed.
+        #Replace fogproject.org with your domain suffix
+        getent hosts somehostname.fogproject.org
 
--
+-   then add your domain to the DNS **Search domains:** setting on your server.
 
-    With an increase in Hosts(250+) this "ping" will delay the loading of the List *All Hosts* page. Disabling this feature will help in loading this page.
+-   If names resolve and a host still shows unreachable, check its
+    **Last Client Check-In** below. If that is current, the machine is fine and
+    only the port test is failing — usually a host firewall, or a host that
+    genuinely does not run a service on that port.
 
-    :   1.  **Fog Configuration** → **Fog Settings** → **General
-            Settings** → Untick *FOG_HOST_LOOKUP*
+>[!note] `FOG_HOST_LOOKUP` is not a performance setting
+>Older documentation advised unticking **FOG Configuration** → **FOG Settings**
+>→ **General Settings** → *FOG\_HOST\_LOOKUP* on fleets of 250+ hosts, on the
+>grounds that the host list pinged each row as it loaded. It does not — the
+>column renders a value the service already recorded, so the page costs the
+>same either way. In 1.6 the setting controls whether the Ping Status column is
+>**shown** at all.
+
+### When was this host last seen?
+
+Every host records two timestamps, shown on its **General** tab and as columns
+on the host list. Both read **Never** until the event has happened at least
+once, and neither can be edited — they are facts the server records, not
+settings.
+
+| Field on the host | Column on the list | What it proves |
+|---|---|---|
+| **Last Successful Ping** | Last Ping | the machine was powered on and reachable on the configured port, at that time |
+| **Last Client Check-In** | Last Check-In | the FOG client was installed, running, and able to reach the server, at that time |
+
+A *failed* ping deliberately leaves Last Successful Ping alone, so a host that
+has been off for a month is still distinguishable from one that stopped
+answering ten minutes ago.
+
+The pair is more useful than either half, because the interesting cases are
+where the two disagree:
+
+| Last Ping | Last Check-In | What it usually means |
+|---|---|---|
+| recent | recent | healthy |
+| recent | old or Never | the machine is up but **the FOG client is broken, stopped, or was never installed** |
+| old or Never | recent | the client is fine; the host simply does not answer on the configured port. Normal for Linux and firewalled hosts |
+| old | old | the machine has genuinely been off since the later of the two |
+
+The second row is the one worth acting on. Full detail, including how to pick a
+port for a mixed fleet: [[ping-hosts-service|The Ping Hosts Service]].
 
 ### Creating Host Groups
 
