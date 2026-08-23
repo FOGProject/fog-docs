@@ -34,6 +34,7 @@ Reference material i.e. information on settings files, command line options, etc
 
 - [[csv_import_export|CSV Import / Export]]
 - [[group-shared-state|Group Shared State]]
+- [[ping-hosts-service|The Ping Hosts Service]]
 - [[SFTP|SFTP]]
 
 **Building FOS components**
