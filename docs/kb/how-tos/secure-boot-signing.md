@@ -79,19 +79,25 @@ iPXE** boots under Secure Boot with nothing for you to sign.
 The catch is specific to FOG, and it is worth being precise about, because it
 is the whole reason this guide exists:
 
-**FOG does not ship stock iPXE binaries.** FOG builds its own, with the boot
-script compiled in (`EMBED=ipxescript`) and — on HTTPS installs using FOG's
-own internal CA — the server's CA baked in (`TRUST=`). Those are by
-definition custom binaries, they carry no signature, and iPXE's signed shim
-will refuse them, exactly as it should. A shim that loaded any binary calling
-itself iPXE would be worthless.
+**FOG does not ship stock iPXE binaries.** FOG builds its own — the BIOS
+targets with the boot script compiled in (`EMBED=ipxescript`), and, when you
+ask for it with `--rebuild-ipxe-with-my-ca`, with your CA baked in (`TRUST=`).
+Those are by definition custom binaries, so upstream's signed shim will not
+accept them on the strength of iPXE's vendor certificate alone, exactly as it
+should. A shim that loaded any binary calling itself iPXE would be worthless.
 
-FOG could not fix this by signing its own builds either. The shim only trusts
-iPXE's vendor certificate, so a FOG-signed binary would need every machine to
-enroll FOG's key first — the same physical visit this guide already asks for,
-while making one key compromise everyone's problem at once. There is no
-mechanism, on any FOG release, for signing a custom-rebuilt iPXE binary with
-FOG's own Secure Boot certificate so that shim would accept it.
+What FOG *does* do is sign them itself. Every `.efi` in FOG's TFTP tree is
+signed with this server's own Secure Boot key, and shim will load one once that
+key has been enrolled as a MOK on the machine — which is the physical visit
+this guide is about. So the choice is not "signed shim or custom binary"; it is
+whether you need a custom binary badly enough to enrol a key before the machine
+can netboot. Most sites do not, which is why the section below matters.
+
+>[!note] Only your own tree is signed
+>`secureboot/` is left strictly alone — that is upstream's Microsoft-signed
+>shim, its loaders and MokManager, and adding a second signature to them buys
+>nothing. Binaries you build and copy into `/tftpboot` by hand are not signed
+>either; re-run the installer so it signs them.
 
 The way out is to stop needing a custom binary. FOG's embedded boot script is
 entirely generic, and iPXE 2.0 can fetch that script from the TFTP server
@@ -272,13 +278,13 @@ Nothing is served from this directory unless you point DHCP at it, so its
 presence changes nothing for your existing clients.
 
 >[!info] If the directory is missing
->Two reasons it would not be there. **HTTPS-netboot installs using FOG's own
->CA skip it** — these are upstream's generic binaries, so they cannot carry
->your server's CA, and a signed binary cannot be rebuilt without voiding the
->signature. See [[pki-zones#https-and-netboot|HTTPS and netboot]] for the way
->round that, and note that a public CA on the vhost avoids the tradeoff
->entirely. Otherwise the download failed — it is deliberately not fatal —
->and the installer will have said so. Re-run it.
+>There is one reason now: the download failed. It is deliberately not fatal, so
+>the install completed and said so in its output — re-run it.
+>
+>Earlier releases also skipped this directory on any HTTPS install, on the
+>reasoning that Secure Boot and HTTPS could not coexist. They can, and FOG 1.6
+>stages it in **every** install mode. See
+>[[netboot-transport-and-pki|Netboot Transport and PKI]].
 
 You can confirm you have a signed binary — a signed one has a non-empty
 certificate table, an unsigned one does not:
@@ -504,19 +510,20 @@ would put a root password; see [The signing key](#the-signing-key).
   together than you'd expect.** A web certificate from a **public CA** (e.g.
   Let's Encrypt) on an FQDN gets you HTTPS netboot with no rebuild and no
   loss of the signed Secure Boot shim — see
-  [[pki-zones#https-and-netboot|HTTPS and netboot]] for why. It's only
-  FOG's own or your internal (non-publicly-trusted) CA that forces a choice
-  between a `TRUST=`-rebuilt iPXE (HTTPS netboot, no signed shim) and the
-  signed shim (Secure Boot, netboot stays HTTP) — unless you use
-  [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] to skip shim's
-  involvement entirely.
+  [[netboot-transport-and-pki|Netboot Transport and PKI]] for why. With FOG's
+  own or your internal CA, a `TRUST=`-rebuilt iPXE is needed, and that binary
+  is signed by this server rather than by iPXE — so it costs you a MOK
+  enrolment *before* the machine can netboot, not the signed shim itself.
+  [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] skips shim's
+  involvement entirely if you would rather.
 - **A Secure Boot USB stick does not work the same way.** The filename trick
   the shim uses to find its second stage — `automatic_next_path()` — is called
   only from shim's network and HTTP boot paths. There is no local-filesystem
   equivalent, so a shim booted from a USB stick or an ESP ignores the `-shim`
   rename entirely and falls back to its compiled-in default, `ipxe.efi`. If you
   build a Secure Boot USB from these instructions, name the second stage
-  `ipxe.efi` or it will not be found.
+  `ipxe.efi` or it will not be found. FOG's ready-made ESP archives sidestep
+  this by shipping both loaders — see [[local-esp-boot|Local ESP Boot]].
 
 >[!warning] Turning Secure Boot on can break existing Windows Hello for Business sign-in
 >If a machine already has users signed in with Windows Hello for Business
