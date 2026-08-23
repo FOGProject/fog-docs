@@ -41,7 +41,7 @@ There are three ways to authenticate. Pick one &mdash; you do not combine them.
 
 | Method | What you send | Also needs `fog-api-token`? |
 | --- | --- | --- |
-| **Bearer token** (recommended) | `Authorization: Bearer <user token>` | **no** |
+| **Bearer token** (recommended) | `Authorization: Bearer fog_<api token>` | **no** |
 | Token pair | `fog-api-token` + `fog-user-token` headers | yes |
 | HTTP Basic | `Authorization: Basic <base64 user:password>` | yes |
 
@@ -51,34 +51,49 @@ however they signed in.
 
 ### Bearer token (recommended)
 
-Send the **user** API token in the standard `Authorization` header and nothing
-else is required:
+An **API token** is issued from the web UI, shown to you once, and sent in the
+standard `Authorization` header. Nothing else is required:
 
 ```bash
-curl -H 'Authorization: Bearer yourusertoken' \
+curl -H 'Authorization: Bearer fog_1a2b3c...' \
      -X GET http://fogserver/fog/host
 ```
 
-A user API token is a 512-bit random secret, so it stands on its own and does
-**not** need the server-wide `fog-api-token` beside it. This is the form most
-HTTP clients, API tools and generated SDKs expect, so it is the one to reach for
-in new integrations.
+API tokens are a separate credential from the **User API Token** described under
+[Token pair](#token-pair) below &mdash; they are not two spellings of the same
+thing. An API token is:
 
-Where to find the token: Users → List All Users
-→ *your username* → **API**. The
-**User API Token** field on that tab holds the value; tick **User API Enable**
-on the same tab or the token is rejected even when sent, and use **Reset Token**
-to roll it.
+- **stored hashed.** The server keeps only a SHA-256 of it, so the token cannot
+  be read back out of the database or the UI.
+- **shown once**, at the moment you create it. If you lose it, delete it and
+  issue another; there is no way to recover it.
+- **individually revocable.** Each token has its own enable/disable switch,
+  independent of the user's **User API Enable** checkbox.
+- **one of many.** Issue a separate token per script, host or integration, and
+  retire one without disturbing the others.
+- **512 bits of random**, prefixed `fog_` so it is recognisable on sight in a
+  log, a config file or a support ticket.
 
-!!! note "Copy the token value exactly as the UI shows it"
-    The **User API Token** field is already **base64-encoded**, and that is what
-    the server expects. Copy it verbatim.
+#### Issuing one
 
-    Do not decode it first, and do not read the raw value out of the database.
-    A FOG token is hexadecimal, and hexadecimal is *itself* valid base64 &mdash;
-    so a raw token decodes "successfully" into something meaningless rather than
-    failing loudly. The request just comes back `401 Unauthorized` with no hint
-    as to why.
+Users → List All Users →
+*your username* → **API**, then use the
+**API Tokens** card at the bottom of that tab. Give the token a name describing
+what will use it &mdash; that name is all you will have to go on later when
+deciding whether a token is still needed.
+
+The token is displayed once, immediately after creation. Copy it then.
+
+!!! warning "Send the API token exactly as shown &mdash; do not base64-encode it"
+    This is the opposite of the token pair below. The `fog-api-token` and
+    `fog-user-token` headers carry **base64** values, because that is the form
+    the UI displays them in. An API token is sent **raw**, exactly as the UI
+    showed it, `fog_` prefix included. Encoding it first will fail with
+    `401 Unauthorized`.
+
+The same card lists your existing tokens with their creation date and when each
+was last used, so a token nothing has touched in months is easy to spot and
+delete. Deleting a user deletes that user's tokens with it.
 
 !!! tip "`Bearer` with nothing after it"
     If you build the header from a config value that turns out to be unset, you
@@ -88,9 +103,15 @@ to roll it.
     token variable.
 
 !!! info "Availability"
-    Bearer authentication is available from FOG 1.6.0. On older servers, and on
-    1.5.x, use the token pair below. Both older methods keep working on 1.6 and
-    are not deprecated &mdash; nothing you have already built needs to change.
+    API tokens are available from FOG 1.6.0. On older servers, and on 1.5.x, use
+    the token pair below. Both older methods keep working on 1.6 and are not
+    deprecated &mdash; nothing you have already built needs to change.
+
+    **If you tried Bearer authentication on an early 1.6.0 beta:** briefly, the
+    **User API Token** was accepted as a Bearer value. It no longer is &mdash; a
+    plaintext, UI-visible, non-revocable secret gave the Bearer scheme none of
+    the properties listed above. Issue an API token from the card described here,
+    or keep using that token in the header pair, where it is unchanged.
 
 ### Token pair
 
@@ -107,8 +128,9 @@ via Users → List All Users →
 Enable** checkbox on that tab must be ticked, or the token is rejected even when
 sent.
 
-The user token here is the same value the Bearer method uses; only the header it
-travels in differs.
+This is **not** the same credential as an API token. The two are separate, with
+separate properties; see [Bearer token](#bearer-token-recommended) above. This
+one is unchanged from 1.5.x and keeps working exactly as it always has.
 
 !!! note "Copy the token values as shown"
     The web UI already displays both tokens **base64-encoded**, which is exactly
