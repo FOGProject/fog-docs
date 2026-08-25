@@ -40,6 +40,30 @@ Paste both exactly as the UI shows them. See [[api|API]] for the detail on why.
 
 The reference follows the light/dark toggle in the header along with the rest of the UI.
 
+## Code snippets for the call you just made
+
+Run a call with **Try it out** → **Execute** and a **Snippets** panel appears with the same request
+written four ways:
+
+| Tab | What it uses |
+|---|---|
+| cURL | `curl`, the form the rest of these pages quote |
+| PowerShell | `Invoke-RestMethod`, with the headers in a hashtable and the body in a here-string |
+| Python | the [`requests`](https://requests.readthedocs.io/) library |
+| JavaScript | `fetch` |
+
+Each is the *actual* request — your server's address, the path with your parameters filled in, your
+headers, and the body you typed — so it can be pasted into a shell or a script and run as-is.
+
+The PowerShell tab is a real PowerShell command rather than a `curl.exe` command line with
+PowerShell quoting, which is what Swagger UI offers out of the box. It is a starting point for a
+one-off script; for anything larger, [FogApi](https://fogapi.readthedocs.io/en/latest/) is a
+PowerShell module built around this API and worth reaching for first.
+
+> [!warning] The snippet contains your token
+> Whatever you entered under **Authorize** is in the snippet, because it was in the request. Strip
+> it before pasting a snippet into a ticket, a chat, or a repository.
+
 ## The raw document
 
 Two paths serve the same document:
