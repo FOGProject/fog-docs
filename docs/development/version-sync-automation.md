@@ -106,7 +106,117 @@ What it does, once:
    local hook's scope instead.
 3. Regenerates the catalogue with `update-language.sh` — whole-tree by
    necessity, since `messages.pot` is a single artifact with no per-PR subset.
-4. Commits once and pushes to the head branch.
+4. Computes the version the branch will carry once it merges, and applies it.
+5. Commits once and pushes to the head branch.
+
+### The version is predicted, and that prediction has prerequisites
+
+`FOG_VERSION` is the commit count since `master`, so computing it before the
+merge means predicting what that count will become. That is only possible
+because `working-1.6`'s ruleset forces two things:
+
+- **branches must be up to date before merging**, so the base is an ancestor of
+  the head and the merge brings nothing in from the base's side;
+- **merge commits are the only allowed merge method**, so the merge adds
+  exactly one commit.
+
+With both in force, and `H` being the count as the job finds it, the merge
+produces `H + 1` — plus one more for any commit the job itself writes.
+
+The subtlety worth knowing, because it is invisible in the output when it goes
+wrong: `fog-version.sh`'s "mid-commit" flag *already* adds one, but that
+increment is for the commit its **caller** is about to write. It knows nothing
+about a merge commit, which `git rev-list` also counts. So the merge commit
+needs its own increment, supplied by an empty marker commit that the job makes
+before calling the script and removes immediately after. Without it every
+version written this way is exactly one low, and the merge-time sync corrects
+it — reintroducing the churn this arrangement exists to remove.
+
+The termination property from
+[Why this one is allowed to re-trigger itself](#why-this-one-is-allowed-to-re-trigger-itself)
+extends to the version for one specific reason: the "mid-commit" flag is set
+only when the regeneration actually staged something. On the re-run the job's
+own push triggers, nothing is stale, so the flag is `0`, the script performs an
+honest check against the value the previous run wrote, finds no drift, and
+stages nothing. Passing that flag unconditionally would return a version one
+higher on every run and push forever.
+
+>[!warning]
+>Turning off either ruleset setting silently makes every version computed this
+>way wrong. Squash collapses N commits into one and makes the count
+>unrecoverable; rebase adds no merge commit at all. Nothing fails loudly — the
+>merge-time backstop corrects the value afterwards, so the symptom is churn
+>rather than a bad release. If either setting is changed, revert
+>`sync_version` in `fogproject`'s `tests.yml` in the same change.
+
+The job re-checks the up-to-date condition itself rather than trusting the
+setting, because the ruleset blocks the *merge* while the job runs earlier, and
+the base can move in between. If it has, the version step is skipped rather
+than committing a number that cannot be stood behind.
+
+### The ruleset
+
+Not a file — GitHub reads no in-repo config for this, so it is applied once by
+someone with admin on the repository and is not part of any pull request diff.
+
+```bash
+gh api --method POST /repos/FOGProject/fogproject/rulesets \
+  --input ruleset.json
+```
+
+```json
+{
+  "name": "working-1.6 pull request gate",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": { "ref_name": { "include": ["refs/heads/working-1.6"], "exclude": [] } },
+  "bypass_actors": [
+    { "actor_id": 0, "actor_type": "Integration", "bypass_mode": "always" }
+  ],
+  "rules": [
+    { "type": "pull_request", "parameters": {
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": false,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": false,
+        "allowed_merge_methods": ["merge"] } },
+    { "type": "required_status_checks", "parameters": {
+        "strict_required_status_checks_policy": true,
+        "required_status_checks": [
+          { "context": "fogproject / tests (PHP 7.4)" },
+          { "context": "fogproject / tests (PHP 8.3)" },
+          { "context": "fogproject / vendor matches composer.lock" },
+          { "context": "fogproject / schema on mariadb:10.5" },
+          { "context": "fogproject / schema on mariadb:11.8" },
+          { "context": "fogproject / schema on mysql:8.0" },
+          { "context": "fogproject / release pins resolve" } ] } }
+  ]
+}
+```
+
+Four things that will bite if they are skipped:
+
+- **`bypass_actors` for the GitHub App is mandatory, not defensive.** A
+  `pull_request` rule blocks direct pushes to the branch, and both the daily
+  sweep and the merge-time sync push *directly* with the App token. Without a
+  bypass, every sweep run turns red the moment the ruleset goes active. Set
+  `actor_id` to the App's own id (`vars.FOG_WORKFLOWS_APPID`'s installation),
+  not the placeholder above.
+- **Confirm the seven check names against a real run before enabling.** They
+  are `<caller job name> / <called job name>`, and a mistyped required check
+  blocks every pull request permanently while looking like a workflow that
+  simply never ran.
+- **Do not make the `regenerate` job a required check.** It is skipped on fork
+  pull requests and on any PR its guards exclude, and a required check that
+  never reports leaves those unmergeable.
+- **Do not enable "require linear history"** — it is mutually exclusive with
+  requiring merge commits.
+
+Extending this to `dev-branch` needs one more step first: `dev-branch`'s
+`tests.yml` has no `name: fogproject` on its `suite` job, so it currently
+reports `suite / …` instead. Normalise that before registering contexts, or
+half the required checks will never appear.
 
 **Who is skipped, and where they are caught instead.** Pull requests from
 forks: `pull_request` withholds secrets from a fork, so there is no App token
@@ -146,15 +256,20 @@ merge path can now ask for the version alone.
 
 It has **two entry points**:
 
-- **On merge, for the version only.** `fogproject`'s
+- **On merge, for the version only — and now as a backstop.** `fogproject`'s
   `.github/workflows/sync-generated-files.yml` — a trigger stub carrying no
   logic — calls it over `workflow_call` when a PR is merged into
-  `working-1.6` or `dev-branch`, so the version is correct within minutes of
-  a merge instead of at the next tick. It passes `version_only: true`: on a
-  same-repo pull request the formatting and the catalogue were already
-  corrected on the branch before it merged, so repeating them here can only
-  be a no-op — one that would still cost a `fog-plugins` release download and
-  a full gettext regeneration on every merge. One copy of that stub lives on each of
+  `working-1.6` or `dev-branch`. It passes `version_only: true`: on a same-repo
+  pull request the formatting and the catalogue were already corrected on the
+  branch before it merged, so repeating them here can only be a no-op — one
+  that would still cost a `fog-plugins` release download and a full gettext
+  regeneration on every merge.
+  On `working-1.6` the version arrives correct too, so this path finds nothing
+  to do at all. It is kept rather than removed because it still covers what the
+  prediction cannot: a squash or rebase that slipped past the ruleset, an admin
+  bypass, a merged fork PR that never ran the PR-time job, and anything the
+  `regen` guards skipped. **A run that reports no change is the expected
+  outcome, not a symptom.** One copy of that stub lives on each of
   those branches, byte-identical; GitHub reads a `pull_request` workflow from
   the PR's *base* branch, so each copy only ever acts on merges into its own
   branch. A merged PR from a *fork* is skipped and left to the schedule —
@@ -210,14 +325,16 @@ than off a commit count, so it reports drift on every run by design (only
 `head` mode special-cases that), and syncing it per merge would bump the RC
 suffix on every merge. The daily tick keeps that to at most one per day.
 
-Keeping the version correct within minutes of a merge still costs one bot
-commit per merged PR on `working-1.6`/`dev-branch`. That is inherent rather
-than incidental — the version *is* the commit count, so a merge changes what
-it should be — and it is a deliberate trade against the older "daily bounds
-how often this can run at all" position in *Incident history* below. One
-knock-on: `stable`'s version is computed from `master..dev-branch`, so it now
-advances faster. That is larger, not wrong; the count is what the version is
-defined as.
+Keeping the version correct within minutes of a merge costs one bot commit per
+merged PR — on `dev-branch`, which still works this way, and on `working-1.6`
+for anything that bypassed the PR-time path. That is inherent rather than
+incidental: the version *is* the commit count, so a merge changes what it
+should be. On `working-1.6` the cost has moved rather than disappeared — the
+same commit is now made on the pull request, before review, where it is at
+least visible to the person whose change caused it. One knock-on either way:
+`stable`'s version is computed from `master..dev-branch`, so it advances
+faster than it used to. That is larger, not wrong; the count is what the
+version is defined as.
 
 ### Run visibility
 
