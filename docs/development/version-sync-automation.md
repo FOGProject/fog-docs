@@ -80,7 +80,50 @@ most contributors experience day-to-day, and it's why a version bump
 usually rides along silently inside an otherwise-unrelated commit rather
 than showing up as its own change.
 
-## 2. The fog-workflows sweep
+## 2. PR-time regeneration
+
+Translations and PSR2 formatting are corrected **on the pull request**, before
+it merges, by `fog-workflows`'
+[`fogproject-pr-regen.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/fogproject-pr-regen.yml).
+`fogproject`'s `.github/workflows/tests.yml` calls it from a `regen` job that
+`needs:` the test suite, so it runs only once every check has gone green.
+
+That `needs:` is the entire gate. A caller job that `uses:` a reusable
+workflow succeeds only if *every* job inside it succeeded, so no aggregate
+"did everything pass" job is needed on the far side.
+
+What it does, once:
+
+1. Checks out the pull request's **head branch** — not `github.ref`, which for
+   a `pull_request` event is `refs/pull/N/merge`, a synthesised merge preview
+   that cannot be pushed to.
+2. Runs `php-cs-fixer --rules=@PSR2` over **only the `packages/web` PHP files
+   this pull request touches**, computed from the merge base. This is the one
+   place it deliberately differs from the sweep, which formats the tree
+   wholesale: the sweep owns the branch it pushes to, whereas this commit
+   lands in somebody's pull request, and a whole-tree pass would drag every
+   pre-existing violation into their diff under their name. It mirrors the
+   local hook's scope instead.
+3. Regenerates the catalogue with `update-language.sh` — whole-tree by
+   necessity, since `messages.pot` is a single artifact with no per-PR subset.
+4. Commits once and pushes to the head branch.
+
+**Who is skipped, and where they are caught instead.** Pull requests from
+forks: `pull_request` withholds secrets from a fork, so there is no App token
+to mint, and pushing to a fork head would need `maintainer_can_modify`, which
+is the contributor's to set. Those are corrected by the daily sweep after they
+merge, exactly as they are today. Pull requests whose *head* is a long-lived
+branch are skipped too — `stable-releases.yml` opens one of those to sync a
+release back, and it must never be written to.
+
+>[!warning]
+>This is the **only** workflow in the fleet whose own push raises the event
+>that runs it. Its push to the head branch fires `pull_request: synchronize`,
+>which runs it again. See
+>[Why this one is allowed to re-trigger itself](#why-this-one-is-allowed-to-re-trigger-itself)
+>before changing anything in it.
+
+## 3. The fog-workflows sweep
 
 The pre-commit hook is client-side — it never runs for a PR merged through
 GitHub's web UI (squash, merge-commit, or rebase), so a version merged that
@@ -88,18 +131,30 @@ way can silently go stale. That gap is covered by
 [`FOGProject/fog-workflows`'s `update-lang-fix-psr-and-sync-version.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/update-lang-fix-psr-and-sync-version.yml),
 which despite the "version sync" shorthand keeps *three* derived things in
 step — gettext translations, PSR2 formatting, and `FOG_VERSION`/`FOG_CHANNEL`
-— as one job, one commit, one push per branch. They cannot be separated: a
-translation or formatting fixup is itself a commit, so it changes the count
-the version is derived from, and the version therefore has to be computed
-after those are staged rather than racing them.
+— as one job, one commit, one push per branch. Within this workflow they
+cannot be separated: a translation or formatting fixup is itself a commit, so
+it changes the count the version is derived from, and the version therefore
+has to be computed after those are staged rather than racing them.
+
+That ordering constraint is what makes the *timing* interesting. It does not
+say the three must always happen together — it says that whenever they happen
+together, the version goes last. Correcting the first two **before** a pull
+request merges satisfies it just as well, because by merge time those commits
+are already part of the count. That is what
+[PR-time regeneration](#2-pr-time-regeneration) above does, and it is why the
+merge path can now ask for the version alone.
 
 It has **two entry points**:
 
-- **On merge.** `fogproject`'s
+- **On merge, for the version only.** `fogproject`'s
   `.github/workflows/sync-generated-files.yml` — a trigger stub carrying no
   logic — calls it over `workflow_call` when a PR is merged into
   `working-1.6` or `dev-branch`, so the version is correct within minutes of
-  a merge instead of at the next tick. One copy of that stub lives on each of
+  a merge instead of at the next tick. It passes `version_only: true`: on a
+  same-repo pull request the formatting and the catalogue were already
+  corrected on the branch before it merged, so repeating them here can only
+  be a no-op — one that would still cost a `fog-plugins` release download and
+  a full gettext regeneration on every merge. One copy of that stub lives on each of
   those branches, byte-identical; GitHub reads a `pull_request` workflow from
   the PR's *base* branch, so each copy only ever acts on merges into its own
   branch. A merged PR from a *fork* is skipped and left to the schedule —
@@ -126,6 +181,10 @@ Each run:
    copies. This is also the backstop for contributors whose machines lack
    `gettext`/`php-cs-fixer`, where the hook skips those steps loudly rather
    than refusing the commit.
+   **Skipped entirely when the caller passes `version_only: true`** — the
+   merge path does, because a same-repo pull request arrives already
+   formatted and regenerated. The plugin fetch is skipped with it, so that
+   path stops downloading a `fog-plugins` release on every merge.
 3. Runs `fog-version.sh`, passing the same "mid-commit" flag the hook passes
    when step 2 staged something — so the version it computes already accounts
    for the commit about to exist.
@@ -151,7 +210,7 @@ than off a commit count, so it reports drift on every run by design (only
 `head` mode special-cases that), and syncing it per merge would bump the RC
 suffix on every merge. The daily tick keeps that to at most one per day.
 
-Keeping the version correct within minutes of a merge does cost one bot
+Keeping the version correct within minutes of a merge still costs one bot
 commit per merged PR on `working-1.6`/`dev-branch`. That is inherent rather
 than incidental — the version *is* the commit count, so a merge changes what
 it should be — and it is a deliberate trade against the older "daily bounds
@@ -226,6 +285,44 @@ guarantee those would converge; with it, there is no second run to converge.
 Apply that one question to any new trigger, rather than pattern-matching on
 this list of examples.
 
+#### Why this one is allowed to re-trigger itself
+
+[PR-time regeneration](#2-pr-time-regeneration) is the single documented
+exception, and it fails the question above rather than passing it: its push
+lands on a pull request's head branch, and that push *does* raise
+`pull_request: synchronize`, which runs it again. There is no structural
+guarantee to lean on here, so the exception has to earn its place three times
+over.
+
+1. **It terminates in one step.** `php-cs-fixer` in fix mode is a fixed point —
+   a conforming file comes back byte-identical — and `update-language.sh` is a
+   pure function of the source strings, for the reasons in
+   [Why a fixup commit anticipates its own `+1`](#why-a-fixup-commit-anticipates-its-own-1)
+   and the `--omit-header --no-location` / `msgcat --no-wrap --sort-output`
+   flags it uses. So run *n+1* finds nothing to stage, pushes nothing, and
+   raises no event. The bound is **one extra run and exactly one bot commit
+   per contributor push** — a two-step sequence, not a loop that happens to
+   converge.
+2. **A runtime assertion proves it on the actual tree**, rather than trusting
+   the paragraph above. Before committing, the workflow re-runs both
+   operations and **fails the job** if a second pass changes anything. Any
+   future non-idempotency therefore surfaces as one red check instead of a
+   runaway.
+3. **A hard bound holds even if 1 and 2 are wrong.** It refuses to push when
+   the head branch already ends in a bot commit and there is still work to do.
+
+The version-formula fix that closed the 2026-07-28 incident was of the first
+kind alone. The lesson encoded here is that "it should converge" is not enough
+on its own — the reverted stub would have passed that bar too. An exception to
+the trigger rule needs the assertion and the bound as well.
+
+Two things that look like simplifications and are traps. Pushing with
+`GITHUB_TOKEN` instead of an App token would suppress the re-run entirely,
+which sounds ideal — but once required status checks are enabled, checks
+attach to the head SHA, and a push that starts no run leaves the pull request
+waiting on a status that will never arrive. `[skip ci]` in the commit message
+deadlocks the same way.
+
 #### A second question: which ref is the trigger read from?
 
 Safety is not the only thing that decides whether a trigger works, and the
@@ -267,7 +364,7 @@ Two further refinements landed the same day, both about *how often* and
   of the monthly release check) caps any real fixup to at most one commit
   per branch per day.
 
-## 3. stable-releases.yml
+## 4. stable-releases.yml
 
 `stable`'s version is owned entirely by fog-workflows'
 [`stable-releases.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/stable-releases.yml)
