@@ -40,8 +40,10 @@ combination that works. Full reasoning in
 | `public-cert` | https | **https** | **yes** | no |
 | `embed-ca` | https | **https** | no | **yes** |
 
-An attended install offers these as a numbered prompt. Under `-y` it does not
-ask and you get `standard` unless you passed something else.
+An attended install offers these as a numbered prompt on a machine that has not
+had FOG on it before. Under `-y`, on a re-install, or with any of the transport
+options below, it does not ask: you get `standard` on a first install unless you
+passed something else, and on an upgrade you keep what you already had.
 
 >[!warning] `--install-mode` does not touch the HTTP→HTTPS redirect
 >No mode sets or clears `WEB_https_redirect`. A server upgraded from a `-S`
@@ -49,10 +51,21 @@ ask and you get `standard` unless you passed something else.
 >seeded once from the old `httpproto=https` and is then yours for good. Use
 >`--no-https-redirect` to turn it off.
 
->[!warning] `http-only` does not persist
->`WEB_url_proto` is set back to `https` at the start of every run — 443 listens
->on every install either way — so `--install-mode http-only` applies only to the
->run you pass it on. Pass it again on each upgrade, or it silently reverts.
+>[!note] The mode is asked once and remembered
+>Your choice is stored as `FOG_install_mode` in
+>[[install-fogsettings|.fogsettings]], so `--install-mode` only needs giving to
+>*change* it — an upgrade keeps the mode you picked, and the four-mode menu is
+>not shown again.
+>
+>This is also what makes `http-only` stick. `WEB_url_proto` is set back to
+>`https` early in every run (443 listens on every install either way), and the
+>preset is applied *after* that line — so the mode survives where it previously
+>had to be passed again on every upgrade or it silently reverted.
+>
+>Any of the individual transport options below **clears** the remembered mode,
+>because the result is no longer one of the four named shapes. That is
+>deliberate: a mode name left in place would have the next upgrade re-apply the
+>preset over the very setting you changed.
 
 ## Transport options
 
