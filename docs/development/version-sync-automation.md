@@ -494,6 +494,16 @@ schedule's branch filter skips it, and the merge stub's allowlist names only
 same branch, and the schedule runs early enough in the day to stay ahead of
 it.
 
+Before it opens the release PR, it calls the sweep against `dev-branch` — and
+that call keeps the **full** whole-tree pass: gettext regeneration and
+`php-cs-fixer` over all of `packages/web`, not just changed files. It passes
+`version_only: false` explicitly rather than relying on the default, because
+this is the last whole-tree pass before a tagged release and it has to cover
+what PR-time regeneration cannot: anything merged from a fork, anything pushed
+directly to `dev-branch`, and every commit predating PR-time regeneration.
+`version_only` is opt-in — a caller that says nothing gets the full behaviour —
+but on this path the intent is written down rather than inferred.
+
 One interaction worth knowing: that last step, syncing `stable` back into
 `dev-branch`, is done by merging a PR whose base is `dev-branch`, so it trips
 the merge stub and re-syncs `dev-branch` once the release lands. That is
