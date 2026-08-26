@@ -32,7 +32,7 @@ Si vous n'utilisez pas FOG pour fournir les services DHCP de votre réseau (ce q
 > La méthode ProxyDHCP la plus populaire avec fog est dnsmasq. Cet article vous guidera dans cette démarche : [[proxy-dhcp|Proxy DHCP avec DNSMasq]]
 
 > [!tip]
-> Lorsque vous utilisez des pare-feu Palo Alto Networks comme serveur DHCP pour le démarrage PXE/iPXE, vous devrez peut-être configurer l'option DHCP 150 avec l'adresse IP du serveur FOG comme adresse TFTP/next-server. Dans certaines configurations Palo Alto, l'option 66 est traitée comme un nom/FQDN de serveur TFTP et peut ne pas suffire pour les clients PXE. Conservez l'option 67 définie sur le fichier de démarrage, par exemple `snponly.efi` pour les clients UEFI.
+> Lorsque vous utilisez des pare-feu Palo Alto Networks comme serveur DHCP pour le démarrage PXE/iPXE, vous devrez peut-être configurer l'option DHCP 150 avec l'adresse IP du serveur FOG comme adresse TFTP/next-server. Dans certaines configurations Palo Alto, l'option 66 est traitée comme un nom/FQDN de serveur TFTP et peut ne pas suffire pour les clients PXE. Conservez l'option 67 définie sur le fichier de démarrage, par exemple `secureboot/snponly-shimx64.efi` pour les clients UEFI 64 bits.
 
 Ces deux options DHCP doivent être définies :
 
@@ -159,27 +159,27 @@ Un `kea-dhcp4.conf` complet pour un serveur Kea dédié :
             {
                 "name": "FOG-UEFI-64-1",
                 "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00007'",
-                "boot-file-name": "snponly.efi"
+                "boot-file-name": "secureboot/snponly-shimx64.efi"
             },
             {
                 "name": "FOG-UEFI-64-2",
                 "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00008'",
-                "boot-file-name": "snponly.efi"
+                "boot-file-name": "secureboot/snponly-shimx64.efi"
             },
             {
                 "name": "FOG-UEFI-64-3",
                 "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00009'",
-                "boot-file-name": "snponly.efi"
+                "boot-file-name": "secureboot/snponly-shimx64.efi"
             },
             {
                 "name": "FOG-UEFI-ARM64",
                 "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00011'",
-                "boot-file-name": "arm64-efi/snponly.efi"
+                "boot-file-name": "secureboot/arm64-efi/snponly-shimaa64.efi"
             },
             {
                 "name": "FOG-Surface-Pro-4",
                 "test": "substring(option[60].hex,0,32) == 'PXEClient:Arch:00007:UNDI:003016'",
-                "boot-file-name": "snponly.efi"
+                "boot-file-name": "secureboot/snponly-shimx64.efi"
             }
         ]
     }
@@ -225,7 +225,7 @@ $dhcpSvr = 'dhcp.yourDomain.tld'
 #define your fog server fqdn, hostname, or ip
 $fogAddr = 'fogserver.yourDomain.tld'
 #define you pxe boot file
-$pxeBootFile = 'snponly.efi'
+$pxeBootFile = 'secureboot/snponly-shimx64.efi'
 
 #get all the scopes from the main dhcp server and expand to the nested ipAddressToString property of the scopeIDs to get a string array of scope ids`
 

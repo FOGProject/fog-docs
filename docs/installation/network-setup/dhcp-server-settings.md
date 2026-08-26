@@ -29,7 +29,7 @@ If you do not use FOG to provide DHCP services in your network (which is a very 
 > The most popular ProxyDHCP method with fog is dnsmasq. This article will walk you through that: [[proxy-dhcp|Proxy DHCP with DNSMasq]]
 
 > [!tip]
-> When using Palo Alto Networks firewalls as the DHCP server for PXE/iPXE booting, you may need to configure DHCP Option 150 with the FOG server IP address as the TFTP/next-server address. In some Palo Alto configurations, Option 66 is treated as a TFTP server name/FQDN and may not be enough for PXE clients. Keep Option 67 set to the boot file, such as `snponly.efi` for UEFI clients.
+> When using Palo Alto Networks firewalls as the DHCP server for PXE/iPXE booting, you may need to configure DHCP Option 150 with the FOG server IP address as the TFTP/next-server address. In some Palo Alto configurations, Option 66 is treated as a TFTP server name/FQDN and may not be enough for PXE clients. Keep Option 67 set to the boot file, such as `secureboot/snponly-shimx64.efi` for 64-bit UEFI clients.
 
 These two DHCP options must be set:
 
@@ -39,11 +39,32 @@ Set Option 66, also called 'Boot Server', 'Next server' or 'TFTP Server' to the 
 
 ## Option 67
 
-Set option 67, also called 'Bootfile Name' to the ipxe boot file that works best in your environment.
-For modern UEFI environments, either of these files have the best compatibility (you simply enter this file name into the dhcp setting)
+Set option 67, also called 'Bootfile Name' to the ipxe boot file that works best
+in your environment. For modern UEFI environments, use the signed chain (you
+simply enter this file name into the dhcp setting):
 
-* snponly.efi
-* ipxe.efi
+* `secureboot/snponly-shimx64.efi` — 64-bit UEFI
+* `secureboot/arm64-efi/snponly-shimaa64.efi` — ARM64 UEFI
+
+> [!tip] This is the recommended default even if you are not using Secure Boot
+> The signed chain boots identically whether Secure Boot is enabled or not — a
+> DHCP request cannot report Secure Boot state, and nothing here needs it to.
+> Pointing every 64-bit UEFI client at the shim covers the Secure Boot machines
+> and costs the others nothing, so there is no reason to configure the other
+> names first and migrate later. See [[secure-boot-netboot|Moving to Secure Boot]]
+> for the two steps end to end.
+
+The alternative is FOG's own builds, in the TFTP root rather than under
+`secureboot/`. These are the **same binaries FOG has always served**, and under
+Secure Boot they behave differently from the pair above: FOG signs them with
+*this server's* key, so a client has to have this server's certificate enrolled
+before it will load one at all. The `secureboot/` chain starts from a signature
+the firmware already trusts, which is why it is the default:
+
+* `snponly.efi` — 64-bit UEFI
+* `i386-efi/snponly.efi` — 32-bit UEFI (there is **no** signed 32-bit chain; see [[secure-boot-netboot#where-this-does-not-apply|Where this does not apply]])
+* `arm64-efi/snponly.efi` — ARM64 UEFI
+* `ipxe.efi` — the all-drivers build, for firmware whose own network stack does not work
 
 Most newer clients will be able to boot with one of the efi boot files above, but older hardware models that do not have UEFI support and only support legacy BIOS firmware will not boot. 
 
@@ -75,7 +96,9 @@ A copy of `autoexec.ipxe` sits in every folder holding a UEFI binary — the
 hard links to one file, so editing any of them edits all of them.
 
 Nothing about option 66 or option 67 changes for this. Point option 67 at
-`snponly.efi`, `i386-efi/snponly.efi` and so on exactly as above.
+`secureboot/snponly-shimx64.efi`, `i386-efi/snponly.efi` and so on exactly as
+above — the signed chain reads its script the same way, from a copy of
+`autoexec.ipxe` hard-linked into `secureboot/`.
 
 > [!warning]
 > **Legacy BIOS works the other way round.** BIOS boot files
@@ -194,27 +217,27 @@ A complete `kea-dhcp4.conf` for a dedicated Kea server:
             {
                 "name": "FOG-UEFI-64-1",
                 "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00007'",
-                "boot-file-name": "snponly.efi"
+                "boot-file-name": "secureboot/snponly-shimx64.efi"
             },
             {
                 "name": "FOG-UEFI-64-2",
                 "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00008'",
-                "boot-file-name": "snponly.efi"
+                "boot-file-name": "secureboot/snponly-shimx64.efi"
             },
             {
                 "name": "FOG-UEFI-64-3",
                 "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00009'",
-                "boot-file-name": "snponly.efi"
+                "boot-file-name": "secureboot/snponly-shimx64.efi"
             },
             {
                 "name": "FOG-UEFI-ARM64",
                 "test": "substring(option[60].hex,0,20) == 'PXEClient:Arch:00011'",
-                "boot-file-name": "arm64-efi/snponly.efi"
+                "boot-file-name": "secureboot/arm64-efi/snponly-shimaa64.efi"
             },
             {
                 "name": "FOG-Surface-Pro-4",
                 "test": "substring(option[60].hex,0,32) == 'PXEClient:Arch:00007:UNDI:003016'",
-                "boot-file-name": "snponly.efi"
+                "boot-file-name": "secureboot/snponly-shimx64.efi"
             }
         ]
     }
@@ -231,7 +254,20 @@ A complete `kea-dhcp4.conf` for a dedicated Kea server:
 | `routers` (`10.0.0.1`) | Your network's gateway |
 | `domain-name-servers` (`10.0.0.2`) | Your DNS server(s) |
 
-The `boot-file-name` values (`undionly.kkpxe`, `snponly.efi`, `i386-efi/snponly.efi`, `arm64-efi/snponly.efi`) are the standard iPXE binaries FOG ships in `/tftpboot` — leave them as-is. The `client-classes` match on DHCP option 60 (the PXE `PXEClient:Arch:NNNNN` vendor-class string) so each architecture is handed the correct binary automatically.
+The `boot-file-name` values are files FOG ships in `/tftpboot` — leave them as-is. The `client-classes` match on DHCP option 60 (the PXE `PXEClient:Arch:NNNNN` vendor-class string) so each architecture is handed the correct binary automatically:
+
+| Value | What it is |
+| --- | --- |
+| `undionly.kkpxe` | the BIOS build — script compiled in, no Secure Boot in CSM mode |
+| `i386-efi/snponly.efi` | 32-bit UEFI, necessarily unsigned |
+| `secureboot/snponly-shimx64.efi` | the signed chain for 64-bit UEFI — the Microsoft-signed shim, which then loads `secureboot/snponly.efi` |
+| `secureboot/arm64-efi/snponly-shimaa64.efi` | the same for ARM64 |
+
+Two fallbacks worth knowing about, both a DHCP-only change with nothing renamed
+server-side: swap `snponly-` for `ipxe-` (`secureboot/ipxe-shimx64.efi`) if the
+chain loads but the network never comes up, which points at the firmware's own
+UEFI SNP driver; or drop back to the plain `snponly.efi` / `arm64-efi/snponly.efi`
+if you want FOG's own builds instead of upstream's signed pair.
 
 > [!note]
 > Apple Intel netboot (BSDP) is **not** supported by Kea. If you must netboot Intel Macs, keep those on an ISC-DHCP server (FOG's ISC config still includes the BSDP class).
@@ -254,13 +290,18 @@ This little powershell snippet will get all your dhcp server scopes and set opti
 > This requires the dhcp module that is installed on a server when the dhcp role is added. You can also add it to your windows workstation machine by installing rsat tools, and of course it also requires admin privileges to manage the dhcp server options.
 > This script will set the options at the scope/subnet levels rather than at a global server level
 
+> [!tip] Mixed BIOS/UEFI estate?
+> One scope-wide option 67 cannot serve both. Windows DHCP policies can match on
+> the PXE vendor class and hand each architecture its own boot file — there is a
+> ready-to-run version in [[secure-boot-netboot#windows-server-dhcp|Moving to Secure Boot]].
+
 ```powershell
 #define your dhcp server hostname or ip
 $dhcpSvr = 'dhcp.yourDomain.tld'
 #define your fog server fqdn, hostname, or ip
 $fogAddr = 'fogserver.yourDomain.tld'
-#define you pxe boot file
-$pxeBootFile = 'snponly.efi'
+#define you pxe boot file -- the signed chain, which boots with Secure Boot on or off
+$pxeBootFile = 'secureboot/snponly-shimx64.efi'
 
 #get all the scopes from the main dhcp server and expand to the nested ipAddressToString property of the scopeIDs to get a string array of scope ids`
 

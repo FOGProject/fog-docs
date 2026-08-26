@@ -28,7 +28,7 @@ tags:
 > 1.6 — it still hands the client a next-server (your FOG server's IP) and a boot
 > file name over TFTP. What changed in 1.6 is **which** boot file FOG expects UEFI
 > clients to load. The table below lists the old and new file names; the examples
-> on this page already use the 1.6 names.
+> on this page already use the 1.6 names, in their signed-chain form.
 
 | Client type | DHCP arch | FOG 1.5.x boot file | **FOG 1.6 boot file** | **1.6 Secure Boot** |
 | --- | --- | --- | --- | --- |
@@ -38,15 +38,16 @@ tags:
 | ARM64 UEFI | `00011` | — | `arm64-efi/snponly.efi` | `secureboot/arm64-efi/snponly-shimaa64.efi` |
 
 FOG 1.6 standardized on the SNP-driver `snponly.efi` binaries, which are far more
-reliable on modern UEFI firmware than the older UNDI-driver `ipxe.efi`. These are
-the exact file names the FOG 1.6 installer configures for its own ISC/Kea DHCP
-server, so they are the correct values to put in your dnsmasq config too. All of
+reliable on modern UEFI firmware than the older UNDI-driver `ipxe.efi`. All of
 these files ship in `/tftpboot` on a 1.6 server.
 
-If any of your clients have Secure Boot enabled, read
-[Secure Boot and proxyDHCP](#secure-boot-and-proxydhcp) before choosing which
-column to use — the short version is that the Secure Boot files are safe to hand
-to *every* 64-bit UEFI client, whether Secure Boot is on or off.
+**Use the Secure Boot column.** The examples on this page do, and so does the
+FOG 1.6 installer when it configures its own ISC/Kea DHCP server. Those files are
+safe to hand to *every* 64-bit UEFI and ARM64 client, whether Secure Boot is on
+or off — see [Secure Boot and proxyDHCP](#secure-boot-and-proxydhcp) for why, and
+[[secure-boot-netboot|Moving to Secure Boot]] for the rest of the setup. The
+plain FOG 1.6 column names FOG's own builds, which under Secure Boot need this
+server's certificate enrolled before a client will load them at all.
 
 ## dnsmasq's Roles in FOG
 
@@ -125,12 +126,16 @@ dhcp-vendorclass=BIOS,PXEClient:Arch:00000
 dhcp-vendorclass=UEFI32,PXEClient:Arch:00006
 dhcp-vendorclass=UEFI,PXEClient:Arch:00007
 dhcp-vendorclass=UEFI64,PXEClient:Arch:00009
+dhcp-vendorclass=ARM64,PXEClient:Arch:00011
 
 # Set the boot file name based on the matching tag from the vendor class (above).
-# FOG 1.6 uses the snponly.efi (SNP driver) binaries for UEFI.
+# 64-bit UEFI and ARM64 get the signed shim chain, which boots the same whether
+# Secure Boot is on or off -- see "Secure Boot and proxyDHCP" below for why this
+# is unconditional rather than a per-machine opt-in.
 dhcp-boot=net:UEFI32,i386-efi/snponly.efi,,<fog_server_IP>
-dhcp-boot=net:UEFI,snponly.efi,,<fog_server_IP>
-dhcp-boot=net:UEFI64,snponly.efi,,<fog_server_IP>
+dhcp-boot=net:UEFI,secureboot/snponly-shimx64.efi,,<fog_server_IP>
+dhcp-boot=net:UEFI64,secureboot/snponly-shimx64.efi,,<fog_server_IP>
+dhcp-boot=net:ARM64,secureboot/arm64-efi/snponly-shimaa64.efi,,<fog_server_IP>
 
 # PXE menu.  The first part is the text displayed to the user. 
 # The second is the timeout, in seconds.
@@ -153,8 +158,10 @@ pxe-prompt="Booting FOG Client", 1
 # right filename being offered. Naming the FOG server sends it to FOG's tftpd.
 # This option is first and will be the default if there is no input from the user.
 pxe-service=X86PC, "Boot to FOG", undionly.kkpxe, <fog_server_IP>
-pxe-service=X86-64_EFI, "Boot to FOG UEFI", snponly.efi, <fog_server_IP>
-pxe-service=BC_EFI, "Boot to FOG UEFI PXE-BC", snponly.efi, <fog_server_IP>
+pxe-service=IA32_EFI, "Boot to FOG UEFI 32", i386-efi/snponly.efi, <fog_server_IP>
+pxe-service=x86-64_EFI, "Boot to FOG UEFI", secureboot/snponly-shimx64.efi, <fog_server_IP>
+pxe-service=BC_EFI, "Boot to FOG UEFI PXE-BC", secureboot/snponly-shimx64.efi, <fog_server_IP>
+pxe-service=ARM64_EFI, "Boot to FOG ARM64", secureboot/arm64-efi/snponly-shimaa64.efi, <fog_server_IP>
 
 dhcp-range=<fog_server_ip>,proxy
 ```
@@ -191,8 +198,8 @@ systemctl enable dnsmasq.service
 
 ## The client downloads iPXE but then fails to reach FOG
 
-dnsmasq's only job is to get the client to TFTP-download the iPXE binary
-(`undionly.kkpxe` / `snponly.efi`). What happens next depends on the firmware
+dnsmasq's only job is to get the client to TFTP-download the boot binary
+(`undionly.kkpxe` for BIOS, `secureboot/snponly-shimx64.efi` for 64-bit UEFI). What happens next depends on the firmware
 mode. Every UEFI binary FOG ships is built **without** its boot script compiled
 in, so iPXE fetches `autoexec.ipxe` from the TFTP root and runs that; the BIOS
 builds carry their script internally and ignore the file — see
@@ -259,41 +266,25 @@ is a superset: it covers the Secure Boot machines and costs the others nothing.
 
 ### The optimal configuration
 
-```
-# Architecture tags, as above.
-dhcp-vendorclass=BIOS,PXEClient:Arch:00000
-dhcp-vendorclass=UEFI32,PXEClient:Arch:00006
-dhcp-vendorclass=UEFI,PXEClient:Arch:00007
-dhcp-vendorclass=UEFI64,PXEClient:Arch:00009
-dhcp-vendorclass=ARM64,PXEClient:Arch:00011
+**It is the configuration already given above** — see
+[[proxy-dhcp#dns-masq-ltsp-settings|Dns Masq LTSP settings]]. That block points
+every 64-bit UEFI and ARM64 client at the signed chain and leaves BIOS and
+32-bit UEFI on their unsigned binaries, which is the whole of it. There is no
+separate "Secure Boot config" to switch to.
 
-# BIOS clients: Secure Boot does not exist in BIOS/CSM mode, so this is
-# unchanged.
-dhcp-boot=net:BIOS,undionly.kkpxe,,<fog_server_IP>
+Two details in that block that are easy to get wrong:
 
-# 64-bit UEFI and ARM64: always the shim chain, Secure Boot on or off.
-dhcp-boot=net:UEFI,secureboot/snponly-shimx64.efi,,<fog_server_IP>
-dhcp-boot=net:UEFI64,secureboot/snponly-shimx64.efi,,<fog_server_IP>
-dhcp-boot=net:ARM64,secureboot/arm64-efi/snponly-shimaa64.efi,,<fog_server_IP>
+- **Both arch 7 and arch 9 are listed** because firmware disagrees about which
+  one means "64-bit UEFI" — most report 7, some report 9. Point both at the same
+  file and the disagreement stops mattering.
+- **The `pxe-service` lines, not `dhcp-boot`, are what actually decide the file
+  for UEFI clients.** Keep the two in agreement; changing only one is the most
+  common reason a boot-file change appears to do nothing.
 
-# 32-bit UEFI: unsigned, and it cannot be otherwise. See below.
-dhcp-boot=net:UEFI32,i386-efi/snponly.efi,,<fog_server_IP>
-
-# Remember that for UEFI clients these pxe-service lines, not the dhcp-boot
-# rules above, are what actually decides the file. Keep them in agreement.
-pxe-prompt="Booting to FOG", 1
-pxe-service=X86PC, "Boot to FOG", undionly.kkpxe, <fog_server_IP>
-pxe-service=IA32_EFI, "Boot to FOG", i386-efi/snponly.efi, <fog_server_IP>
-pxe-service=x86-64_EFI, "Boot to FOG", secureboot/snponly-shimx64.efi, <fog_server_IP>
-pxe-service=BC_EFI, "Boot to FOG", secureboot/snponly-shimx64.efi, <fog_server_IP>
-pxe-service=ARM64_EFI, "Boot to FOG", secureboot/arm64-efi/snponly-shimaa64.efi, <fog_server_IP>
-
-dhcp-range=<fog_server_ip>,proxy
-```
-
-Both arch 7 and arch 9 are listed because firmware disagrees about which one
-means "64-bit UEFI" — most reports 7, some reports 9. Point both at the same
-file and the disagreement stops mattering.
+To serve FOG's own builds instead, swap
+`secureboot/snponly-shimx64.efi` back to `snponly.efi` and
+`secureboot/arm64-efi/snponly-shimaa64.efi` to `arm64-efi/snponly.efi` in both
+the `dhcp-boot` and `pxe-service` lines.
 
 ### Why the boot file names the shim and not the loader
 
@@ -341,15 +332,17 @@ reason: an option that cannot succeed should not be offered.
 > [!important] The boot file is only half of Secure Boot
 > Getting a signed iPXE to load is the part dnsmasq controls. The FOS kernel FOG
 > boots afterward must also be trusted by the machine, which is a separate
-> setup step — see [Secure Boot signing](../../kb/how-tos/secure-boot-signing.md).
-> A correct DHCP configuration with an untrusted kernel gets you a signed iPXE
-> and then a failure one step later.
+> setup step. A correct DHCP configuration with an untrusted kernel gets you a
+> signed iPXE and then a failure one step later.
+>
+> [[secure-boot-netboot|Moving to Secure Boot]] walks both halves in order;
+> [[secure-boot-signing|Secure Boot signing]] is the concepts behind them.
 
 ## Advanced dnsmasq techniques
 
 Reference: [https://forums.fogproject.org/topic/8726/advanced-dnsmasq-techniques](https://forums.fogproject.org/topic/8726/advanced-dnsmasq-techniques)
 
-Now lets say we have a computer that will not boot with the default snponly.efi file, but instead we need the alternate intel.efi boot kernel. We'll add some dynamics to our above script so that for all computers except for our specific model snponly.efi is sent to the client and when we pxe boot our specific client intel.efi is sent to just that computer.
+Now lets say we have a computer that will not boot with the default UEFI file, but instead we need the alternate intel.efi boot kernel. We'll add some dynamics to our above script so that for all computers except for our specific model the normal boot file is sent to the client, and when we pxe boot our specific client intel.efi is sent to just that computer.
 
 I do have to post a caveat here. The uuid field "should" represent the device type for the model and not the unique and individual device (we could use the mac address for that). I have not tested like model computers to see if the uuid is an exact match. I do see references to that this field contains two parts the uuid and guid bits. We may need to parse those if I find that these numbers are not model specific.
 
@@ -410,8 +403,8 @@ dhcp-match=set:e6230,97,00:44:45:4c:4c:38:00:10:36:80:4e:c4:c0:4f:4a:58:31
 
 # Set the boot file name based on the matching tag from the vendor class (above)
 dhcp-boot=net:UEFI32,i386-efi/snponly.efi,,192.168.112.24
-dhcp-boot=net:UEFI,snponly.efi,,192.168.112.24
-dhcp-boot=net:UEFI64,snponly.efi,,192.168.112.24
+dhcp-boot=net:UEFI,secureboot/snponly-shimx64.efi,,192.168.112.24
+dhcp-boot=net:UEFI64,secureboot/snponly-shimx64.efi,,192.168.112.24
 
 # Our test to ensure both the UEFI and e6230 tags are set. 
 dhcp-boot=tag:UEFI,tag:e6230, intel.efi, 192.168.112.24, 192.168.112.24

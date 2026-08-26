@@ -349,12 +349,29 @@ machine.
 `--no-secure-boot` is remembered in `.fogsettings`, so an upgrade will not
 hand back a key and a `sudoers` rule you deliberately declined.
 
->[!warning] The signing key is never regenerated, and that is deliberate
+>[!warning] The signing key is never regenerated on its own, and that is deliberate
 >A new signing key silently invalidates enrollment on **every machine that
 >already trusted the old one**, and nothing reports that until a client fails
->to boot — long after the install that caused it. `--recreate-keys` and
->`--recreate-CA` deliberately do not touch it. To rotate deliberately, remove
->the directory and re-run the installer, then re-enroll every client.
+>to boot — long after the install that caused it. So re-running the installer
+>reuses what is already there, and `--recreate-keys` does not reach the Secure
+>Boot zone.
+>
+>**`--recreate-CA` does.** It removes the root CA and every intermediate
+>beneath it, this zone included — an intermediate orphaned by a new root would
+>chain to nothing — so the Secure Boot authority comes back as a *different*
+>certificate and every enrolled machine has to enroll again. Do not reach for
+>that flag to fix an unrelated web-certificate problem on a server with Secure
+>Boot clients.
+>
+>To rotate on purpose, remove only what you mean to: `leaf/` to re-issue the
+>signing certificate with no client-side work, or the whole
+>`/opt/fog/pki/secureboot/` tree to mint a new authority and re-enroll
+>everything. Then re-run the installer.
+
+>[!tip] Migrating this server?
+>Copy `/opt/fog/pki/` forward, or already-enrolled clients need enrolling a
+>second time for no reason — see
+>[[migrating-fog-server#migrating-the-secure-boot-signing-material|Migrating the Secure Boot signing material]].
 
 The material lives under `/opt/fog/pki/secureboot/`: the enrolled authority in
 `ca/` and the signing certificate in `leaf/sign.{key,pem}`, private keys `0600`

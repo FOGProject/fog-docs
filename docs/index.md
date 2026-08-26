@@ -38,8 +38,9 @@ Follow these in order for a first install:
 3. [[install-fog-server|Install Fog Server]]
 4. [[install-fog-client|Install Fog Client]]
 5. [[installation/network-setup/index|Network Setup]] (if FOG isn't hosting your DHCP)
-6. [[capture-an-image|Capture an Image]]
-7. [[deploy-an-image|Deploy an Image]]
+6. [[secure-boot-netboot|Moving to Secure Boot]] (recommended for any UEFI fleet, whether or not Secure Boot is on yet)
+7. [[capture-an-image|Capture an Image]]
+8. [[deploy-an-image|Deploy an Image]]
 
 ## Documentation Sections
 
