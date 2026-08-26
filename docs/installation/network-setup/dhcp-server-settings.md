@@ -50,12 +50,16 @@ simply enter this file name into the dhcp setting):
 > The signed chain boots identically whether Secure Boot is enabled or not — a
 > DHCP request cannot report Secure Boot state, and nothing here needs it to.
 > Pointing every 64-bit UEFI client at the shim covers the Secure Boot machines
-> and costs the others nothing, so there is no reason to configure the unsigned
+> and costs the others nothing, so there is no reason to configure the other
 > names first and migrate later. See [[secure-boot-netboot|Moving to Secure Boot]]
 > for the two steps end to end.
 
-If you are deliberately staying on the unsigned chain, these are the equivalents
-— the same iPXE builds without the shim in front:
+The alternative is FOG's own builds, in the TFTP root rather than under
+`secureboot/`. These are the **same binaries FOG has always served**, and under
+Secure Boot they behave differently from the pair above: FOG signs them with
+*this server's* key, so a client has to have this server's certificate enrolled
+before it will load one at all. The `secureboot/` chain starts from a signature
+the firmware already trusts, which is why it is the default:
 
 * `snponly.efi` — 64-bit UEFI
 * `i386-efi/snponly.efi` — 32-bit UEFI (there is **no** signed 32-bit chain; see [[secure-boot-netboot#where-this-does-not-apply|Where this does not apply]])
@@ -263,7 +267,7 @@ Two fallbacks worth knowing about, both a DHCP-only change with nothing renamed
 server-side: swap `snponly-` for `ipxe-` (`secureboot/ipxe-shimx64.efi`) if the
 chain loads but the network never comes up, which points at the firmware's own
 UEFI SNP driver; or drop back to the plain `snponly.efi` / `arm64-efi/snponly.efi`
-if you want the unsigned chain.
+if you want FOG's own builds instead of upstream's signed pair.
 
 > [!note]
 > Apple Intel netboot (BSDP) is **not** supported by Kea. If you must netboot Intel Macs, keep those on an ISC-DHCP server (FOG's ISC config still includes the BSDP class).

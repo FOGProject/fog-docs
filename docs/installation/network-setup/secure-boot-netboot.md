@@ -3,7 +3,7 @@ title: Moving to Secure Boot
 aliases:
     - Moving to Secure Boot
     - Secure Boot Netboot
-description: The two changes that take a FOG install from unsigned netboot to UEFI Secure Boot -- the DHCP boot file, and enrolling FOG's certificate on the clients
+description: The two changes that let a FOG install netboot clients with UEFI Secure Boot enabled -- the DHCP boot file, and enrolling FOG's certificate on the clients
 context_id: secure-boot-netboot
 tags:
     - secure-boot
@@ -24,7 +24,7 @@ takes two changes, and this page is the short version of both:
 Everything else is already done for you.
 
 >[!tip] Setting up a new server? Do this from the start
->There is no reason to configure unsigned netboot first and migrate later. The
+>There is no reason to configure the other boot file first and migrate later. The
 >signed chain boots machines whether Secure Boot is on or off, so it is a fine
 >default for a fleet that has not enabled Secure Boot yet — and Step 2 can be
 >run across that fleet *before* enforcement ever begins.
@@ -277,11 +277,12 @@ has to enable it in each machine's firmware settings.
 
 ## Where this does not apply
 
-- **32-bit UEFI** (`i386-efi/`) — there is no Microsoft-signed 32-bit shim and
-  no signed 32-bit iPXE, so there is nothing signed to point such a client at.
-  These machines must have Secure Boot **disabled** to network boot. FOG hides
-  the enrollment menu entry from them rather than offering something that cannot
-  succeed.
+- **32-bit UEFI** (`i386-efi/`) — there is no Microsoft-signed 32-bit shim, so
+  there is no chain an ia32 client can start from a signature its firmware
+  already trusts, and no 32-bit MokManager to enroll one with either. These
+  machines must have Secure Boot **disabled** to network boot. FOG refuses
+  Secure Boot enrollment on them outright, and hides the enrollment menu entry,
+  rather than offering something that cannot succeed.
 - **BIOS / CSM** — Secure Boot does not exist in legacy mode. Leave
   `undionly.kkpxe` alone.
 - **HTTPS netboot with a private CA** — a signed binary cannot be rebuilt to
@@ -299,6 +300,7 @@ has to enable it in each machine's firmware settings.
 | Shim loads, iPXE starts, then no link or no DHCP | The firmware's own UEFI SNP driver | Change the DHCP boot file to `secureboot/ipxe-shimx64.efi` (arm64: `secureboot/arm64-efi/ipxe-shimaa64.efi`). DHCP-only change, nothing renamed server-side |
 | Signed iPXE loads, then the kernel is refused | Certificate not enrolled on that machine | Step 2 |
 | `secureboot/...` not found over TFTP | The binaries were never staged | Re-run the installer; see the note at the top of this page |
+| Boot worked before this change, fails now | The old name was FOG's own build, which your clients' firmware trusted via an enrolled MOK; the `secureboot/` chain starts from Microsoft's signature instead | Nothing to undo — this is the chain that needs *no* enrollment to load. If it still fails, the failure is at the kernel, which is Step 2 |
 
 Deeper detail — how `autoexec.ipxe` is resolved, how the kernels are signed, and
 how to verify a signature end to end — is in

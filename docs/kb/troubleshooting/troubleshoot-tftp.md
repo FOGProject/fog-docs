@@ -520,8 +520,9 @@ Option 067 should name one of these:
 
 The `secureboot/` names are the signed shim chain, and are the right value for
 every 64-bit UEFI client whether or not Secure Boot is enabled. `snponly.efi` and
-`arm64-efi/snponly.efi` are the unsigned equivalents if you are deliberately not
-using Secure Boot.
+`arm64-efi/snponly.efi` are FOG's own builds; under Secure Boot they need this
+server's certificate enrolled on the client first, which is why the
+`secureboot/` names are the better default.
 
 See [[dhcp-server-settings|DHCP Server Settings]] for the full option 066/067
 reference, and [[secure-boot-netboot|Moving to Secure Boot]] if you are switching

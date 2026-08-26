@@ -46,8 +46,8 @@ FOG 1.6 installer when it configures its own ISC/Kea DHCP server. Those files ar
 safe to hand to *every* 64-bit UEFI and ARM64 client, whether Secure Boot is on
 or off — see [Secure Boot and proxyDHCP](#secure-boot-and-proxydhcp) for why, and
 [[secure-boot-netboot|Moving to Secure Boot]] for the rest of the setup. The
-plain FOG 1.6 column is what to fall back to if you are deliberately staying on
-the unsigned chain.
+plain FOG 1.6 column names FOG's own builds, which under Secure Boot need this
+server's certificate enrolled before a client will load them at all.
 
 ## dnsmasq's Roles in FOG
 
@@ -281,7 +281,7 @@ Two details in that block that are easy to get wrong:
   for UEFI clients.** Keep the two in agreement; changing only one is the most
   common reason a boot-file change appears to do nothing.
 
-If you are staying on the unsigned chain deliberately, swap
+To serve FOG's own builds instead, swap
 `secureboot/snponly-shimx64.efi` back to `snponly.efi` and
 `secureboot/arm64-efi/snponly-shimaa64.efi` to `arm64-efi/snponly.efi` in both
 the `dhcp-boot` and `pxe-service` lines.

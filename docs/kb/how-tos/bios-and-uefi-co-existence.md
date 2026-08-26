@@ -44,8 +44,10 @@ work with these various architecture types. They are located in the
 > The signed chain is the right default for every 64-bit UEFI client, not just
 > the Secure Boot ones: it boots identically whether Secure Boot is enabled or
 > not. See [[secure-boot-netboot|Moving to Secure Boot]]. If you are deliberately
-> staying on the unsigned chain, use `snponly.efi` in its place. Only 32-bit UEFI
-> has no signed option at all — there is no Microsoft-signed 32-bit shim.
+> serving FOG's own build instead, use `snponly.efi` in its place — but note it
+> is signed with *this server's* key, so a Secure Boot client needs that
+> certificate enrolled before it will load. Only 32-bit UEFI has no option at
+> all: there is no Microsoft-signed 32-bit shim.
 >
 > ARM64 clients (arch `00011`, added after RFC 4578's table above) take
 > `secureboot/arm64-efi/snponly-shimaa64.efi`. None of the historical examples
