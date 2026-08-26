@@ -194,7 +194,8 @@ gh api --method POST /repos/FOGProject/fogproject/rulesets \
   "enforcement": "active",
   "conditions": { "ref_name": { "include": ["refs/heads/working-1.6"], "exclude": [] } },
   "bypass_actors": [
-    { "actor_id": 971767, "actor_type": "Integration", "bypass_mode": "always" }
+    { "actor_id": 971767, "actor_type": "Integration", "bypass_mode": "always" },
+    { "actor_id": 1, "actor_type": "OrganizationAdmin", "bypass_mode": "always" }
   ],
   "rules": [
     { "type": "pull_request", "parameters": {
@@ -229,6 +230,15 @@ Four things that will bite if they are skipped:
   that looks correct and bypasses nobody. For `fog-workflows` it is `971767`,
   as written above; read it back from
   `gh api orgs/FOGProject/installations --jq '.installations[]|"\(.app_id) \(.app_slug)"'`.
+- **The `OrganizationAdmin` bypass is a deliberate trade, not an oversight.** A
+  `pull_request` rule blocks direct pushes from *everyone*, maintainers
+  included -- rulesets do not exempt admins by default. Without this entry a
+  maintainer cannot push to `working-1.6` at all. With it, a maintainer can
+  also squash, rebase or push directly, any of which breaks the commit-count
+  prediction; that is precisely the "an admin bypassed the ruleset" case the
+  merge-time sync is retained to cover, so the failure mode stays churn rather
+  than a wrong version reaching a release. GitHub normalises this entry's
+  `actor_id` to `null` on read-back, which is expected.
 - **Confirm the seven check names against a real run before enabling.** They
   are `<caller job name> / <called job name>`, and a mistyped required check
   blocks every pull request permanently while looking like a workflow that
