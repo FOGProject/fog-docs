@@ -106,8 +106,8 @@ that CA issues day to day):
 | Path | What it is |
 |---|---|
 | `root/ca/.fogCA.{key,pem}` | The anchor. Key never regenerated, `0400 root:root`. |
-| `root/leaf/.srvprivate.key` | Symlink → `$sslpath/.srvprivate.key` |
-| `root/leaf/.srvpublic.crt` | Symlink → `$sslpath/.srvpublic.crt` |
+| `root/leaf/.srvprivate.key` | Symlink → `$PKI_client_cert_dir/.srvprivate.key` |
+| `root/leaf/.srvpublic.crt` | Symlink → `$PKI_client_cert_dir/.srvpublic.crt` |
 | `web/ca/.fogWebCA.{key,pem}` | Signs the vhost's certificate |
 | `web/ca/.fogWebCAchain.pem` | CA + web intermediate |
 | `web/leaf/.webLeaf.{key,pem}` | What the web server actually serves |
@@ -196,8 +196,8 @@ for the fleet-wide implications of that.
 
 Either invocation refuses, and tells you the exact path to restore, if the
 signing CA's private key isn't on this server. The web leaf invocation also
-refuses on an ACME-managed leaf (`acmeLeaf=yes`) — renew that one through
-your ACME client instead; see
+refuses on a leaf managed outside FOG — one whose canonical path resolves
+outside this zone directory. Renew that one through your ACME client instead; see
 [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]].
 
 Nothing here runs on a timer — wire it into your own cron if you want
@@ -229,12 +229,19 @@ Extend or narrow with:
 >installer verifies the leaf against its issuer after signing and names the
 >`rm -rf` that lets the CA be re-created with the new constraints.
 
-**On the Secure Boot CA the constraints are opt-out**, via
-`--no-sb-name-constraints`. They don't constrain anything that matters for
-code signing — a code-signing leaf carries no names anyone resolves — and
-they sit in the one certificate UEFI and shim actually parse. The flag
-exists so a fleet that rejects the chain is a re-issue of one intermediate,
-not a re-enrollment of every machine.
+**The Secure Boot CA carries no name constraints at all**, and since FOG 1.6
+there is deliberately no setting or flag to add them. They don't constrain
+anything that matters for code signing — a code-signing certificate carries no
+names anyone resolves — and they sit in the one certificate UEFI and shim
+actually parse, where a critical extension the firmware mishandles costs a
+physical trip to every machine.
+
+`--no-sb-name-constraints` used to make them opt-out, and was removed with the
+setting behind it: an opt-out put the safe answer behind a flag nobody passes
+until a fleet has already failed to boot. Existing servers keep whatever their
+Secure Boot intermediate already carries, since an intermediate is never
+re-minted. Constraints stay on the **Web** CA, where iPXE is a verifier FOG can
+patch and firmware is not.
 
 >[!note] A related trap, measured rather than assumed
 >OpenSSL applies DNS constraints to the subject **CN** when a certificate
@@ -297,11 +304,15 @@ reference fixed canonical paths. Those paths may be symlinks, so the real
 files can live wherever you keep certificates:
 
 ```bash
-sed -i "s|^sslprivkey=.*|sslprivkey='/etc/pki/fog/server.key'|" /opt/fog/.fogsettings
-./installfog.sh -Y
+ln -sf /etc/pki/fog/server.key /opt/fog/pki/web/leaf/.webLeaf.key
+ln -sf /etc/pki/fog/server.pem /opt/fog/pki/web/leaf/.webLeaf.pem
 ```
 
-Relocating a certificate then never means editing the vhost.
+Relocating a certificate then never means editing the vhost — or
+`.fogsettings`. The canonical path is what FOG recomputes and refers to every
+run, so pointing the *path* somewhere else does nothing; make the path
+**resolve** to your file instead. FOG reads the target, sees it is outside this
+zone, and leaves it alone.
 
 >[!note]
 >SELinux labels follow the symlink **target**, so a certificate outside the
@@ -348,7 +359,8 @@ an alternative that bypasses shim entirely, not the only route.
 
 Netboot stays on HTTP unless something asks otherwise, on fresh installs and
 existing servers alike. It moves to HTTPS when the web certificate is declared
-public (`publicWebCert`) or the rebuild is requested (`rebuildIpxeWithMyCA`).
+public (`PKI_web_cert_publicly_trusted`) or the rebuild is requested
+(`BOOT_rebuild_ipxe_with_my_ca`).
 A value FOG derived is re-derived on every run, so turning the trigger back off
 returns netboot to HTTP. Override either way with `--netboot-proto http|https`,
 which is remembered.
@@ -361,7 +373,7 @@ which is remembered.
 >certificate.
 
 >[!info] FOG 1.6
->The web/API-vs-netboot protocol split described above (`netbootproto`,
+>The web/API-vs-netboot protocol split described above (`BOOT_url_proto`,
 >`--netboot-proto`) is a FOG 1.6 addition, and its Nginx support is
 >unverified — see [Still unverified](#still-unverified).
 
@@ -394,7 +406,7 @@ unattended).
 ## Still unverified
 
 - **Nginx.** Vhost changes for this redesign (the managed-block splice, the
-  `netbootproto` redirect exclusion) have been exercised on Apache only.
+  `BOOT_url_proto` redirect exclusion) have been exercised on Apache only.
 - **Secure Boot with name constraints, on hardware.**
 - **Node certificate issuance against a real second machine.** The endpoint
   and the signing helper are each verified in isolation; the two halves

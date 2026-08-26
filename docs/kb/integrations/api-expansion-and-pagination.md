@@ -30,9 +30,11 @@ in the main [API](api.md) article:
     before. Scalar foreign keys (for example `imageID`) are always preserved —
     expansion **adds** an object alongside the key, it never replaces the key.
 
-All examples assume the API is enabled and you are sending the
-`fog-api-token` and `fog-user-token` headers (see
-[Authentication](api.md#authentication)).
+All examples assume the API is enabled and the request is authenticated. They
+show the `fog-api-token` + `fog-user-token` pair, which works on every version;
+on FOG 1.6 and newer you can send a single `Authorization: Bearer fog_<api token>`
+header instead and drop the other two. See
+[Authentication](api.md#authentication).
 
 ---
 

@@ -254,7 +254,7 @@ You want `OK`.
 >
 >```bash
 >sudo openssl x509 -noout -issuer \
->  -in "$(grep -oP "(?<=^sslpubcert=').*(?=')" /opt/fog/.fogsettings)"
+>  -in "$(grep -oP "(?<=^PKI_web_vhost_cert=').*(?=')" /opt/fog/.fogsettings)"
 >```
 >
 >`CN = FOG Web CA - <hostname>` here means the install worked and the problem is
@@ -262,7 +262,7 @@ You want `OK`.
 >sends the old one"* under [Troubleshooting](#troubleshooting). Anything else
 >means the install itself did not take.
 >
->Note the path comes from `sslpubcert`. `/opt/fog/snapins/ssl/.srvpublic.crt` is
+>Note the path comes from `PKI_web_vhost_cert`. `/opt/fog/snapins/ssl/.srvpublic.crt` is
 >the **client communication** certificate, a different zone, and it is *supposed*
 >to stay signed by the server's own CA — reading that one instead will convince
 >you a working setup is broken.

@@ -146,7 +146,7 @@ page.
 >A real Let's Encrypt certificate on the vhost does validate for iPXE
 >netboot with no FOG-side change, as this section claims. Getting there in
 >practice took two settings beyond just dropping the cert in place:
->`httpproto` in `.fogsettings` set to `https`, and `FOG_WEB_HOST` (in the
+>`WEB_url_proto` in `.fogsettings` set to `https`, and `FOG_WEB_HOST` (in the
 >FOG web UI's Settings page) set to the server's FQDN, not its IP address.
 
 ---
@@ -234,24 +234,28 @@ would mean owning its failure modes, its renewal scheduling, and its
 credential handling without adding anything those tools don't already do
 better.
 
-Point your ACME client's install/renew hook at the two paths FOG's vhost
-reads — `sslpubcert` and `sslprivkey` from `/opt/fog/.fogsettings` — and
-reload the web server afterward:
+Let your ACME client own its own directory, and then make FOG's canonical
+paths **resolve** there. That second step is what tells FOG the leaf is not
+its own:
 
 ```bash
 acme.sh --issue --server https://step-ca.internal/acme/acme/directory \
     -d fog.example.com --webroot /var/www/html
 acme.sh --install-cert -d fog.example.com \
-    --key-file       /opt/fog/pki/web/leaf/.webLeaf.key \
-    --cert-file      /opt/fog/pki/web/leaf/.webLeaf.pem \
-    --ca-file        /opt/fog/pki/web/ca/.fogWebCAchain.pem \
+    --key-file       /etc/ssl/fog-acme/fog.example.com.key \
+    --cert-file      /etc/ssl/fog-acme/fog.example.com.pem \
+    --ca-file        /etc/ssl/fog-acme/chain.pem \
     --reloadcmd      "systemctl reload httpd"     # apache2 on Ubuntu
 ```
 
-`--cert-file` (leaf only) maps to `sslpubcert`; `--ca-file` (intermediate
-only) maps to `sslcachain` — matching Apache's
-`SSLCertificateFile`/`SSLCertificateChainFile` split. Don't use
-`--fullchain-file` for `sslpubcert`, or the vhost ends up listing the
+```bash
+ln -sf /etc/ssl/fog-acme/fog.example.com.pem /opt/fog/pki/web/leaf/.webLeaf.pem
+ln -sf /etc/ssl/fog-acme/fog.example.com.key /opt/fog/pki/web/leaf/.webLeaf.key
+```
+
+`--cert-file` is the leaf only and `--ca-file` the intermediate only,
+matching Apache's `SSLCertificateFile`/`SSLCertificateChainFile` split.
+Don't point the leaf at `--fullchain-file`, or the vhost ends up listing the
 intermediate twice.
 
 Use a DNS-01 plugin instead of `--webroot` if you do not want to expose port
@@ -259,22 +263,22 @@ Use a DNS-01 plugin instead of `--webroot` if you do not want to expose port
 practical option for public Let's Encrypt on a server that is not publicly
 reachable.
 
-**Tell the installer to stop managing the leaf.** Add this to
-`/opt/fog/.fogsettings`:
+>[!important] Do not have your ACME client write straight to the canonical paths
+>It looks simpler and it silently reintroduces the exact failure this section
+>exists to prevent. FOG decides whether a leaf is its own by asking where the
+>canonical path *resolves*: a real file sitting at
+>`/opt/fog/pki/web/leaf/.webLeaf.pem` is inside FOG's own web zone, so FOG
+>concludes the leaf is its and re-issues it from the stored request — while your
+>ACME private key sits beside it. That is a mismatched pair and a web server
+>that will not start, and under `-y` there is nobody to notice.
+>
+>A symlink pointing out of the zone directory cannot be misread that way. This
+>replaces FOG 1.5's `acmeLeaf=yes`, which had to be typed in by hand and had
+>exactly this failure mode when it was forgotten. There is nothing to set now.
 
-```
-acmeLeaf=yes
-sslprivkey=/opt/fog/pki/web/leaf/.webLeaf.key
-sslpubcert=/opt/fog/pki/web/leaf/.webLeaf.pem
-sslcachain=/opt/fog/pki/web/ca/.fogWebCAchain.pem
-```
-
-Without it, the next `installfog.sh` run regenerates the leaf from a stale
-public key while the private key on disk is the one your ACME client
-installed — a certificate and key that don't match, and a web server that
-refuses to start. `--recreate-keys` and `--recreate-CA` deliberately
-override this marker, since both regenerate the keypair anyway and a
-self-signed pair is the correct fallback at that point.
+`--recreate-keys` and `--recreate-CA` deliberately override the symlinks,
+since both regenerate the keypair anyway and a self-signed pair is the
+correct fallback at that point.
 
 >[!note] This used to be a much sharper trap
 >Before FOG's certificate zones were separated, the web server's private

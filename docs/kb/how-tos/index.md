@@ -26,10 +26,14 @@ More advanced/situational guides:
 - [[deploy-dual-boot-multi-disk-image|Deploying a Dual-Boot Multi-Disk Image]]
 - [[add-extend-a-2nd-virtual-hdd|Add & Extend a 2nd Virtual HDD]]
 - [[post-download-scripts|Post Download Scripts]]
+- [[unify-certificates-across-fog-servers|Unify Certificates Across FOG Servers]]
+- [[lets-encrypt-setup|Set up Let's Encrypt on a FOG server]]
+- [[firewall|Firewall Ports]]
 
-UEFI Secure Boot:
+Secure Boot and booting without PXE:
 
-- [[secure-boot-netboot|Moving to Secure Boot]] — start here: the two changes, end to end
-- [[secure-boot-signing|Secure Boot signing]] — the concepts, and the signing key
-- [[secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B, with a human at the console
-- [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — Route C, unattended
+- [[secure-boot-netboot|Moving to Secure Boot]] — start here: the DHCP boot file, then enrolling
+- [[local-esp-boot|Boot FOG from a machine's own EFI System Partition]]
+- [[secure-boot-mok-enrollment|Secure Boot: MOK enrollment]]
+- [[secure-boot-setup-mode-enrollment|Secure Boot: Setup Mode enrollment]]
+- [[secure-boot-signing|Secure Boot: signing FOS with your own key]]

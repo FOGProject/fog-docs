@@ -102,8 +102,10 @@ at.
 ### ACME leaf
 
 The web leaf when it's sourced from an external ACME client (e.g.
-`acme.sh`) instead of FOG's own Web CA, flagged via `acmeLeaf=yes` in
-`.fogsettings`. See
+`acme.sh`) instead of FOG's own Web CA. FOG detects this rather than being
+told: the canonical path `PKI_web_vhost_cert` resolving outside the web zone
+directory *is* the signal, so there is nothing to set. FOG 1.5's `acmeLeaf=yes`
+flag is retired. See
 [[external-ca-lets-encrypt|External CA & Let's Encrypt]].
 
 ### Pinning (fog-client)

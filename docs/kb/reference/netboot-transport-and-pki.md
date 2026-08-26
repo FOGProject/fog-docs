@@ -49,7 +49,9 @@ vocabulary, see [[pki-glossary|PKI Glossary]].
 >Everything on this page is 1.6. In 1.5.x a single `httpproto` setting decided
 >the web protocol, the HTTP→HTTPS redirect and whether iPXE was recompiled, all
 >at once. Those are now separate settings, and the old behaviour of inferring one
->from another is gone.
+>from another is gone. Every setting on this page was also renamed in 1.6 — an
+>existing `.fogsettings` migrates itself on the first run. See
+>[[install-fogsettings#The 1.6 rename|The 1.6 rename]].
 
 ## The four install modes
 
@@ -80,32 +82,47 @@ no setting silently changes another:
 
 | Setting | Default | What it means |
 |---|---|---|
-| `httpproto` | `https` | The protocol FOG uses for its own **non-netboot** URLs |
-| `netbootproto` | `http` | The protocol iPXE uses to fetch `boot.php` |
-| `publicWebCert` | `no` | The web certificate chains to a **public** root |
-| `rebuildIpxeWithMyCA` | `no` | Recompile iPXE with your CA embedded in it |
-| `httpsRedirect` | `no` | Redirect HTTP to HTTPS, and send HSTS |
-| `acmeLeaf` | `no` | The leaf certificate is managed outside FOG |
+| `WEB_url_proto` | `https` | The protocol FOG uses for its own **non-netboot** URLs |
+| `BOOT_url_proto` | `http` | The protocol iPXE uses to fetch `boot.php` |
+| `PKI_web_cert_publicly_trusted` | `no` | The web certificate chains to a **public** root |
+| `BOOT_rebuild_ipxe_with_my_ca` | `no` | Recompile iPXE with your CA embedded in it |
+| `WEB_https_redirect` | `no` | Redirect HTTP to HTTPS, and send HSTS |
 
-Two of them are statements of fact about your certificate rather than
-instructions: `publicWebCert` says **what the certificate chains to**, and
-`acmeLeaf` says **who renews it**. They are different questions and all four
-combinations are real — an internal ACME server such as step-ca is
-`acmeLeaf=yes` with `publicWebCert=no`. Either one tells FOG the certificate was
-issued somewhere else, so FOG will neither re-issue it nor lock its private key
-away from whatever renews it.
+The `WEB_` and `BOOT_` prefixes are the point of the naming: they are separate
+namespaces precisely because "the web UI uses HTTPS" says nothing about how
+clients netboot, and parallel names in different categories make that
+independence visible in the file you edit.
+
+`PKI_web_cert_publicly_trusted` is a statement of fact about your certificate
+rather than an instruction — it says **what the certificate chains to**. It is
+never measured: FOG anchors its own CA in this server's trust store, so probing
+that store would report FOG's own leaf as trusted, which is exactly the case
+that does need the rebuild.
+
+**Who renews the certificate is a separate question, and it has no setting.**
+FOG asks the filesystem: when the canonical path `PKI_web_vhost_cert` resolves
+outside FOG's own web zone directory, the leaf belongs to something else, so FOG
+neither re-issues it nor locks its private key away from whatever renews it.
+Both answers are independent — an internal ACME server such as step-ca is an
+externally-renewed leaf with `PKI_web_cert_publicly_trusted='no'`. See
+[[install-fogsettings#Certificates FOG did not issue|Certificates FOG did not issue]].
 
 ### How the netboot protocol is decided
 
-1. If you passed `--netboot-proto`, that wins — and it is **remembered**, so a
-   later run without the option does not undo it.
-2. Otherwise it becomes `https` if **either** `publicWebCert=yes` **or**
-   `rebuildIpxeWithMyCA=yes`.
+1. If you passed `--netboot-proto`, that wins — and the fact that you forced it
+   is **remembered separately**, in `BOOT_url_proto_forced`, so a later run
+   without the option does not undo it.
+2. Otherwise it becomes `https` if **either**
+   `PKI_web_cert_publicly_trusted='yes'` **or**
+   `BOOT_rebuild_ipxe_with_my_ca='yes'`.
 3. Otherwise it is `http`.
 
 A value that FOG derived for you is re-derived on every run. That is deliberate:
 if you later turn off the thing that put netboot on HTTPS, netboot goes back to
-HTTP instead of outliving the reason it was there.
+HTTP instead of outliving the reason it was there. It is also why the forced flag
+is its own setting — when the derived answer and a deliberate override share one
+key, a value FOG worked out once becomes indistinguishable from one you chose,
+and goes on overriding the settings it was derived from.
 
 You may force `--netboot-proto https` with neither trigger set. It is allowed,
 and the installer warns you, because iPXE cannot be told to trust a private CA
@@ -218,7 +235,7 @@ or constrain it with `dNSName`/`iPAddress` subtrees only. See
 
 ## Why the HTTPS redirect is off by default
 
-`httpsRedirect` is not part of any mode, and no mode turns it on.
+`WEB_https_redirect` is not part of any mode, and no mode turns it on.
 
 Trust in FOG's own certificate authority reaches a client machine when
 **fog-client installs it into that machine's trusted root store**. On a fresh
