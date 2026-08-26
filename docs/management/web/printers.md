@@ -33,29 +33,25 @@ Setting up Printers With Fog Printer Management
     printer drivers must be stored in a public area, or included on the
     host computer.
 
--   
+-   This public area can be
 
-    This public area can be
+    -   a Novell Network share where public has read-only access,
+    -   a Windows share that is public read-only to everyone,
+    -   or a Samba share (possibly residing on the FOG server) that
+        is public read-only to everyone.
+    -   This share must be accessible via a UNC path as the service
+        may attempt to install the printers before drive mapping
+        occurs.
+    -   In this share the printer driver .inf file must exist.
 
-    :   -   a Novell Network share where public has read-only access,
-        -   a Windows share that is public read-only to everyone,
-        -   or a Samba share (possibly residing on the FOG server) that
-            is public read-only to everyone.
-        -   This share must be accessible via a UNC path as the service
-            may attempt to install the printers before drive mapping
-            occurs.
-        -   In this share the printer driver .inf file must exist.
+-   FOG supports installing:
 
--   
-
-    FOG supports installing:
-
-    :   -   IP based (Jet-Direct) printers,
-        -   public access NDS printers,
-        -   Local printers,
-        -   windows share based printers,
-        -   (and we think, but could use a confirmation as it hasn't
-            been tested) AD based printers.
+    -   IP based (Jet-Direct) printers,
+    -   public access NDS printers,
+    -   Local printers,
+    -   windows share based printers,
+    -   (and we think, but could use a confirmation as it hasn't
+        been tested) AD based printers.
 
 !!! note
 

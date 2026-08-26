@@ -55,14 +55,12 @@ picking a report from the left-hand menu.
 
 -   A FOG report is a simple php script that is processed by the server.
 
--   
+-   To import a report simply
 
-    To import a report simply
-
-    :   -   click on the **Upload a Report** button in the reports
-            section,
-        -   select the report then click on the upload button.
-        -   The report will then show up on the left-hand menu.
+    -   click on the **Upload a Report** button in the reports
+        section,
+    -   select the report then click on the upload button.
+    -   The report will then show up on the left-hand menu.
 
 !!! warning
 

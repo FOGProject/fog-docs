@@ -69,25 +69,23 @@ tags:
     partitions that has excessive free space to a smaller size where
     possible.
 
--   
+-   Each resizable partition will go through a "Resizing filesystem" process for each partition that is to be resized.
 
-    Each resizable partition will go through a "Resizing filesystem" process for each partition that is to be resized.
-
-    :   -   This process can take some time depending on how severe disk
-            fragmentation is.
-        -   The partitions that are shrank will be shrunk down to only
-            2GB of free space on their partition.
-        -   This allows an image taken from a 6TB drive with only 20GB
-            of used space to be deployable to a drive with a total
-            capacity of 25GB roughly.
-        -   When the partitions are laid onto the destination drive, all
-            resized partitions are intelligently expanded to utilize the
-            entire drive.
-        -   On FOS builds with [[lvm-imaging|LVM resize support]], Linux
-            LVM setups resize too — the logical volumes inside the
-            volume group are shrunk and expanded to fit the target disk,
-            so an all-LVM disk (EFI + LVM physical volume) works with
-            this image type.
+    -   This process can take some time depending on how severe disk
+        fragmentation is.
+    -   The partitions that are shrank will be shrunk down to only
+        2GB of free space on their partition.
+    -   This allows an image taken from a 6TB drive with only 20GB
+        of used space to be deployable to a drive with a total
+        capacity of 25GB roughly.
+    -   When the partitions are laid onto the destination drive, all
+        resized partitions are intelligently expanded to utilize the
+        entire drive.
+    -   On FOS builds with [[lvm-imaging|LVM resize support]], Linux
+        LVM setups resize too — the logical volumes inside the
+        volume group are shrunk and expanded to fit the target disk,
+        so an all-LVM disk (EFI + LVM physical volume) works with
+        this image type.
 
 #### Multiple Partition Image - Single Disk (Not Resizable)
 
@@ -106,18 +104,16 @@ tags:
 -   It is possible to backup NTFS drives with vendor specific
     'restore' partitions with this type of image.
 
--   
+-   It is possible to capture Linux systems with this type of image given the following criteria
 
-    It is possible to capture Linux systems with this type of image given the following criteria
-
-    :   -   There is a Grub boot loader present.
-        -   LVM setups are supported on FOS builds that include
-            [[lvm-imaging|per-LV LVM imaging]]; on older FOS builds LVM
-            must not be used.
-        -   The partitions include **ext2**, **ext3**, **ext4**,
-            **reiserfs**, and/or **swap**.
-        -   The swap partition should be moved out of the extended
-            partition
+    -   There is a Grub boot loader present.
+    -   LVM setups are supported on FOS builds that include
+        [[lvm-imaging|per-LV LVM imaging]]; on older FOS builds LVM
+        must not be used.
+    -   The partitions include **ext2**, **ext3**, **ext4**,
+        **reiserfs**, and/or **swap**.
+    -   The swap partition should be moved out of the extended
+        partition
 
 #### Multiple Partition Image - All Disks (Not Resizable)
 
@@ -126,34 +122,28 @@ tags:
 
 -   The partitions are NOT resizable by FOG.
 
--   
+-   If you only wanted a particular partition captured or drive captured in a multi-drive system, you can define the disk or partition you want within a "Single Disk - Resizable" or "Multiple Partition Image - Single Disk (Not Resizable)" type image.
 
-    If you only wanted a particular partition captured or drive captured in a multi-drive system, you can define the disk or partition you want within a "Single Disk - Resizable" or "Multiple Partition Image - Single Disk (Not Resizable)" type image.
-
-    :   -   This is done through the host's "General" area, in the
-            "Host Primary Disk" field.
+    -   This is done through the host's "General" area, in the
+        "Host Primary Disk" field.
 
 #### Raw Image (Sector By Sector, DD, Slow)
 
-!!! warning WARNING
+>[!warning]
+>This should always be the last resort.
 
-	This should always be the last resort.
 
+-   This takes an absolute exact copy of an entire disk and does not compress the data.
 
--   
-
-    This takes an absolute exact copy of an entire disk and does not compress the data.
-
-    :   -   i.e. If you take an image from a 6TB disk, the resultant
-            image will be 6TB in size.
+    -   i.e. If you take an image from a 6TB disk, the resultant
+        image will be 6TB in size.
 
 -   This image type also takes a **significant** amount of time to
     capture and deploy.
 
-!!! note
-
-    All of these image types can be deployed using multi-cast or unicast to
-    clients
+>[!note]
+>All of these image types can be deployed using multi-cast or unicast to
+>clients
 
 
 ### Partition
@@ -186,19 +176,17 @@ a great option to save image space and network transfer volume.
 
 ## Adding Existing Image objects
 
--   
+-   To restore an image to the FOG database:
 
-    To restore an image to the FOG database:
-
-    :   -   Create a new Image definition through the management browser
-        -   Specify image name (SampleXPImage)
-        -   Specify storage group (default)
-        -   Specify image file path (SampleXPImage)
-        -   Specify image type
-        -   Log into the box hosting FOG, and move/rename your image to
-            match browser input
-        -   Create hierarchy if necessary. FOG, by default, puts images
-            in /images/, so for the above example, you would need to
-            create a folder structure like so: /images/SampleXPImage
-        -   Drop your image file into the folder (be sure it's named
-            the same as image name above)
+    -   Create a new Image definition through the management browser
+    -   Specify image name (SampleXPImage)
+    -   Specify storage group (default)
+    -   Specify image file path (SampleXPImage)
+    -   Specify image type
+    -   Log into the box hosting FOG, and move/rename your image to
+        match browser input
+    -   Create hierarchy if necessary. FOG, by default, puts images
+        in /images/, so for the above example, you would need to
+        create a folder structure like so: /images/SampleXPImage
+    -   Drop your image file into the folder (be sure it's named
+        the same as image name above)

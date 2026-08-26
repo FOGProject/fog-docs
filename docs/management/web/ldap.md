@@ -382,7 +382,7 @@ Each LDAP server has its own **allow API** setting, which controls
 whether accounts authenticated through that server may use the
 [REST API](../../kb/integrations/api.md). A directory user's API token
 still carries only their role's permissions — see
-[[management/web/roles#api-tokens-follow-roles|API tokens follow roles]].
+[[management/web/roles#API tokens follow roles|API tokens follow roles]].
 
 ## Upgrade notes
 

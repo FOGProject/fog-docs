@@ -28,20 +28,18 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
 
 ### Method 1: Adding a new host via Full registration
 
--
+-   This is the preferred method, and maybe the easiest method for getting a host into the FOG database, but it requires you to visit the host.
 
-    This is the preferred method, and maybe the easiest method for getting a host into the FOG database, but it requires you to visit the host.
-
-    :   -   When at the client computer, during the boot up process when
-            you see the PXE/iPXE boot menu select **Perform Full Host
-            Registration and Inventory**.
-        -   During this phase you will be prompted for information about
-            the host like hostname, operation system, image, groups,
-            Product Key, and other information.
-        -   If you enter a valid operating system and image id, you will
-            be asked to Image Now.
-        -   If desired, you can set the task and it will deploy the
-            image on the next network boot.
+    -   When at the client computer, during the boot up process when
+        you see the PXE/iPXE boot menu select **Perform Full Host
+        Registration and Inventory**.
+    -   During this phase you will be prompted for information about
+        the host like hostname, operation system, image, groups,
+        Product Key, and other information.
+    -   If you enter a valid operating system and image id, you will
+        be asked to Image Now.
+    -   If desired, you can set the task and it will deploy the
+        image on the next network boot.
 
 -   After the requested information is entered, FOG will pull a quick
     hardware inventory the client.
@@ -50,7 +48,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
     wired only), serial number(if available in BIOS), Make/Model, and
     other Hardware information with the FOG server.
 
--   For more information on these commands please see: [[using-fog-boot-menu#Client Side Tasks]]
+-   For more information on these commands please see: [[management/fos/using-fog-boot-menu#Perform Full Registration and Inventory|Perform Full Registration and Inventory]]
 
 ### Method 2: Adding a new host via Quick Registration
 
@@ -77,21 +75,17 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
     is selected. (OS is now associated within the image so no need to
     select an OS)
 
-7.
+7.  Change **FOG_QUICKREG_SYS_NAME** to what you would like to name you new machines, where `*` will be replaced by a number.
 
-    Change **FOG_QUICKREG_SYS_NAME** to what you would like to name you new machines, where `*` will be replaced by a number.
+    -   If you would like to zero pad numbers you can use
+        **LAB300-**\*\* which would result with **LAB300-03** or
+        **LAB300-09**.
 
-    :   -   If you would like to zero pad numbers you can use
-            **LAB300-**\*\* which would result with **LAB300-03** or
-            **LAB300-09**.
+8.  Set **FOG_QUICKREG_SYS_NUMBER** to the first number you would like to use.
 
-8.
-
-    Set **FOG_QUICKREG_SYS_NUMBER** to the first number you would like to use.
-
-    :   -   After each registration the computer will automatically
-            image and the **FOG_QUICKREG_SYS_NUMBER** will incremented
-            by 1.
+    -   After each registration the computer will automatically
+        image and the **FOG_QUICKREG_SYS_NUMBER** will incremented
+        by 1.
 
 ### Method 3: Manually Adding
 
@@ -277,14 +271,10 @@ $subnets | ForEach-Object { # loop through each subnet
     wireless and other wired connections. Also, an additional MAC can
     also be added directly under the Host definition.
 
--
+-   These new MAC Addresses will need to be approved before FOG will take advantage of them.
 
-    These new MAC Addresses will need to be approved before FOG will take advantage of them.
-
-    :   1.  **Host Management** → **\[Selected Host\]**
- → *Additional MAC*
-        2.  **Fog Configuration** → **MAC Address List**
- → *Approve Pending Addresses*
+    1.  **Host Management** → **\[Selected Host\]** → *Additional MAC*
+    2.  **Fog Configuration** → **MAC Address List** → *Approve Pending Addresses*
 
 -   **Fog Configuration** → **MAC Address List** At this location
     you can also *"Update Current Listings"* giving updated

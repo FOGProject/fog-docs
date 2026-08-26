@@ -576,6 +576,7 @@ against the relevant page (an inline GitHub edit is fine) or a post on the
 
 ## See also
 
+- [[secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
 - [[secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — Route C, FOG 1.6
 - [[secure-boot-technical-details|Secure Boot technical details]] — serving the signed chain, signing kernels, signing your own FOS builds
