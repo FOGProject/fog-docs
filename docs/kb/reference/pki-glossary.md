@@ -45,7 +45,7 @@ impersonate anything outside it.
 
 The certificate the web server (Apache/nginx) actually presents to
 browsers. Rotatable on its own — see
-[[pki-zones#leaf-renewal|Leaf renewal]] — without touching the Web CA.
+[[kb/reference/pki-zones#leaf-renewal|Leaf renewal]] — without touching the Web CA.
 
 ### Secure Boot CA
 
@@ -88,7 +88,7 @@ recovering from one.
 root, used only for `FOGBase::certDecrypt()` — the encryption on
 fog-client's check-in handshake — never for TLS. Not replaceable by
 bringing your own CA; see
-[[pki-zones#bringing-your-own-ca|Bringing your own CA]].
+[[kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]].
 
 ### Fingerprint (aka thumbprint)
 

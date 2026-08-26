@@ -62,7 +62,7 @@ before it will load one at all. The `secureboot/` chain starts from a signature
 the firmware already trusts, which is why it is the default:
 
 * `snponly.efi` — 64-bit UEFI
-* `i386-efi/snponly.efi` — 32-bit UEFI (there is **no** signed 32-bit chain; see [[secure-boot-netboot#where-this-does-not-apply|Where this does not apply]])
+* `i386-efi/snponly.efi` — 32-bit UEFI (there is **no** signed 32-bit chain; see [[installation/network-setup/secure-boot-netboot#where-this-does-not-apply|Where this does not apply]])
 * `arm64-efi/snponly.efi` — ARM64 UEFI
 * `ipxe.efi` — the all-drivers build, for firmware whose own network stack does not work
 
@@ -293,7 +293,7 @@ This little powershell snippet will get all your dhcp server scopes and set opti
 > [!tip] Mixed BIOS/UEFI estate?
 > One scope-wide option 67 cannot serve both. Windows DHCP policies can match on
 > the PXE vendor class and hand each architecture its own boot file — there is a
-> ready-to-run version in [[secure-boot-netboot#windows-server-dhcp|Moving to Secure Boot]].
+> ready-to-run version in [[installation/network-setup/secure-boot-netboot#windows-server-dhcp|Moving to Secure Boot]].
 
 ```powershell
 #define your dhcp server hostname or ip

@@ -128,7 +128,7 @@ the machine, choose to trust. That is what
 >shim from the picture — sign whatever you like and the firmware loads it.
 >It is the only route if you need HTTPS netboot with FOG's own or your
 >internal CA under Secure Boot at the same time; see
->[[pki-zones#https-and-netboot|HTTPS and netboot]].
+>[[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]].
 
 ---
 
@@ -225,7 +225,7 @@ flowchart TD
 >do it **before** setting up Secure Boot here, not after. Migrating an
 >already-enrolled Secure Boot setup is a viable, well-understood path — copy
 >the `pki/secureboot/` directory forward, per
->[[migrating-fog-server#migrating-the-secure-boot-signing-material|that guide's Secure Boot section]]
+>[[installation/server/migrating-fog-server#migrating-the-secure-boot-signing-material|that guide's Secure Boot section]]
 >— but it is still one more thing to get right, and
 >getting it wrong means every already-enrolled client needs re-enrolling a
 >second time for no reason. Enrolling once, on the server you intend to keep,
@@ -426,7 +426,7 @@ any client**:
 
 This re-issues the leaf from the Secure Boot CA and re-signs the kernels.
 Nothing is re-enrolled in firmware, because what's enrolled is the CA, not
-this leaf — see [[pki-zones#secure-boot|Secure Boot]]. This is the case to
+this leaf — see [[kb/reference/pki-zones#secure-boot|Secure Boot]]. This is the case to
 reach for on a normal schedule; the two cases below are the disruptive ones.
 
 ### Switching to a key you supply

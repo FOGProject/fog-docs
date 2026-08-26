@@ -203,7 +203,7 @@ dnsmasq's only job is to get the client to TFTP-download the boot binary
 mode. Every UEFI binary FOG ships is built **without** its boot script compiled
 in, so iPXE fetches `autoexec.ipxe` from the TFTP root and runs that; the BIOS
 builds carry their script internally and ignore the file — see
-[[dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
+[[installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
 Either way the script chainloads `tftp://<fog_server_IP>/default.ipxe`, which in
 turn chainloads your FOG server's boot script over HTTP or HTTPS. Which of those
 two it is depends on `BOOT_url_proto`, not on how you reach the web interface —
@@ -267,7 +267,7 @@ is a superset: it covers the Secure Boot machines and costs the others nothing.
 ### The optimal configuration
 
 **It is the configuration already given above** — see
-[[proxy-dhcp#dns-masq-ltsp-settings|Dns Masq LTSP settings]]. That block points
+[[installation/network-setup/proxy-dhcp#dns-masq-ltsp-settings|Dns Masq LTSP settings]]. That block points
 every 64-bit UEFI and ARM64 client at the signed chain and leaves BIOS and
 32-bit UEFI on their unsigned binaries, which is the whole of it. There is no
 separate "Secure Boot config" to switch to.

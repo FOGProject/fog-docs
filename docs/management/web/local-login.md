@@ -42,7 +42,7 @@ in no position to go looking for a URL, and this is not one you would guess.
 ## Why it exists
 
 FOG can be configured to send everyone straight to an identity provider —
-see [[oidc#Sending everyone straight to the provider|Sending everyone straight to the provider]].
+see [[management/web/oidc#Sending everyone straight to the provider|Sending everyone straight to the provider]].
 On an install where every account lives at the provider, that is the right
 setting: FOG's password box cannot accept those credentials, so all it does
 is add a click.
@@ -83,7 +83,7 @@ An account can sign in here if it has a **local password**. In practice:
   in FOG sets a password, and signing into it through a provider later does
   not take that password away.
 - **Accounts FOG provisioned** (created on first sign-in by
-  [[oidc#Who is allowed in|Create Users On First Login]], or by
+  [[management/web/oidc#Who is allowed in|Create Users On First Login]], or by
   [[ldap|LDAP]]) — **no**. They are created with a random token nobody has
   ever seen, so there is no password to type. They can only be reached
   through the directory that made them.
@@ -165,7 +165,7 @@ provider that cannot help:
 - **A sign-in was refused.** The reason is shown on this page. Returning to
   a provider that just said no would be a loop.
 - **You logged out on an install that redirects to a provider, with
-  [[oidc#Signing out|Single Logout]] off.** Your provider session is still
+  [[management/web/oidc#Signing out|Single Logout]] off.** Your provider session is still
   alive, so the normal login page would sign you straight back in. You are
   signed out of FOG; you are still signed in at the provider.
 
@@ -177,7 +177,7 @@ page and the provider asks for credentials.
 
 - [[oidc|OpenID Connect Sign-in]] — the redirect setting this page exists
   to survive, and where to turn it on
-- [[oidc#Break-glass|OIDC break-glass rules]] — which accounts keep a local
+- [[management/web/oidc#Break-glass|OIDC break-glass rules]] — which accounts keep a local
   password
 - [[ldap|LDAP Authentication]] — the other directory FOG can provision
   accounts from
