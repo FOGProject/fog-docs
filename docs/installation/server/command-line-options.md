@@ -88,8 +88,15 @@ change the web root directory, or install to a non-default location.
                                   kernels for UEFI Secure Boot
               --secure-boot-cert  Certificate matching --secure-boot-key
                                   (both are required together)
-              --no-secure-boot    Do not generate a Secure Boot signing
-                                  key, and leave the FOS kernels unsigned
+              --secureboot-ca-cert  Your own Secure Boot intermediate: the
+                                  certificate enrolled in firmware. Pair it
+                                  with --secure-boot-key/--secure-boot-cert,
+                                  which name the code-signing leaf issued
+                                  from it
+              --no-secure-boot    Do not publish Secure Boot enrollment
+                                  material: no MOK.der, no PK/KEK/db.auth,
+                                  and no 'Enroll Secure Boot Key' menu entry.
+                                  Binaries are still signed
               --no-ca-trust       Do not add this server's CA to this
                                   server's own system trust store
 
@@ -149,29 +156,70 @@ at a single CA so one import covers all of them, see
 
 ## Secure Boot options
 
-Since FOG 1.6.0 the installer **generates a Secure Boot signing key by
+Since FOG 1.6.0 the installer **generates Secure Boot signing material by
 default** and signs the FOS kernels with it, so a stock server always has a
-certificate fingerprint to check and an enrollment kit to hand out. The three
-options above only matter if you want to change that:
+certificate fingerprint to check and an enrollment kit to hand out. The options
+above only matter if you want to change that:
 
 | Option | Use it when |
 | --- | --- |
-| *(none)* | The default. A key is generated at `/opt/fog/secureboot/` on first install and **reused, never regenerated**, on every later upgrade. |
-| `--secure-boot-key` + `--secure-boot-cert` | You already have a signing key you want FOG to use. Both are required together; the certificate may be PEM or DER. Your key is never overwritten. |
-| `--no-secure-boot` | You do not want a signing key or the root-only signing helper on this server. The FOS kernels are left unsigned. |
+| *(none)* | The default. A Secure Boot CA and a signing leaf are generated under `/opt/fog/pki/secureboot/` on first install and **reused, never regenerated**, on every later upgrade. |
+| `--secure-boot-key` + `--secure-boot-cert` | You have a code-signing **leaf** you want FOG to sign kernels with. Both are required together; the certificate may be PEM or DER. Your key is never overwritten. |
+| `--secureboot-ca-cert` | You want your own **enrolled** certificate — the one that goes into firmware — rather than FOG's generated CA. Pair it with the two options above, which name the leaf issued from it. Rotating the leaf then needs no re-enrollment. |
+| `--no-secure-boot` | You do not want this server publishing **enrollment** material. |
 
-`--no-secure-boot` is remembered in `.fogsettings`, so an upgrade will not
-hand back a key and a `sudoers` rule you deliberately declined.
+>[!warning] `--no-secure-boot` does not turn signing off
+>It declines *enrollment*, not *signing*. With it set there is no `MOK.der`, no
+>`PK`/`KEK`/`db.auth` blobs and no **Enroll Secure Boot Key** boot-menu entry —
+>but the Secure Boot CA is still minted and the FOS kernels are still signed.
+>That is deliberate: a signature is inert on a machine with Secure Boot off, so
+>signing costs nothing, while enrollment material is a decision.
+>
+>Earlier releases behaved as the name suggests and left the kernels unsigned.
+>If you are relying on that, check the fingerprint on
+>**FOG Configuration → Secure Boot** rather than assuming.
 
->[!warning] The generated key is never regenerated, and that is deliberate
->A new signing key silently invalidates enrollment on **every machine that
->already trusted the old one**, and nothing reports that until a client fails
->to boot — long after the install that caused it. `--recreate-keys` and
->`--recreate-CA` deliberately do not touch it. To rotate deliberately, remove
->`/opt/fog/secureboot/` and re-run the installer, then re-enroll every client.
+`--no-secure-boot` is remembered in `.fogsettings` (as `PKI_sb_enabled`), so an
+upgrade will not hand back enrollment material you deliberately declined.
 
-The private key lives at `/opt/fog/secureboot/MOK.key`, `0600` inside a `0700`
-directory owned by root. It is never copied into the web root and the web
-server cannot read it — see
-[[secure-boot-signing|Secure Boot: signing FOS with your own key]] for the
-full procedure and for what to do on each client.
+The two certificates are not the same thing, and this is the distinction that
+matters when something has to be rotated:
+
+| Path | What it is | If it changes |
+| --- | --- | --- |
+| `/opt/fog/pki/secureboot/ca/.fogSBCA.{key,pem,der}` | The Secure Boot CA — published as `MOK.der`, and the thing enrolled in firmware | **Every already-enrolled machine must be re-enrolled** |
+| `/opt/fog/pki/secureboot/leaf/sign.{key,pem}` | The code-signing leaf, issued by that CA — what actually signs kernels day to day | Nothing to re-enroll; clients trust the CA above it |
+
+Both private keys are `0600` inside a `0700` directory owned by root. Neither is
+ever copied into the web root, and the web server cannot read them.
+
+>[!warning] `--recreate-CA` destroys the Secure Boot CA
+>It removes the root CA and **every intermediate beneath it, the Secure Boot
+>zone included** — because an intermediate orphaned by a new root would produce
+>chains that verify against nothing. The Secure Boot CA is then re-issued as a
+>*different* certificate, so every machine that enrolled the old one must enroll
+>again, and nothing reports that until a client fails to boot.
+>
+>`--recreate-keys` is narrower and does **not** reach the Secure Boot zone.
+>
+>To rotate on purpose, remove only what you mean to: the `leaf/` directory to
+>re-issue the signing key with no client-side work, or the whole
+>`/opt/fog/pki/secureboot/` tree to mint a new CA and re-enroll everything. Then
+>re-run the installer.
+
+Migrating this server? Copy `/opt/fog/pki/` forward, or already-enrolled clients
+need enrolling a second time for no reason — see
+[[migrating-fog-server#migrating-the-secure-boot-signing-material|Migrating the Secure Boot signing material]].
+
+For the full procedure and what to do on each client, see
+[[secure-boot-signing|Secure Boot: signing FOS with your own key]],
+[[secure-boot-netboot|Moving to Secure Boot]] for the two-step version, and
+[[bringing-your-own-ca#secure-boot-zone|Bringing your own CA]] for the
+`--secureboot-ca-cert` recipe.
+
+>[!note] Pre-PKI installs
+>A server first installed before FOG's PKI zones existed has a flat
+>`/opt/fog/secureboot/` holding `MOK.key`/`MOK.pem`. The installer migrates it
+>into the zone tree above and leaves the old files untouched, so both paths may
+>exist — the ones under `pki/` are the live ones. See
+>[[pki-zones|FOG PKI Infrastructure]].
