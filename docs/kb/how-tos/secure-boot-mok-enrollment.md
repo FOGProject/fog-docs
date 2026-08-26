@@ -279,6 +279,7 @@ on throughout.
 
 ## See also
 
+- [[secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
 - [[secure-boot-signing|Secure Boot signing]] — start here for the concepts
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — the unattended, FOG 1.6-only alternative
 - [[secure-boot-technical-details|Secure Boot technical details]]

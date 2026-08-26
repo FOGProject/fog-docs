@@ -65,6 +65,19 @@ The firmware/shim mechanism that lets you enroll extra certificates a
 machine will trust, without needing Microsoft's sign-off. "The MOK" in
 conversation usually means whichever certificate is currently enrolled.
 
+### `db` (the firmware's signature database)
+
+The UEFI variable the **firmware** checks every image against, governed by
+`PK`/`KEK` above it. Distinct from `MokList` below, and the distinction
+decides whether a given boot path can see your certificate at all — see
+[[secure-boot-trust-stores|The two trust stores]].
+
+### `MokList`
+
+**Shim's** trust store, written by MokManager. Stored in a UEFI variable,
+but firmware never reads it: only shim does, which is why a MOK is inert on
+any boot path with no shim in the chain.
+
 ### MOK cert vs. signing cert
 
 The load-bearing distinction of the whole Secure Boot redesign. *MOK cert*

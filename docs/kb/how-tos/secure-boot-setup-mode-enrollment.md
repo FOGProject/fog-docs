@@ -43,7 +43,7 @@ split), start at [[secure-boot-signing|Secure Boot signing]].
 ## Running it
 
 Schedule the **Enroll Secure Boot Key** task exactly as in
-[[secure-boot-mok-enrollment#route-b-from-the-fog-boot-menu-no-operating-system-and-no-usb-stick|Route B]].
+[[secure-boot-mok-enrollment#route-b--from-the-fog-boot-menu-no-operating-system-and-no-usb-stick|Route B]].
 FOS decides which route to take by itself — it reads the firmware state
 at boot, and only takes this path if it finds Setup Mode. Anything else falls
 back to staging a MOK request, so scheduling the task against a mixed fleet
@@ -216,6 +216,7 @@ Full context, and what `db` enrolment unlocks beyond one machine, is in
 
 ## See also
 
+- [[secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
 - [[secure-boot-signing|Secure Boot signing]] — start here for the concepts
 - [[secure-boot-mok-enrollment|MOK enrollment]] — the human-at-the-console alternative, works on any release
 - [[local-esp-boot|Boot FOG from a machine's own ESP]] — where `db` enrolment removes the shim entirely
