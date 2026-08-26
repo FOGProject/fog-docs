@@ -100,6 +100,21 @@ node scripts/rtd-build.mjs --language fr -o /tmp/fr-site
     the sentence around the link instead. Worth grepping the built HTML for
     `[[` after adding links (`grep -o '\[\[' quartz/public/**/*.html`); the
     only legitimate hits are inside code blocks.
+  - **Escape the pipe inside a wikilink in a table cell**: `[[page\|Text]]`.
+    Markdown splits table cells on `|` before wikilinks are parsed, so an
+    unescaped one truncates the link and renders literally — same silent
+    failure as the wrapped-link case above, and the build does not warn.
+  - **A bare wikilink with an `#anchor` can drop the anchor.** It sometimes
+    resolves to the root `/{context_id}` permalink stub, which is a
+    `meta refresh` to a URL with no fragment, so the reader lands at the top
+    of the page. Path-qualified (`[[kb/reference/page#anchor|Text]]`) always
+    resolves to the real page — use it whenever a cross-page link carries an
+    anchor.
+  - **Anchors come from the slugified heading, and an em dash becomes a
+    double hyphen.** `## Route B — from the FOG boot menu` is
+    `#route-b--from-the-fog-boot-menu`. Nothing warns when an anchor misses;
+    the link renders and lands at the top. Grep the built HTML for the
+    `id="…"` you are targeting rather than deriving it by hand.
 - **Arrows in menu paths are the literal `→` character.** Quartz has no
   icon-shortcode support, so mkdocs-material's `:octicons-arrow-right-24:`
   renders as that raw text on the published page. All 76 occurrences were
