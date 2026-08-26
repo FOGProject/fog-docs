@@ -359,7 +359,7 @@ to set one of them, that guide predates FOG 1.6:
 | `FOG_installed` | Record | `1` once a first install has completed; lets later runs skip the full question set. Deliberately unquoted and numeric, to match the historical format |
 | `FOG_packages` | Record | What was installed on this box. Re-derived every run from the distribution package lists |
 | `FOG_git_path` | Record | Where the checkout is. Re-asserted from what the run actually resolved, so a moved or re-cloned tree cannot point `updatefog.sh` at a directory that is gone |
-| `FOG_update_channel` | Preference | Which channel this server tracks: `stable`, `staging` or `dev` |
+| `FOG_update_channel` | Preference | Which channel this server tracks: `stable`, `patches` or `beta`. The same word as the `FOG_CHANNEL` the server reports, in lowercase. The earlier spellings `staging` and `dev` mean `patches` and `beta`, and are still accepted so existing servers keep updating |
 | `FOG_program_dir` | Record | Where this install lives, so `grep FOG_program_dir .fogsettings` answers the question. Not a control — see [[install-fogsettings#Where the install lives\|Where the install lives]] |
 
 >[!warning] `FOG_os_id` changed meaning between 1.5 and 1.6
