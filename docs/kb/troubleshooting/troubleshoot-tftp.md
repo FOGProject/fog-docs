@@ -509,9 +509,23 @@ For ProxyDHCP users (dnsmasq), you should look to see what boot file is being ha
 
 For those that have inherited / upgraded a FOG server and are trying to use standard DHCP for 066 and 067, it's possible that ProxyDHCP might be running on your FOG server, and it's possible that ProxyDHCP is re-setting 067 on your network hosts to an incorrect value of pxelinux.0 which would cause this error.
 
-You should use either undionly.kpxe or undionly.kkpxe for BIOS booting for option 067, or use any of the .efi files inside of /tftpboot for UEFI booting.
+Option 067 should name one of these:
 
-Please see this article for more details about the various boot files available in fog: [Filename Information](https://wiki.fogproject.org/wiki/index.php?title=Filename_Information "Filename Information")
+| Client | Boot file |
+| --- | --- |
+| BIOS / legacy | `undionly.kkpxe` (or `undionly.kpxe` on older hardware) |
+| 32-bit UEFI | `i386-efi/snponly.efi` |
+| 64-bit UEFI | `secureboot/snponly-shimx64.efi` |
+| ARM64 UEFI | `secureboot/arm64-efi/snponly-shimaa64.efi` |
+
+The `secureboot/` names are the signed shim chain, and are the right value for
+every 64-bit UEFI client whether or not Secure Boot is enabled. `snponly.efi` and
+`arm64-efi/snponly.efi` are the unsigned equivalents if you are deliberately not
+using Secure Boot.
+
+See [[dhcp-server-settings|DHCP Server Settings]] for the full option 066/067
+reference, and [[secure-boot-netboot|Moving to Secure Boot]] if you are switching
+to the signed chain.
 
 ### Could not boot: Connection timed out ([http://ipxe.org/4c0a6035](http://ipxe.org/4c0a6035))
 

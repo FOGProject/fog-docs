@@ -26,3 +26,10 @@ More advanced/situational guides:
 - [[deploy-dual-boot-multi-disk-image|Deploying a Dual-Boot Multi-Disk Image]]
 - [[add-extend-a-2nd-virtual-hdd|Add & Extend a 2nd Virtual HDD]]
 - [[post-download-scripts|Post Download Scripts]]
+
+UEFI Secure Boot:
+
+- [[secure-boot-netboot|Moving to Secure Boot]] — start here: the two changes, end to end
+- [[secure-boot-signing|Secure Boot signing]] — the concepts, and the signing key
+- [[secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B, with a human at the console
+- [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — Route C, unattended

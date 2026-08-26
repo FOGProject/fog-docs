@@ -130,10 +130,11 @@ dhcp-vendorclass=UEFI,PXEClient:Arch:00007
 dhcp-vendorclass=UEFI64,PXEClient:Arch:00009
 
 # Set the boot file name based on the matching tag from the vendor class (above).
-# FOG 1.6 uses the snponly.efi (SNP driver) binaries for UEFI.
+# 64-bit UEFI and ARM64 get the signed shim chain, which boots the same whether
+# Secure Boot is on or off.
 dhcp-boot=net:UEFI32,i386-efi/snponly.efi,,<fog_server_IP>
-dhcp-boot=net:UEFI,snponly.efi,,<fog_server_IP>
-dhcp-boot=net:UEFI64,snponly.efi,,<fog_server_IP>
+dhcp-boot=net:UEFI,secureboot/snponly-shimx64.efi,,<fog_server_IP>
+dhcp-boot=net:UEFI64,secureboot/snponly-shimx64.efi,,<fog_server_IP>
 
 # PXE menu.  The first part is the text displayed to the user. 
 # The second is the timeout, in seconds.
@@ -156,8 +157,8 @@ pxe-prompt="Booting FOG Client", 1
 # right filename being offered. Naming the FOG server sends it to FOG's tftpd.
 # This option is first and will be the default if there is no input from the user.
 pxe-service=X86PC, "Boot to FOG", undionly.kkpxe, <fog_server_IP>
-pxe-service=X86-64_EFI, "Boot to FOG UEFI", snponly.efi, <fog_server_IP>
-pxe-service=BC_EFI, "Boot to FOG UEFI PXE-BC", snponly.efi, <fog_server_IP>
+pxe-service=X86-64_EFI, "Boot to FOG UEFI", secureboot/snponly-shimx64.efi, <fog_server_IP>
+pxe-service=BC_EFI, "Boot to FOG UEFI PXE-BC", secureboot/snponly-shimx64.efi, <fog_server_IP>
 
 dhcp-range=<fog_server_ip>,proxy
 ```
@@ -396,8 +397,8 @@ dhcp-match=set:e6230,97,00:44:45:4c:4c:38:00:10:36:80:4e:c4:c0:4f:4a:58:31
 
 # Set the boot file name based on the matching tag from the vendor class (above)
 dhcp-boot=net:UEFI32,i386-efi/snponly.efi,,192.168.112.24
-dhcp-boot=net:UEFI,snponly.efi,,192.168.112.24
-dhcp-boot=net:UEFI64,snponly.efi,,192.168.112.24
+dhcp-boot=net:UEFI,secureboot/snponly-shimx64.efi,,192.168.112.24
+dhcp-boot=net:UEFI64,secureboot/snponly-shimx64.efi,,192.168.112.24
 
 # Our test to ensure both the UEFI and e6230 tags are set. 
 dhcp-boot=tag:UEFI,tag:e6230, intel.efi, 192.168.112.24, 192.168.112.24
