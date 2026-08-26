@@ -148,7 +148,7 @@ make bin-arm64-efi/snponly.efi
 >orphaned script gets concatenated ahead of `init.xz`, so the kernel panics with
 >`VFS: Unable to mount root fs on "/dev/ram0"`. BIOS builds have no such path
 >and still embed. See
->[[dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
+>[[installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
 
 To embed a CA by hand, add it to either command:
 

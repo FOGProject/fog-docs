@@ -617,7 +617,7 @@ files are here" and "this code is running" stay separate decisions.
 ### Turning uploads on (admins)
 
 The admin-side walkthrough is on the
-[[plugins#Installing a plugin from an archive|Plugins page]]; the short version
+[[management/web/plugins#Installing a plugin from an archive|Plugins page]]; the short version
 is two independent switches, both required:
 
 1. `FOG_PLUGIN_UI_INSTALL_ENABLED` in **FOG Configuration → FOG Settings →

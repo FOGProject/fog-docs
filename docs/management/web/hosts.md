@@ -50,7 +50,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
     wired only), serial number(if available in BIOS), Make/Model, and
     other Hardware information with the FOG server.
 
--   For more information on these commands please see: [[using-fog-boot-menu#Client Side Tasks]]
+-   For more information on these commands please see: [[management/fos/using-fog-boot-menu#Perform Full Registration and Inventory|Perform Full Registration and Inventory]]
 
 ### Method 2: Adding a new host via Quick Registration
 

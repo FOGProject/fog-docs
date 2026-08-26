@@ -196,7 +196,7 @@ dnsmasq's only job is to get the client to TFTP-download the iPXE binary
 mode. Every UEFI binary FOG ships is built **without** its boot script compiled
 in, so iPXE fetches `autoexec.ipxe` from the TFTP root and runs that; the BIOS
 builds carry their script internally and ignore the file — see
-[[dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
+[[installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
 Either way the script chainloads `tftp://<fog_server_IP>/default.ipxe`, which in
 turn chainloads your FOG server's boot script over HTTP or HTTPS. Which of those
 two it is depends on `BOOT_url_proto`, not on how you reach the web interface —

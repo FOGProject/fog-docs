@@ -34,7 +34,7 @@ All examples assume the API is enabled and the request is authenticated. They
 show the `fog-api-token` + `fog-user-token` pair, which works on every version;
 on FOG 1.6 and newer you can send a single `Authorization: Bearer fog_<api token>`
 header instead and drop the other two. See
-[Authentication](api.md#authentication).
+[[kb/integrations/api#Authentication|Authentication]].
 
 ---
 

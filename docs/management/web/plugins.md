@@ -25,7 +25,7 @@ plugins written by other people.
 >[!info] FOG 1.6
 >Most of this page describes 1.6. The plugin system exists on 1.5.x too, but
 >the screens and what you can do with them are different enough that 1.5 has
->its own section: [[plugins#On FOG 1.5.x|On FOG 1.5.x]]. Enabling it is the
+>its own section: [[management/web/plugins#On FOG 1.5.x|On FOG 1.5.x]]. Enabling it is the
 >same on both.
 
 ## Turning the plugin system on
@@ -41,7 +41,7 @@ Plugins are off until you enable them.
 Reload the UI and a **Plugins** entry appears in the main menu — a puzzle piece
 on 1.6, a gear wheel on 1.5. On 1.6 that takes you to **Plugin Management**, a
 single list of every plugin FOG can see; on 1.5 it opens the first of three
-pages, described [[plugins#On FOG 1.5.x|below]].
+pages, described [[management/web/plugins#On FOG 1.5.x|below]].
 
 ## The Plugin Management list
 
@@ -215,7 +215,7 @@ running" stay separate decisions.
 
 ## The bundled plugins
 
-This is the 1.6 set. See [[plugins#The 1.5 plugin set|The 1.5 plugin set]] for
+This is the 1.6 set. See [[management/web/plugins#The 1.5 plugin set|The 1.5 plugin set]] for
 how it differs on the older line.
 
 | Plugin | What it does |
@@ -239,7 +239,7 @@ how it differs on the older line.
 >[!note] Access Control is gone
 >The Access Control plugin was replaced by native roles and permissions in
 >1.6. For what happens to plugin-era roles on upgrade, see
->[[roles#Upgrading from the Access Control plugin|Roles & Permissions]].
+>[[management/web/roles#Upgrading from the Access Control plugin|Roles & Permissions]].
 
 >[!note] Site is gone too, and for the same reason
 >Sites and per-site host visibility moved into 1.6 core, so there is no

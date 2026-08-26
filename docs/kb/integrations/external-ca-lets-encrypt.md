@@ -138,7 +138,7 @@ status. This assumes the booting client can reach `ca.ipxe.org`, which holds
 for most sites — outbound internet access is the common case, not the
 exception. Only on a fully air-gapped network does that fallback not fire,
 in which case FOG's own baked-in CA is what makes HTTPS boot work instead —
-see [[pki-zones#https-and-netboot|HTTPS and netboot]]. **fog-client remains
+see [[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]]. **fog-client remains
 the actual constraint on using public Let's Encrypt** — see the rest of this
 page.
 
@@ -175,14 +175,14 @@ Enable it with `--external-ca`, or answer the interactive prompt during install:
 >[!info] FOG 1.6 adds a per-zone equivalent
 >`--web-ca-cert`/`--web-ca-key`/`--web-ca-root` do the same thing under a
 >name that makes clear which zone they target — see
->[[pki-zones#bringing-your-own-ca|Bringing your own CA]]. `--external-ca`
+>[[kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]]. `--external-ca`
 >predates the zone split and has always effectively meant "the Web zone."
 >Whether both forms continue to coexist long-term isn't settled; treat
 >`--web-ca-*` as the currently-recommended form if it's available to you,
 >and `--external-ca` as the form to reach for otherwise. Either way, this
 >only replaces the **Web** zone — the Client Communication keypair is not
 >replaceable this way; see
->[[pki-zones#bringing-your-own-ca|Bringing your own CA]] for why.
+>[[kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]] for why.
 
 What the installer does with these files:
 
@@ -341,7 +341,7 @@ trust:
 
 - **Leaf renewal, same pinned CA** (the normal step-ca case, or FOG's own
   `renewal-helper --zone web` if you're not on an ACME-managed leaf — see
-  [[pki-zones#leaf-renewal|Leaf renewal]]): just drop the new leaf where the
+  [[kb/reference/pki-zones#leaf-renewal|Leaf renewal]]): just drop the new leaf where the
   web server reads it and reload the web server. Clients and iPXE are
   unaffected.
 - **Pinned CA (intermediate) changes** (public LE rotation, or you rotate
