@@ -44,13 +44,36 @@ when the third line says `true`. This split exists so:
 
 The formula per branch prefix:
 
-| Branch prefix | Channel | Version scheme |
+| Branch prefix | Channel written | Channel computed | Version scheme |
+|---|---|---|---|
+| `dev` (`dev-branch`) | *(none)* | Patches | `{tag base}.{commits since master}` |
+| `stable` | *(none)* | Stable | Same as `dev`, but counted from `dev-branch` instead of `HEAD` |
+| `working` (`working-1.6`) | Beta | Beta | `{branch suffix}.0-beta.{commits since master}` |
+| `feature` (`feature-*`) | Feature | Feature | `{branch suffix}.0-feature.{commits since master}` |
+| `rc` (`rc-*`) | Release Candidate | Release Candidate | `{branch suffix}.0-RC-{n}`, where `n` increments by 1 from whatever's currently committed |
+
+The two channel columns differ only for `dev` and `stable`, which compute a
+label that is never written — see the note below. The *computed* label matters
+anyway: it is what the sync commit message and the CI job summary say.
+
+**One vocabulary, shared with `FOG_update_channel`.** Since
+[fogproject#1279](https://github.com/FOGProject/fogproject/issues/1279) the
+channel label is the title-case form of the update channel a server tracks, so
+the value you configure and the value you read back are the same word:
+
+| Branch | `FOG_update_channel` | `FOG_CHANNEL` |
 |---|---|---|
-| `dev` (`dev-branch`) | *(none)* | `{tag base}.{commits since master}` |
-| `stable` | *(none)* | Same as `dev`, but counted from `dev-branch` instead of `HEAD` |
-| `working` (`working-1.6`) | Beta | `{branch suffix}.0-beta.{commits since master}` |
-| `feature` (`feature-*`) | Feature | `{branch suffix}.0-feature.{commits since master}` |
-| `rc` (`rc-*`) | Release Candidate | `{branch suffix}.0-RC-{n}`, where `n` increments by 1 from whatever's currently committed |
+| `stable` | `stable` | Stable |
+| `dev-branch` | `patches` | Patches |
+| `working-1.6` | `beta` | Beta |
+| `rc-*` / `feature-*` | *(none — not a track anyone follows)* | Release Candidate / Feature |
+
+`lib/common/functions.sh` owns the update-track half and `fog-version.sh` owns
+the label half; nothing else connects the two files, which is how they drifted
+apart in the first place. `tests/update-channel-vocabulary.test.sh` parses the
+`case` arms out of both and fails if they disagree. The retired spellings
+`staging` and `dev` still resolve, so existing servers keep updating — see
+[[install-fogsettings]].
 
 `dev-branch` and `stable` deliberately carry **no `FOG_CHANNEL` line at all**
 — a clean version string with no channel text, by design. This isn't an

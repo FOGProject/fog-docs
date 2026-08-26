@@ -34,8 +34,25 @@ To make network booting for several different client platforms possible you'd ha
 
 There are different files that come with FOG that are pre-configured to
 work with these various architecture types. They are located in the
-/tftpboot directory usually. Here is more information on them: [Filename
-Information](Filename_Information "wikilink")
+/tftpboot directory usually.
+
+> [!important] Which boot files the examples below use
+> The examples on this page have been brought up to the FOG 1.6 file names:
+> `undionly.kkpxe` for BIOS, `i386-efi/snponly.efi` for 32-bit UEFI, and
+> **`secureboot/snponly-shimx64.efi`** — the signed shim chain — for 64-bit UEFI.
+>
+> The signed chain is the right default for every 64-bit UEFI client, not just
+> the Secure Boot ones: it boots identically whether Secure Boot is enabled or
+> not. See [[secure-boot-netboot|Moving to Secure Boot]]. If you are deliberately
+> serving FOG's own build instead, use `snponly.efi` in its place — but note it
+> is signed with *this server's* key, so a Secure Boot client needs that
+> certificate enrolled before it will load. Only 32-bit UEFI has no option at
+> all: there is no Microsoft-signed 32-bit shim.
+>
+> ARM64 clients (arch `00011`, added after RFC 4578's table above) take
+> `secureboot/arm64-efi/snponly-shimaa64.efi`. None of the historical examples
+> below cover them; see [[dhcp-server-settings|DHCP Server Settings]] for a
+> current per-architecture reference.
 
 ## Using Linux DHCP
 
@@ -57,15 +74,15 @@ subnet definition and the following classes anywhere in the config:
 \
 `    if substring (option vendor-class-identifier, 15, 5) = "00000" {`\
 `        # BIOS client `\
-`        filename "undionly.kpxe";`\
+`        filename "undionly.kkpxe";`\
 `    }`\
 `    elsif substring (option vendor-class-identifier, 15, 5) = "00006" {`\
 `        # EFI client 32 bit`\
-`        filename   "ipxe32.efi";`\
+`        filename   "i386-efi/snponly.efi";`\
 `    }`\
 `    else {`\
 `        # default to EFI 64 bit`\
-`        filename   "ipxe.efi";`\
+`        filename   "secureboot/snponly-shimx64.efi";`\
 `    }`\
 `}`
 
@@ -99,27 +116,27 @@ be added by changing X.X.X.X and un-commenting the line.
      
         class "UEFI-32-1" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00006";
-        filename "i386-efi/ipxe.efi";
+        filename "i386-efi/snponly.efi";
         }
 
         class "UEFI-32-2" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00002";
-         filename "i386-efi/ipxe.efi";
+         filename "i386-efi/snponly.efi";
         }
 
         class "UEFI-64-1" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00007";
-         filename "ipxe.efi";
+         filename "secureboot/snponly-shimx64.efi";
         }
 
         class "UEFI-64-2" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00008";
-        filename "ipxe.efi";
+        filename "secureboot/snponly-shimx64.efi";
         }
 
         class "UEFI-64-3" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00009";
-         filename "ipxe.efi";
+         filename "secureboot/snponly-shimx64.efi";
         }
 
         class "Legacy" {
@@ -161,27 +178,27 @@ DNS Server. The range for this configuration is set to 10.0.0.20 through
      
         class "UEFI-32-1" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00006";
-        filename "i386-efi/ipxe.efi";
+        filename "i386-efi/snponly.efi";
         }
 
         class "UEFI-32-2" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00002";
-         filename "i386-efi/ipxe.efi";
+         filename "i386-efi/snponly.efi";
         }
 
         class "UEFI-64-1" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00007";
-         filename "ipxe.efi";
+         filename "secureboot/snponly-shimx64.efi";
         }
 
         class "UEFI-64-2" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00008";
-        filename "ipxe.efi";
+        filename "secureboot/snponly-shimx64.efi";
         }
 
         class "UEFI-64-3" {
         match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00009";
-         filename "ipxe.efi";
+         filename "secureboot/snponly-shimx64.efi";
         }
 
         class "Legacy" {
@@ -239,16 +256,16 @@ Here is an example of how this could be used to distingush between BIOS
 and UEFI. **Note: This will NOT work in proxy mode!!**
 
 `dhcp-match=set:bios,60,PXEClient:Arch:00000`\
-`dhcp-boot=`[`tag:bios,undionly.kpxe,x.x.x.x,x.x.x.x`](tag:bios,undionly.kpxe,x.x.x.x,x.x.x.x)`        # x.x.x.x = TFTP/FOG server IP`\
+`dhcp-boot=`[`tag:bios,undionly.kkpxe,x.x.x.x,x.x.x.x`](tag:bios,undionly.kkpxe,x.x.x.x,x.x.x.x)`        # x.x.x.x = TFTP/FOG server IP`\
 \
 `dhcp-match=set:efi32,60,PXEClient:Arch:00006`\
-`dhcp-boot=`[`tag:efi32,i386-efi/ipxe.efi,x.x.x.x,x.x.x.x`](tag:efi32,i386-efi/ipxe.efi,x.x.x.x,x.x.x.x)`   # x.x.x.x = TFTP/FOG server IP`\
+`dhcp-boot=`[`tag:efi32,i386-efi/snponly.efi,x.x.x.x,x.x.x.x`](tag:efi32,i386-efi/snponly.efi,x.x.x.x,x.x.x.x)`   # x.x.x.x = TFTP/FOG server IP`\
 \
 `dhcp-match=set:efibc,60,PXEClient:Arch:00007`\
-`dhcp-boot=`[`tag:efibc,ipxe.efi,x.x.x.x,x.x.x.x`](tag:efibc,ipxe.efi,x.x.x.x,x.x.x.x)`            # x.x.x.x = TFTP/FOG server IP`\
+`dhcp-boot=`[`tag:efibc,secureboot/snponly-shimx64.efi,x.x.x.x,x.x.x.x`](tag:efibc,secureboot/snponly-shimx64.efi,x.x.x.x,x.x.x.x)`            # x.x.x.x = TFTP/FOG server IP`\
 \
 `dhcp-match=set:efi64,60,PXEClient:Arch:00009`\
-`dhcp-boot=`[`tag:efi64,ipxe.efi,x.x.x.x,x.x.x.x`](tag:efi64,ipxe.efi,x.x.x.x,x.x.x.x)`            # x.x.x.x = TFTP/FOG server IP`
+`dhcp-boot=`[`tag:efi64,secureboot/snponly-shimx64.efi,x.x.x.x,x.x.x.x`](tag:efi64,secureboot/snponly-shimx64.efi,x.x.x.x,x.x.x.x)`            # x.x.x.x = TFTP/FOG server IP`
 
 ## Using Windows Server 2012 (R1 and later) DHCP Policy
 
@@ -287,10 +304,10 @@ done, click Ok, ok, ok to finish this part of the procedure.
 other UEFI architectures besides just \"PXEClient:Arch:00007\".
 
 \"PXEClient:Arch:00002\" and \"PXEClient:Arch:00006\" both should get
-\"i386-efi/ipxe.efi\" as their option 067 boot file.
+\"i386-efi/snponly.efi\" as their option 067 boot file.
 
 \"PXEClient:Arch:00008\", \"PXEClient:Arch:00009\", and
-\"PXEClient:Arch:00007\" should get \"ipxe.efi\" as their option 067
+\"PXEClient:Arch:00007\" should get \"secureboot/snponly-shimx64.efi\" as their option 067
 boot file.
 
 \"PXEClient:Arch:00007:UNDI:003016\" should get \"ipxe7156.efi\" this

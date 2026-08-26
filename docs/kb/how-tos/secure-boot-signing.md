@@ -360,15 +360,22 @@ password. Anyone holding the CA key can mint a new signer your machines will
 trust without re-enrolling; anyone holding the leaf key can sign a kernel,
 full stop.
 
->[!warning] The CA is never regenerated, on purpose
+>[!warning] The CA is never regenerated on its own — but `--recreate-CA` destroys it
 >Re-running the installer reuses the existing CA. A fresh CA silently
 >invalidates enrollment on **every machine that already trusted the old one**,
->and nothing surfaces that until a client fails to boot. `--recreate-keys` and
->`--recreate-CA` deliberately do not reach it. To rotate the CA on purpose,
->delete `pki/secureboot/`, re-run the installer, and re-enroll every client —
->see [Rotating or removing a key](#rotating-or-removing-a-key). Rotating just
->the *leaf* — the normal case — does not require any of this; see the same
->section.
+>and nothing surfaces that until a client fails to boot.
+>
+>`--recreate-keys` does not reach the Secure Boot zone. **`--recreate-CA`
+>does** — it removes the root CA and every intermediate beneath it, this zone
+>included, because an intermediate orphaned by a new root would chain to
+>nothing. The Secure Boot CA is re-issued as a different certificate, and every
+>enrolled machine has to enroll again. Do not reach for that flag to fix an
+>unrelated web-certificate problem on a server with Secure Boot clients.
+>
+>To rotate the CA on purpose, delete `pki/secureboot/`, re-run the installer,
+>and re-enroll every client — see
+>[Rotating or removing a key](#rotating-or-removing-a-key). Rotating just the
+>*leaf* — the normal case — does not require any of this; see the same section.
 
 ### Bringing your own key
 
