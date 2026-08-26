@@ -76,7 +76,7 @@ tags:
 >You **can** have many storage nodes in a storage group. You **can** have one master storage node in a storage group. You **can not** have more than one master storage node in a storage group. You **must have** one master storage node for replication to take place to other nodes in the group. **If** a master storage node is set, all captures **first** go to the master storage node of the storage group the image is assigned to; and are **then** replicated to other storage nodes.
 
 >[!note]
->Master node status also decides which node transmits a multicast session, so a site whose node is not a master cannot serve multicast locally even with the image replicated to it. If you multicast to more than one site, see [Multicast across multiple sites](multicast.md#multicast-across-multiple-sites).
+>Master node status also decides which node transmits a multicast session, so a site whose node is not a master cannot serve multicast locally even with the image replicated to it. If you multicast to more than one site, see [[management/web/multicast#Multicast across multiple sites|Multicast across multiple sites]].
 
 ## Including multiple PXE / TFTP servers
 

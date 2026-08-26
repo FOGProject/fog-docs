@@ -23,6 +23,7 @@ Reference material i.e. information on settings files, command line options, etc
 - [[pki-zones|FOG PKI Infrastructure]]
 - [[pki-glossary|PKI Glossary]]
 - [[bringing-your-own-ca|Bringing Your Own CA]]
+- [[secure-boot-trust-stores|Secure Boot: The Two Trust Stores]]
 - [[secure-boot-technical-details|Secure Boot Technical Details]]
 
 **Imaging internals**

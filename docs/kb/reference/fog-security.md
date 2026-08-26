@@ -47,7 +47,7 @@ The single highest-impact thing you can do is run FOG over HTTPS. You can enable
 it during installation; when enabled, the web server redirects HTTP to HTTPS
 and sends HSTS. Whether netboot itself also goes over HTTPS depends on which
 CA issued your web certificate — see
-[[pki-zones#https-and-netboot|HTTPS and netboot]] for the current behavior and
+[[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]] for the current behavior and
 trade-offs.
 
 FOG's certificates are split into independent zones (web, Secure Boot, and

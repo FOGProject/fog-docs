@@ -510,7 +510,7 @@ EOF
 > own environment before running it: `-Y` auto-accepts the installer's
 > *guessed* defaults (network interface, DHCP, HTTPS, hostname), which is
 > usually fine but worth confirming against the prompts documented in
-> [[install-fog-server#Installer Prompts|Install FOG Server]]; the `mysqldump`/`mysql`
+> [[installation/server/install-fog-server#Installer Prompts|Install FOG Server]]; the `mysqldump`/`mysql`
 > steps assume interactive, password-based MySQL auth and will need
 > adjusting if your servers use passwordless/socket auth or an external
 > database; and `-B fog` faithfully drops and recreates every table FOG

@@ -123,7 +123,7 @@ Two things make a user site-scoped:
 1. **They hold a role that is not full access.** A role granting
    **Administrator (full access)** bypasses site scoping entirely. A
    user with *no* role has no access at all and so is never scoped
-   either — see [Users without a role](roles.md#users-without-a-role).
+   either — see [[management/web/roles#Users without a role|Users without a role]].
 2. **They reach one or more sites**, through their own **Site
    Association**, through a role they hold, or through a user group
    they belong to.
@@ -199,7 +199,7 @@ edit will not see those tabs at all.
 
 ## The REST API respects sites
 
-Scoping applies to [API tokens](roles.md#api-tokens-follow-roles) the
+Scoping applies to [[management/web/roles#API tokens follow roles|API tokens]] the
 same way it applies to the web UI. A site-scoped user's token returns
 only in-scope hosts, users, groups and user groups from list and search
 endpoints, and is denied out-of-scope objects on single-object

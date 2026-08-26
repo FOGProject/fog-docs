@@ -24,16 +24,12 @@ tasks from the pxe menu (i.e. deploy/capture)
 
 All accounts are created under the **Users** section of the FOG Web UI.
 
--   
+-   To create a new account click on the "New User" button on the left hand side of the page.
 
-    To create a new account click on the "New User" button on the left hand side of the page.
+    -   All accounts must have a unique username, and a password.
 
-    :   -   
-
-            All accounts must have a unique username, and a password.
-
-            :   -   You can also give API access or a friendly display
-                    name
+        -   You can also give API access or a friendly display
+            name
 
 -   After filling in the required information click on the "Create
     User" button.
@@ -48,13 +44,11 @@ FOG accounts can be modified from within the users section.
 -   When a user is located, click on the username to get to the edit
     page
 
--   
+-   Make Changes to the General (name), password, or api settings.
 
-    Make Changes to the General (name), password, or api settings.
-
-    :   -   Hit **Update** to save changes
-        -   Use the tabbed navigation to find the general, password, and
-            api settings
+    -   Hit **Update** to save changes
+    -   Use the tabbed navigation to find the general, password, and
+        api settings
 
 ## Accounts that sign in through a directory
 

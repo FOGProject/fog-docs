@@ -255,7 +255,7 @@ the worker that handled your click.
 The same actions are available through the FOG API for scripting. Like any FOG
 API call, they need an authenticated request &mdash; an `Authorization: Bearer`
 API token, or the `fog-api-token` + `fog-user-token` pair. See
-[[api#Authentication]]:
+[[kb/integrations/api#Authentication]]:
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |

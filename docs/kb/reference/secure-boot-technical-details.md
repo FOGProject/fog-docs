@@ -219,6 +219,7 @@ is not being accepted. In order of likelihood:
 
 ## See also
 
+- [[secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
 - [[secure-boot-signing|Secure Boot signing]]
 - [[secure-boot-mok-enrollment|MOK enrollment]]
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]]

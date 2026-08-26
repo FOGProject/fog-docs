@@ -52,7 +52,7 @@ clearest example is **Plugins**, which has **View**, **Edit** and **Install**:
 They are separate on purpose. Switching on code an administrator already chose
 to put on the server, and adding new code to it, are different authorities —
 so a role that manages plugins does not thereby get to add one. See
-[[plugins#Installing a plugin from an archive|Plugins]].
+[[management/web/plugins#Installing a plugin from an archive|Plugins]].
 
 For example, a help-desk role might have full Host and Printer access
 plus the ability to view Images and start imaging tasks, but no access

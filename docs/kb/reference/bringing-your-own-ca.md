@@ -148,7 +148,7 @@ with any leaf issued under it afterward: reissue or rotate the leaf and no
 machine needs to be touched again — the same benefit FOG's own auto-generated
 key already gets automatically. Without `--secureboot-ca-cert`, doing this
 with your own CA means signing and publishing by hand: follow
-[[secure-boot-technical-details#signing-the-fos-kernels|signing the FOS kernels]]
+[[kb/reference/secure-boot-technical-details#signing-the-fos-kernels|signing the FOS kernels]]
 with `--addcert` added to the `sbsign` call, and enroll the CA's
 certificate rather than a leaf.
 
@@ -163,7 +163,7 @@ just becomes permanent once done.
 Nor does any of this extend to HTTPS. Kernel/shim trust and iPXE's TLS root
 store are two unrelated mechanisms — enrolling a CA here changes nothing
 about which HTTPS servers a Secure Boot client will fetch from. See
-[[pki-zones#https-and-netboot|HTTPS and netboot]].
+[[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]].
 
 >[!warning] Generate a fresh key — do not reuse the MOK you already have
 >If this machine has ever built a DKMS module, it already has a MOK, and it is
