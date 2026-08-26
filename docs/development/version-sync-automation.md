@@ -194,7 +194,7 @@ gh api --method POST /repos/FOGProject/fogproject/rulesets \
   "enforcement": "active",
   "conditions": { "ref_name": { "include": ["refs/heads/working-1.6"], "exclude": [] } },
   "bypass_actors": [
-    { "actor_id": 0, "actor_type": "Integration", "bypass_mode": "always" }
+    { "actor_id": 971767, "actor_type": "Integration", "bypass_mode": "always" }
   ],
   "rules": [
     { "type": "pull_request", "parameters": {
@@ -223,9 +223,12 @@ Four things that will bite if they are skipped:
 - **`bypass_actors` for the GitHub App is mandatory, not defensive.** A
   `pull_request` rule blocks direct pushes to the branch, and both the daily
   sweep and the merge-time sync push *directly* with the App token. Without a
-  bypass, every sweep run turns red the moment the ruleset goes active. Set
-  `actor_id` to the App's own id (`vars.FOG_WORKFLOWS_APPID`'s installation),
-  not the placeholder above.
+  bypass, every sweep run turns red the moment the ruleset goes active.
+  `actor_id` is the **App id**, not the installation id -- the two are
+  different numbers and the wrong one is accepted silently, leaving a ruleset
+  that looks correct and bypasses nobody. For `fog-workflows` it is `971767`,
+  as written above; read it back from
+  `gh api orgs/FOGProject/installations --jq '.installations[]|"\(.app_id) \(.app_slug)"'`.
 - **Confirm the seven check names against a real run before enabling.** They
   are `<caller job name> / <called job name>`, and a mistyped required check
   blocks every pull request permanently while looking like a workflow that
