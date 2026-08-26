@@ -371,7 +371,7 @@ hand back a key and a `sudoers` rule you deliberately declined.
 >[!tip] Migrating this server?
 >Copy `/opt/fog/pki/` forward, or already-enrolled clients need enrolling a
 >second time for no reason — see
->[[migrating-fog-server#migrating-the-secure-boot-signing-material|Migrating the Secure Boot signing material]].
+>[[installation/server/migrating-fog-server#migrating-the-secure-boot-signing-material|Migrating the Secure Boot signing material]].
 
 The material lives under `/opt/fog/pki/secureboot/`: the enrolled authority in
 `ca/` and the signing certificate in `leaf/sign.{key,pem}`, private keys `0600`

@@ -73,7 +73,7 @@ server.
 >
 >So this is not a conditional. The signed chain is a **superset** — it covers
 >the Secure Boot machines and costs the others nothing. The full reasoning is in
->[[proxy-dhcp#secure-boot-and-proxydhcp|Secure Boot and proxyDHCP]].
+>[[installation/network-setup/proxy-dhcp#secure-boot-and-proxydhcp|Secure Boot and proxyDHCP]].
 
 ### Windows Server DHCP
 
@@ -185,7 +185,7 @@ reference to copy from — see [[dhcp-server-settings|DHCP Server Settings]].
 ```
 
 A complete `kea-dhcp4.conf`, including the BIOS and 32-bit classes, is in
-[[dhcp-server-settings#dedicated-linux-dhcp-server-kea|DHCP Server Settings]].
+[[installation/network-setup/dhcp-server-settings#dedicated-linux-dhcp-server-kea|DHCP Server Settings]].
 Validate with `kea-dhcp4 -t /etc/kea/kea-dhcp4.conf` before restarting.
 
 ### dnsmasq / proxyDHCP
@@ -207,7 +207,7 @@ pxe-service=ARM64_EFI, "Boot to FOG", secureboot/arm64-efi/snponly-shimaa64.efi,
 >of the two. Change both and keep them in agreement.
 
 The complete file, with the architecture tags and the trailing-server-IP gotcha,
-is at [[proxy-dhcp#the-optimal-configuration|The optimal configuration]].
+is at [[installation/network-setup/proxy-dhcp#the-optimal-configuration|The optimal configuration]].
 
 ### Confirming it took
 
@@ -290,7 +290,7 @@ has to enable it in each machine's firmware settings.
   an FQDN needs no rebuild and keeps the signed shim; a private CA means either
   keeping netboot on HTTP or enrolling into `db` via Setup Mode. See
   [[netboot-transport-and-pki|Netboot Transport and PKI]] and
-  [[pki-zones#https-and-netboot|HTTPS and netboot]].
+  [[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]].
 
 ## If something goes wrong
 

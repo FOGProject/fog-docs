@@ -267,7 +267,7 @@ is a superset: it covers the Secure Boot machines and costs the others nothing.
 ### The optimal configuration
 
 **It is the configuration already given above** — see
-[[proxy-dhcp#dns-masq-ltsp-settings|Dns Masq LTSP settings]]. That block points
+[[installation/network-setup/proxy-dhcp#dns-masq-ltsp-settings|Dns Masq LTSP settings]]. That block points
 every 64-bit UEFI and ARM64 client at the signed chain and leaves BIOS and
 32-bit UEFI on their unsigned binaries, which is the whole of it. There is no
 separate "Secure Boot config" to switch to.
