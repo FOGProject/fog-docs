@@ -351,6 +351,7 @@ to set one of them, that guide predates FOG 1.6:
 | Setting | Kind | Meaning |
 |---|---|---|
 | `FOG_install_type` | Preference | `N` for a full server, `S` for a storage node |
+| `FOG_install_mode` | Preference | Which of the four `--install-mode` presets was chosen — `standard`, `http-only`, `public-cert` or `embed-ca` — or empty for a shape built from the individual transport options. Asked once and remembered, so the four-mode menu is not shown again on an upgrade. Any individual transport option clears it; see [[command-line-options#The four install modes\|The four install modes]] |
 | `FOG_os_id` | Record | `1` Redhat, `2` Debian, `3` Alpine (experimental), `4` Arch |
 | `FOG_os_name` | Record | The detected distribution family |
 | `FOG_install_lang` | Preference | Whether the extra language packs were installed |
@@ -374,11 +375,36 @@ to set one of them, that guide predates FOG 1.6:
 | `NET_interface` | Preference | The NIC FOG binds services to and takes its address from |
 | `NET_fog_server_ip` | Record | The server's **primary** address. Everything that needs "the FOG server" uses this |
 | `NET_subnet_mask` | Record | Netmask, used when FOG runs DHCP |
-| `NET_hostname` | Preference | The name put in the web certificate and the vhost. **This does not set your system hostname.** Change it with `--hostname` |
+| `NET_hostname` | Preference | The name put in the web certificate and the vhost. Change it with `--hostname`. **FOG will not rename a server that already has a hostname** — but if the machine has *none*, FOG sets this as its system hostname and adds it to `/etc/hosts`, because nothing can be issued a certificate without a name. See [[#No hostname set]] |
 
 Every *other* address on that interface is `PKI_san_ip_addresses`, and extra
 names this server answers to are `PKI_san_dns_names` — both under `PKI_` because
 they reach past certificates into the vhost and the maintenance allow list.
+
+#### No hostname set
+
+FOG 1.6 cannot install without a hostname. Every certificate it issues is issued
+*to a name*, so a machine that reports no hostname — or the kernel's literal
+default `(none)`, which is not the same thing as blank — has nothing to put in
+one. Earlier 1.6 builds failed late and unhelpfully here: the installer stopped
+the web server, aborted while generating certificates, and never restarted it,
+with nothing in the output mentioning a hostname.
+
+The installer now checks this before it starts, and rejects anything that cannot
+serve as a certificate name: blank, `(none)`, `localhost`, and IP addresses.
+
+- **Attended**, with no usable hostname: you are asked for one, and told why.
+- **Unattended** (`-y`, or piped), with no usable hostname and no `--hostname`:
+  it warns and uses `fogserver`, which every FOG certificate already covers.
+- **A bad value already in `.fogsettings`** is not carried forward silently —
+  you are asked again.
+
+In the no-hostname case *only*, FOG then sets that name as the machine's system
+hostname and adds it to `/etc/hosts`, because the installer verifies its own web
+tier by name and cannot do that if nothing resolves. A server that already has a
+hostname is never renamed, whatever names its certificate carries. If the
+hostname cannot be set — an unprivileged container, for instance — the install
+continues and tells you what to fix.
 
 ### `DHCP_` — FOG acting as a DHCP server
 
