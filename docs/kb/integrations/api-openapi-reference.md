@@ -40,6 +40,41 @@ Paste both exactly as the UI shows them. See [[api|API]] for the detail on why.
 
 The reference follows the light/dark toggle in the header along with the rest of the UI.
 
+## Code snippets for the call you just made
+
+Run a call with **Try it out** → **Execute** and a **Snippets** panel appears with the same request
+written several ways:
+
+| Tab | What it uses |
+|---|---|
+| cURL | `curl`, the form the rest of these pages quote |
+| cURL (PowerShell) | `curl.exe`, with PowerShell quoting and backtick continuations |
+| cURL (CMD) | `curl`, with Windows `cmd` quoting and caret continuations |
+| PowerShell | `Invoke-RestMethod`, headers in a hashtable and the body in a here-string |
+| Python | the [`requests`](https://requests.readthedocs.io/) library |
+| JavaScript | `fetch` |
+| Ruby | `net/http` from the standard library, so nothing needs installing |
+| PHP | the [cURL extension](https://www.php.net/manual/en/book.curl.php) |
+
+Each is the *actual* request — your server's address, the path with your parameters filled in, your
+headers, and the body you typed — so it can be pasted into a shell or a script and run as-is.
+
+> [!note] This list is likely to get shorter
+> Every generator that exists is on for now, so the set can be judged in use rather than in the
+> abstract. Expect some tabs to go — **cURL (PowerShell)** and **PowerShell** in particular answer
+> the same question in two different ways on purpose, so it is easy to see which one is worth
+> keeping.
+
+**cURL (PowerShell)** is Swagger UI's own, and despite the name it is a `curl.exe` command line
+rather than PowerShell. **PowerShell** is the one that uses the cmdlets. Either runs; the second is
+the one to build a script on — and for anything past a one-off,
+[FogApi](https://fogapi.readthedocs.io/en/latest/) is a PowerShell module built around this API and
+worth reaching for first.
+
+> [!warning] The snippet contains your token
+> Whatever you entered under **Authorize** is in the snippet, because it was in the request. Strip
+> it before pasting a snippet into a ticket, a chat, or a repository.
+
 ## The raw document
 
 Two paths serve the same document:
