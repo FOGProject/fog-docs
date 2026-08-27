@@ -83,16 +83,24 @@ The running example, `helloworld`, manages a trivial entity with a `name` and a
 - **Boot chain.** Every entry point loads `commons/base.inc.php` →
   `commons/init.php` → `LoadGlobals`, which sets the shared singletons
   (`FOGBase::$DB`, `$HookManager`, `$EventManager`, `$currentUser`).
-- **Autoloader.** `Initiator` scans `BASEPATH` recursively, adds every
-  directory containing a `*.{class,page,hook,event,report}.php` file to the PHP
-  `include_path`, then registers PHP's **default** `spl_autoload`. That default
-  autoloader **lowercases the class name** to find the file. So:
+- **Autoloader.** `Initiator` scans `BASEPATH` recursively, builds a
+  lowercased-basename → path map of every
+  `*.{class,page,hook,event,report,task}.php` file, and registers that ahead of
+  PHP's default `spl_autoload` (which stays registered as a fallback). Lookup
+  **lowercases the class name** to find the file. So:
 
   > **The filename must be `strtolower(ClassName)` + the suffix.**
   > `class HelloWorldManagement` ⇒ `helloworldmanagement.page.php`.
   > `class AddHelloWorldJS` ⇒ `addhelloworldjs.hook.php`.
 
   (Class names in code are PascalCase; the files on disk are all-lowercase.)
+
+  **That rule is about YOUR files.** Core is not found this way any more — it
+  lives under `packages/web/src/` and is reached by its fully qualified name.
+  See [§7a](#7a-class-names-and-the-fog-namespace), which is the one thing to
+  read before writing any class.
+
+  The filename rule is unchanged and still applies to every file you ship.
 - **Routing.** The whole UI is driven by `?node=<x>&sub=<y>&id=<n>`. `node` maps
   to a page class (`helloworld` → `HelloWorldManagement`, matched by its
   `public $node = 'helloworld'`), and `sub` maps to a method on it
@@ -192,7 +200,7 @@ existed keeps working untouched.
 ### 4.2 Model — `class/helloworld.class.php`
 
 ```php
-class HelloWorld extends FOGController
+class HelloWorld extends \FOG\Base\FOGController
 {
     protected $databaseTable = 'helloWorld';
     protected $databaseFields = [
@@ -214,11 +222,14 @@ The manager owns table creation and **schema evolution**. This is the most
 important part to get right, so it gets its own section (§5). The shape:
 
 ```php
-class HelloWorldManager extends FOGManagerController
+class HelloWorldManager extends \FOG\Base\FOGManagerController
 {
     public $tablename = 'helloWorld';
 
-    public function createSql() { return Schema::createTable(/* … */); }
+    public function createSql()
+    {
+        return \FOG\Items\Schema::createTable(/* … */);
+    }
 
     public function schema()
     {
@@ -230,7 +241,7 @@ class HelloWorldManager extends FOGManagerController
 
     public function install()
     {
-        $res = Schema::applyUpdates($this->schema(), 0);
+        $res = \FOG\Items\Schema::applyUpdates($this->schema(), 0);
         return $res['error'] === null;
     }
 }
@@ -238,7 +249,7 @@ class HelloWorldManager extends FOGManagerController
 
 ### 4.4 Page — `pages/helloworldmanagement.page.php`
 
-The page extends `FOGPage`, declares `public $node = 'helloworld'`, and sets the
+The page extends `\FOG\Base\FOGPage`, declares `public $node = 'helloworld'`, and sets the
 list columns in its constructor:
 
 ```php
@@ -285,12 +296,12 @@ public function addPost()
     try {
         // validate, then build + save the model …
         if (!$obj->save()) { $serverFault = true; throw new Exception(_('…')); }
-        $code = HTTPResponseCodes::HTTP_CREATED;
+        $code = \FOG\Router\HTTPResponseCodes::HTTP_CREATED;
         $msg  = json_encode(['msg' => _('…'), 'title' => _('…')]);
     } catch (Exception $e) {
         $code = $serverFault
-            ? HTTPResponseCodes::HTTP_INTERNAL_SERVER_ERROR   // 500 = our fault
-            : HTTPResponseCodes::HTTP_BAD_REQUEST;            // 400 = bad input
+            ? \FOG\Router\HTTPResponseCodes::HTTP_INTERNAL_SERVER_ERROR   // 500 = our fault
+            : \FOG\Router\HTTPResponseCodes::HTTP_BAD_REQUEST;            // 400 = bad input
         $msg  = json_encode(['error' => $e->getMessage(), 'title' => _('…')]);
     }
     http_response_code($code);
@@ -310,7 +321,7 @@ matching `*GeneralPost()` that mutates `$this->obj` before the shared `save()`.
 
 ### 4.5 Hooks — `hooks/*.hook.php`
 
-Each hook is a small class extending `Hook`, with `public $node`, that registers
+Each hook is a small class extending `\FOG\Base\Hook`, with `public $node`, that registers
 callbacks **in its constructor**. Use `registerInstalled()` — it applies the
 "only when this plugin is installed" guard for you and takes an ordered list of
 `[event, method]` pairs:
@@ -325,6 +336,32 @@ public function __construct()
     ]);
 }
 ```
+
+A listener may also be a **closure**, which is the shape the three
+authentication seams in §7 use — one callback, registered inline, no method to
+name:
+
+```php
+self::$HookManager->register('LOGIN_PAGE_PROVIDERS', function ($args) { /* ... */ });
+```
+
+Both shapes are supported and nothing else is: a bare function name and
+`[SomeClass::class, 'staticMethod']` are refused. Prefer `registerInstalled()`
+when a hook registers several callbacks, since it also carries the
+installed-plugin guard.
+
+**`$active` decides whether your callbacks run.** `Hook` inherits
+`public $active = true;` from `Event`, so you get it for free and only need to
+declare it if you want the hook off. It is read from the class's declared
+default when the file is loaded, and from the live property each time an event
+fires — so a hook is free to compute it in its constructor, and a plugin can
+turn one of its own hooks off. A closure obeys the `$active` of the hook it was
+written inside; a closure with no `$this` — a `static function`, or one created
+outside a hook — has no owner and always runs.
+
+> Before 1.6.0 a hook whose file path contained the string `plugins` was
+> force-activated regardless of its flag, so `$active` was decorative for every
+> plugin hook. See [ADR 0017](https://github.com/FOGProject/fogproject/blob/working-1.6/docs/adr/0017-hook-dispatch-contract.md).
 
 The example ships three hooks:
 
@@ -470,6 +507,318 @@ Global configuration lives in the `globalSettings` table.
 
 ---
 
+## 7a. Class names and the `FOG\` namespace
+
+**Read this before you write a class.** Core moved to PSR-4 under
+`packages/web/src/` and is now reachable **only by its fully qualified name**.
+Bare `FOGController`, `Host`, `Hook` no longer resolve to anything.
+
+### The rule
+
+**Stay in the global namespace. Reference core by its FQCN, with a leading
+backslash.** That is what every one of the bundled plugins does:
+
+```php
+class HelloWorld           extends \FOG\Base\FOGController {}
+class HelloWorldManager    extends \FOG\Base\FOGManagerController {}
+class HelloWorldManagement extends \FOG\Base\FOGPage {}
+class AddHelloWorldMenuItem extends \FOG\Base\Hook {}
+class HelloWorldHeartbeat  extends \FOG\Base\PluginTask {}
+```
+
+The names are **bucketed**, matching the directory they live in — there is no
+flat `FOG\Host`. The ones a plugin actually reaches for:
+
+| Bare name you used to write | Now |
+|---|---|
+| `FOGController` | `\FOG\Base\FOGController` |
+| `FOGManagerController` | `\FOG\Base\FOGManagerController` |
+| `FOGPage` | `\FOG\Base\FOGPage` |
+| `Hook` / `Event` | `\FOG\Base\Hook` / `\FOG\Base\Event` |
+| `PluginTask` | `\FOG\Base\PluginTask` |
+| `FOGBase` / `FOGCore` | `\FOG\Base\FOGBase` / `\FOG\Base\FOGCore` |
+| `Route` | `\FOG\Router\Route` |
+| `HTTPResponseCodes` | `\FOG\Router\HTTPResponseCodes` |
+| `Schema` | `\FOG\Items\Schema` |
+| `Authorization` | `\FOG\Auth\Authorization` |
+| `Host`, `Image`, `User`, `TaskType`, … | `\FOG\Items\<Name>` |
+| `HostManager`, `TaskTypeManager`, … | `\FOG\Managers\<Name>Manager` |
+
+A `use` import at the top of a global-namespace file works too, and is the
+better shape if you name a class many times:
+
+```php
+use FOG\Base\FOGController;
+
+class HelloWorld extends FOGController {}
+```
+
+Both are correct. The FQCN form is what the bundled plugins use, so copying one
+of them gets you the house style.
+
+### ⚠️ If you declare a namespace, you must alias yourself back
+
+The autoloader finds a **page, hook, event, report or task** by lowercasing the
+filename and expecting a class of that exact name. Those files are discovered,
+not imported — nothing ever writes their name in a `use` statement. So if you
+put one in your own namespace, the class FOG looks for does not exist and your
+page silently never registers.
+
+If you want a namespace, end each such file the way core's own `lib/pages/`
+files do:
+
+```php
+namespace Vendor\HelloWorld;
+
+class HelloWorldManagement extends \FOG\Base\FOGPage { /* ... */ }
+
+class_alias(__NAMESPACE__ . '\\HelloWorldManagement', 'HelloWorldManagement');
+```
+
+Model and manager classes are reached through `FOGBase::getClass('HelloWorld')`,
+which resolves by short name, so they have the same requirement.
+
+**The simplest correct answer is not to declare a namespace at all**, which is
+why none of the bundled plugins do.
+
+### What the failure looks like
+
+A bare core name does not fail quietly. `Initiator::autoload()` recognises it
+and writes one line before giving up:
+
+```
+FOG autoloader: "FOGController" is a core class and core is no longer aliased
+into the global namespace. Use FOG\Base\FOGController -- either as a `use`
+import or fully qualified. See ADR 0013.
+```
+
+and the request then dies with `Class "FOGController" not found`. The flat
+spelling gets its own line:
+
+```
+FOG autoloader: "FOG\Host" is not a class. Core is namespaced per bucket
+under src/; use FOG\Items\Host. See ADR 0013.
+```
+
+If a plugin written against an earlier 1.6 beta has stopped loading, that log
+line is why, and this section is the fix.
+
+### `get_class($this)` returns a namespaced name
+
+Unchanged advice, and still the one thing that bites plugins which *produce* a
+class name rather than consume one — comparing it to a literal, building a
+column name or an array key from it, putting it in a filename or a log line:
+
+```php
+// Wrong: 'FOG\Items\Host', and the comparison silently fails.
+if (get_class($obj) === 'Host') { /* ... */ }
+
+// Right: 'Host', namespaced or not.
+if (self::shortName($obj) === 'Host') { /* ... */ }
+```
+
+`FOGBase::shortName()` takes an object or a class-name string, strips any
+namespace prefix, and is a no-op on a name that has none.
+
+### History
+
+ADR 0013 originally kept a `class_alias()` in every core file re-exporting it
+into the global namespace, and called that alias the 1.6 plugin ABI. **All 202
+were deleted before 1.6.0 shipped and the ADR is amended accordingly** — there
+was no released 1.6 for the promise to have been made to, and carrying the shim
+through a major version bought compatibility with nothing.
+
+## 7b. Composer dependencies
+
+Your plugin may ship its own `vendor/`. Put it beside `config/`, exactly where
+`composer install` leaves it, and FOG registers it at boot:
+
+```
+<root>/helloworld/
+├── composer.json
+├── vendor/
+│   └── autoload.php               # FOG requires this if it is present
+├── config/
+...
+```
+
+Nothing else is needed — no hook, no manifest entry. Run `composer install` in
+your plugin directory, ship the resulting `vendor/` inside the archive, and
+your packages are autoloadable everywhere your plugin's PHP runs.
+
+Two rules make that safe.
+
+**Core wins.** Plugin loaders are registered last, after core's own Composer
+loader and after FOG's class map. A name core can resolve is resolved by core,
+whatever your `vendor/` contains.
+
+**One copy of a package, project-wide.** A plugin whose `vendor/` claims a
+namespace or class name already provided by core — or by a plugin that loaded
+earlier — is **refused**: its loader is unregistered and a line explaining why
+goes to the PHP error log. Only that plugin's vendored classes stop resolving;
+the rest of it, and the rest of FOG, keep working.
+
+This is not tidiness. Two plugins vendoring different majors of one package
+both declare the same class names, and whichever registered first wins — the
+other silently runs against a version it was never tested against. For an
+authentication or crypto library that is a security bug, so FOG makes it a
+loud failure instead.
+
+**What core provides, depend on rather than vendor:**
+
+| Package | Since | For |
+|---|---|---|
+| `firebase/php-jwt` | 1.6.0 | JWT decode and JWKS parsing |
+
+Declare it in your `composer.json` as usual and mark it `"replace"`-free — just
+do not commit your own copy into `vendor/`. If you need a version core does not
+ship, raise it with the project rather than working around it; a second copy is
+exactly what the refusal is there to stop.
+
+**Caveat.** Composer's `files` autoload runs the moment the file is required,
+so a package with side effects at load time may have executed before a refusal
+takes effect. Keep boot-time side effects out of vendored code you expect FOG
+to load.
+
+## 7c. Authentication extension points
+
+Three seams a plugin can use to add a way of signing in. Each is gated, and in
+every case **declaring nothing means denied** — none of them is a way to make
+something reachable by accident.
+
+### A route — `API_PLUGIN_ROUTES`
+
+```php
+self::$HookManager->register('API_PLUGIN_ROUTES', function ($args) {
+    $args['routes'][] = [
+        'name'       => 'oidcCallback',           // bare identifier
+        'method'     => 'GET',
+        'path'       => '/ext/oidc/callback',     // must be under /ext/
+        'handler'    => ['FOG\OidcRoutes', 'callback'],
+        'auth'       => 'public',                 // default 'required'
+    ];
+    $args['routes'][] = [
+        'name'       => 'oidcConfig',
+        'method'     => 'POST',
+        'path'       => '/ext/oidc/config',
+        'handler'    => ['FOG\OidcRoutes', 'saveConfig'],
+        'permission' => 'oidc.edit',              // required when not public
+    ];
+});
+```
+
+| Rule | Why |
+|---|---|
+| Path must start with `/ext/` | Core mints new top-level paths from its API class list, so today's free path is not tomorrow's. Under `/ext/` the two namespaces cannot meet |
+| Route name is registered as `ext:<name>` | The name is what the permission layer keys on; without a prefix a route called `status` would inherit core's "no check" |
+| `auth` is `'public'` only when it is exactly that string | A typo, or a truthy value someone thought meant "needs auth", must not open a route |
+| A public route must be a literal path | The unauthenticated test is an exact string match, so a path with `[i:id]` in it cannot be expressed there |
+| No `permission` and not public → **403**, not 404 | The route still registers, so you get a log line telling you what to declare instead of a silent miss |
+
+Registered after every core route, so a core path always matches first.
+
+### A session-less page node — `PAGE_EXEMPT_NODES`
+
+Every page node is permission-checked. That is right for a settings page and
+impossible for the page a visitor reaches *before* they have a session.
+
+```php
+self::$HookManager->register('PAGE_EXEMPT_NODES', function ($args) {
+    $args['nodes'][] = 'oidcstart';
+});
+```
+
+You may only exempt a node **nothing else owns**. A node that is in the
+permission registry — core's or another plugin's — is refused, because
+"exempt" and "check this permission" are contradictory instructions about the
+same node and the permissive one would win. Give the pre-authentication page a
+node of its own.
+
+### A login button — `LOGIN_PAGE_PROVIDERS`
+
+```php
+self::$HookManager->register('LOGIN_PAGE_PROVIDERS', function ($args) {
+    $args['providers'][] = [
+        'label' => _('Sign in with Acme'),
+        'url'   => '/fog/ext/oidc/start',
+        'icon'  => 'fa fa-key',
+    ];
+});
+```
+
+The start URL must be a **site-absolute path** or an **`https://` URL**.
+`javascript:`, `data:`, protocol-relative `//host` and plain `http://` are all
+refused — this is the one page every unauthenticated visitor sees. Label and
+icon are escaped; the icon is additionally restricted to plain class
+characters.
+
+### Turning a proven identity into a session — `establishSession($source)`
+
+Once your callback has proven who somebody is, hand the identity to FOG and
+**say how you proved it**:
+
+```php
+$user = self::getClass('User', $uid);
+$user->establishSession('oidc');
+```
+
+`$source` names the mechanism, not the account. It is recorded in the login
+history entry and kept in the session, where `User::sessionAuthSource()` reads
+it back. Two things need it: an audit that can distinguish an identity-provider
+sign-in from a local password one, and the break-glass rule that local password
+login keeps working when a provider is down — which has to be able to count
+sessions by how they were made.
+
+It is deliberately **not** the same thing as `users.uAuthSource`. That column is
+a property of the *account* and says which directory owns it; `$source` is a
+property of *this request*. An account owned by LDAP can still be signed in by
+something else, and that is exactly the case worth being able to see.
+
+Use a plain lowercase slug, up to 32 characters of `a-z0-9_-` starting
+alphanumeric — normally just your plugin's name. Anything else is recorded as
+`unknown` rather than passed through, because the value reaches an audit trail.
+Omitting the argument means `password`, so existing callers are unchanged.
+
+### What an auth plugin owes the install
+
+Three rules. The first two are enforced — you will get an exception, not a
+warning — and the third is a pattern you will get wrong by omission if nobody
+tells you it exists. All three are ADR 0014.
+
+**Only stamp `users.uAuthSource` on accounts you created.** Writing that column
+takes local password login away from the account (`User::passwordValidate()`
+refuses a local credential for any account carrying one). On an account you
+provisioned that is correct — its password is a token nobody has seen, and the
+stamp stops the leftover row becoming a login after your plugin is removed. On
+an account an admin created it silently removes their password, which is the
+thing an identity-provider outage has to fall back on. Both bundled plugins
+check: LDAP returns early for an account that exists and is not already its
+own, and OIDC stamps only what it provisioned itself.
+
+**`User::save()` can throw.** Core refuses a write that would leave nobody able
+to administer FOG without a directory — so the very first account you try to
+convert on a fresh install, which is usually `fog`, is exactly the one that
+will be refused. Let the exception reach the user with your own context added;
+do not catch and continue, because continuing means reporting a sign-in that
+did not happen.
+
+**Record what you granted, or you cannot take it back.** A directory is
+authoritative and is re-read on every login, so removing somebody from a group
+has to downgrade them next time. That needs an answer to "which of this user's
+roles are mine to remove?", and the two obvious answers are both wrong:
+
+- *Remove everything not currently granted* — silently revokes whatever an
+  admin attached by hand, and leaves no way to give a directory user anything
+  extra.
+- *Derive the managed set from your mapping tables* — deleting a mapping stops
+  the role being yours, so it is never taken away. Removing a mapping would
+  leave everyone who had it holding the role forever.
+
+So keep a per-user record of what you granted (`ldapUserGrant`,
+`oidcUserGrant`) and diff against **that**. It survives the mapping being
+deleted, which is the whole point. Write it *after* the user is saved — a
+just-provisioned account has no id before then.
+
 ## 8. Security & output conventions
 
 - **Output:** wrap every user-controlled value with `Initiator::e($value)` when
@@ -503,6 +852,83 @@ Global configuration lives in the `globalSettings` table.
 
 ---
 
+## 8a. Object scope — narrowing *which* objects a user reaches
+
+Permissions (§4.5) say what a user may **do**. Object scope says which objects
+they may do it **to**. Core owns the seam; sites are core's own answer to it,
+and your plugin can add its own boundary on any dimension you like — a
+department, a customer, a tenant.
+
+**Two halves, and you almost always want both.** A single-object check that
+holds while the list is unfiltered is not a boundary: the user is refused the
+host edit page and shown every host on the way to it, names, MACs and all.
+
+| Event | Asked | Answer by setting |
+|---|---|---|
+| `OBJECT_SCOPE_CHECK` | may this user reach object `id` of `node`? | `$arguments['allowed'] = false` |
+| `API_SCOPE_WHERE` | bound a list, as SQL | `$arguments['where'] = '<fragment>'` |
+| `API_SCOPE_IDS` | bound a list, as ids | `$arguments['ids'] = [1, 2, …]` |
+
+```php
+public function scopeWhere($arguments)
+{
+    if (!in_array($this->node, (array)self::$pluginsinstalled)) {
+        return;
+    }
+    // No acting user means no boundary. The service daemons and the boot
+    // endpoints reach the read routes with nobody logged in, and narrowing
+    // those to a department would break imaging rather than protect anything.
+    if (!self::$FOGUser || !self::$FOGUser->isValid()) {
+        return;
+    }
+    if ('host' !== $arguments['classname']) {
+        return;
+    }
+    // $idExpr is the caller's own id column, already quoted and qualified,
+    // so you need not know the table name or worry about ambiguity in a join.
+    $arguments['where'] = sprintf(
+        'EXISTS (SELECT 1 FROM `deptHosts` WHERE `dhHostID` = %s '
+        . 'AND `dhDeptID` IN (%s))',
+        $arguments['idExpr'],
+        implode(',', array_map('intval', $this->deptIDsFor(self::$FOGUser)))
+    );
+}
+```
+
+**Prefer `API_SCOPE_WHERE`.** It costs one expression whatever the fleet size.
+`API_SCOPE_IDS` reads every object the user may see into PHP on every request,
+and is only consulted when nothing answered the fragment event. Register both
+if you like — the fragment wins and the id list is not even asked for.
+
+**Mind the tri-states. They are not the same tri-state.**
+
+| | means "no boundary" | means "you may see nothing" |
+|---|---|---|
+| `API_SCOPE_WHERE` | leave `where` as `null` — **`''` is read as silence** | the literal fragment `'1=0'` |
+| `API_SCOPE_IDS` | leave `ids` as `null` | `[]` |
+
+The trap both ways round is that "unbounded" and "entitled to nothing" are both
+falsy. `if (!$ids)` is true for `null` *and* `[]`, so a listener or a caller
+written that way shows every object on the server to the one user entitled to
+none. Say `'1=0'`, never `''`.
+
+**What you cannot do.** Composition is deny-wins: core ANDs your fragment onto
+its own and intersects your id list with its own, so you can only ever
+**narrow**. You cannot grant a user an object core denies them — otherwise any
+plugin could hand out another site's hosts by answering an event. A global `*`
+holder is exempt from your boundary exactly as they are from core's.
+
+**Don't read through `getIds()`/`getNames()` inside a listener** to compute your
+boundary. Those are scoped reads, so they arrive back at your own listener; core
+guards the re-entry and answers the nested read with its own boundary alone, but
+you will get an answer you did not expect. Query your tables directly, as the
+example above does.
+
+Full reasoning, including why the events kept their `API_` prefix now that they
+fire for page routes too: [ADR 0006](https://github.com/FOGProject/fogproject/blob/working-1.6/docs/adr/0006-site-object-scope-boundary.md).
+
+---
+
 ## 9. Common hook events
 
 | Event | Purpose |
@@ -515,6 +941,9 @@ Global configuration lives in the `globalSettings` table.
 | `PERMISSION_REGISTRY_DATA` | register the node and its actions — **required**, see §4.5 |
 | `API_VALID_CLASSES` | expose the node over the REST API (name classes after your permission node — see §4.5) |
 | `API_SENSITIVE_FIELDS` | keep credential columns out of API and boot-endpoint output — see §8 |
+| `OBJECT_SCOPE_CHECK` | deny **one** object the acting user would otherwise reach — see §8a |
+| `API_SCOPE_WHERE` / `API_SCOPE_IDS` | bound a **list** to the objects the acting user may see — see §8a |
+| `API_SERVER_OWNED_FIELDS` | refuse API writes to columns your own code maintains — see §8 |
 | `<NODE>_ADD_FIELDS` / `_GENERAL_FIELDS` | let others extend your forms |
 | `<NODE>_ADD_POST` / `_EDIT_POST` / `_ADD_SUCCESS` / `_ADD_FAIL` | extension points around your saves |
 
@@ -527,6 +956,14 @@ Fire your own events with `&`-by-reference args so listeners can mutate them
 
 - **`CREATE TABLE IF NOT EXISTS` never alters a live table.** Add columns via a
   new `schema()` step, not by editing `createSql()`.
+- **Core is FQCN-only.** `extends FOGController` is a fatal error, not a
+  deprecation — see §7a. The autoloader logs one line naming the class and the
+  name to use before the request dies, so check the error log first.
+- **A namespace of your own means aliasing yourself back.** Pages, hooks,
+  events, reports and tasks are found by filename and must declare exactly that
+  class name in the global namespace. Put one in a namespace without a
+  `class_alias()` and it never registers — no error, the feature simply is not
+  there. §7a has the shape. Not declaring a namespace avoids the whole question.
 - **Filename = `strtolower(ClassName)` + suffix.** A mismatch means the class
   won't autoload. Silently, for most classes — but not for your manager:
   install refuses outright if `class/<name>manager.class.php` exists and does
@@ -644,13 +1081,21 @@ on disk and adding new executable code to the server are different authorities.
 - **`helloworld`** — this guide's minimal, complete CRUD example.
 - **`subnetgroup`** — a clean real CRUD plugin (model→class relationship,
   Export/Import, `schema()`).
-- **`site`** — a five-table plugin, and the reference for object scoping via
-  `OBJECT_SCOPE_CHECK`. Its `schema()` shows how to retire a table you shipped
-  (steps are immutable: step 3 creates it, step 4 drops it).
 - **`persistentgroups`** — a plugin that is nothing but a `schema()` closure
   step (it installs a MySQL trigger). No page, no model, no hooks: proof that
   none of those are mandatory.
 - **`ldap`** — authentication/integration plugin (custom hooks beyond CRUD).
+- **`oidc`** — the reference for §7c. A plugin that adds a *route* rather than
+  a resource, contributes a login button, and turns a proven identity into a
+  session. Also a six-table plugin: provider, identity links, groups, two
+  association tables and the grant record.
+
+>[!note] `site` used to be listed here
+>It was the reference for `OBJECT_SCOPE_CHECK`, but sites and per-site host
+>visibility moved into 1.6 core, so there is no `site` plugin to read any more.
+>The seam it demonstrated is still a plugin seam and is documented in §8a; the
+>enforcement now lives in core's `Authorization`. See
+>[[site-scoping|Site Scoping]].
 
 When in doubt, copy the closest existing plugin and adapt it — the conventions
 above are followed consistently across all of them.
