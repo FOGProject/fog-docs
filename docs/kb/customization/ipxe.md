@@ -16,6 +16,11 @@ See [[using-fog-boot-menu|Using the FOG Boot Menu]] for the built-in commands
 available at the boot prompt without any customization — this page covers
 adding your own custom entries and background on top of that.
 
+The entries below are static, but they do not have to be:
+[[ipxe-menu-variables|iPXE Menu Variables]] lists what FOG sets in the boot
+script before the menu is drawn, so one entry can adapt itself to the machine
+reading it — `${hostname}`, `${primac}`, the host's inventory, and more.
+
 ## Custom Background
 
 You can add a custom picture background.
