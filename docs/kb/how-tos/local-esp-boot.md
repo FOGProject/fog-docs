@@ -115,29 +115,44 @@ KEK only control *who may change* `db`.
 
 **How many variables you need depends on who performs the write.**
 
-| Enrolling via | Variables needed | Why |
+It is decided by **what the platform will accept a variable write from**, which
+is a question about Setup/Custom Mode — not about `db`.
+
+| Enrolling via | Variables you supply | Why |
 | --- | --- | --- |
-| The firmware's own tool, or a hypervisor setting, with the platform in Setup/Custom Mode | **`db` alone** | The write is unauthenticated, so nothing has to vouch for it |
-| A running OS — FOG's enrolment task, a Linux tool, PowerShell's Secure Boot cmdlets | **PK, KEK and `db`** | In User Mode a `db` write must be authenticated by a KEK-signed update, and the machine only trusts FOG's KEK if FOG's PK is enrolled too |
+| The firmware's own tool, or a hypervisor setting, with the platform in Setup/Custom Mode | **`db` alone** | In Setup Mode the firmware does not check *who signed* the update, so nothing has to vouch for `db`. The platform still has its own PK, and that is what keeps Secure Boot on |
+| A running OS, platform in Setup/Custom Mode — FOG's enrolment task | **`db`, KEK and PK** | The same unchecked write, but nothing else is going to supply a PK. Without one the machine stays in Setup Mode with Secure Boot **off**; PK and KEK are also what let FOG update `db` again later |
+| A running OS, platform in User Mode holding a PK you do not control | **none — the route is closed** | Every update to `db`, KEK and PK must be signed by a key already in KEK or PK. On a machine carrying a vendor PK you cannot write any of the three, and supplying all three is not a workaround |
 
-Confirmed on the first row: `MOK.der` added to `db` by itself, no PK and no KEK,
-then a FOG-signed binary booted directly with no shim. That is why an existing
-machine's firmware UI asking for all three is not evidence that `db` depends on
-them — it is offering the only write it can authenticate from a stranger, which is
-replacing the whole chain. You do not have to accept that offer if you can write
-`db` directly.
+The first row is confirmed twice: `MOK.der` added to `db` by itself on VMware,
+then a FOG-signed binary booted with no shim; and FOG's own `db.auth` written
+alone on EDK2/OVMF, which lands and survives a reboot. So an existing machine's
+firmware UI asking for all three is not evidence that `db` depends on them — it is
+offering the only write it can authenticate from a stranger, which is replacing
+the whole chain. You do not have to accept that offer if you can write `db`
+directly.
 
-The second row is what FOG's own task does -- see
-[[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] -- and why the
+The second row is what FOG's own task does — see
+[[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — and why the
 `.auth` files exist.
 
->[!note] Not every firmware has been tested either way
->The routes above are confirmed on the hardware and hypervisors used during this
->work, not exhaustively. If yours behaves differently — `db` alone rejected at a
->firmware menu, or accepted from an OS tool — please report it, on the
->[FOG forums](https://forums.fogproject.org/) or on
->[issue 1267](https://github.com/FOGProject/fogproject/issues/1267), which is
->collecting exactly this. The table should be corrected, not trusted.
+>[!warning] "Unauthenticated" means unverified, not unsigned
+>Setup Mode skips the *signature check*. It does not accept a bare certificate:
+>every write to `db`, KEK or PK must still be a properly formed authenticated
+>variable update, and handing the raw `.esl`/`.der` bytes to `efivarfs` fails with
+>`EINVAL` even in Setup Mode. A firmware file picker builds that wrapper for you,
+>which is why it takes `MOK.der`; FOG's task cannot, which is why FOG ships
+>`.auth` files.
+
+>[!note] Measured on EDK2/OVMF, not on every firmware
+>The table was re-measured in
+>[issue 1267](https://github.com/FOGProject/fogproject/issues/1267) against
+>edk2-ovmf under QEMU with SMM, in both Setup and User Mode, including a User Mode
+>platform carrying Microsoft's PK. Physical firmware menus, PowerShell's
+>`Set-SecureBootUEFI` and BitLocker/PCR 7 behaviour are still untested. If yours
+>behaves differently — `db` alone rejected at a firmware menu, or a `db` write
+>accepted from an OS tool on a machine whose PK you do not hold — please report it
+>on the [FOG forums](https://forums.fogproject.org/) or on that issue.
 
 `MOK.der` is the intermediate, and FOG's signatures carry it inside them, so this
 one certificate covers every binary in the archive and the signing leaf can be
