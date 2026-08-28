@@ -175,26 +175,46 @@ They are what FOS writes. A firmware file picker cannot read one. Hand it
 
 **And at a firmware menu you only need `db`** — not PK, not KEK. `db` is what
 firmware checks to verify a boot image; PK and KEK only control who may *change*
-`db`. With the platform in Setup/Custom Mode that write is unauthenticated, so
-nothing has to vouch for it. Confirmed: `MOK.der` added to `db` by itself, then a
-FOG-signed binary booted directly with no shim.
+`db`. With the platform in Setup/Custom Mode the firmware does not check who
+signed the update, so nothing has to vouch for `db`. Confirmed: `MOK.der` added to
+`db` by itself, then a FOG-signed binary booted directly with no shim.
 
 An existing machine's UI often asks for all three anyway, because in User Mode a
 `db` write must be authenticated by a KEK-signed update — so it offers the only
 write it can authenticate from a stranger, which is replacing the whole chain. You
 do not have to accept that if you can write `db` directly.
 
->[!warning] This does not generalise to OS-side enrolment
->The `db`-alone shortcut applies to the **firmware's own tool** and to hypervisor
->settings. Writing Secure Boot variables from a running OS — the task this page
->describes, a Linux tool, or PowerShell's Secure Boot cmdlets — is a User Mode
->write and must be authenticated, so **expect to need PK, KEK and `db` together**.
->That is precisely why the `.auth` files exist and why this page's task writes all
->three.
+>[!warning] Why this page's task still writes all three
+>The `db`-alone shortcut works because *someone else* — the firmware, or the
+>hypervisor — is supplying the PK. This page's task is not in that position, and
+>the reason is not that an OS-side write "needs three variables":
 >
->Neither route has been tested exhaustively across firmwares. If yours behaves
->differently, please report it on the [FOG forums](https://forums.fogproject.org/)
->or the issue tracker.
+>- **`db` alone, with no PK anywhere, leaves Secure Boot off.** Measured on
+>  EDK2/OVMF: FOG's `db.auth` written by itself lands and survives a reboot, and
+>  the platform stays in Setup Mode with `SecureBoot=0`. Writing PK is what turns
+>  Secure Boot on, and KEK is what lets FOG update `db` again later.
+>- **In User Mode on a machine whose PK you do not hold, the route is closed
+>  entirely.** Every update to `db`, KEK and PK must be signed by a key already in
+>  KEK or PK. Against a platform carrying Microsoft's PK, all three writes were
+>  refused (`EACCES`); supplying all three is not a workaround. So this task needs
+>  the platform in Setup/Custom Mode — the same precondition as the firmware-menu
+>  route above.
+>- **Once FOG's own PK and KEK are enrolled**, a later `db` update from the OS is
+>  accepted on a KEK-signed update alone. That is the case the `.auth` files buy
+>  you.
+
+>[!warning] "Unauthenticated" means unverified, not unsigned
+>Setup Mode skips the signature *check*; it does not accept a bare certificate.
+>Writing the raw `.esl`/`.der` bytes to `efivarfs` fails with `EINVAL` even in
+>Setup Mode — the update must still carry the authenticated-variable wrapper. A
+>firmware file picker builds that for you, which is why it takes `MOK.der`, and
+>FOG's task cannot, which is why FOG ships `.auth` files.
+
+>[!note] Measured on EDK2/OVMF, not on every firmware
+>See [issue 1267](https://github.com/FOGProject/fogproject/issues/1267) for the
+>measurements and the rig. Physical firmware menus, PowerShell's
+>`Set-SecureBootUEFI` and BitLocker/PCR 7 behaviour are still untested — reports
+>welcome on the [FOG forums](https://forums.fogproject.org/) or that issue.
 
 On VMware, put `MOK.der` in the VM's directory and add to the `.vmx`:
 
