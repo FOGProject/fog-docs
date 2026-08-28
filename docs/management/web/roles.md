@@ -38,7 +38,7 @@ Each permission is an **area** plus an **action**:
 
 - **Areas** are the sections of FOG: Hosts, Groups, Images, Snapins,
   Printers, Tasks, Users, Roles, Storage Nodes, Storage Groups, Client
-  Settings, FOG Settings, Reports, Plugins, and so on.
+  Settings, FOG Settings, Reports, Plugins, System, and so on.
 - **Actions** are what can be done there: **View**, **Create**,
   **Edit**, **Delete**, and **Task** (starting imaging/snapin tasks).
 
@@ -53,6 +53,25 @@ They are separate on purpose. Switching on code an administrator already chose
 to put on the server, and adding new code to it, are different authorities —
 so a role that manages plugins does not thereby get to add one. See
 [[management/web/plugins#Installing a plugin from an archive|Plugins]].
+
+**System** works the same way. Its only action is **Export**, and it controls
+the whole-database dump on **FOG Configuration → Configuration Save**. That is
+every host, every user, every stored credential and every setting in one
+file, so it is a far larger authority than editing a setting is — and it
+is held separately from **FOG Settings → Edit** for exactly that reason.
+Without it the Export button is not rendered, the page refuses the request,
+and `GET /api/system/export` answers 403.
+
+>[!warning] This changed during the 1.6 beta
+>
+>Earlier 1.6 builds gated the database export on **FOG Settings → Edit**.
+>It is now its own permission, **System → Export**, and nothing grants it
+>automatically — including the upgrade, which seeds no default for it.
+>
+>A role that holds **FOG Settings → Edit** therefore **loses the export**
+>until you tick **System → Export** on it as well. Full-access roles are
+>unaffected. Deny-by-default is deliberate: a new permission that quietly
+>arrives already granted is not a permission.
 
 For example, a help-desk role might have full Host and Printer access
 plus the ability to view Images and start imaging tasks, but no access
@@ -98,20 +117,20 @@ along with a suggestion to ask an administrator to assign one. They keep
 the handful of pages that belong to any signed-in user regardless —
 their dashboard, the client-facing pages, and log out.
 
-!!! warning "This changed during the 1.6 beta"
-
-    Early 1.6 builds did the opposite: a role-less account was treated
-    as a full administrator, so that adopting roles could not lock an
-    existing server out before anyone had been assigned one.
-
-    That was a trap. It made removing a user's last role a **promotion**
-    rather than a restriction, and it meant any account created by an
-    authentication plugin arrived with unlimited access simply by virtue
-    of arriving without a role.
-
-    The upgrade converts every account that was relying on the old
-    behavior into an explicit role, so nobody's access changes silently
-    — see [What the upgrade does to existing users](#what-the-upgrade-does-to-existing-users).
+>[!warning] This changed during the 1.6 beta
+>
+>Early 1.6 builds did the opposite: a role-less account was treated
+>as a full administrator, so that adopting roles could not lock an
+>existing server out before anyone had been assigned one.
+>
+>That was a trap. It made removing a user's last role a **promotion**
+>rather than a restriction, and it meant any account created by an
+>authentication plugin arrived with unlimited access simply by virtue
+>of arriving without a role.
+>
+>The upgrade converts every account that was relying on the old
+>behavior into an explicit role, so nobody's access changes silently
+>— see [What the upgrade does to existing users](#what-the-upgrade-does-to-existing-users).
 
 ## What restricted users see
 
@@ -179,12 +198,16 @@ plugin every time they log in, so the upgrade has nothing useful to say
 about them, and copying their old account type across would hand every
 directory account the administrator role.
 
-!!! tip "After upgrading"
-
-    Review **Roles → Administrator → Users**. Any account that was an
-    administrator only because nobody had ever restricted it is now an
-    administrator explicitly, and this is a good moment to move it to
-    something narrower.
+>[!tip] After upgrading
+>
+>Review **Roles → Administrator → Users**. Any account that was an
+>administrator only because nobody had ever restricted it is now an
+>administrator explicitly, and this is a good moment to move it to
+>something narrower.
+>
+>Then review **System → Export** on any role that is meant to be able to
+>take a database backup — see the note under
+>[How permissions work](#how-permissions-work).
 
 ## Upgrading from the Access Control plugin
 

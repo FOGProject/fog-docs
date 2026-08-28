@@ -224,3 +224,4 @@ is not being accepted. In order of likelihood:
 - [[secure-boot-mok-enrollment|MOK enrollment]]
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]]
 - [[pki-zones|FOG's Certificate Zones]]
+- [[netboot-transport-and-pki|Netboot transport and PKI]] — how Secure Boot and an HTTPS netboot transport combine
