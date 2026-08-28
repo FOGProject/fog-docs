@@ -207,3 +207,4 @@ Boot on its self-signed key. Nothing is silently broken.
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
 - [[secure-boot-signing|Secure Boot signing]]
 - [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]] — applying the Web zone options across a fleet
+- [[netboot-transport-and-pki|Netboot transport and PKI]] — which zone each install mode uses, and why replacing the CA changes what iPXE must trust

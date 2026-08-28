@@ -292,3 +292,4 @@ not the transport. See [[fog-security|FOG Security]].
 - [[command-line-options|Fog installer command line options]] — every option named here
 - [[install-fogsettings|The .fogsettings file]] — where these settings persist
 - [[compile_ipxe_binaries|Compile iPXE binaries]] — building iPXE by hand
+- [[local-esp-boot|Booting FOG from the local ESP]] — the same transport choices when iPXE is started from disk rather than PXE
