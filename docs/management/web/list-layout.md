@@ -61,6 +61,11 @@ list would simply be missing rows, with nothing on screen to say why, and the
 obvious conclusion is that the data has gone. A layout you did not expect is
 something you can see and fix in a second; rows that are not there are not.
 
+## Your timezone is remembered too
+
+The timezone dates are shown to you in is saved the same way, against your
+account rather than your browser — see [[display-timezone|Display Timezone]].
+
 ## Starting over
 
 To get a list back to how FOG ships it, show any columns you have hidden, drag
