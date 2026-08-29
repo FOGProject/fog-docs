@@ -121,22 +121,39 @@ the next user created could inherit someone else's sign-in binding.
 
 ## What a refused delete looks like
 
-The refusal comes from the database, and FOG surfaces the database's own
-message. It names the constraint, and the constraint is named after the table
-and column that is still pointing at the record:
+The refusal comes from the database, but what you see is a sentence naming
+what is still using the record:
 
 ```
-Cannot delete or update a parent row: a foreign key constraint fails
-(`fog`.`nfsGroupMembers`, CONSTRAINT `fk_nfsGroupMembers_ngmGroupID`
-FOREIGN KEY (`ngmGroupID`) REFERENCES `nfsGroups` (`ngID`))
+Cannot delete this storage group because a location still refers to it.
+Reassign or remove it first.
 ```
 
-Read it as: **`nfsGroupMembers` still has rows in this group** — a storage
-node has not been moved out. `fk_<table>_<column>` always identifies what is
-holding the record.
+Move or delete the thing it names, then try the delete again. **Nothing was
+changed** — a refused delete leaves the record and everything pointing at it
+exactly as they were.
 
-Nothing was changed when a delete is refused. Clear the thing named in the
-message and try again.
+Over the API the same message comes back as **HTTP 409 Conflict**, with the
+sentence in the `msg` field. 409 rather than a generic error is deliberate:
+it means the request itself was fine and will work once the blocking record
+is dealt with, so a script can tell "fix this and retry" apart from "this
+request was wrong".
+
+>[!note]
+>Occasionally the message is the database's own instead:
+>
+>```
+>Cannot delete or update a parent row: a foreign key constraint fails
+>(`fog`.`nfsGroupMembers`, CONSTRAINT `fk_nfsGroupMembers_ngmGroupID`
+>FOREIGN KEY (`ngmGroupID`) REFERENCES `nfsGroups` (`ngID`))
+>```
+>
+>That happens when the rule involved is one FOG does not have a plain-English
+>description for — a constraint added by hand, or left by an older release.
+>The delete is still refused and nothing is changed; only the wording is
+>less helpful. Read it as **`nfsGroupMembers` still has rows in this group**:
+>the constraint name is always `fk_<table>_<column>`, and that table and
+>column are what is holding the record.
 
 ## What happens on upgrade
 
