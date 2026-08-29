@@ -78,6 +78,26 @@ tags:
 >[!note]
 >Master node status also decides which node transmits a multicast session, so a site whose node is not a master cannot serve multicast locally even with the image replicated to it. If you multicast to more than one site, see [[management/web/multicast#Multicast across multiple sites|Multicast across multiple sites]].
 
+## Moving and deleting nodes (1.6)
+
+A storage node **must** belong to a storage group. A group with no nodes is
+fine; a node in no group is not — it is invisible to replication and to
+multicast, and nothing will ever assign it work.
+
+- **To move a node, assign it to the group you want it in.** That moves it in
+  one step. There is no separate "remove from group" operation, because a
+  node with no group is not a state FOG has.
+- **Deleting a storage group is refused while nodes still belong to it**, and
+  likewise while a location names it or file deletions are queued against it.
+  Move the nodes out first. Before 1.6 this delete was allowed and silently
+  left those nodes belonging to nothing.
+- **Deleting a storage node is not refused.** Anything referring to it loses
+  the reference and carries on — a running multicast session drops its sender
+  node, and a location that named that specific node falls back to choosing
+  the best node in its group.
+
+For the full set of rules and what a refused delete looks like, see [[kb/reference/referential-integrity|Referential Integrity]].
+
 ## Including multiple PXE / TFTP servers
 
 -   A traditional Master Storage Node, [as described above](https://wiki.fogproject.org/wiki/index.php?title=Managing_FOG#Adding_a_Storage_Node) only provides File Storage redundancy. While this can help increase multicast throughput on a single network, all the machines under FOG management must be within the same subnet/VLAN so that DHCP broadcast requests can be directed to the Main server. (see note below)

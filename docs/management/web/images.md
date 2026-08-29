@@ -190,3 +190,17 @@ a great option to save image space and network transfer volume.
         create a folder structure like so: /images/SampleXPImage
     -   Drop your image file into the folder (be sure it's named
         the same as image name above)
+
+## Deleting an Image object (1.6)
+
+Deleting an image definition no longer leaves anything pointing at it:
+
+- **Hosts assigned that image are unassigned.** The host survives with no
+  image rather than naming one that is gone.
+- Scheduled tasks and any running task lose the image reference the same way.
+- The image's storage-group associations are removed with it, as are Windows
+  key associations if that plugin is installed.
+
+>[!note]
+>This removes the image *definition* from the FOG database. It does not
+>delete the image files on the storage node — see [[kb/reference/referential-integrity|Referential Integrity]] for the full set of delete rules.
