@@ -3,7 +3,8 @@ title: Filtering Lists
 aliases:
     - Filtering Lists
     - Column Filters
-description: how to filter any list in the FOG web interface by individual columns, including date ranges
+    - Column Search
+description: how to filter any list in the FOG web interface by individual columns, from the Filter panel or the per-column header row, including date ranges
 context_id: filtering-lists
 tags:
     - management
@@ -23,6 +24,12 @@ one thing you can already name.
 
 The **Filter** button, next to Select All and Refresh, is for everything else.
 It builds a filter one rule at a time, and each rule names a single column.
+
+The **Column search** button beside it is the same thing in a different shape:
+a row of boxes under the column headings, one per column, so you can type
+straight under the heading you mean. Use whichever suits the job — a quick
+"host name starts with lab" is faster in the header row, while anything with
+brackets or an *Or* in it wants the Filter panel.
 
 ## Building a filter
 
@@ -85,6 +92,33 @@ has no deploy date at all, which is a different fact from having an old one.
 Those rows are excluded from *Before* and *After* — asking for "deployed before
 today" gives you hosts that were deployed, and not the ones that never were.
 Use **Empty** when the never-happened rows are what you are looking for.
+
+## Searching under the column headings
+
+Click **Column search** and a row of boxes appears beneath the headings. Each
+box has a small picker to its left choosing how to match, and the choices are
+the same ones the Filter panel offers for that column — so a text column can
+do `has` (contains), `is` (exactly), `a…` (starts with), `…z` (ends with) and
+their negatives, a number column gets the comparisons, and a date column gets
+`on`, `before`, `after`, `not on` and `never`. Hover a choice to see its full
+name.
+
+Typing filters as you go. On a date column the box is a date picker, and on
+`empty` / `never` / `set` the box switches off, because those conditions have
+nothing to compare against.
+
+Boxes on several columns combine with *And* — every box you fill narrows the
+list further. They also combine with the Filter panel and with the search box,
+so a row has to satisfy all three.
+
+>[!note]
+>Turning **Column search** off clears the boxes as well as hiding them. That is
+>deliberate: a filter you cannot see looks exactly like missing data.
+
+Columns that cannot be filtered get no box, the same ones and for the same
+reasons as in the Filter panel. Narrow columns put the picker above the box
+rather than beside it; you can drag a column wider if you would rather have
+them on one line.
 
 ## Exporting what you filtered
 
