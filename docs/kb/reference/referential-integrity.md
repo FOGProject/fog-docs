@@ -134,10 +134,15 @@ changed** — a refused delete leaves the record and everything pointing at it
 exactly as they were.
 
 Over the API the same message comes back as **HTTP 409 Conflict**, with the
-sentence as the response body. 409 rather than a generic error is
-deliberate: it means the request itself was fine and will work once the
-blocking record is dealt with, so a script can tell "fix this and retry"
-apart from "this request was wrong".
+sentence under `error` in the response body:
+
+```json
+{"error": "Cannot delete this storage group because a location still refers to it. Reassign or remove it first."}
+```
+
+409 rather than a generic error is deliberate: it means the request itself
+was fine and will work once the blocking record is dealt with, so a script
+can tell "fix this and retry" apart from "this request was wrong".
 
 >[!note]
 >Occasionally the message is the database's own instead:
