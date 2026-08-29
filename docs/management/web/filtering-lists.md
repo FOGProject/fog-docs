@@ -31,6 +31,10 @@ straight under the heading you mean. Use whichever suits the job — a quick
 "host name starts with lab" is faster in the header row, while anything with
 brackets or an *Or* in it wants the Filter panel.
 
+Neither is remembered between visits: a list always opens unfiltered. That is
+deliberate — see [[list-layout|Arranging Lists]], which covers what FOG *does*
+remember about a list and why filters are kept out of it.
+
 ## Building a filter
 
 Click **Filter**, then **Add condition**. A rule has three parts:
