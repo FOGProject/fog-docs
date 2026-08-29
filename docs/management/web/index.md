@@ -18,6 +18,7 @@ Documentation related to how to use the web management ui.
 **Using the Interface**
 
 - [[filtering-lists|Filtering Lists]]
+- [[list-layout|Arranging Lists]]
 
 **Access & Security**
 
