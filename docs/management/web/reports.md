@@ -142,9 +142,9 @@ Every report table carries the same toolbar.
 |---|---|
 | **Copy** | The rows currently on screen, to the clipboard |
 | **CSV** | The rows currently on screen |
+| **CSV (All)** | **Every row the report returns for this range** |
 | **Excel** | The rows currently on screen |
 | **Print** | The rows currently on screen |
-| **CSV (All)** | **Every row the report returns for this range** |
 | **Column Visibility** | (not an export — hides and shows columns) |
 | **Refresh** | (not an export — re-runs the query) |
 
@@ -153,7 +153,8 @@ and it is not cosmetic. Report tables are paged on the server: your
 browser only ever holds the page you are looking at. **Copy**, **CSV**,
 **Excel** and **Print** can only see what the browser holds, so on a
 25-row page they give you 25 rows — even if the report matched 4,000.
-**CSV (All)** asks the server for the whole result set instead.
+**CSV (All)**, which sits directly beside **CSV** for exactly that reason,
+asks the server for the whole result set instead.
 
 **CSV (All)** carries your current view with it:
 
