@@ -169,7 +169,14 @@ browser only ever holds the page you are looking at. **Copy**, **CSV**,
 
 ## When a report is bigger than the cap
 
-Reports stop at 10,000 rows. Past that, FOG shows a banner above the
+Every report is capped, so that one query cannot take the server down:
+
+| Group | Cap |
+|---|---|
+| **Reports** | 5,000 rows |
+| **Lists** | 10,000 rows |
+
+Past that, a report in the **Reports** group shows a banner above the
 numbers saying so and telling you to narrow the dates.
 
 That banner is not only about the table. Every tile and every chart on
@@ -183,8 +190,10 @@ Two things follow from it:
     separately, will each come in under the cap where the whole year did
     not.
 -   **A capped export says so in its own filename.** The download comes
-    back named something like `imaging-report-2026-08-29-first-10000-of-41328.csv`,
-    so a truncated file cannot be mistaken for a complete one later.
+    back named something like `imaging-report-2026-08-29-first-5000.csv`,
+    or `full-history-2026-08-29-first-10000-of-41328.csv` where FOG knows
+    the true total — so a truncated file cannot be mistaken for a
+    complete one later.
 
 >[!note]
 >The Fleet Report's *Hosts* tile is a true count of your whole fleet even
