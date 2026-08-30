@@ -46,6 +46,8 @@ Saved per user, per list:
 - which columns are showing
 - the sort column and direction
 - how many rows per page
+- whether the per-column search row is showing — the row itself, never what was
+  typed in it (see [[filtering-lists|Filtering Lists]])
 
 Each list is remembered separately, so the arrangement you give the host list
 has no effect on the image list.
@@ -60,6 +62,11 @@ This is on purpose. A filter that came back on its own would be invisible: the
 list would simply be missing rows, with nothing on screen to say why, and the
 obvious conclusion is that the data has gone. A layout you did not expect is
 something you can see and fix in a second; rows that are not there are not.
+
+A filter you want back can be **saved by name** and applied deliberately, which
+puts a chip above the list naming it — see [[saved-filters|Saved Filters]].
+That is the same rule from the other side: a filter is fine as long as you can
+see it is running and turn it off in one click.
 
 ## Your timezone is remembered too
 

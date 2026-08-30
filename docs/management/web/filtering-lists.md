@@ -31,9 +31,13 @@ straight under the heading you mean. Use whichever suits the job — a quick
 "host name starts with lab" is faster in the header row, while anything with
 brackets or an *Or* in it wants the Filter panel.
 
-Neither is remembered between visits: a list always opens unfiltered. That is
-deliberate — see [[list-layout|Arranging Lists]], which covers what FOG *does*
-remember about a list and why filters are kept out of it.
+Neither is applied on its own: a list always opens unfiltered, however you
+left it. That is deliberate — see [[list-layout|Arranging Lists]], which covers
+what FOG *does* remember about a list and why filters are kept out of it.
+
+A filter worth building twice can be given a name and kept, and handed to other
+people — see [[saved-filters|Saved Filters]]. A saved filter still only runs
+when you ask for it.
 
 ## Building a filter
 
@@ -118,6 +122,10 @@ so a row has to satisfy all three.
 >[!note]
 >Turning **Column search** off clears the boxes as well as hiding them. That is
 >deliberate: a filter you cannot see looks exactly like missing data.
+
+Whether the row is *showing* is remembered against your account, so a list you
+like filtering from the headings opens that way next time. What you typed in it
+is not: the row comes back empty.
 
 Columns that cannot be filtered get no box, the same ones and for the same
 reasons as in the Filter panel. Narrow columns put the picker above the box
