@@ -19,6 +19,7 @@ Documentation related to how to use the web management ui.
 
 - [[filtering-lists|Filtering Lists]]
 - [[list-layout|Arranging Lists]]
+- [[saved-filters|Saved Filters]]
 - [[display-timezone|Display Timezone]]
 
 **Access & Security**
