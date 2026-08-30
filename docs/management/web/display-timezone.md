@@ -21,21 +21,23 @@ that are easy to confuse, so it is worth being clear about both.
 ## The install's timezone
 
 `FOG_TZ_INFO`, under **FOG Configuration → FOG Settings**, is the timezone the
-server itself works in. It is the default everyone sees, and — importantly —
-**it is also the timezone FOG writes into the database**.
+server itself works in. It is the default everyone sees — the zone a user who
+has never chosen one of their own gets.
 
-That second part is what makes it more than a display setting. When FOG records
-that a host checked in, it writes the time as `FOG_TZ_INFO` reads it. So
-changing `FOG_TZ_INFO` does not re-present the times already recorded; it
-changes what those recorded times are taken to *mean*. A row written at 09:00
-when the setting said `America/Chicago` will be read as 09:00 `Europe/London`
-after the setting changes, which is a different moment.
+It used to be more than that. On older versions it was also the zone FOG wrote
+into the database, so changing it did not re-present the times already
+recorded, it changed what those recorded times were taken to *mean*. FOG now
+writes **UTC**, and `FOG_TZ_INFO` no longer has any bearing on what is stored.
 
-!!! warning "Changing FOG_TZ_INFO re-labels existing records"
-    Set it once, when the server is installed, and leave it alone. If you do
-    need to change it — the server physically moved, or it was wrong from the
-    start — be aware that every timestamp already in the database will be read
-    in the new zone. Nothing is rewritten, and nothing warns you.
+!!! warning "Changing FOG_TZ_INFO still re-labels the older records"
+    Dates written *before* your server moved to UTC were written in whichever
+    zone `FOG_TZ_INFO` named at the time, and that is still how they are read.
+    Changing the setting therefore changes how those older dates are
+    interpreted, though not how anything written since is. Nothing is
+    rewritten, and nothing warns you.
+
+    Those older dates are marked on screen — see
+    [[unadjusted-timestamps|Timestamps Before the UTC Change]].
 
     If you only want people to *see* a different timezone, that is the per-user
     setting below, and it is the one you almost certainly want.
@@ -66,10 +68,12 @@ Every signed-in user can set this, including an account with no role assigned.
 
 ### What it does not cover
 
-**The REST API.** Dates from `/api/…` are always in the server's timezone,
-whichever user's token was used. A script needs one stable answer, not one that
-changes depending on who is running it — and the values carry no timezone
-marker to tell the difference.
+**The REST API.** Dates from `/api/…` come back exactly as stored — **UTC** —
+whichever user's token was used, and with no timezone marker on the value. A
+script needs one stable answer, not one that changes depending on who is
+running it. Rows written before this server moved to UTC are the exception the
+API cannot signal; see
+[[unadjusted-timestamps|Timestamps Before the UTC Change]].
 
 **Scheduled tasks.** A task set to run at 02:00 runs at 02:00 on the server. The
 schedule is the server's clock, not the viewer's, and changing your display
@@ -77,10 +81,12 @@ timezone does not move it.
 
 ## What is stored
 
-FOG stores times in the server's timezone rather than in UTC. That is a known
-limitation and the reason the warning above exists. Moving storage to UTC is a
-one-way conversion of every date in the database, so it is being done as its own
-release rather than folded into the display setting.
+FOG stores times in **UTC**. Your upgrade recorded the instant it started doing
+so, and it did not convert anything that was already there — a conversion is
+one-way and there was no reliable way to know which clock had written any given
+old row. So dates on either side of that instant are read differently, and the
+older ones are marked where they appear:
+[[unadjusted-timestamps|Timestamps Before the UTC Change]].
 
-The per-user setting above works today regardless, and nothing about it is
-affected by that later change.
+The per-user setting above is unaffected either way. It has only ever decided
+what you are shown.
