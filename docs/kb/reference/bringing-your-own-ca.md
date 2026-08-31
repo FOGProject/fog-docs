@@ -13,12 +13,19 @@ tags:
     - secure-boot
 ---
 
+>[!info] FOG 1.6
+>The Web zone options on this page (`--web-ca-*`) work the same on FOG 1.5.
+>The Secure Boot zone is where the lines diverge: 1.6's `--secureboot-ca-cert`
+>(a genuine CA replacement) has no 1.5 equivalent — 1.5 can only take a flat
+>leaf. See the [[1.5/kb/reference/bringing-your-own-ca|1.5 version]] of this
+>page for what that means in practice.
+
 # Bringing your own CA
 
 FOG generates its own certificates by default, but each zone described in
-[[pki-zones|FOG's Certificate Zones]] can be replaced independently with a
+[[kb/reference/pki-zones|FOG's Certificate Zones]] can be replaced independently with a
 CA or key you already run. This page is the reference for doing that; see
-[[pki-glossary|the PKI glossary]] if a term here is unfamiliar.
+[[kb/reference/pki-glossary|the PKI glossary]] if a term here is unfamiliar.
 
 >[!info] Version support
 >`--secureboot-ca-cert` is a FOG 1.6 addition; on earlier releases only
@@ -62,7 +69,7 @@ replacement, the same shape as FOG's own auto-generated pair. Without it,
 and the thing you enroll — the flat model, same as before the CA/leaf split
 existed for FOG's own key. Rotating a flat key later means re-enrolling
 every machine — see
-[[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]].
+[[kb/how-tos/secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]].
 
 ### Generating a leaf yourself
 
@@ -191,7 +198,7 @@ certificate every fog-client has already pinned, so replacing it means
 re-deploying trust to every registered machine by some other means (GPO,
 client reinstall) — there's no built-in path for it, because there's no way
 to do it without touching every endpoint. See
-[[pki-glossary#client-communication-keypair|Client Communication keypair]].
+[[kb/reference/pki-glossary#client-communication-keypair|Client Communication keypair]].
 
 ## `pathlen:0` CAs
 
@@ -202,9 +209,9 @@ Boot on its self-signed key. Nothing is silently broken.
 
 ## See also
 
-- [[pki-zones|FOG's Certificate Zones]]
-- [[pki-glossary|PKI & Secure Boot Glossary]]
+- [[kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
-- [[secure-boot-signing|Secure Boot signing]]
+- [[kb/how-tos/secure-boot-signing|Secure Boot signing]]
 - [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]] — applying the Web zone options across a fleet
-- [[netboot-transport-and-pki|Netboot transport and PKI]] — which zone each install mode uses, and why replacing the CA changes what iPXE must trust
+- [[kb/reference/netboot-transport-and-pki|Netboot transport and PKI]] — which zone each install mode uses, and why replacing the CA changes what iPXE must trust

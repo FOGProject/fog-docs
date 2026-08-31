@@ -27,6 +27,11 @@ each one is a page of its own in the left-hand list.
 
 ![[reports-16-menu.png]]
 
+>[!info] FOG 1.6
+>This page describes FOG 1.6. FOG 1.5 has no Reports/Lists split, no date
+>window, and no CSV (All) — a single flat, alphabetical menu instead. See
+>the [[1.5/management/web/reports|1.5 version]] of this page.
+
 FOG 1.6 splits that list into two groups, because there are genuinely two
 different kinds of screen behind it:
 

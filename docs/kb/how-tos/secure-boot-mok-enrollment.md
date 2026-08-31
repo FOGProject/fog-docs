@@ -12,6 +12,12 @@ tags:
     - pki
 ---
 
+>[!info] Most of this page also applies to FOG 1.5
+>Routes A and B below work identically on 1.5 — the Secure Boot config page,
+>the enrollment kit and the boot menu entry are all present there too. Only
+>the Setup Mode alternative referenced below is 1.6-only. See the
+>[[1.5/kb/how-tos/secure-boot-mok-enrollment|1.5 version]] of this page.
+
 # Secure Boot: MOK enrollment
 
 This page covers the two MOK (Machine Owner Key) enrollment routes — both
@@ -21,14 +27,14 @@ security property, not a limitation. If your firmware can be put into
 [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] (FOG 1.6). For
 the concepts behind any of this (why signing is needed, the CA/leaf split,
 what "MOK" actually refers to), start at
-[[secure-boot-signing|Secure Boot signing]].
+[[kb/how-tos/secure-boot-signing|Secure Boot signing]].
 
 Repeat per machine. **You do not need to turn Secure Boot off to do this**,
 and you should not: both routes below work with it left on.
 
 The FOG web UI has a **FOG Configuration → Secure Boot** page. It shows your
 certificate's fingerprint (SHA-256, and SHA-1 for MokManager's own "view key"
-screen — see [[pki-glossary#fingerprint-aka-thumbprint|fingerprint]]), offers a
+screen — see [[kb/reference/pki-glossary#fingerprint-aka-thumbprint|fingerprint]]), offers a
 small **enrollment kit**, and links back to this guide for the full per-client
 steps below:
 
@@ -107,7 +113,7 @@ in `Enroll key from disk` without you carrying anything to the machine.
 >Nor can you point DHCP straight at `mmx64.efi` to get the same effect. It is
 >signed by iPXE, not Microsoft, so the firmware — which checks the first binary
 >against `db` alone (see
->[[secure-boot-signing#the-chain-you-are-building|the chain]]) — will refuse to
+>[[kb/how-tos/secure-boot-signing#the-chain-you-are-building|the chain]]) — will refuse to
 >launch it. It boots here only because iPXE loads it
 >*through shim's verification protocol*, and shim trusts iPXE's certificate.
 
@@ -279,9 +285,9 @@ on throughout.
 
 ## See also
 
-- [[secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
-- [[secure-boot-signing|Secure Boot signing]] — start here for the concepts
+- [[kb/reference/secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
+- [[kb/how-tos/secure-boot-signing|Secure Boot signing]] — start here for the concepts
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — the unattended, FOG 1.6-only alternative
-- [[secure-boot-technical-details|Secure Boot technical details]]
-- [[pki-zones|FOG's Certificate Zones]]
-- [[pki-glossary|PKI & Secure Boot Glossary]]
+- [[kb/reference/secure-boot-technical-details|Secure Boot technical details]]
+- [[kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]

@@ -1095,7 +1095,7 @@ on disk and adding new executable code to the server are different authorities.
 >visibility moved into 1.6 core, so there is no `site` plugin to read any more.
 >The seam it demonstrated is still a plugin seam and is documented in §8a; the
 >enforcement now lives in core's `Authorization`. See
->[[site-scoping|Site Scoping]].
+>[[management/web/site-scoping|Site Scoping]].
 
 When in doubt, copy the closest existing plugin and adapt it — the conventions
 above are followed consistently across all of them.

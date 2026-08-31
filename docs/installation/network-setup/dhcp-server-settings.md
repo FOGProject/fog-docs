@@ -22,11 +22,18 @@ tags:
 
 # DHCP Server Settings
 
+>[!info] FOG 1.6
+>This page describes FOG 1.6. The boot **file names** are the same on FOG
+>1.5, but how the UEFI boot script reaches the client (and the `--boot-delay`
+>option below) differ — see the
+>[[1.5/installation/network-setup/dhcp-server-settings|1.5 version]] of this
+>page.
+
 If you do not use FOG to provide DHCP services in your network (which is a very common and completely supported configuration), then you need to configure the existing DHCP server to use fog as the tftp server to get the pxe boot files from, and you need to configure what boot file to use.
 
 > [!info]
 > If you do not have access to your DHCP server, or are using a device that isn't capable of specifying option 066 and 067 (next server and file name) you can use ProxyDHCP instead
-> The most popular ProxyDHCP method with fog is dnsmasq. This article will walk you through that: [[proxy-dhcp|Proxy DHCP with DNSMasq]]
+> The most popular ProxyDHCP method with fog is dnsmasq. This article will walk you through that: [[installation/network-setup/proxy-dhcp|Proxy DHCP with DNSMasq]]
 
 > [!tip]
 > When using Palo Alto Networks firewalls as the DHCP server for PXE/iPXE booting, you may need to configure DHCP Option 150 with the FOG server IP address as the TFTP/next-server address. In some Palo Alto configurations, Option 66 is treated as a TFTP server name/FQDN and may not be enough for PXE clients. Keep Option 67 set to the boot file, such as `secureboot/snponly-shimx64.efi` for 64-bit UEFI clients.
@@ -82,6 +89,13 @@ You can find other pxe boot files in you `/tftpboot` directory on your fogserver
 
 ### How UEFI clients get their boot script
 
+>[!note] 1.5 works the other way round for FOG's own (unsigned) UEFI builds
+>On 1.5, the plain root `snponly.efi`/`i386-efi/snponly.efi`/`arm64-efi/snponly.efi`/`ipxe.efi`
+>have their script compiled in — same as legacy BIOS. Only the `secureboot/`
+>chain is script-less there. See
+>[[1.5/installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script (1.5)|the 1.5 version of this section]]
+>for the full detail.
+
 Every UEFI binary FOG ships is built **without** its iPXE boot script compiled
 in. Each one downloads a plain text script — `autoexec.ipxe` — over TFTP from
 the folder it was loaded from, and runs that.
@@ -131,6 +145,11 @@ that no longer exists and TFTP answers with an error most firmware renders as a
 generic PXE failure, with nothing in it to point you here.
 
 ### Adding a delay before the first DHCP attempt
+
+>[!note] 1.6 only
+>`--boot-delay` and the automatic BIOS/UEFI handling below don't exist on
+>FOG 1.5's installer at all. If you need this on a 1.5 server, configure the
+>delay in your DHCP server or switch settings instead.
 
 Some switches take several seconds to bring a port out of STP listening or out
 of powersave, and iPXE's first DHCP request goes out before that — which looks

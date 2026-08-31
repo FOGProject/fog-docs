@@ -16,8 +16,8 @@ These are articles related to the installation of FOG on your linux server. Foll
 this order for a first install:
 
 - [[requirements|Requirements]] — check these before you start
-- [[install-fog-server|Install Fog Server]]
-- [[command-line-options|Fog installer command line options]] — for silent/scripted installs
+- [[installation/server/install-fog-server|Install Fog Server]]
+- [[installation/server/command-line-options|Fog installer command line options]] — for silent/scripted installs
 - [[virtualization|Running in a Virtual Environment]]
-- [[migrating-fog-server|Migrating FOG Server]] — moving an existing install to new hardware, not for first installs
+- [[installation/server/migrating-fog-server|Migrating FOG Server]] — moving an existing install to new hardware, not for first installs
 

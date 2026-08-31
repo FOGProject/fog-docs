@@ -28,7 +28,7 @@ calls against your own server without leaving it.
 ## Where to find it
 
 **API Documentation** in the main menu. The page needs the API switched on — see
-[[api|API]] for that — and, like the rest of the API, it is unavailable while
+[[kb/integrations/api|API]] for that — and, like the rest of the API, it is unavailable while
 `FOG_API_ENABLED` is off. The page will tell you so rather than showing you an empty panel.
 
 Use **Authorize** to enter your tokens before trying a call:
@@ -36,7 +36,7 @@ Use **Authorize** to enter your tokens before trying a call:
 - the server-wide token is under **FOG Configuration → FOG Settings → API System**
 - your personal token is on the **API** tab of your own user account, which needs API access enabled
 
-Paste both exactly as the UI shows them. See [[api|API]] for the detail on why.
+Paste both exactly as the UI shows them. See [[kb/integrations/api|API]] for the detail on why.
 
 The reference follows the light/dark toggle in the header along with the rest of the UI.
 
@@ -176,6 +176,6 @@ either spelling. The document uses the property name and records the column as `
 
 ## Related
 
-- [[api|API]] — authentication, tokens, and worked examples
-- [[api-expansion-and-pagination|API Pagination, Expansion & Plugin Items]] — paging parameters and
+- [[kb/integrations/api|API]] — authentication, tokens, and worked examples
+- [[kb/integrations/api-expansion-and-pagination|API Pagination, Expansion & Plugin Items]] — paging parameters and
   the response envelope, which the document describes but that page explains

@@ -23,9 +23,9 @@ FOG ships a set of bundled plugins, and from FOG 1.6 you can also install
 plugins written by other people.
 
 >[!info] FOG 1.6
->Most of this page describes 1.6. The plugin system exists on 1.5.x too, but
->the screens and what you can do with them are different enough that 1.5 has
->its own section: [[management/web/plugins#On FOG 1.5.x|On FOG 1.5.x]]. Enabling it is the
+>This page describes FOG 1.6. The plugin system exists on 1.5.x too, but the
+>screens and what you can do with them are different enough that 1.5 has its
+>own page: [[1.5/management/web/plugins|1.5 version]]. Enabling it is the
 >same on both.
 
 ## Turning the plugin system on
@@ -38,10 +38,10 @@ Plugins are off until you enable them.
 4. Tick **FOG_PLUGINSYS_ENABLED**.
 5. Click **Save Changes**.
 
-Reload the UI and a **Plugins** entry appears in the main menu — a puzzle piece
-on 1.6, a gear wheel on 1.5. On 1.6 that takes you to **Plugin Management**, a
-single list of every plugin FOG can see; on 1.5 it opens the first of three
-pages, described [[management/web/plugins#On FOG 1.5.x|below]].
+Reload the UI and a **Plugins** entry appears in the main menu, taking you to
+**Plugin Management** — a single list of every plugin FOG can see. (On 1.5
+this is a gear wheel leading to a three-page workflow instead — see the
+[[1.5/management/web/plugins|1.5 version]] of this page.)
 
 ## The Plugin Management list
 
@@ -215,14 +215,14 @@ running" stay separate decisions.
 
 ## The bundled plugins
 
-This is the 1.6 set. See [[management/web/plugins#The 1.5 plugin set|The 1.5 plugin set]] for
-how it differs on the older line.
+This is the 1.6 set. See the [[1.5/management/web/plugins|1.5 version]] of
+this page for how it differs on the older line.
 
 | Plugin | What it does |
 |---|---|
 | **capone** | Match a machine's DMI value against a key you define and deploy the associated image, without registering the host first |
 | **helloworld** | A skeleton example plugin — the reference for people writing their own |
-| **ldap** | Authenticate FOG users against an LDAP or Active Directory server. Needs your distribution's `php-ldap` package. See [[ldap\|LDAP Authentication]] |
+| **ldap** | Authenticate FOG users against an LDAP or Active Directory server. Needs your distribution's `php-ldap` package. See [[management/web/ldap\|LDAP Authentication]] |
 | **location** | Point hosts at the storage node local to their site, for sites with more than one place to fetch an image from |
 | **ntfy** | Notifications via ntfy.sh or your own ntfy server |
 | **oidc** | Sign in to FOG with an OpenID Connect identity provider (Entra ID, Keycloak, Okta, ...). See [[oidc\|OpenID Connect Sign-in]] |
@@ -244,64 +244,15 @@ how it differs on the older line.
 >[!note] Site is gone too, and for the same reason
 >Sites and per-site host visibility moved into 1.6 core, so there is no
 >longer a Site plugin to activate — the feature is simply there. See
->[[site-scoping|Site Scoping]].
+>[[management/web/site-scoping|Site Scoping]].
 
-## On FOG 1.5.x
-
-The plugin system on 1.5.x is the same idea with a different, older interface,
-and it is worth knowing what it does *not* have before you plan around it.
-
-Enabling it is identical — `FOG_PLUGINSYS_ENABLED` in **FOG Configuration → FOG
-Settings** — but the menu entry is a **gear wheel**, and instead of one list it
-gives you three pages. Which page a plugin appears on is decided entirely by
-its state, so a plugin moves from one to the next as you work on it:
-
-| Page | Shows | What you do there |
-|---|---|---|
-| **Activate Plugins** (the default) | plugins that are neither activated nor installed | Click one to activate it. It then disappears from this page |
-| **Install Plugins** | plugins you have activated whose database is not set up yet | Run the install |
-| **Installed Plugins** | plugins that are activated *and* installed | Nothing — this is the "these are live" list |
-
->[!note] The middle page is easy to misread
->**Install Plugins** does not list plugins waiting to be activated. It lists
->ones you have *already* activated that still need their database creating.
->Older versions of this page had these the wrong way round.
-
-### What 1.5 does not have
-
-- **No second plugin directory.** Discovery reads `../lib/plugins/` and nothing
-  else. There is a `FOG_PLUGINSYS_DIR` setting, but FOG overwrites it back to
-  that path every time it looks, so pointing it somewhere safer does not work.
-  Since the installer rewrites the web root on every run, **any plugin you add
-  by hand on 1.5 is removed by your next upgrade** and there is no supported
-  way around it. It is recoverable — the installer copies the old tree to
-  `/home/fog_web_<version>.BACKUP` before deleting it — but it will not be
-  running, and nothing tells you. This is the problem the two-root layout in
-  1.6 exists to fix.
-- **No manifest beyond name, description and icon.** No version, no supported
-  FOG range, no dependency list — so nothing stops you activating a plugin that
-  cannot work on your server, and an upgrade that breaks a plugin gives you no
-  warning.
-- **No upload.** Plugins arrive on disk or not at all.
-- **No migration tracking.** The `plugins` table has no `pSchema` column, so
-  there is no record of which of a plugin's database steps have run. Plugins
-  that need to change their tables later have to do it destructively. The
-  `schema()` contract that makes upgrades non-destructive is 1.6 only.
-
-### The 1.5 plugin set
-
-1.5.x ships four plugins that 1.6 does not:
-
-| Plugin | What it does |
-|---|---|
-| **accesscontrol** | Restrict what users can see and do. **Replaced in 1.6** by native roles and permissions — see [[roles\|Roles & Permissions]] |
-| **example** | The skeleton example plugin, equivalent to 1.6's `helloworld` |
-| **fileintegrity** | Records checksums, modification dates and locations for files on storage nodes |
-| **hoststatus** | Adds a live power/OS status entry to the host edit page. Needs TCP 445 open on the client |
-
-Three 1.6 plugins are not on 1.5: **helloworld** (its `example` is the
-equivalent), **ntfy** and **ou**. The rest of the table above is common to
-both lines.
+>[!info] Looking for FOG 1.5's plugin screens?
+>1.5's plugin system is the same idea with a different, older interface — a
+>three-page activate/install/installed workflow instead of one list, no
+>upload, no version/compatibility manifest, and a different bundled plugin
+>set (it still has `accesscontrol` and `site`, since 1.6's roles and core
+>Sites replace them). See the [[1.5/management/web/plugins|1.5 version]] of
+>this page.
 
 ## Writing your own
 

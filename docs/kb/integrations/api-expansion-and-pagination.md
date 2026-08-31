@@ -16,6 +16,12 @@ tags:
 
 # API Pagination, Expansion & Plugin Items
 
+>[!info] FOG 1.6
+>This page describes FOG 1.6. FOG 1.5 has no equivalent to any of the
+>capabilities on this page — see the
+>[[1.5/kb/integrations/api-expansion-and-pagination|1.5 version]] of this
+>page.
+
 FOG 1.6 adds three **additive, opt-in** capabilities to the REST API described
 in the main [API](api.md) article:
 
@@ -24,11 +30,11 @@ in the main [API](api.md) article:
 * **The `pluginItems` envelope** — a namespaced place where plugins inject their
   associations without ever clobbering core fields.
 
-!!! info "Nothing changes unless you ask for it"
-    These features are strictly additive. If you don't send `?expand=…` and
-    don't page, every existing response keeps exactly the same shape it had
-    before. Scalar foreign keys (for example `imageID`) are always preserved —
-    expansion **adds** an object alongside the key, it never replaces the key.
+>[!info] Nothing changes unless you ask for it
+>These features are strictly additive. If you don't send `?expand=…` and
+>don't page, every existing response keeps exactly the same shape it had
+>before. Scalar foreign keys (for example `imageID`) are always preserved —
+>expansion **adds** an object alongside the key, it never replaces the key.
 
 All examples assume the API is enabled and the request is authenticated. They
 show the `fog-api-token` + `fog-user-token` pair, which works on every version;
@@ -55,17 +61,17 @@ result set is and how to reach the next page.
 | `order`   | DataTables ordering array.                                     | by name | body only |
 | `draw`    | Echoed back verbatim; useful for correlating async responses.  | `0`     | body only |
 
-!!! tip "The easy way: `?length` on the URL"
-    `length` and `start` work directly as query-string parameters, so a plain
-    `GET .../fog/host?length=3` returns the first three hosts. This is the
-    simplest way to page and is what the examples below use. (If you omit
-    `start`, it defaults to `0`.)
+>[!tip] The easy way: `?length` on the URL
+>`length` and `start` work directly as query-string parameters, so a plain
+>`GET .../fog/host?length=3` returns the first three hosts. This is the
+>simplest way to page and is what the examples below use. (If you omit
+>`start`, it defaults to `0`.)
 
-!!! note "search / order / draw still go in the request body"
-    The full DataTables parameters (`search`, `order`, `draw`) are read from the
-    **request body** because of the internal web-server rewrite that fronts the
-    API. Pass them with `curl --data`; the request is still a `GET`. Only
-    `length` and `start` may be sent either way.
+>[!note] search / order / draw still go in the request body
+>The full DataTables parameters (`search`, `order`, `draw`) are read from the
+>**request body** because of the internal web-server rewrite that fronts the
+>API. Pass them with `curl --data`; the request is still a `GET`. Only
+>`length` and `start` may be sent either way.
 
 ### Response envelope
 
@@ -97,10 +103,10 @@ result set is and how to reach the next page.
   echo the path you requested and preserve every other query parameter,
   including `?expand=…`.
 
-!!! info "The full counts never shrink to the page"
-    `recordsTotal` and `recordsFiltered` always describe the **whole** result
-    set, not the current page — the web UI depends on that. Use
-    `recordsReturned` to see how big the page you got back actually is.
+>[!info] The full counts never shrink to the page
+>`recordsTotal` and `recordsFiltered` always describe the **whole** result
+>set, not the current page — the web UI depends on that. Use
+>`recordsReturned` to see how big the page you got back actually is.
 
 ### The `Link` header
 
@@ -275,11 +281,11 @@ companion keys so you can detect truncation:
 * `<token>_truncated` — `true` when the array was capped and therefore does
   **not** contain every item.
 
-!!! note "Expansion is capped at 2500 items per relation"
-    To bound memory, each one-to-many relation inlines at most **2500** items.
-    When more exist, the array holds the first 2500, `<token>_total` reports the
-    real count, and `<token>_truncated` is `true`. Fetch the remainder from that
-    relation's own list endpoint.
+>[!note] Expansion is capped at 2500 items per relation
+>To bound memory, each one-to-many relation inlines at most **2500** items.
+>When more exist, the array holds the first 2500, `<token>_total` reports the
+>real count, and `<token>_truncated` is `true`. Fetch the remainder from that
+>relation's own list endpoint.
 
 ### Depth is one level
 

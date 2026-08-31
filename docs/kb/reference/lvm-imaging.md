@@ -194,7 +194,7 @@ Image was captured with a newer LVM format (LVMFORMAT 3), update FOS
 
 ## See also
 
-- [[images|Image Management]] — image types and their constraints
+- [[management/web/images|Image Management]] — image types and their constraints
 - [[capture-an-image|Capture an Image]]
 - [[deploy-an-image|Deploy an Image]]
 - [[sector-size-imaging|Sector Sizes and Imaging]] — the other geometry

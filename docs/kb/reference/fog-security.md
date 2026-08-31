@@ -39,7 +39,7 @@ You get the following out of the box — no configuration required:
     using a per-host RSA key pair plus AES encryption, so client/server traffic
     isn't sent in the clear.
 -   **API tokens.** The REST API is gated by a server-wide API token plus
-    per-user tokens — see [[api|the API page]].
+    per-user tokens — see [[kb/integrations/api|the API page]].
 
 ## Use HTTPS
 
@@ -52,12 +52,12 @@ trade-offs.
 
 FOG's certificates are split into independent zones (web, Secure Boot, and
 client communication) so that replacing one doesn't put the others at risk —
-see [[pki-zones|FOG's Certificate Zones]] and
-[[pki-glossary|the PKI glossary]]. For setting up a trusted web certificate
+see [[kb/reference/pki-zones|FOG's Certificate Zones]] and
+[[kb/reference/pki-glossary|the PKI glossary]]. For setting up a trusted web certificate
 (including free Let's Encrypt certificates), see
 [[external-ca-lets-encrypt|Using an external CA / Let's Encrypt]]. For
 signing FOS kernels under UEFI Secure Boot, see
-[[secure-boot-signing|Secure Boot signing]].
+[[kb/how-tos/secure-boot-signing|Secure Boot signing]].
 
 ## Hardening recommendations
 
@@ -99,7 +99,7 @@ a fresh server.
 Your `/images` store and the FOG database contain everything an attacker would
 need to clone or tamper with your deployments. Restrict filesystem and share
 access to them, and keep backups (the installer can back up the database during
-upgrades — see [[install-fog-server|Install FOG Server]]).
+upgrades — see [[installation/server/install-fog-server|Install FOG Server]]).
 
 ### Keep FOG updated
 
@@ -110,10 +110,10 @@ them up.
 ## References and further reading
 
 -   [[network-and-firewall-requirements|Network and Firewall Requirements]]
--   [[pki-zones|FOG's Certificate Zones]]
--   [[pki-glossary|PKI & Secure Boot Glossary]]
+-   [[kb/reference/pki-zones|FOG's Certificate Zones]]
+-   [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
 -   [[external-ca-lets-encrypt|Using an external CA / Let's Encrypt]]
--   [[secure-boot-signing|Secure Boot signing]]
--   [[api|FOG API]]
+-   [[kb/how-tos/secure-boot-signing|Secure Boot signing]]
+-   [[kb/integrations/api|FOG API]]
 -   [Firewall configuration (FOG forums)](https://forums.fogproject.org/topic/6162/firewall-configuration)
 -   [SELinux policy discussion (FOG forums)](https://forums.fogproject.org/topic/6154/selinux-policy)

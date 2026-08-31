@@ -13,11 +13,15 @@ tags:
     - secure-boot
 ---
 
+>[!info] Most of these terms also apply to FOG 1.5
+>The zone/CA/leaf vocabulary here is shared with 1.5; only *Setup Mode* is
+>1.6-only. See the [[1.5/kb/reference/pki-glossary|1.5 version]] of this page.
+
 # PKI &amp; Secure Boot glossary
 
 Short definitions for terms used across
-[[pki-zones|FOG's Certificate Zones]],
-[[secure-boot-signing|Secure Boot signing]], and
+[[kb/reference/pki-zones|FOG's Certificate Zones]],
+[[kb/how-tos/secure-boot-signing|Secure Boot signing]], and
 [[external-ca-lets-encrypt|External CA & Let's Encrypt]]. If a term you hit
 in one of those pages isn't here, treat that as a gap in this page, not in
 your understanding.
@@ -26,7 +30,7 @@ your understanding.
 
 One of FOG's independent certificate hierarchies — Web TLS, Client
 Communication, or Secure Boot — each isolating key material by how
-expensive it is to change. See [[pki-zones|FOG's Certificate Zones]].
+expensive it is to change. See [[kb/reference/pki-zones|FOG's Certificate Zones]].
 
 ### Root CA
 
@@ -70,7 +74,7 @@ conversation usually means whichever certificate is currently enrolled.
 The UEFI variable the **firmware** checks every image against, governed by
 `PK`/`KEK` above it. Distinct from `MokList` below, and the distinction
 decides whether a given boot path can see your certificate at all — see
-[[secure-boot-trust-stores|The two trust stores]].
+[[kb/reference/secure-boot-trust-stores|The two trust stores]].
 
 ### `MokList`
 
@@ -92,7 +96,7 @@ The superseded, pre-intermediate model: a single self-signed, `CA:FALSE`,
 code-signing certificate that's simultaneously the enrolled anchor and the
 signer. Existed only as an early proof-of-concept and never shipped in a
 stable release — see the note in
-[[secure-boot-signing#the-old-flat-mok|the Secure Boot guide]] if you're
+[[kb/how-tos/secure-boot-signing#the-old-flat-mok|the Secure Boot guide]] if you're
 recovering from one.
 
 ### Client Communication keypair

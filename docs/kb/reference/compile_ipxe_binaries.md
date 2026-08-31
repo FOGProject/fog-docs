@@ -27,7 +27,7 @@ debug output. This page covers how FOG does it and how to do it yourself.
 >with `--rebuild-ipxe-with-my-ca` or `--install-mode embed-ca`, which is needed
 >solely to embed a **private** CA for HTTPS netboot. A certificate from a public
 >CA needs no rebuild at all — see
->[[netboot-transport-and-pki|Netboot Transport and PKI]].
+>[[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 ## Where the source lives
 
@@ -90,12 +90,12 @@ properties are worth knowing:
 >signing key, so a rebuilt binary is not unsigned — upstream's signed shim will
 >load it once that key is enrolled as a MOK. But it has to be enrolled
 >**first**, before the machine can netboot at all, which reverses the usual
->order. See [[secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
+>order. See [[kb/how-tos/secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
 
 If you build binaries yourself and copy them into `/tftpboot` by hand, they
 carry **no** FOG signature and Secure Boot clients will refuse them. Re-run the
 installer instead, or sign them yourself — see
-[[secure-boot-technical-details|Secure Boot Technical Details]].
+[[kb/reference/secure-boot-technical-details|Secure Boot Technical Details]].
 
 ## Prerequisites for a manual build
 
@@ -185,7 +185,7 @@ recompile.
 
 ## See also
 
-- [[netboot-transport-and-pki|Netboot Transport and PKI]] — when a rebuild is and is not needed
-- [[secure-boot-technical-details|Secure Boot Technical Details]] — how FOG signs what it builds
-- [[pki-zones|FOG PKI Infrastructure]] — the CA you would be embedding
-- [[dhcp-server-settings|DHCP server settings]] — which binary to point clients at
+- [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] — when a rebuild is and is not needed
+- [[kb/reference/secure-boot-technical-details|Secure Boot Technical Details]] — how FOG signs what it builds
+- [[kb/reference/pki-zones|FOG PKI Infrastructure]] — the CA you would be embedding
+- [[installation/network-setup/dhcp-server-settings|DHCP server settings]] — which binary to point clients at

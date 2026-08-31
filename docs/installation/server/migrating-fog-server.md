@@ -26,6 +26,15 @@ tags:
 ---
 # Overview
 
+>[!info] FOG 1.6
+>This page covers migrating to a new FOG 1.6 server (including from an older
+>FOG 1.5.x server, which is a normal case here). Migrating a FOG 1.5.x server
+>to another 1.5.x server — same version, no upgrade — has some differences:
+>no `updatefog.sh`/`--channel`, a narrower certificate CLI, and no
+>`--secureboot-ca-cert`. See the
+>[[1.5/installation/server/migrating-fog-server|1.5 version]] of this page for
+>that case.
+
 This article explains how to move a FOG server's settings, database, and
 images from an old box to a new one. This is safer and more predictable than
 attempting an in-place OS upgrade: you know exactly what's being moved and
@@ -90,7 +99,7 @@ Set a static IP or a DHCP reservation for the server (this can be a
 temporary staging address per the decision above), and create a DNS record
 for it once the address is settled.
 
-To install FOG itself, follow [[install-fog-server|Install FOG Server]] —
+To install FOG itself, follow [[installation/server/install-fog-server|Install FOG Server]] —
 check [[requirements|System Requirements]] first. Installing FOG here is no
 different than any other fresh install; nothing about it changes because
 you're migrating.
@@ -138,7 +147,7 @@ images — all of that lives in the database.
 **Recommended: let the installer produce the backup.** FOG's installer
 automatically backs up the database every time it runs an update, dropping a
 timestamped dump in `$backupPath/fogDBbackups/` (`$backupPath` defaults to
-`/home/`, and is recorded in [[install-fogsettings|.fogsettings]]). On the
+`/home/`, and is recorded in [[management/server/install-fogsettings|.fogsettings]]). On the
 **old** server, re-run the installer (or just answer through an update) to
 produce a fresh dump, then copy the resulting `fog_sql_*.sql` file to the
 **new** server (over the same NFS mount used for images, or with `scp`), and
@@ -167,7 +176,7 @@ installation is actually secured (no root password, a different host, etc.).
 > Because this import brings the old server's IP address and generated
 > passwords with it, the new server's web interface login will be whatever
 > the old server's was. If you don't know it, see
-> [[install-fogsettings|.fogsettings]] for where FOG stores it, or reset it
+> [[management/server/install-fogsettings|.fogsettings]] for where FOG stores it, or reset it
 > from a shell on the new server.
 
 # Migrating the certificate authority
@@ -176,7 +185,7 @@ FOG generates its own certificate authority at install time, and three
 different things depend on it: the web server's HTTPS certificate, the iPXE
 binaries (which are compiled to trust that CA), and the **fog-client**, which
 pins the CA and validates the server against it before acting on any task.
-See [[pki-zones|FOG PKI Infrastructure]] for the full model and
+See [[kb/reference/pki-zones|FOG PKI Infrastructure]] for the full model and
 [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]] for the
 fog-client pinning specifically.
 
@@ -244,7 +253,7 @@ installed with, and the CA private keys are deliberately root-only.
 
 Once the material is in place, a normal installer run leaves it alone: FOG
 only generates a CA when one isn't already there, or when you explicitly pass
-`-C`/`--recreate-CA` (see [[command-line-options]]). Every existing client
+`-C`/`--recreate-CA` (see [[installation/server/command-line-options|command-line-options]]). Every existing client
 keeps trusting the server with no client-side change at all.
 
 >[!warning] Post-PKI: copying only `snapins/ssl` leaves a server that can't issue anything
@@ -273,7 +282,7 @@ keeps trusting the server with no client-side change at all.
 If you'd rather run your own CA going forward — for example to integrate with
 your organization's PKI — supply it at install time with
 `--web-ca-cert`/`--web-ca-key`/`--web-ca-root` instead of using FOG's
-generated one; see [[bringing-your-own-ca|Bringing your own CA]]. That
+generated one; see [[kb/reference/bringing-your-own-ca|Bringing your own CA]]. That
 replaces the **web** certificate only and deliberately leaves fog-client's
 pinned CA alone, which is what makes it safe to do on a live fleet.
 `--external-ca` with `--ca-cert`/`--ca-key`/`--ca-root` is an older spelling of
@@ -301,7 +310,7 @@ and how to confirm it carried over.
 >nothing tells you this happened until a Secure Boot client fails to boot.
 >Every already-enrolled client then needs a physical visit to enroll the new
 >certificate — exactly the repeated work this section exists to avoid. See
->[[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]]
+>[[kb/how-tos/secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]]
 >for what that involves if it does happen.
 
 **Post-PKI: what `/opt/fog/pki/secureboot/` holds.**
@@ -326,7 +335,7 @@ re-enrolling.
 >new Secure Boot CA, so every machine that enrolled the old one must enroll
 >once more. There is no way around that when the enrolled certificate itself
 >changes; it buys you a hierarchy where no future signing-key change needs a
->firmware trip. See [[secure-boot-signing#the-old-flat-mok|The old flat MOK]].
+>firmware trip. See [[kb/how-tos/secure-boot-signing#the-old-flat-mok|The old flat MOK]].
 >This only ever affected very early 1.6 testers — a 1.5.x server has no Secure
 >Boot signing material at all, and nothing to re-enroll.
 
@@ -346,8 +355,8 @@ cd /path/to/fogproject/bin
 ```
 
 See
-[[secure-boot-signing#switching-to-a-key-you-supply|Switching to a key you supply]]
-for what that run does, and [[bringing-your-own-ca|Bringing your own CA]] for
+[[kb/how-tos/secure-boot-signing#switching-to-a-key-you-supply|Switching to a key you supply]]
+for what that run does, and [[kb/reference/bringing-your-own-ca|Bringing your own CA]] for
 building the CA/leaf pair by hand.
 
 After either path, confirm the fingerprint on the new server's **Secure Boot**
@@ -539,10 +548,10 @@ If you have an existing dedicated DHCP server (rather than letting FOG serve
 DHCP itself), point it at the new server:
 
 -   Update DHCP option 66 to the new server's IP or DNS name — see
-    [[dhcp-server-settings|DHCP Server Settings]] for the current
+    [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]] for the current
     configuration examples (Kea, ISC, Windows Server).
 -   If you don't control the DHCP server, or it can't set options 66/67,
-    use [[proxy-dhcp|Proxy DHCP with dnsmasq]] instead.
+    use [[installation/network-setup/proxy-dhcp|Proxy DHCP with dnsmasq]] instead.
 -   If you support both legacy BIOS and UEFI clients, see
     [[bios-and-uefi-co-existence|BIOS and UEFI Co-Existence]].
 
@@ -565,21 +574,21 @@ Once images, the database, and certificate trust are migrated:
 
 # Related articles
 
--   [[install-fog-server|Install FOG Server]]
+-   [[installation/server/install-fog-server|Install FOG Server]]
 -   [[requirements|System Requirements]]
--   [[command-line-options|Fog installer command line options]]
+-   [[installation/server/command-line-options|Fog installer command line options]]
 -   [[change-fog-server-ip-address|Change FOG Server IP Address]]
--   [[install-fogsettings|The .fogsettings file]]
--   [[storage-node|Storage Node Management]]
+-   [[management/server/install-fogsettings|The .fogsettings file]]
+-   [[management/web/storage-node|Storage Node Management]]
 -   [[snapins|Snapin Management]]
--   [[pki-zones|FOG PKI Infrastructure]]
--   [[bringing-your-own-ca|Bringing your own CA]]
+-   [[kb/reference/pki-zones|FOG PKI Infrastructure]]
+-   [[kb/reference/bringing-your-own-ca|Bringing your own CA]]
 -   [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]]
 -   [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
--   [[secure-boot-signing|Secure Boot: signing FOS with your own key]]
+-   [[kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]]
 -   [[secure-boot-setup-mode-enrollment|Secure Boot: Setup Mode enrollment]]
 -   [[fog-security|FOG Security]]
 -   [[troubleshoot-ftp|Troubleshooting FTP]]
--   [[dhcp-server-settings|DHCP Server Settings]]
--   [[proxy-dhcp|Proxy DHCP with dnsmasq]]
+-   [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]]
+-   [[installation/network-setup/proxy-dhcp|Proxy DHCP with dnsmasq]]
 -   [[bios-and-uefi-co-existence|BIOS and UEFI Co-Existence]]

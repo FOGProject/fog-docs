@@ -19,12 +19,12 @@ Reference material i.e. information on settings files, command line options, etc
 
 **Certificates & Secure Boot**
 
-- [[netboot-transport-and-pki|Netboot Transport and PKI]]
-- [[pki-zones|FOG PKI Infrastructure]]
-- [[pki-glossary|PKI Glossary]]
-- [[bringing-your-own-ca|Bringing Your Own CA]]
-- [[secure-boot-trust-stores|Secure Boot: The Two Trust Stores]]
-- [[secure-boot-technical-details|Secure Boot Technical Details]]
+- [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]]
+- [[kb/reference/pki-zones|FOG PKI Infrastructure]]
+- [[kb/reference/pki-glossary|PKI Glossary]]
+- [[kb/reference/bringing-your-own-ca|Bringing Your Own CA]]
+- [[kb/reference/secure-boot-trust-stores|Secure Boot: The Two Trust Stores]]
+- [[kb/reference/secure-boot-technical-details|Secure Boot Technical Details]]
 
 **Imaging internals**
 
@@ -33,9 +33,9 @@ Reference material i.e. information on settings files, command line options, etc
 
 **1.6 feature reference**
 
-- [[csv_import_export|CSV Import / Export]]
+- [[kb/reference/csv_import_export|CSV Import / Export]]
 - [[group-shared-state|Group Shared State]]
-- [[ping-hosts-service|The Ping Hosts Service]]
+- [[kb/reference/ping-hosts-service|The Ping Hosts Service]]
 - [[SFTP|SFTP]]
 
 **Building FOS components**

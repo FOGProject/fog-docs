@@ -12,6 +12,13 @@ tags:
     - pki
 ---
 
+>[!info] Most of this page also applies to FOG 1.5
+>The signing model (CA/leaf split, key locations, rotation) is the same on
+>1.5 — with two differences: 1.5 has no `--secureboot-ca-cert` (an
+>admin-supplied key is always a flat leaf there), and HTTPS and Secure Boot
+>cannot be combined on 1.5 at all. See the
+>[[1.5/kb/how-tos/secure-boot-signing|1.5 version]] of this page.
+
 # Secure Boot: signing FOS with your own key
 
 >[!warning] This is a hands-on procedure
@@ -33,8 +40,8 @@ tags:
 >That split means rotating the signing key — see [Rotating or removing a
 >key](#rotating-or-removing-a-key) — normally doesn't require re-enrolling
 >anything. For the full picture of how this fits alongside FOG's other
->certificates, see [[pki-zones|FOG's Certificate Zones]] and
->[[pki-glossary|the PKI glossary]]. If you're recovering from a much
+>certificates, see [[kb/reference/pki-zones|FOG's Certificate Zones]] and
+>[[kb/reference/pki-glossary|the PKI glossary]]. If you're recovering from a much
 >earlier build that predates this split, see
 >[the old flat MOK](#the-old-flat-mok) below.
 >
@@ -107,7 +114,7 @@ and still get FOG's boot behavior — which is the approach FOG takes.
 The alternative the firmware already provides is **MOK** (Machine Owner Key):
 a per-machine list of extra certificates that *you*, as the physical owner of
 the machine, choose to trust. That is what
-[[secure-boot-mok-enrollment|MOK enrollment]] uses.
+[[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] uses.
 
 >[!info] Why enrollment usually cannot be automated
 >MOK enrollment requires a human at the physical console pressing keys. That
@@ -190,7 +197,7 @@ directory it was itself loaded from; named `ipxe-shimx64.efi`, it loads
 `ipxe.efi`. Whichever you pick, the second-stage file has to be sitting beside
 it under exactly that name. Serving the signed chain and signing the kernels
 is covered in
-[[secure-boot-technical-details|Secure Boot technical details]].
+[[kb/reference/secure-boot-technical-details|Secure Boot technical details]].
 
 ---
 
@@ -211,7 +218,7 @@ flowchart TD
 - **[[secure-boot-setup-mode-enrollment|Setup Mode enrollment]]** (FOG 1.6) —
   the only route that doesn't end with a human pressing keys on every
   machine, if your firmware supports it.
-- **[[secure-boot-mok-enrollment|MOK enrollment]]** — Routes A and B, both
+- **[[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]]** — Routes A and B, both
   requiring a person at the console once per machine, working on any FOG
   release. Neither requires turning Secure Boot off.
 
@@ -221,7 +228,7 @@ flowchart TD
 
 >[!tip] Planning to migrate this server soon? Do that first
 >If a server migration (moving FOG to new hardware, per
->[[migrating-fog-server|Migrating FOG Server]]) is already on your roadmap,
+>[[installation/server/migrating-fog-server|Migrating FOG Server]]) is already on your roadmap,
 >do it **before** setting up Secure Boot here, not after. Migrating an
 >already-enrolled Secure Boot setup is a viable, well-understood path — copy
 >the `pki/secureboot/` directory forward, per
@@ -259,7 +266,7 @@ Every install stages them at `/tftpboot/secureboot/`:
 Two complete chains, so you can switch between them with nothing but a DHCP
 change. `snponly` is the default and the right first choice; `ipxe` is the
 fallback for firmware whose own network stack does not work — see
-[[secure-boot-technical-details|Secure Boot technical details]] for which to
+[[kb/reference/secure-boot-technical-details|Secure Boot technical details]] for which to
 use and how to serve it.
 
 >[!info] Version note
@@ -284,7 +291,7 @@ presence changes nothing for your existing clients.
 >Earlier releases also skipped this directory on any HTTPS install, on the
 >reasoning that Secure Boot and HTTPS could not coexist. They can, and FOG 1.6
 >stages it in **every** install mode. See
->[[netboot-transport-and-pki|Netboot Transport and PKI]].
+>[[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 You can confirm you have a signed binary — a signed one has a non-empty
 certificate table, an unsigned one does not:
@@ -380,7 +387,7 @@ full stop.
 ### Bringing your own key
 
 Want to sign with a key you already control instead of FOG's auto-generated
-one? See [[bringing-your-own-ca|Bringing your own CA]] — it covers generating
+one? See [[kb/reference/bringing-your-own-ca|Bringing your own CA]] — it covers generating
 a leaf, the flat-vs-CA distinction, and getting the CA/leaf split by hand
 without FOG 1.6's `--secureboot-ca-cert`.
 
@@ -444,7 +451,7 @@ cd /path/to/fogproject/bin
 That one run re-signs the FOS kernels with your key and republishes the
 enrollment kit — `MOK.der` and the fingerprint on the **Secure Boot** page —
 from your certificate, in the same pass. Remember this switches you to the
-**flat model** (see [[bringing-your-own-ca|Bringing your own CA]]) unless
+**flat model** (see [[kb/reference/bringing-your-own-ca|Bringing your own CA]]) unless
 you also pass FOG 1.6's `--secureboot-ca-cert`, so every already-enrolled
 client needs re-enrolling — see the danger box below. The paths are recorded
 in `.fogsettings`, so every later upgrade keeps using them without the flags
@@ -479,7 +486,7 @@ That produces a new CA and leaf and re-signs the kernels with the new leaf.
 >step or something to do mid-troubleshooting.
 
 To remove trust for a certificate from a single MOK-enrolled machine, see
-[[secure-boot-mok-enrollment#withdrawing-a-key-from-one-machine|Withdrawing a key from one machine]].
+[[kb/how-tos/secure-boot-mok-enrollment#withdrawing-a-key-from-one-machine|Withdrawing a key from one machine]].
 
 ### If the private key is compromised
 
@@ -517,7 +524,7 @@ would put a root password; see [The signing key](#the-signing-key).
   together than you'd expect.** A web certificate from a **public CA** (e.g.
   Let's Encrypt) on an FQDN gets you HTTPS netboot with no rebuild and no
   loss of the signed Secure Boot shim — see
-  [[netboot-transport-and-pki|Netboot Transport and PKI]] for why. With FOG's
+  [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] for why. With FOG's
   own or your internal CA, a `TRUST=`-rebuilt iPXE is needed, and that binary
   is signed by this server rather than by iPXE — so it costs you a MOK
   enrolment *before* the machine can netboot, not the signed shim itself.
@@ -568,7 +575,7 @@ would put a root password; see [The signing key](#the-signing-key).
 ## Still unverified
 
 If you've found a firmware where Route B's `Enroll key from disk` behaves
-differently than described in [[secure-boot-mok-enrollment|MOK enrollment]],
+differently than described in [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]],
 or tested [[secure-boot-setup-mode-enrollment|Setup Mode]]
 against real firmware, please confirm it — good or bad — with a pull request
 against the relevant page (an inline GitHub edit is fine) or a post on the
@@ -576,13 +583,13 @@ against the relevant page (an inline GitHub edit is fine) or a post on the
 
 ## See also
 
-- [[secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
-- [[secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B
+- [[kb/reference/secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
+- [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — Route C, FOG 1.6
-- [[secure-boot-technical-details|Secure Boot technical details]] — serving the signed chain, signing kernels, signing your own FOS builds
-- [[bringing-your-own-ca|Bringing your own CA]]
-- [[pki-zones|FOG's Certificate Zones]]
-- [[pki-glossary|PKI & Secure Boot Glossary]]
+- [[kb/reference/secure-boot-technical-details|Secure Boot technical details]] — serving the signed chain, signing kernels, signing your own FOS builds
+- [[kb/reference/bringing-your-own-ca|Bringing your own CA]]
+- [[kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
 - [BIOS and UEFI co-existence](bios-and-uefi-co-existence.md)
 - [UEFI boot entries](uefi-boot-entries.md)
