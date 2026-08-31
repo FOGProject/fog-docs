@@ -260,10 +260,16 @@ The report appears in the left-hand menu straight away.
 
 ## Writing a report
 
-A report is one PHP file in `packages/web/lib/reports/`, named after the
-class it declares. `fleet_report.report.php` declares `Fleet_Report`; the
-menu entry, the class name and the file name all have to agree, because
-FOG resolves the class from the file name.
+A report is one PHP file in `packages/web/src/Reports/`, named exactly
+after the class it declares. `Fleet_Report.php` declares `Fleet_Report`;
+the menu entry, the class name and the file name all have to agree,
+because FOG resolves the class from the file's path.
+
+**Keep the underscores.** The menu label, the base64 `f` parameter in the
+report's URL and the permission node are all derived from the file name
+with underscores turned into spaces and the whole thing lowercased — so
+`Fleet_Report` is "fleet report" in all three. Renaming it `FleetReport`
+moves the report to a different URL under a different permission node.
 
 A report needs two methods:
 
@@ -279,6 +285,8 @@ A minimal list report:
 <?php
 
 use FOG\Router\Route;
+
+namespace FOG\Reports;
 
 class Example_Report extends \FOG\Pages\ReportManagement
 {
@@ -311,20 +319,19 @@ class Example_Report extends \FOG\Pages\ReportManagement
 }
 ```
 
-A standalone report file like this one stays in the **global namespace**, and
-extends core by its fully qualified name. FOG finds it by its filename, so the
-class it declares has to answer to that bare name — which a global-namespace
-file does for free.
+A report is found by its **path**, not by its filename, so where it sits
+and what it declares are the same fact written twice. A core report at
+`packages/web/src/Reports/Example_Report.php` declares `namespace
+FOG\Reports;`.
 
-A report shipped **inside a plugin** is different: it lives in the plugin's own
-`reports/` directory and declares that plugin's namespace, so
-`<plugin>/reports/example_report.report.php` declares `namespace
-FOG\Plugins\<Plugin>;`. Nothing else about it changes, and it needs no
-`class_alias()` either — see the plugin development guide.
+A report shipped **inside a plugin** is the same shape with a different
+root: `<plugin>/src/Reports/Example_Report.php` declares `namespace
+FOG\Plugins\<Segment>\Reports;`. Nothing else about it changes, and it
+needs no `class_alias()` — see the plugin development guide.
 
 The table is wired up in JavaScript, which for a plugin lives in the
-plugin's own `js/` directory and for a single uploaded file can be
-echoed inline from `file()`:
+plugin's own `js/` directory and for a standalone report can be echoed
+inline from `file()`:
 
 ``` javascript
 $('#examplereport-table').registerReportTable(

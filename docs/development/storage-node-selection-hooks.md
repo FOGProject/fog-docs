@@ -110,8 +110,8 @@ class MyStorageHook extends Hook
 }
 ```
 
-Register the hook the usual way (a `*.hook.php` file whose class name matches
-the filename, in `lib/hooks/` or inside a plugin's `hooks/` directory).
+Register the hook the usual way: a file whose name is the class name, in
+core's `src/Hooks/` or in a plugin's own `src/Hooks/`.
 
 The `MASTER_STORAGE_NODE` event works identically — just register on that name
 instead.
@@ -125,4 +125,4 @@ two methods is covered, including paths that don't fire the surrounding
 `*_NEW_SETTINGS` events — e.g. host tasking, the boot menu, the task queue, and
 the Capone/Location plugins.
 
-See [`packages/web/lib/fog/storagegroup.class.php`](https://github.com/FOGProject/fogproject/blob/working-1.6/packages/web/lib/fog/storagegroup.class.php).
+See [`packages/web/src/Items/StorageGroup.php`](https://github.com/FOGProject/fogproject/blob/working-1.6/packages/web/src/Items/StorageGroup.php).
