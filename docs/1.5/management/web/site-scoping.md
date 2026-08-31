@@ -18,7 +18,7 @@ tags:
 # Site Scoping (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[management/web/site-scoping|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/web/site-scoping|1.6 version]] of this page for FOG 1.6.
 
 ## Overview
 
@@ -96,4 +96,4 @@ screens are, not just the pages they click through.
 
 FOG 1.6 replaces this plugin with Sites built into core, with roles, grants,
 a catch-all site and user-group support the plugin never had. See
-[[management/web/site-scoping|Site Scoping]] for that model.
+[[1.6/management/web/site-scoping|Site Scoping]] for that model.

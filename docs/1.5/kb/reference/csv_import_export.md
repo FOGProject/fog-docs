@@ -16,7 +16,7 @@ tags:
 # CSV Import / Export (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/reference/csv_import_export|1.6 version]] of this page for FOG
+>See the [[1.6/kb/reference/csv_import_export|1.6 version]] of this page for FOG
 >1.6, which reworks this into a headered-or-positional format with an
 >associations column and name-resolved foreign keys.
 
@@ -24,7 +24,7 @@ FOG can mass-import and export several management object types (hosts,
 images, snapins, groups, printers, users) as CSV files from each object's
 **Export** / **Import** page. This has been part of FOG for a long time — it
 is not a 1.6 addition — but 1.6 reworks the format significantly (see the
-[[kb/reference/csv_import_export|1.6 version]] of this page). This page
+[[1.6/kb/reference/csv_import_export|1.6 version]] of this page). This page
 describes what 1.5 actually does.
 
 >[!warning] This page describes the mechanism, not an exact per-class column list
@@ -85,5 +85,5 @@ columns by name in any order, a trailing `associations` column lets a row
 carry a host's groups/snapins/printers (or a group's member hosts) alongside
 its own fields, and foreign-key columns like `imageID` resolve by name as
 well as by id, so a file built on one server imports cleanly on another. See
-the [[kb/reference/csv_import_export|1.6 version]] of this page for the full
+the [[1.6/kb/reference/csv_import_export|1.6 version]] of this page for the full
 column layouts.

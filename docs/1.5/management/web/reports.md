@@ -16,7 +16,7 @@ tags:
 # Report Management (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[management/web/reports|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/web/reports|1.6 version]] of this page for FOG 1.6.
 
 ## Overview
 
@@ -76,5 +76,5 @@ current line.
 
 If you are starting a new report from scratch, consider writing it against
 the current line's shape instead — see
-[[management/web/reports#Writing a report|Report Management]] — since the
+[[1.6/management/web/reports#Writing a report|Report Management]] — since the
 newer API is where ongoing report development happens.

@@ -33,7 +33,7 @@ outstanding tasks.
 This polling is done via HTTP or HTTPS. When there is a firewall in
 between the FOG Client and Server, make sure you open port 80/tcp (HTTP)
 or port 443/tcp (HTTPS), depending if you use HTTP or HTTPS for
-client/server communications. See [[installation/server/install-fog-server|Install Fog Server]]
+client/server communications. See [[1.6/installation/server/install-fog-server|Install Fog Server]]
 for choosing HTTP vs. HTTPS during install.
 
 Downloading of snapins also is done via HTTP/HTTPS.
@@ -57,14 +57,14 @@ a DHCP server in the same subnet as the client. There are different
 possibilities:
 
 -   Run the DHCP service on the FOG Server. This is one of the
-    installation options offered by [[installation/server/install-fog-server|Install Fog Server]].
+    installation options offered by [[1.6/installation/server/install-fog-server|Install Fog Server]].
     Choose this option if you do not already have a running DHCP server in
     your network.
 -   Run a separate DHCP server. Most networks already have a DHCP server
     running and in enterprise networks dhcp services are commonly
     managed by network equipment, such as firewalls. In this case, make
     sure you configure this DHCP Server to also pass the extra options
-    66 (next-server) and 67 (bootfile name) mentioned in [[installation/network-setup/dhcp-server-settings#Examples of DHCP server configurations|Examples of DHCP server configurations]]
+    66 (next-server) and 67 (bootfile name) mentioned in [[1.6/installation/network-setup/dhcp-server-settings#Examples of DHCP server configurations|Examples of DHCP server configurations]]
 
 If the DCHP server is in another network, make sure you have a 'DHCP
 helper' running in the network. This DHCP helper 'catches' the
@@ -100,7 +100,7 @@ or start a image capture/deployment task.
 
 For this, if not already done, open port 80/tcp (HTTP) or port 443/tcp
 (HTTPS), depending if you use HTTP or HTTPS for client/server
-communications (see [[installation/server/install-fog-server|Install Fog Server]]).
+communications (see [[1.6/installation/server/install-fog-server|Install Fog Server]]).
 
 ### 4. Image capture or deployment via unicast
 

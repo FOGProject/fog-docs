@@ -28,7 +28,7 @@ tags:
 # Overview
 
 >[!info] This page describes FOG 1.5.
->See the [[installation/server/migrating-fog-server|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/installation/server/migrating-fog-server|1.6 version]] of this page for FOG 1.6.
 
 This article explains how to move a FOG 1.5 server's settings, database, and
 images from an old box to a new one. This is safer and more predictable than
@@ -83,7 +83,7 @@ version on the new box than the old one is running. If instead you want to
 move to **FOG 1.6** on the new server, that's a version upgrade rather than a
 same-version migration — most of this page (images, database, certificate
 authority) still applies, but follow
-[[installation/server/migrating-fog-server|the 1.6 version of this page]]
+[[1.6/installation/server/migrating-fog-server|the 1.6 version of this page]]
 for the parts that differ (Secure Boot flags, the newer installer's
 `--web-ca-*` alias, etc.).
 

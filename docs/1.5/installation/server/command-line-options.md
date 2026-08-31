@@ -18,7 +18,7 @@ tags:
 # Fog installer command line options (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[installation/server/command-line-options|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/installation/server/command-line-options|1.6 version]] of this page for FOG 1.6.
 
 The FOG 1.5 installer takes a much shorter list of options than 1.6's. There's
 no `--install-mode`, no `--netboot-proto`, no `--boot-delay`, and `-S`/
@@ -106,7 +106,7 @@ Usage: ./installfog.sh [-h?dEUuHSCKYXTFA] [-f <filename>] [-N <databasename>]
 >switch-delay handling at all (no `--boot-delay`, and nothing corresponding
 >to `10secdelay/`); and its `--uninstall` has no dry-run/force/purge flags —
 >all of those arrived with 1.6. See
->[[installation/server/command-line-options#The full option list|the 1.6 version of this page]]
+>[[1.6/installation/server/command-line-options#The full option list|the 1.6 version of this page]]
 >for what they do there.
 
 ## HTTPS and the -S flag
@@ -125,7 +125,7 @@ There's no way to pick just one of these on 1.5 — no `--install-mode`, no
 `--netboot-proto`, no `--rebuild-ipxe-with-my-ca`, no `--public-web-cert`. If
 you want HTTPS for the web UI without touching netboot, or without paying for
 a local iPXE rebuild, that's a 1.6-only capability; see
-[[installation/server/command-line-options#The four install modes|the 1.6 version of this page]].
+[[1.6/installation/server/command-line-options#The four install modes|the 1.6 version of this page]].
 
 >[!warning] HTTPS and the signed Secure Boot chain are mutually exclusive on 1.5
 >The Secure Boot chain (`secureboot/snponly-shimx64.efi` and friends) is a
@@ -256,4 +256,4 @@ full procedure and for what to do on each client, and
 - [[1.5/installation/server/install-fog-server|Install FOG Server (1.5)]]
 - [[install-fogsettings|The .fogsettings file]] — where these options are remembered
 - [[1.5/installation/network-setup/dhcp-server-settings|DHCP server settings (1.5)]]
-- [[installation/server/command-line-options|The 1.6 version of this page]] — the fuller option set, including `--install-mode`, `--netboot-proto`, `--boot-delay` and the `--purge-*` uninstall flags
+- [[1.6/installation/server/command-line-options|The 1.6 version of this page]] — the fuller option set, including `--install-mode`, `--netboot-proto`, `--boot-delay` and the `--purge-*` uninstall flags

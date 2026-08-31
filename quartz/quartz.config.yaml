@@ -150,6 +150,8 @@ plugins:
           target: development/index
         - text: FOG 1.5
           target: 1.5/index
+        - text: FOG 1.6
+          target: 1.6/index
         - text: Tags
           target: tags/index
     layout:
@@ -166,19 +168,20 @@ plugins:
       # sync with mkdocs.yml's nav for the same directories.
       sortFn: |
         (a, b) => {
-          const topOrder = ["installation", "management", "kb", "development", "1.5"]
+          const topOrder = ["installation", "management", "kb", "development", "1.5", "1.6"]
           const rank = (n) => {
             const idx = topOrder.indexOf(n.slugSegment)
             return idx === -1 ? topOrder.length : idx
           }
 
           const explicitOrder = {
-            "installation/server": ["requirements", "install-fog-server", "command-line-options", "virtualization", "migrating-fog-server"],
-            "installation/network-setup": ["dhcp-server-settings", "proxy-dhcp"],
+            "installation/server": ["requirements", "virtualization"],
             "kb/how-tos": ["capture-an-image", "deploy-an-image", "fog-client-example-tasks", "change-fog-server-ip-address", "bios-and-uefi-co-existence", "uefi-boot-entries", "deploy-dual-boot-multi-disk-image", "add-extend-a-2nd-virtual-hdd", "post-download-scripts"],
-            "management/web": ["users", "roles", "site-scoping", "ldap", "oidc", "ad-integration", "hosts", "groups", "images", "storage-node", "snapins", "printers", "tasks", "multicast", "reports", "dashboard", "service", "config", "plugins"],
+            "management/web": ["users", "roles", "oidc", "ad-integration", "groups", "snapins", "printers", "tasks", "dashboard", "service"],
             "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "reports", "storage-node", "config", "images", "multicast"],
             "1.5/kb/reference": ["pki-zones", "netboot-transport-and-pki", "pki-glossary", "bringing-your-own-ca", "secure-boot-trust-stores", "secure-boot-technical-details", "csv_import_export", "ping-hosts-service", "referential-integrity"],
+            "1.6/management/web": ["plugins", "ldap", "site-scoping", "hosts", "reports", "storage-node", "config", "images", "multicast"],
+            "1.6/kb/reference": ["pki-zones", "netboot-transport-and-pki", "pki-glossary", "bringing-your-own-ca", "secure-boot-trust-stores", "secure-boot-technical-details", "csv_import_export", "ping-hosts-service", "referential-integrity"],
           }
 
           if (!a.isFolder && !b.isFolder) {

@@ -14,14 +14,14 @@ tags:
 # API Pagination, Expansion & Plugin Items (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/integrations/api-expansion-and-pagination|1.6 version]] of this
+>See the [[1.6/kb/integrations/api-expansion-and-pagination|1.6 version]] of this
 >page for FOG 1.6.
 
 **FOG 1.5's REST API has no equivalent to expand or paging.** Pagination
 (`length`/`start`), relation expansion (`?expand=…`), the `recordsTotal` /
 `recordsFiltered` / `nextUrl` response envelope, and the `pluginItems`
 namespaced key for plugin-contributed associations are all FOG 1.6 additions
-— see the [[kb/integrations/api-expansion-and-pagination|1.6 version]] of
+— see the [[1.6/kb/integrations/api-expansion-and-pagination|1.6 version]] of
 this page for what they do there.
 
 ## What this means in practice

@@ -14,7 +14,7 @@ tags:
 # The Ping Hosts Service (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/reference/ping-hosts-service|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/reference/ping-hosts-service|1.6 version]] of this page for FOG 1.6.
 
 `FOGPingHosts` is the background service that answers one question for every
 host in your database: *can the server reach it right now?* Its verdict is
@@ -63,7 +63,7 @@ for either, and no way to change them without editing `ping.class.php`.
   off for a month" and "this host went off ten minutes ago" look identical,
   because nothing records *when* a host was last seen reachable. (1.6 adds a
   Last Successful Ping / Last Client Check-In pair for exactly this reason —
-  see the [[kb/reference/ping-hosts-service|1.6 version]] of this page.)
+  see the [[1.6/kb/reference/ping-hosts-service|1.6 version]] of this page.)
 
 ## Settings reference
 

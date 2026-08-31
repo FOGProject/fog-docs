@@ -18,7 +18,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[management/server/install-fogsettings|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/server/install-fogsettings|1.6 version]] of this page for FOG 1.6.
 
 # The .fogsettings file
 
@@ -48,7 +48,7 @@ prefix and no fixed naming convention; names accumulated one feature at a time
 over the file's history, which is why some read as one long word
 (`storageLocationCapture`) and others are all lowercase
 (`snmysqlpass`). FOG 1.6 renamed all of these into nine `CATEGORY_snake_case`
-namespaces — see [[management/server/install-fogsettings#The 1.6 rename|the 1.6 version of this page]]
+namespaces — see [[1.6/management/server/install-fogsettings#The 1.6 rename|the 1.6 version of this page]]
 if you are planning an upgrade.
 
 **One flag covers both the web UI and netboot.** `httpproto` is the only
@@ -196,7 +196,7 @@ predates most of these.
 | `secureboot` | `1`/`0`. On by default. `--no-secure-boot` turns it off, and the choice is remembered so an upgrade cannot silently re-enable it |
 | `secureBootMokCert` | The Secure Boot **certificate authority** — what gets enrolled in firmware |
 | `secureBootKey`, `secureBootCert` | The **signing** keypair beneath that authority — what actually signs the FOS kernels. Rotating these needs no firmware trip |
-| `sbNameConstraints` | On by default. Adds name constraints to the Secure Boot authority. `--no-sb-name-constraints` turns it off. **This is the opposite of FOG 1.6**, which removed both the setting and the constraints entirely — see [[management/server/install-fogsettings#No name constraints in this zone\|the 1.6 version of this page]] |
+| `sbNameConstraints` | On by default. Adds name constraints to the Secure Boot authority. `--no-sb-name-constraints` turns it off. **This is the opposite of FOG 1.6**, which removed both the setting and the constraints entirely — see [[1.6/management/server/install-fogsettings#No name constraints in this zone\|the 1.6 version of this page]] |
 | `catrust` | `1`/`0`. On by default: anchor FOG's own CA in this server's own trust store, so HTTPS calls the server makes to itself verify. `--no-ca-trust` turns it off |
 
 ### Settings only you can set
@@ -228,7 +228,7 @@ API itself, or the database).
 
 >[!warning] Never copy `.fogsettings` between servers
 >The credentials in it belong to the machine that generated them. To move a
->server, follow [[installation/server/migrating-fog-server|Migrating FOG Server]].
+>server, follow [[1.5/installation/server/migrating-fog-server|Migrating FOG Server]].
 
 ## Editing it by hand
 
@@ -245,6 +245,6 @@ Before you edit:
 
 ## Related
 
-- [[installation/server/install-fog-server|Install FOG Server]] — the install itself
-- [[management/server/install-fogsettings|The .fogsettings file]] — the FOG 1.6 version of this page, including the full old-name → new-name rename table
-- [[installation/server/migrating-fog-server|Migrating FOG Server]]
+- [[1.5/installation/server/install-fog-server|Install FOG Server]] — the install itself
+- [[1.6/management/server/install-fogsettings|The .fogsettings file]] — the FOG 1.6 version of this page, including the full old-name → new-name rename table
+- [[1.5/installation/server/migrating-fog-server|Migrating FOG Server]]

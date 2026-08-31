@@ -32,7 +32,7 @@ tags:
 
 1.  **Group Management** → **Create New Group**
 2.  Hosts section of FOG based on searches, for information on how to
-    create groups, please see [[management/web/hosts#Creating Host Groups]]
+    create groups, please see [[1.6/management/web/hosts#Creating Host Groups]]
 
 ## Managing Groups
 

@@ -17,25 +17,19 @@ Reference material i.e. information on settings files, command line options, etc
 - [[hardware|Supported Hardware]]
 - [[fog-security|FOG Security]]
 
-**Certificates & Secure Boot**
-
-- [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]]
-- [[kb/reference/pki-zones|FOG PKI Infrastructure]]
-- [[kb/reference/pki-glossary|PKI Glossary]]
-- [[kb/reference/bringing-your-own-ca|Bringing Your Own CA]]
-- [[kb/reference/secure-boot-trust-stores|Secure Boot: The Two Trust Stores]]
-- [[kb/reference/secure-boot-technical-details|Secure Boot Technical Details]]
+>[!info] Certificates, Secure Boot, CSV Import/Export and the Ping Hosts
+>Service all differ between FOG 1.5 and 1.6 and are covered separately —
+>see [[1.5/kb/reference/index|the 1.5 pages]] or
+>[[1.6/kb/reference/index|the 1.6 pages]].
 
 **Imaging internals**
 
 - [[lvm-imaging|LVM and Imaging]]
 - [[sector-size-imaging|Sector Sizes and Imaging]]
 
-**1.6 feature reference**
+**1.6-only features**
 
-- [[kb/reference/csv_import_export|CSV Import / Export]]
 - [[group-shared-state|Group Shared State]]
-- [[kb/reference/ping-hosts-service|The Ping Hosts Service]]
 - [[SFTP|SFTP]]
 
 **Building FOS components**

@@ -14,7 +14,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/reference/bringing-your-own-ca|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/reference/bringing-your-own-ca|1.6 version]] of this page for FOG 1.6.
 
 # Bringing your own CA (1.5)
 
@@ -44,7 +44,7 @@ unfamiliar.
 ```
 
 This works identically to the 1.6 line — see
-[[kb/reference/bringing-your-own-ca#web-zone|the 1.6 version of this section]]
+[[1.6/kb/reference/bringing-your-own-ca#web-zone|the 1.6 version of this section]]
 for the same commands and gotchas. There is no `--external-ca` predecessor
 distinction to worry about on 1.5; `--web-ca-*` is the only mechanism.
 

@@ -19,7 +19,7 @@ tags:
 # Install FOG server (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[installation/server/install-fog-server|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/installation/server/install-fog-server|1.6 version]] of this page for FOG 1.6.
 
 Before rushing into installing FOG you want to make sure you check the [[requirements]]
 The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
@@ -72,7 +72,7 @@ release.
 > branch. It's a bigger jump than stable → dev-branch — a restructured PKI
 > layout, Secure Boot support by default, and more — and like dev-branch it's
 > a one-way move: once a server's database has the 1.6 schema applied it
-> cannot go back to 1.5. See [[installation/server/install-fog-server|the 1.6 install page]] if that's what you're after.
+> cannot go back to 1.5. See [[1.6/installation/server/install-fog-server|the 1.6 install page]] if that's what you're after.
 
 If you want the latest and greatest for 1.5.x, would like to contribute to
 testing new features, or were instructed to install the dev-branch version to

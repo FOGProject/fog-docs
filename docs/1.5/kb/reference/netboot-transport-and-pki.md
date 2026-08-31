@@ -16,7 +16,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/reference/netboot-transport-and-pki|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/reference/netboot-transport-and-pki|1.6 version]] of this page for FOG 1.6.
 
 # Netboot transport and PKI (1.5)
 
@@ -59,7 +59,7 @@ redirect, or netboot — all three come from this one value:
 Compare that to 1.6's four independent settings
 (`WEB_url_proto`, `BOOT_url_proto`, `BOOT_rebuild_ipxe_with_my_ca`,
 `WEB_https_redirect`) in
-[[kb/reference/netboot-transport-and-pki#the-settings-underneath|the 1.6 version of this page]] —
+[[1.6/kb/reference/netboot-transport-and-pki#the-settings-underneath|the 1.6 version of this page]] —
 on 1.5 none of those exist as separate knobs. Setting `httpproto=https` turns
 all of them on together, with nothing in between.
 
@@ -97,7 +97,7 @@ when you specifically opted into embedding a private CA.
 >Secure Boot signing for kernel integrity instead of on HTTPS.
 
 This is the exact limitation FOG 1.6 removed. See
-[[kb/reference/netboot-transport-and-pki#secure-boot-is-prepared-in-every-mode|the 1.6 version of this page]]
+[[1.6/kb/reference/netboot-transport-and-pki#secure-boot-is-prepared-in-every-mode|the 1.6 version of this page]]
 for how: 1.6 stages the Secure Boot chain in every mode, because it stopped
 tying the decision to whether the netboot binary needed a local rebuild at
 all — 1.6 gets HTTPS netboot with no rebuild whenever the certificate chains
@@ -137,5 +137,5 @@ transport.
 - [[1.5/kb/reference/bringing-your-own-ca|Bringing Your Own CA (1.5)]] — replacing FOG's authorities per zone
 - [[1.5/kb/how-tos/secure-boot-signing|Secure Boot Signing (1.5)]] — how the signed chain is put together
 - [[1.5/kb/how-tos/secure-boot-mok-enrollment|Secure Boot MOK Enrollment (1.5)]] — enrolling this server's key on a client
-- [[installation/server/command-line-options|Fog installer command line options]] — every option named here (not yet forked for 1.5; check flags against `installfog.sh --help` on your branch)
+- [[1.5/installation/server/command-line-options|Fog installer command line options (1.5)]] — every option named here
 - [[1.5/management/server/install-fogsettings|The .fogsettings file (1.5)]] — where `httpproto` persists

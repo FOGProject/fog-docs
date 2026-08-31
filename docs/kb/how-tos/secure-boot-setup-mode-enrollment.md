@@ -18,7 +18,7 @@ tags:
 
 >[!info] FOG 1.6
 >This page is a FOG 1.6 addition. On earlier releases, use
->[[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] instead — it needs a human at
+>[[1.6/kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] instead — it needs a human at
 >the console, but works everywhere.
 
 >[!tip] Your firmware probably calls it "Custom"
@@ -31,19 +31,19 @@ tags:
 Many firmwares support **Setup Mode** — a state that lets you write
 certificates directly into UEFI's own trust database (`PK`, `KEK`, `db`),
 bypassing shim and MokManager entirely. This is Route C:
-[[kb/how-tos/secure-boot-mok-enrollment|Routes A and B]] both end at a human pressing
+[[1.6/kb/how-tos/secure-boot-mok-enrollment|Routes A and B]] both end at a human pressing
 keys, because MOK enrollment is
 *designed* to require one. Route C sidesteps that by not using MOK at all: if
 the platform is in Setup Mode, the running OS can write the real Secure Boot
 databases directly, and FOS does it unattended.
 
 For the concepts behind any of this (why signing is needed, the CA/leaf
-split), start at [[kb/how-tos/secure-boot-signing|Secure Boot signing]].
+split), start at [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]].
 
 ## Running it
 
 Schedule the **Enroll Secure Boot Key** task exactly as in
-[[kb/how-tos/secure-boot-mok-enrollment#route-b--from-the-fog-boot-menu-no-operating-system-and-no-usb-stick|Route B]].
+[[1.6/kb/how-tos/secure-boot-mok-enrollment#route-b--from-the-fog-boot-menu-no-operating-system-and-no-usb-stick|Route B]].
 FOS decides which route to take by itself — it reads the firmware state
 at boot, and only takes this path if it finds Setup Mode. Anything else falls
 back to staging a MOK request, so scheduling the task against a mixed fleet
@@ -68,7 +68,7 @@ booting anything, exactly as it was found.
 `db.auth` embeds the **Secure Boot CA** — the intermediate, not the signing
 leaf — alongside Microsoft's own certificates, which is what keeps leaf
 rotation safe for Setup-Mode-enrolled clients too, the same as MOK
-enrollment. See [[kb/reference/pki-zones#secure-boot|Secure Boot]] for why that split
+enrollment. See [[1.6/kb/reference/pki-zones#secure-boot|Secure Boot]] for why that split
 matters.
 
 Success is confirmed by `SetupMode` flipping 1 → 0 — the firmware accepting the
@@ -148,7 +148,7 @@ predates a name-constraints extension that the Secure Boot CA briefly carried
 and no longer does: FOG 1.6 took constraints off this zone entirely, precisely
 because a critical extension firmware mishandles costs a trip to every machine.
 There is no flag to re-enable them — `--no-sb-name-constraints` was removed with
-the setting behind it. See [[kb/reference/pki-zones#name-constraints|Name constraints]].
+the setting behind it. See [[1.6/kb/reference/pki-zones#name-constraints|Name constraints]].
 
 >[!note] Validation status
 >Route C has been validated end to end in VirtualBox: Setup Mode → task
@@ -236,10 +236,10 @@ Full context, and what `db` enrolment unlocks beyond one machine, is in
 
 ## See also
 
-- [[kb/reference/secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
-- [[kb/how-tos/secure-boot-signing|Secure Boot signing]] — start here for the concepts
-- [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — the human-at-the-console alternative, works on any release
+- [[1.6/kb/reference/secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
+- [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]] — start here for the concepts
+- [[1.6/kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — the human-at-the-console alternative, works on any release
 - [[local-esp-boot|Boot FOG from a machine's own ESP]] — where `db` enrolment removes the shim entirely
-- [[kb/reference/secure-boot-technical-details|Secure Boot technical details]]
-- [[kb/reference/pki-zones|FOG's Certificate Zones]]
-- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
+- [[1.6/kb/reference/secure-boot-technical-details|Secure Boot technical details]]
+- [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[1.6/kb/reference/pki-glossary|PKI & Secure Boot Glossary]]

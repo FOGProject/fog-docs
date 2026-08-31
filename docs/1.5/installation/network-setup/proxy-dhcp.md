@@ -24,7 +24,7 @@ tags:
 # Proxy DHCP with dnsmasq (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[installation/network-setup/proxy-dhcp|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/installation/network-setup/proxy-dhcp|1.6 version]] of this page for FOG 1.6.
 
 >[!important] 1.5's boot file names match 1.6's
 >FOG 1.5's iPXE binaries come from the same release packaging as 1.6's, so
@@ -274,7 +274,7 @@ covers the Secure Boot machines and costs the others nothing.
 >point at there. If this server is on HTTPS, use FOG's own unsigned builds
 >(`snponly.efi`, `i386-efi/snponly.efi`, `arm64-efi/snponly.efi`) for the
 >`dhcp-boot`/`pxe-service` lines instead of the `secureboot/` ones above. This
->is a difference from 1.6, where Secure Boot and HTTPS can be combined; see [[installation/network-setup/proxy-dhcp#secure-boot-and-proxydhcp|the 1.6 version of this section]].
+>is a difference from 1.6, where Secure Boot and HTTPS can be combined; see [[1.6/installation/network-setup/proxy-dhcp#secure-boot-and-proxydhcp|the 1.6 version of this section]].
 
 ### The optimal configuration
 

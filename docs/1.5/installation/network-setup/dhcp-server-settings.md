@@ -23,7 +23,7 @@ tags:
 # DHCP Server Settings (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[installation/network-setup/dhcp-server-settings|1.6 version]] of
+>See the [[1.6/installation/network-setup/dhcp-server-settings|1.6 version]] of
 >this page for FOG 1.6.
 
 If you do not use FOG to provide DHCP services in your network (which is a very common and completely supported configuration), then you need to configure the existing DHCP server to use fog as the tftp server to get the pxe boot files from, and you need to configure what boot file to use.
@@ -99,7 +99,7 @@ You can find other pxe boot files in you `/tftpboot` directory on your fogserver
 
 On FOG 1.6, every UEFI binary is built without its iPXE boot script compiled
 in, so it fetches a plain-text `autoexec.ipxe` over TFTP and runs that — see
-the [[installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script|1.6 version of this section]].
+the [[1.6/installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script|1.6 version of this section]].
 **1.5 works the other way round for FOG's own builds:**
 
 | Binary | Script | Editable without a rebuild? |

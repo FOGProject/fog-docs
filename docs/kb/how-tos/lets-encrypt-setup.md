@@ -116,7 +116,7 @@ to `root:root 0600`, which would break a renewal hook running as anyone else.
 >failed in exactly this manner when it was forgotten — silently, under `-y`.
 
 **"This certificate chains to a public root" is a setting**, because nothing on
-disk can tell FOG that. Edit [[management/server/install-fogsettings|/opt/fog/.fogsettings]]:
+disk can tell FOG that. Edit [[1.6/management/server/install-fogsettings|/opt/fog/.fogsettings]]:
 
 ```bash
 PKI_web_cert_publicly_trusted='yes'
@@ -167,7 +167,7 @@ cd /path/to/fogproject/bin
 `PKI_web_cert_publicly_trusted=yes`, and leaves
 `BOOT_rebuild_ipxe_with_my_ca=no` — which is the whole point, since a public
 certificate needs no rebuild. See
-[[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
+[[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 The installer will not re-issue your leaf, will not touch its key permissions,
 and will refuse to write a boot script that chains to an IP over HTTPS rather
@@ -218,7 +218,7 @@ Wire that into your client's post-renewal hook.
 The certificate zones were separated in 1.6: the **Web TLS** certificate this
 page swaps out, and the **Client Communication** certificate fog-client uses,
 are no longer the same material.
-[[kb/reference/pki-zones|FOG PKI Infrastructure]] records the cost of changing the Web TLS
+[[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]] records the cost of changing the Web TLS
 zone as *"None. Browsers just need the issuer trusted."*
 
 But [[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]] also
@@ -239,8 +239,8 @@ Netboot and browser trust are unaffected either way.
 
 ## See also
 
-- [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] — why a public certificate needs no iPXE rebuild
+- [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] — why a public certificate needs no iPXE rebuild
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]] — the reference behind this walkthrough
-- [[kb/reference/pki-zones|FOG PKI Infrastructure]] — the three certificate zones
-- [[management/server/install-fogsettings|The .fogsettings file]] — `PKI_web_cert_publicly_trusted` and the canonical certificate paths
-- [[installation/server/command-line-options|Fog installer command line options]] — `--install-mode`, `--hostname`
+- [[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]] — the three certificate zones
+- [[1.6/management/server/install-fogsettings|The .fogsettings file]] — `PKI_web_cert_publicly_trusted` and the canonical certificate paths
+- [[1.6/installation/server/command-line-options|Fog installer command line options]] — `--install-mode`, `--hostname`

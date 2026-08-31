@@ -14,7 +14,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[management/fos/using-fog-boot-menu|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/fos/using-fog-boot-menu|1.6 version]] of this page for FOG 1.6.
 
 # Using the FOG Boot Menu
 
@@ -98,7 +98,7 @@ entries and background on top of the built-in commands below.
 >     form.
 >
 > -   Image IDs can be found in the management console, in the
->     [[management/web/images| Image Management]] section.
+>     [[1.5/management/web/images| Image Management]] section.
 >
 > -   
 >
@@ -133,12 +133,12 @@ entries and background on top of the built-in commands below.
 >
 > -   The full procedure, including what to do if you would rather sign
 >     with your own key, is in
->     [[kb/how-tos/secure-boot-signing| Secure Boot: signing FOS with your own key]].
+>     [[1.5/kb/how-tos/secure-boot-signing| Secure Boot: signing FOS with your own key]].
 
 >[!warning] Not schedulable from Task Scheduling on FOG 1.5
 >FOG 1.6 added a matching **Enroll Secure Boot Key** task type, so the same
 >action can be scheduled from **Task Scheduling** against a host or a whole
 >group and runs unattended on the next PXE boot — see the
->[[management/fos/using-fog-boot-menu#Enroll Secure Boot Key|1.6 version of this page]].
+>[[1.6/management/fos/using-fog-boot-menu#Enroll Secure Boot Key|1.6 version of this page]].
 >On FOG 1.5 this action is boot-menu-only: it has to be typed at the `boot:`
 >prompt, or reached from the FOG Configuration page, on each machine.

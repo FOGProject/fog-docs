@@ -17,7 +17,7 @@ tags:
 # Multicast Sessions (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[management/web/multicast|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/web/multicast|1.6 version]] of this page for FOG 1.6.
 
 ## Overview
 
@@ -186,5 +186,5 @@ missing the image file.
 
 ## See also
 
-- [[management/web/images|Image Management]]
-- [[management/web/storage-node|Storage Node Management]]
+- [[1.5/management/web/images|Image Management]]
+- [[1.5/management/web/storage-node|Storage Node Management]]

@@ -14,7 +14,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/reference/pki-glossary|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/reference/pki-glossary|1.6 version]] of this page for FOG 1.6.
 
 # PKI &amp; Secure Boot glossary (1.5)
 
