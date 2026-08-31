@@ -277,11 +277,10 @@ A minimal list report:
 
 ``` php
 <?php
-namespace FOG;
 
 use FOG\Router\Route;
 
-class Example_Report extends ReportManagement
+class Example_Report extends \FOG\Pages\ReportManagement
 {
     public function file()
     {
@@ -310,9 +309,18 @@ class Example_Report extends ReportManagement
         return (array) json_decode(Route::getData(), true);
     }
 }
-
-class_alias(__NAMESPACE__ . '\\Example_Report', 'Example_Report');
 ```
+
+A standalone report file like this one stays in the **global namespace**, and
+extends core by its fully qualified name. FOG finds it by its filename, so the
+class it declares has to answer to that bare name — which a global-namespace
+file does for free.
+
+A report shipped **inside a plugin** is different: it lives in the plugin's own
+`reports/` directory and declares that plugin's namespace, so
+`<plugin>/reports/example_report.report.php` declares `namespace
+FOG\Plugins\<Plugin>;`. Nothing else about it changes, and it needs no
+`class_alias()` either — see the plugin development guide.
 
 The table is wired up in JavaScript, which for a plugin lives in the
 plugin's own `js/` directory and for a single uploaded file can be
