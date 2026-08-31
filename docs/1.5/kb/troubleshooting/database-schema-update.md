@@ -14,7 +14,7 @@ tags:
 # Database Schema Updates (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/troubleshooting/database-schema-update|1.6 version]] of this
+>See the [[1.6/kb/troubleshooting/database-schema-update|1.6 version]] of this
 >page for FOG 1.6.
 
 Every FOG release ships with a schema version. When the schema version in
@@ -92,7 +92,7 @@ works normally too.
 >[!note] Compare with 1.6
 >1.6 replaces this flag with a full roles system, and the schema update
 >itself is what creates those roles on an upgrade — see the
->[[kb/troubleshooting/database-schema-update|1.6 version]] of this page. On
+>[[1.6/kb/troubleshooting/database-schema-update|1.6 version]] of this page. On
 >this version there is nothing to migrate: the account-type check has always
 >been how authorization works here.
 

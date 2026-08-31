@@ -16,7 +16,7 @@ tags:
 # Fog Configuration (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[management/web/config|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/web/config|1.6 version]] of this page for FOG 1.6.
 
 ## Multicast Settings
 
@@ -53,7 +53,7 @@ image. To change the key map, go to:
 > Other Settings → FOG Settings → General Settings → FOG_KEYMAP
 
 If left blank it defaults to **us**. See the
-[[management/web/config#Boot Image Key Map|current line's page]] for the
+[[1.6/management/web/config#Boot Image Key Map|current line's page]] for the
 full list of supported keymap values — the list itself has not changed.
 
 ## No settings cache

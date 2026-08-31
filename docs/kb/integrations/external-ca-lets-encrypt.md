@@ -22,7 +22,7 @@ tags:
 
 FOG generates its own self-signed root CA at install time, and issues a
 separate intermediate for the web server and for fog-client's encrypted
-check-in — see [[kb/reference/pki-zones|FOG's Certificate Zones]] for the full picture.
+check-in — see [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]] for the full picture.
 This page covers replacing the **web certificate** with your own CA or with
 Let's Encrypt: the fog-client pinning that makes this non-trivial, the
 `--external-ca` mechanism, and the ACME/Let's Encrypt recipes. iPXE's own
@@ -79,7 +79,7 @@ Let's Encrypt certificate without any FOG-side change — see below.
 
 | Consumer | What it uses | Where it comes from |
 |----------|--------------|---------------------|
-| **Web server (Apache/Nginx)** | the web leaf certificate, served over HTTPS | Issued by the Web CA — see [[kb/reference/pki-zones]] |
+| **Web server (Apache/Nginx)** | the web leaf certificate, served over HTTPS | Issued by the Web CA — see [[1.6/kb/reference/pki-zones]] |
 | **iPXE** | Validates the vhost's actual leaf cert against whatever it can chain to — FOG's own CA (if baked in) **or** any publicly-trusted CA via a built-in fallback | See [How iPXE validates HTTPS](#how-ipxe-validates-https) |
 | **fog-client** | Pins `ca.cert.der` and requires the server cert to chain to it | Downloaded from `/management/other/ca.cert.der` |
 
@@ -101,8 +101,8 @@ section.
 >separately. Nothing here (`--external-ca`, a Let's Encrypt cert, or
 >anything else on this page) touches Secure Boot signing, and nothing about
 >Secure Boot touches the certificate this page is about. See
->[[kb/how-tos/secure-boot-signing|Secure Boot signing]] and
->[[kb/reference/pki-glossary|the PKI glossary]] if the terms here and there don't line up
+>[[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]] and
+>[[1.6/kb/reference/pki-glossary|the PKI glossary]] if the terms here and there don't line up
 >for you.
 
 ---
@@ -138,7 +138,7 @@ status. This assumes the booting client can reach `ca.ipxe.org`, which holds
 for most sites — outbound internet access is the common case, not the
 exception. Only on a fully air-gapped network does that fallback not fire,
 in which case FOG's own baked-in CA is what makes HTTPS boot work instead —
-see [[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]]. **fog-client remains
+see [[1.6/kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]]. **fog-client remains
 the actual constraint on using public Let's Encrypt** — see the rest of this
 page.
 
@@ -175,14 +175,14 @@ Enable it with `--external-ca`, or answer the interactive prompt during install:
 >[!info] FOG 1.6 adds a per-zone equivalent
 >`--web-ca-cert`/`--web-ca-key`/`--web-ca-root` do the same thing under a
 >name that makes clear which zone they target — see
->[[kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]]. `--external-ca`
+>[[1.6/kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]]. `--external-ca`
 >predates the zone split and has always effectively meant "the Web zone."
 >Whether both forms continue to coexist long-term isn't settled; treat
 >`--web-ca-*` as the currently-recommended form if it's available to you,
 >and `--external-ca` as the form to reach for otherwise. Either way, this
 >only replaces the **Web** zone — the Client Communication keypair is not
 >replaceable this way; see
->[[kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]] for why.
+>[[1.6/kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]] for why.
 
 What the installer does with these files:
 
@@ -199,7 +199,7 @@ What the installer does with these files:
 5. Passes the full chain to the web server, and — only if you asked for the
    iPXE rebuild with `--rebuild-ipxe-with-my-ca` or `--install-mode embed-ca`
    — to the iPXE build. A public certificate needs no rebuild; see
-   [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
+   [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 The relevant values are persisted to `.fogsettings` so re-running the
 installer reuses them. If the source files are no longer readable on a
@@ -288,7 +288,7 @@ correct fallback at that point.
 >silently stopped every client authenticating, with nothing in the logs
 >connecting the two. That coupling is gone — the web server has its own
 >keypair now, and writing an ACME key over it no longer touches client
->authentication at all. See [[kb/reference/pki-zones|FOG's Certificate Zones]] for the
+>authentication at all. See [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]] for the
 >full separation.
 
 Why this is better than public LE: **the intermediate you pin is stable and
@@ -341,7 +341,7 @@ trust:
 
 - **Leaf renewal, same pinned CA** (the normal step-ca case, or FOG's own
   `renewal-helper --zone web` if you're not on an ACME-managed leaf — see
-  [[kb/reference/pki-zones#leaf-renewal|Leaf renewal]]): just drop the new leaf where the
+  [[1.6/kb/reference/pki-zones#leaf-renewal|Leaf renewal]]): just drop the new leaf where the
   web server reads it and reload the web server. Clients and iPXE are
   unaffected.
 - **Pinned CA (intermediate) changes** (public LE rotation, or you rotate
@@ -397,10 +397,10 @@ the embedded CA changed.
 
 ## See also
 
-- [[kb/reference/pki-zones|FOG's Certificate Zones]]
-- [[kb/reference/bringing-your-own-ca|Bringing your own CA]]
-- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
-- [[kb/how-tos/secure-boot-signing|Secure Boot signing]]
+- [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[1.6/kb/reference/bringing-your-own-ca|Bringing your own CA]]
+- [[1.6/kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
+- [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]]
 
 *Related: this is the supported answer to the "Let's Encrypt support"
 request (issue #633); the underlying external/intermediate CA installer

@@ -143,5 +143,5 @@ machine that is registered *and* inventoried to see the widest set.
 ## Related
 
 - [[kb/customization/ipxe|Customizing FOG iPXE Settings]] — adding custom entries and a custom background
-- [[management/fos/using-fog-boot-menu|Using the FOG Boot Menu]] — the built-in menu entries
+- [[1.6/management/fos/using-fog-boot-menu|Using the FOG Boot Menu]] — the built-in menu entries
 - [iPXE command reference](https://ipxe.org/cmd) — upstream, for the commands themselves

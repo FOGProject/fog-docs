@@ -70,7 +70,7 @@ Password tab appears on the next page load, and you can set a password.
 >Whether the account can still sign in through its provider once you do
 >this depends on the provider:
 >
->- **[[management/web/ldap|LDAP]]** sign-in **stops working**. FOG only accepts LDAP's
+>- **[[1.6/management/web/ldap|LDAP]]** sign-in **stops working**. FOG only accepts LDAP's
 >  word for an account that carries the source stamp — that restriction is
 >  what stops a plugin authenticating a local account — so removing the
 >  stamp removes the LDAP login too.

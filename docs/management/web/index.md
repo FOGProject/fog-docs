@@ -15,6 +15,12 @@ tags:
 
 Documentation related to how to use the web management ui.
 
+>[!info] Site Scoping, LDAP, Host Management, Image Management, Storage Node
+>Management, Multicast Sessions, Report Management, Fog Configuration and
+>Plugins differ between FOG 1.5 and 1.6 and are covered separately — see
+>[[1.5/management/web/index|the 1.5 pages]] or
+>[[1.6/management/web/index|the 1.6 pages]].
+
 **Using the Interface**
 
 - [[filtering-lists|Filtering Lists]]
@@ -27,30 +33,21 @@ Documentation related to how to use the web management ui.
 
 - [[users|User Management]]
 - [[roles|Roles & Permissions]]
-- [[management/web/site-scoping|Site Scoping]]
-- [[management/web/ldap|LDAP Authentication]]
 - [[oidc|OpenID Connect Sign-in]]
 - [[local-login|The Local Login Page]]
 - [[ad-integration|Active Directory Integration]]
 
 **Imaging Objects**
 
-- [[management/web/hosts|Host Management]]
 - [[groups|Group Management]]
-- [[management/web/images|Image Management]]
-- [[management/web/storage-node|Storage Node Management]]
 - [[snapins|Snapin Management]]
 - [[printers|Printer Management]]
 
 **Operations**
 
 - [[tasks|Task Management]]
-- [[management/web/multicast|Multicast Sessions]]
-- [[management/web/reports|Report Management]]
 
 **System**
 
 - [[dashboard|Dashboard]]
 - [[service|Fog Service (aka Client) Management]]
-- [[management/web/config|Fog Configuration]]
-- [[management/web/plugins|Plugins]]

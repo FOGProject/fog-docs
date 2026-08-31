@@ -37,7 +37,7 @@ that speaks OpenID Connect — instead of a password stored in FOG.
 >and does not exist on 1.5. Its manifest refuses to activate on anything
 >older.
 
-It differs from [[management/web/ldap|LDAP Authentication]] in one way that matters
+It differs from [[1.6/management/web/ldap|LDAP Authentication]] in one way that matters
 before anything else: **nothing types a password into FOG**. The browser
 is redirected to your provider, the person signs in there, and comes
 back carrying a signed token. FOG never sees the credential, so there is

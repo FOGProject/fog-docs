@@ -13,7 +13,7 @@ tags:
 # Primary Mac Address Issues (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/troubleshooting/primary-mac-address-issues|1.6 version]] of
+>See the [[1.6/kb/troubleshooting/primary-mac-address-issues|1.6 version]] of
 >this page for FOG 1.6.
 
 For each Host in FOG, a "primary mac" is used as the primary key/unique
@@ -162,7 +162,7 @@ Add-FogHostMac -hostid 123 -macaddress "12:34:56:78:90" -primary -forceupdate
 >[!tip]
 >You can set the description field on Windows hosts with the API so that this
 >output is more helpful in these scenarios. See also
->[[management/web/hosts#MAC address|MAC address]].
+>[[1.5/management/web/hosts#MAC address|MAC address]].
 
 ### Fix no Primary Mac in the database
 

@@ -16,7 +16,7 @@ tags:
 # Referential Integrity (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/reference/referential-integrity|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/reference/referential-integrity|1.6 version]] of this page for FOG 1.6.
 
 FOG 1.5's database does not record that one row points at another. There is no
 foreign key enforcement in the schema at all — nothing stops you deleting an
@@ -60,7 +60,7 @@ to stop it and nothing to warn about it afterward.
 >[!note]
 >FOG 1.6 declares these relationships in the database itself, so MariaDB
 >enforces cascades, reference-clearing, and outright refusals on every delete
->— see the [[kb/reference/referential-integrity|1.6 version]] of this page.
+>— see the [[1.6/kb/reference/referential-integrity|1.6 version]] of this page.
 >The reasoning behind that change, and the full classification of every
 >relationship, are in the `fogproject` repository's
 >`docs/adr/0031-referential-integrity-is-declared-in-the-database.md`.

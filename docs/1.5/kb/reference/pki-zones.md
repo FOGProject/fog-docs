@@ -15,7 +15,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/reference/pki-zones|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/reference/pki-zones|1.6 version]] of this page for FOG 1.6.
 
 # FOG PKI infrastructure (1.5)
 

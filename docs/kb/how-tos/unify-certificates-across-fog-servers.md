@@ -21,9 +21,9 @@ five things to redo whenever one is rebuilt.
 
 This guide covers the three ways to collapse that to one, and what each costs.
 It applies the Web zone options described in
-[[kb/reference/bringing-your-own-ca|Bringing your own CA]] across several servers at once;
-see [[kb/reference/pki-zones|FOG's Certificate Zones]] for what a "zone" is and
-[[kb/reference/pki-glossary|the PKI glossary]] if a term here is unfamiliar.
+[[1.6/kb/reference/bringing-your-own-ca|Bringing your own CA]] across several servers at once;
+see [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]] for what a "zone" is and
+[[1.6/kb/reference/pki-glossary|the PKI glossary]] if a term here is unfamiliar.
 
 ---
 
@@ -91,7 +91,7 @@ then rolls up to the hub's CA, so one import covers all of them.
 >[!info] Update every server's installer first
 >This uses `--web-ca-cert`/`--web-ca-key`/`--web-ca-root`. Pull the latest
 >installer on **every** server before you start, or the options will not be
->recognized. See [[installation/server/command-line-options|Fog installer command line options]].
+>recognized. See [[1.6/installation/server/command-line-options|Fog installer command line options]].
 
 ### Step 1 — issue a CA for each server, on the hub
 
@@ -322,10 +322,10 @@ Use a different CA, or Option A.
 
 ## See also
 
-- [[kb/reference/bringing-your-own-ca|Bringing your own CA]] — the per-zone mechanism this builds on
-- [[kb/reference/pki-zones|FOG's Certificate Zones]]
-- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
+- [[1.6/kb/reference/bringing-your-own-ca|Bringing your own CA]] — the per-zone mechanism this builds on
+- [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[1.6/kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
-- [[installation/server/command-line-options|Fog installer command line options]]
+- [[1.6/installation/server/command-line-options|Fog installer command line options]]
 - `docs/MULTI_SERVER_CA.md` in the `fogproject` repository — the same ground
   with the design reasoning, for anyone reading the installer source

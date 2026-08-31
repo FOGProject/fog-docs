@@ -62,7 +62,7 @@ channel label is the title-case form of the update channel a server tracks:
 owns the label half; `tests/update-channel-vocabulary.test.sh` parses both
 and fails if they disagree. The retired spellings `staging` and `dev` still
 resolve, so existing servers keep updating — see
-[[management/server/install-fogsettings|.fogsettings]].
+[[1.6/management/server/install-fogsettings|.fogsettings]].
 
 `dev-branch` and `stable` deliberately carry **no `FOG_CHANNEL` line at
 all** — a clean version string with no channel text, by design.

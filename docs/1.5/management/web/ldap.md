@@ -17,7 +17,7 @@ tags:
 # LDAP Authentication (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[management/web/ldap|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/web/ldap|1.6 version]] of this page for FOG 1.6.
 
 ## Overview
 
@@ -215,6 +215,6 @@ on to the next configured server.
 
 If you later move to FOG 1.6, your admin/user group lists convert
 automatically into per-group role mappings — see the current line's
-[[management/web/ldap|LDAP Authentication]] page for what that looks
+[[1.6/management/web/ldap|LDAP Authentication]] page for what that looks
 like and what the two settings that carry the old lists forward are for.
 Nobody's access changes as a result of that conversion.

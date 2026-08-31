@@ -70,8 +70,7 @@ apply to you as written — [[index|start there]].
 
 A handful of 1.6 pages describe things that don't exist on 1.5 in any form —
 there's nothing to fork, so they're just not listed here. Each says so on the
-page itself: [[oidc|OpenID Connect Sign-in]], [[local-login|The Local Login
-Page]], [[local-esp-boot|Local ESP Boot]],
+page itself: [[oidc|OpenID Connect Sign-in]], [[local-login|The Local Login Page]], [[local-esp-boot|Local ESP Boot]],
 [[secure-boot-setup-mode-enrollment|Secure Boot: Setup Mode Enrollment]],
 [[api-openapi-reference|OpenAPI Reference]],
 [[group-shared-state|Group Shared State]],

@@ -14,7 +14,7 @@ tags:
 # API (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/integrations/api|1.6 version]] of this page for FOG 1.6, which
+>See the [[1.6/kb/integrations/api|1.6 version]] of this page for FOG 1.6, which
 >adds a third, simpler authentication method (a single Bearer token) on top of
 >everything below — both methods here keep working unchanged on 1.6 too.
 

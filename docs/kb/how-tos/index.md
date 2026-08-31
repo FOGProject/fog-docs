@@ -34,6 +34,9 @@ Secure Boot and booting without PXE:
 
 - [[secure-boot-netboot|Moving to Secure Boot]] — start here: the DHCP boot file, then enrolling
 - [[local-esp-boot|Boot FOG from a machine's own EFI System Partition]]
-- [[kb/how-tos/secure-boot-mok-enrollment|Secure Boot: MOK enrollment]]
 - [[secure-boot-setup-mode-enrollment|Secure Boot: Setup Mode enrollment]]
-- [[kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]]
+
+>[!info] Secure Boot: MOK enrollment and Secure Boot: signing FOS with your
+>own key differ between FOG 1.5 and 1.6 and are covered separately — see
+>[[1.5/kb/how-tos/index|the 1.5 pages]] or
+>[[1.6/kb/how-tos/index|the 1.6 pages]].

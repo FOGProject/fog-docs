@@ -15,8 +15,11 @@ tags:
 
 These are articles related to network configuration required at install.
 
-- [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]] — options 66 and 67 on an existing DHCP server, when FOG is not hosting DHCP itself
-- [[installation/network-setup/proxy-dhcp|Proxy DHCP with dnsmasq]] — if you have an existing DHCP server you can't modify
+>[!info] DHCP Server Settings and Proxy DHCP with dnsmasq differ between
+>FOG 1.5 and 1.6 and are covered separately — see
+>[[1.5/installation/network-setup/index|the 1.5 pages]] or
+>[[1.6/installation/network-setup/index|the 1.6 pages]].
+
 - [[secure-boot-netboot|Moving to Secure Boot]] — the two changes that let clients netboot with UEFI Secure Boot on
 
 See also [[network-and-firewall-requirements|Network and firewall requirements]] for the

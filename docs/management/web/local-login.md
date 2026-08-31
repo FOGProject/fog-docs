@@ -84,7 +84,7 @@ An account can sign in here if it has a **local password**. In practice:
   not take that password away.
 - **Accounts FOG provisioned** (created on first sign-in by
   [[management/web/oidc#Who is allowed in|Create Users On First Login]], or by
-  [[management/web/ldap|LDAP]]) — **no**. They are created with a random token nobody has
+  [[1.6/management/web/ldap|LDAP]]) — **no**. They are created with a random token nobody has
   ever seen, so there is no password to type. They can only be reached
   through the directory that made them.
 
@@ -179,7 +179,7 @@ page and the provider asks for credentials.
   to survive, and where to turn it on
 - [[management/web/oidc#Break-glass|OIDC break-glass rules]] — which accounts keep a local
   password
-- [[management/web/ldap|LDAP Authentication]] — the other directory FOG can provision
+- [[1.6/management/web/ldap|LDAP Authentication]] — the other directory FOG can provision
   accounts from
 - [[users|User Management]] — where to give an administrator a local
   password

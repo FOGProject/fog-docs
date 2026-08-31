@@ -15,5 +15,4 @@ tags:
 - [[1.5/installation/network-setup/dhcp-server-settings|DHCP Server Settings]]
 - [[1.5/installation/network-setup/proxy-dhcp|ProxyDHCP]]
 
-[[installation/network-setup/secure-boot-netboot|Secure Boot netboot
-setup]] is unchanged from the main docs.
+[[installation/network-setup/secure-boot-netboot|Secure Boot netboot setup]] is unchanged from the main docs.

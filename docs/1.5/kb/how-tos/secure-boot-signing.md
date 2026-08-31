@@ -14,7 +14,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/how-tos/secure-boot-signing|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/how-tos/secure-boot-signing|1.6 version]] of this page for FOG 1.6.
 
 # Secure Boot: signing FOS with your own key (1.5)
 
@@ -222,8 +222,7 @@ is covered in
 >client needs re-enrolling a second time for no reason. Enrolling once, on
 >the server you intend to keep, is strictly less work than enrolling now and
 >potentially again later. See
->[[installation/server/migrating-fog-server|Migrating FOG Server]] (not yet
->forked for 1.5 — check its steps against your installed version).
+>[[1.5/installation/server/migrating-fog-server|Migrating FOG Server (1.5)]].
 
 On the FOG server, nothing. `sbsigntool` (`sbsigntools` on RHEL/Rocky/Alma/
 Fedora and Arch) is part of the installer's baseline package set, alongside

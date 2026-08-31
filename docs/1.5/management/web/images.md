@@ -15,7 +15,7 @@ tags:
 # Image Management (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[management/web/images|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/web/images|1.6 version]] of this page for FOG 1.6.
 
 Image objects in FOG are the representation of the physical files that
 contain the disk or partition images saved on the FOG server.

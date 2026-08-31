@@ -1054,7 +1054,7 @@ files are here" and "this code is running" stay separate decisions.
 ### Turning uploads on (admins)
 
 The admin-side walkthrough is on the
-[[management/web/plugins#Installing a plugin from an archive|Plugins page]]; the short version
+[[1.6/management/web/plugins#Installing a plugin from an archive|Plugins page]]; the short version
 is two independent switches, both required:
 
 1. `FOG_PLUGIN_UI_INSTALL_ENABLED` in **FOG Configuration → FOG Settings →
@@ -1095,7 +1095,7 @@ on disk and adding new executable code to the server are different authorities.
 >visibility moved into 1.6 core, so there is no `site` plugin to read any more.
 >The seam it demonstrated is still a plugin seam and is documented in §8a; the
 >enforcement now lives in core's `Authorization`. See
->[[management/web/site-scoping|Site Scoping]].
+>[[1.6/management/web/site-scoping|Site Scoping]].
 
 When in doubt, copy the closest existing plugin and adapt it — the conventions
 above are followed consistently across all of them.

@@ -14,7 +14,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/reference/secure-boot-technical-details|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/reference/secure-boot-technical-details|1.6 version]] of this page for FOG 1.6.
 
 # Secure Boot: technical details (1.5)
 

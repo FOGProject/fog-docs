@@ -19,7 +19,7 @@ tags:
 # Storage Node Management (1.5)
 
 >[!info] This page describes FOG 1.5.
->See the [[management/web/storage-node|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/management/web/storage-node|1.6 version]] of this page for FOG 1.6.
 
 - The Storage Manager introduces the concept of **Storage Groups**. A storage
   group is a group of NFS servers that share images and share the load of
@@ -71,7 +71,7 @@ of a storage node uses the same installer as a normal FOG server.
 10. When installation completes, note the username and password produced
     for adding the storage node to the management portal — username is
     `fog`, password is in `/opt/fog/.fogsettings` (see also
-    [[management/server/install-fogsettings|.fogsettings]]).
+    [[1.5/management/server/install-fogsettings|.fogsettings]]).
 
 ### Adding the Node to the Management Portal
 

@@ -14,7 +14,7 @@ tags:
 ---
 
 >[!info] This page describes FOG 1.5.
->See the [[kb/how-tos/secure-boot-mok-enrollment|1.6 version]] of this page for FOG 1.6.
+>See the [[1.6/kb/how-tos/secure-boot-mok-enrollment|1.6 version]] of this page for FOG 1.6.
 
 # Secure Boot: MOK enrollment (1.5)
 

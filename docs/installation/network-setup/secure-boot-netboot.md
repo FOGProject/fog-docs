@@ -46,7 +46,7 @@ offers a small enrollment kit.
 >[!note] If `/tftpboot/secureboot/` is missing
 >The download is deliberately non-fatal, so a failed fetch is skipped with a
 >warning rather than aborting the install. Re-run the installer. See
->[[kb/how-tos/secure-boot-signing#before-you-start|Before you start]] for what the directory should contain.
+>[[1.6/kb/how-tos/secure-boot-signing#before-you-start|Before you start]] for what the directory should contain.
 
 ## Step 1 — Point DHCP at the signed chain
 
@@ -73,7 +73,7 @@ server.
 >
 >So this is not a conditional. The signed chain is a **superset** — it covers
 >the Secure Boot machines and costs the others nothing. The full reasoning is in
->[[installation/network-setup/proxy-dhcp#secure-boot-and-proxydhcp|Secure Boot and proxyDHCP]].
+>[[1.6/installation/network-setup/proxy-dhcp#secure-boot-and-proxydhcp|Secure Boot and proxyDHCP]].
 
 ### Windows Server DHCP
 
@@ -167,7 +167,7 @@ class "UEFI-ARM64" {
 
 When FOG hosts DHCP itself it writes these classes for you. If you run a
 dedicated ISC server, the `/etc/dhcp/dhcpd.conf` FOG generates is the easiest
-reference to copy from — see [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]].
+reference to copy from — see [[1.6/installation/network-setup/dhcp-server-settings|DHCP Server Settings]].
 
 ### Kea
 
@@ -185,7 +185,7 @@ reference to copy from — see [[installation/network-setup/dhcp-server-settings
 ```
 
 A complete `kea-dhcp4.conf`, including the BIOS and 32-bit classes, is in
-[[installation/network-setup/dhcp-server-settings#dedicated-linux-dhcp-server-kea|DHCP Server Settings]].
+[[1.6/installation/network-setup/dhcp-server-settings#dedicated-linux-dhcp-server-kea|DHCP Server Settings]].
 Validate with `kea-dhcp4 -t /etc/kea/kea-dhcp4.conf` before restarting.
 
 ### dnsmasq / proxyDHCP
@@ -207,7 +207,7 @@ pxe-service=ARM64_EFI, "Boot to FOG", secureboot/arm64-efi/snponly-shimaa64.efi,
 >of the two. Change both and keep them in agreement.
 
 The complete file, with the architecture tags and the trailing-server-IP gotcha,
-is at [[installation/network-setup/proxy-dhcp#the-optimal-configuration|The optimal configuration]].
+is at [[1.6/installation/network-setup/proxy-dhcp#the-optimal-configuration|The optimal configuration]].
 
 ### Confirming it took
 
@@ -260,13 +260,13 @@ stage a whole fleet while it is still off and switch enforcement on afterward.
 
 Where to go for more:
 
-- [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — the route above (Route B) in
+- [[1.6/kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — the route above (Route B) in
   full, plus Route A, a stock Ubuntu/Debian live USB, which is the fallback when
   `Enroll key from disk` hangs on stubborn firmware.
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — Route C, the
   only route with **nobody at the console**, if your firmware can be put into
   Setup Mode. This is the one that scales.
-- [[kb/how-tos/secure-boot-signing|Secure Boot signing]] — the concepts: why FOG cannot
+- [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]] — the concepts: why FOG cannot
   ship signed kernels, the CA/leaf split, bringing your own key, and rotation.
 
 ## Step 3 — Turn Secure Boot on in firmware
@@ -289,8 +289,8 @@ has to enable it in each machine's firmware settings.
   embed your CA without voiding the signature. A publicly-issued certificate on
   an FQDN needs no rebuild and keeps the signed shim; a private CA means either
   keeping netboot on HTTP or enrolling into `db` via Setup Mode. See
-  [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] and
-  [[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]].
+  [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] and
+  [[1.6/kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]].
 
 ## If something goes wrong
 
@@ -304,14 +304,14 @@ has to enable it in each machine's firmware settings.
 
 Deeper detail — how `autoexec.ipxe` is resolved, how the kernels are signed, and
 how to verify a signature end to end — is in
-[[kb/reference/secure-boot-technical-details|Secure Boot technical details]].
+[[1.6/kb/reference/secure-boot-technical-details|Secure Boot technical details]].
 
 ## See also
 
-- [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]] — options 66 and 67 in full, with per-server examples
-- [[installation/network-setup/proxy-dhcp|Proxy DHCP with dnsmasq]] — the complete dnsmasq configuration
-- [[kb/how-tos/secure-boot-signing|Secure Boot signing]] — start here for the concepts
-- [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B, in full
+- [[1.6/installation/network-setup/dhcp-server-settings|DHCP Server Settings]] — options 66 and 67 in full, with per-server examples
+- [[1.6/installation/network-setup/proxy-dhcp|Proxy DHCP with dnsmasq]] — the complete dnsmasq configuration
+- [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]] — start here for the concepts
+- [[1.6/kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B, in full
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — the unattended route
-- [[kb/reference/secure-boot-technical-details|Secure Boot technical details]]
-- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
+- [[1.6/kb/reference/secure-boot-technical-details|Secure Boot technical details]]
+- [[1.6/kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
