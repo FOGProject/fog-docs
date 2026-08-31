@@ -40,11 +40,14 @@ user's role still decides what they can do; their sites decide which
 objects those actions apply to. Scoping only ever *narrows* — it cannot
 grant access a role does not already allow.
 
-!!! note "Sites are part of FOG in 1.6"
-    Sites used to be a plugin you installed from **FOG Configuration →
-    Plugin System**. In 1.6 they are part of FOG itself: the **Sites**
-    section is always in the main menu, and there is nothing to enable.
-    Upgrading carries your existing sites and their members across.
+>[!info] Sites are part of FOG in 1.6
+>Sites used to be a plugin you installed from **FOG Configuration →
+>Plugin System**, scoping only hosts and users with no roles or grants. In
+>1.6 they are part of FOG itself: the **Sites** section is always in the
+>main menu, and there is nothing to enable. Upgrading carries your existing
+>sites and their members across. See the
+>[[1.5/management/web/site-scoping|1.5 version]] of this page for how the
+>plugin worked.
 
 ## Creating sites
 
@@ -154,21 +157,21 @@ than a default.
 Only one site can be the catch-all at a time. Ticking the box on a
 second site moves the flag.
 
-!!! tip "Scoping switches itself on when you start using it"
-    While the catch-all is the only site that exists, scoping is
-    inactive and everyone sees everything. Creating your first real
-    site is what turns it on. That is deliberate: it means the upgrade
-    does not silently start restricting a feature nobody has set up.
+>[!tip] Scoping switches itself on when you start using it
+>While the catch-all is the only site that exists, scoping is
+>inactive and everyone sees everything. Creating your first real
+>site is what turns it on. That is deliberate: it means the upgrade
+>does not silently start restricting a feature nobody has set up.
 
 ## Deny-all: a role but no site
 
-!!! warning "A restricted user who reaches no site sees nothing"
-    Once real sites exist, any user who holds a role (other than a
-    full-access one) and reaches **no site at all** — no assignment, no
-    grant through a role, no grant through a user group — sees an
-    **empty list** of hosts, users, groups and user groups. This is
-    deliberate: scoping fails closed, so a user is never shown objects
-    you did not grant.
+>[!warning] A restricted user who reaches no site sees nothing
+>Once real sites exist, any user who holds a role (other than a
+>full-access one) and reaches **no site at all** — no assignment, no
+>grant through a role, no grant through a user group — sees an
+>**empty list** of hosts, users, groups and user groups. This is
+>deliberate: scoping fails closed, so a user is never shown objects
+>you did not grant.
 
     If a user should see everything, give them a role with
     **Administrator (full access)** ticked, or add them to the

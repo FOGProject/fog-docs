@@ -51,7 +51,7 @@ work with these various architecture types. They are located in the
 >
 > ARM64 clients (arch `00011`, added after RFC 4578's table above) take
 > `secureboot/arm64-efi/snponly-shimaa64.efi`. None of the historical examples
-> below cover them; see [[dhcp-server-settings|DHCP Server Settings]] for a
+> below cover them; see [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]] for a
 > current per-architecture reference.
 
 ## Using Linux DHCP
@@ -404,7 +404,7 @@ ISC dhcpd, dnsmasq, and Windows DHCP do).
 
 If you must use macOS for DHCP in a mixed BIOS/UEFI environment, run a proxyDHCP
 helper such as dnsmasq alongside it to supply the boot file — see
-[[proxy-dhcp|Proxy DHCP with dnsmasq]]. Otherwise, use one of the other DHCP
+[[installation/network-setup/proxy-dhcp|Proxy DHCP with dnsmasq]]. Otherwise, use one of the other DHCP
 servers covered on this page.
 
 ## Building custom DHCP Classes for co-existence with FOG

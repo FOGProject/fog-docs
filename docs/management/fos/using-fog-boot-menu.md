@@ -113,8 +113,11 @@ entries and background on top of the built-in commands below.
 
 ### Enroll Secure Boot Key
 
-> -   Added in FOG 1.6.0, and only relevant to clients booting with UEFI
->     Secure Boot enabled.
+> -   Only relevant to clients booting with UEFI Secure Boot enabled. The
+>     menu entry itself originated in FOG 1.6.0 and has since been ported to
+>     the 1.5.x line too, so it is available on either version — see the
+>     [[1.5/management/fos/using-fog-boot-menu#Enroll Secure Boot Key|1.5 version of this page]]
+>     for what differs there.
 >
 > -   This command enrolls FOG's signing certificate on the client, which is
 >     what allows the machine to boot the FOS kernel with Secure Boot left
@@ -128,7 +131,8 @@ entries and background on top of the built-in commands below.
 > -   It also does not have to be driven from this menu. **Enroll Secure
 >     Boot Key** is a task type, schedulable from **Task Scheduling**
 >     against one host or a whole group — a host with it pending skips the
->     menu and runs it on the next PXE boot.
+>     menu and runs it on the next PXE boot. This scheduling path is FOG 1.6
+>     only.
 >
 > -   What happens next depends on the client's firmware state, and FOS
 >     decides by itself:

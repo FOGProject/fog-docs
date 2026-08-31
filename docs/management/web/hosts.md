@@ -24,7 +24,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
 
 ## Adding a new host
 
-[[storage-node#Adding a Storage Node]]
+[[management/web/storage-node#Adding a Storage Node|Adding a Storage Node]]
 
 ### Method 1: Adding a new host via Full registration
 
@@ -184,10 +184,9 @@ Hosts can also include, but are not required:
 
 ------------------------------------------------------------------------
 
-!!! note
-
-    This page also allows for configuration of Active Directory integration,
-    but this topic will be covered later.
+>[!note]
+>This page also allows for configuration of Active Directory integration,
+>but this topic will be covered later.
 
 
 **When all settings are added, click on the "Add" button.**
@@ -203,10 +202,14 @@ Hosts can also include, but are not required:
 >[!note]
 >The CSV format changed significantly in FOG 1.6 (headered **or**
 >positional columns, an `associations` column for groups/snapins/printers,
->and name-resolved foreign keys). See [[csv_import_export|CSV Import / Export]]
+>and name-resolved foreign keys). See [[kb/reference/csv_import_export|CSV Import / Export]]
 >for the full, current column layout and format rules — the safest workflow
 >is **Export → edit → Import**, so you always start from a file FOG already
 >considers valid.
+>
+>On FOG 1.5, the CSV format is strictly positional with no header row and no
+>`associations` column — see the
+>[[1.5/management/web/hosts|1.5 version]] of this page for that layout.
 
 #### Importing the File
 
@@ -295,7 +298,7 @@ service could reach the machine the last time it ran.
 >
 >The port and the timeout are settings in 1.6: **FOG Configuration** →
 >**FOG Settings** → **Ping Host Settings**. See
->[[ping-hosts-service|The Ping Hosts Service]] for how to choose them.
+>[[kb/reference/ping-hosts-service|The Ping Hosts Service]] for how to choose them.
 
 -   Hosts are looked up by **name**, so you need an internal DNS server tied in
     with your DHCP server, so that when a DHCP address is handed out the DNS
@@ -362,7 +365,7 @@ where the two disagree:
 | old | old | the machine has genuinely been off since the later of the two |
 
 The second row is the one worth acting on. Full detail, including how to pick a
-port for a mixed fleet: [[ping-hosts-service|The Ping Hosts Service]].
+port for a mixed fleet: [[kb/reference/ping-hosts-service|The Ping Hosts Service]].
 
 ### Creating Host Groups
 

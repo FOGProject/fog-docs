@@ -524,7 +524,7 @@ every 64-bit UEFI client whether or not Secure Boot is enabled. `snponly.efi` an
 server's certificate enrolled on the client first, which is why the
 `secureboot/` names are the better default.
 
-See [[dhcp-server-settings|DHCP Server Settings]] for the full option 066/067
+See [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]] for the full option 066/067
 reference, and [[secure-boot-netboot|Moving to Secure Boot]] if you are switching
 to the signed chain.
 

@@ -12,6 +12,11 @@ tags:
     - pki
 ---
 
+>[!info] Most of this page also applies to FOG 1.5
+>The `db`/`MokList` mental model and FOG's MOK enrollment mechanics are the
+>same on 1.5 — the only difference is Setup Mode enrollment (1.6-only). See
+>the [[1.5/kb/reference/secure-boot-trust-stores|1.5 version]] of this page.
+
 # Secure Boot: the two trust stores
 
 Almost every confusing Secure Boot failure comes down to one thing: there are
@@ -21,9 +26,9 @@ enrollment reads back as successful. The machine simply refuses to boot the
 next stage.
 
 This page is the mental model. For what to actually run, see
-[[secure-boot-mok-enrollment|MOK enrollment]] and
+[[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] and
 [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]]; for the concepts
-behind signing, [[secure-boot-signing|Secure Boot signing]].
+behind signing, [[kb/how-tos/secure-boot-signing|Secure Boot signing]].
 
 ---
 
@@ -66,7 +71,7 @@ iPXE load a MOK-signed FOS kernel.
 | Also replaces | `PK` and `KEK` — you become the platform owner | nothing |
 | FOG publishes | `service/secureboot/{PK,KEK,db}.auth` | `service/secureboot/MOK.der` |
 | FOG release | 1.6 | any |
-| Guide | [[secure-boot-setup-mode-enrollment\|Setup Mode enrollment]] | [[secure-boot-mok-enrollment\|MOK enrollment]] |
+| Guide | [[secure-boot-setup-mode-enrollment\|Setup Mode enrollment]] | [[kb/how-tos/secure-boot-mok-enrollment\|MOK enrollment]] |
 
 They are **not alternatives that conflict**. A machine can hold the same
 certificate in both stores, and some will. They are two delivery routes for one
@@ -156,7 +161,7 @@ Reading that in order:
 The PXE menu item fetches `MOK.der` over the network with `imgfetch`, straight
 into iPXE's memory, where MokManager's *Enroll key from disk* browser can see
 it — which is why Route B needs no USB stick. Details in
-[[secure-boot-mok-enrollment#route-b--from-the-fog-boot-menu-no-operating-system-and-no-usb-stick|Route B]].
+[[kb/how-tos/secure-boot-mok-enrollment#route-b--from-the-fog-boot-menu-no-operating-system-and-no-usb-stick|Route B]].
 
 ---
 
@@ -180,7 +185,7 @@ its own material. Secure Boot is not that shape, and it does not need to be:
   `ca/.fogSBCA.key` can mint a new signer your fleet will boot, indefinitely,
   without touching a single client. Back up `pki/secureboot/` the way you would
   a root password, and consider taking the CA key offline —
-  see [[pki-zones|FOG's Certificate Zones]].
+  see [[kb/reference/pki-zones|FOG's Certificate Zones]].
 
 ### What the CA/leaf split actually buys
 
@@ -196,8 +201,8 @@ That is the whole reason the enrolled certificate is the CA rather than the
 signer. Before the split, FOG enrolled a self-signed leaf — the same object was
 both the thing you must never change and the thing you want to rotate, so
 rotating the signer meant a physical trip to every machine. See
-[[pki-glossary#mok-cert-vs-signing-cert|MOK cert vs. signing cert]] and
-[[secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]].
+[[kb/reference/pki-glossary#mok-cert-vs-signing-cert|MOK cert vs. signing cert]] and
+[[kb/how-tos/secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]].
 
 >[!warning] Revocation is still the hard part
 >Nothing above gives you remote revocation. Removing trust from one machine is
@@ -217,16 +222,16 @@ Four filenames in this area look alike and mean different things:
 | `service/secureboot/MOK.der` | the published copy of that CA, for handing to clients. Same bytes as `.fogSBCA.der` |
 | `pki/secureboot/leaf/sign.pem` | the signing leaf. Signs kernels; never enrolled anywhere |
 | `pki/secureboot/admin-MOK.pem` | **not per-machine.** The installer's own copy of a pair you supplied with `--secure-boot-key`/`--secure-boot-cert`, kept out of the web root so a reinstall cannot delete it. Named `admin-` only to avoid overwriting FOG's generated `MOK.*` |
-| `pki/secureboot/MOK.key` / `MOK.pem` | the superseded [[pki-glossary#flat-mok\|flat MOK]] — a self-signed cert that was both anchor and signer. Left on disk, no longer used for new signing |
+| `pki/secureboot/MOK.key` / `MOK.pem` | the superseded [[kb/reference/pki-glossary#flat-mok\|flat MOK]] — a self-signed cert that was both anchor and signer. Left on disk, no longer used for new signing |
 
 ---
 
 ## See also
 
-- [[secure-boot-signing|Secure Boot signing]] — the concepts, and the signing key
-- [[secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B
+- [[kb/how-tos/secure-boot-signing|Secure Boot signing]] — the concepts, and the signing key
+- [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — the unattended route
-- [[secure-boot-technical-details|Secure Boot technical details]] — serving the chain
+- [[kb/reference/secure-boot-technical-details|Secure Boot technical details]] — serving the chain
 - [[local-esp-boot|Local ESP boot]] — the shim-less case
-- [[pki-zones|FOG's Certificate Zones]]
-- [[pki-glossary|PKI & Secure Boot Glossary]]
+- [[kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]

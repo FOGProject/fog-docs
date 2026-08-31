@@ -53,10 +53,10 @@ Both answers are required. A session with no expected size cannot be joined by
 name by anyone else, so creating one without them would produce a session that
 only ever images the machine that made it.
 
-!!! note
-    Creating a session from a booting machine requires a login that holds the
-    `task.task` permission, the same permission needed to create tasking anywhere
-    else. See [Roles & Permissions](roles.md).
+>[!note]
+>Creating a session from a booting machine requires a login that holds the
+>`task.task` permission, the same permission needed to create tasking anywhere
+>else. See [Roles & Permissions](roles.md).
 
 ## Joining a session
 
@@ -123,19 +123,21 @@ Give each site **its own storage group**:
 Each site's hosts then get their own session — its own port, its own local
 sender — and each site images at local network speed.
 
-!!! note
-    Start multicast **per site** rather than as one task spanning sites. A session
-    holds until its expected client count arrives, so a single session covering
-    every site would make each site's sender wait for machines at the other sites
-    before starting.
+>[!note]
+>Start multicast **per site** rather than as one task spanning sites. A session
+>holds until its expected client count arrives, so a single session covering
+>every site would make each site's sender wait for machines at the other sites
+>before starting.
 
-!!! warning "Before FOG 1.6"
-    Cross-site multicast could not be made to work by configuration alone. A
-    session was always stamped with the image's *primary* storage group no matter
-    where the host was, so only that group's master ever transmitted, and the
-    Location plugin was not consulted when tasking. Rearranging storage groups on
-    an older release will not help. If you are on 1.5 or earlier, keep multicast
-    within the site holding the master and use unicast elsewhere.
+>[!warning] Before FOG 1.6
+>Cross-site multicast could not be made to work by configuration alone. A
+>session was always stamped with the image's *primary* storage group no matter
+>where the host was, so only that group's master ever transmitted, and the
+>Location plugin was not consulted when tasking. Rearranging storage groups on
+>an older release will not help. This is still current behavior on FOG 1.5 —
+>see the [[1.5/management/web/multicast#Multicast across multiple sites|1.5 version]]
+>of this page. Keep multicast within the site holding the master and use
+>unicast elsewhere until you upgrade.
 
 ## Settings
 
@@ -158,12 +160,12 @@ plus the one immediately above it, so ports must be even and between 1024 and
 Leave it at `0` (the default) to let FOG pick a port for each session
 automatically.
 
-!!! warning
-    This setting used to be a single port, and every session was forced onto it — so
-    setting it meant only one multicast session could ever really run, and a second
-    would silently collide with the first. If you have a single port set today it
-    keeps working: it is simply a pool of one. Add more ports to allow more
-    concurrent sessions.
+>[!warning]
+>This setting used to be a single port, and every session was forced onto it — so
+>setting it meant only one multicast session could ever really run, and a second
+>would silently collide with the first. If you have a single port set today it
+>keeps working: it is simply a pool of one. Add more ports to allow more
+>concurrent sessions.
 
 ### FOG_MULTICAST_MAX_SESSIONS
 
@@ -171,12 +173,12 @@ The maximum number of multicast sessions allowed to run at once. Attempting to
 create one beyond the limit fails with a message rather than starting a session
 that cannot run.
 
-!!! note
-    This limit used to be checked only when creating a session from Image
-    Management — sessions created from a host, a group, or a booting machine
-    ignored it. It now applies to every path, so a server that was quietly running
-    more sessions than this number may start refusing them. Raise the value if that
-    is not what you want.
+>[!note]
+>This limit used to be checked only when creating a session from Image
+>Management — sessions created from a host, a group, or a booting machine
+>ignored it. It now applies to every path, so a server that was quietly running
+>more sessions than this number may start refusing them. Raise the value if that
+>is not what you want.
 
 ### FOG_UDPCAST_MAXWAIT
 

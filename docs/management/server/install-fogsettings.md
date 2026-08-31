@@ -21,6 +21,9 @@ tags:
 
 # The .fogsettings file
 
+>[!info] FOG 1.6
+>This page describes FOG 1.6. See the [[1.5/management/server/install-fogsettings|1.5 version]] of this page for FOG 1.5.
+
 `.fogsettings` is what makes an *upgrade* different from a *reinstall*. Every
 answer you gave the installer, every option you passed, and everything it worked
 out for itself is written there at the end of a run and read back at the start of
@@ -32,7 +35,7 @@ work instead of asking eighty questions again.
 - **Format:** shell. The installer *sources* it, so it is `key='value'`, one per
   line. A stray quote breaks the next install rather than being ignored.
 - **Permissions:** `0600 root:root` — it holds two cleartext passwords. See
-  [[install-fogsettings#Security|Security]].
+  [[management/server/install-fogsettings#Security|Security]].
 
 >[!warning] Do not paste this file into a forum post or a bug report
 >It contains your `fogproject` account password (which is also the FTP account
@@ -66,10 +69,10 @@ by `FOG_install_type='S'` instead.
 >"The web UI uses HTTPS" says nothing about how clients netboot. `WEB_url_proto`
 >and `BOOT_url_proto` are deliberately parallel names in separate namespaces, so
 >that independence is visible in the file you edit. See
->[[netboot-transport-and-pki|Netboot Transport and PKI]].
+>[[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 If you are upgrading from FOG 1.5, every name in this file changed — see
-[[install-fogsettings#The 1.6 rename|The 1.6 rename]]. You do not have to do
+[[management/server/install-fogsettings#The 1.6 rename|The 1.6 rename]]. You do not have to do
 anything about it.
 
 ## The four kinds of setting
@@ -203,14 +206,14 @@ PKI_sb_codesign_key='/opt/fog/pki/secureboot/leaf/sign.key'
 >That marker is cosmetic — the file is sourced in full. When an upgrade
 >introduces a new setting the installer appends it, so on a server that has been
 >upgraded a few times there are live settings below the marker. See
->[[install-fogsettings#How the file is rewritten|How the file is rewritten]].
+>[[management/server/install-fogsettings#How the file is rewritten|How the file is rewritten]].
 
 ## Where each value comes from
 
 Each setting is filled in from the first source below that supplies a value.
 **Highest precedence first:**
 
-1. **An installer option on this run** — see [[command-line-options|Fog installer command line options]].
+1. **An installer option on this run** — see [[installation/server/command-line-options|Fog installer command line options]].
 2. **An exported environment variable**, for scripted installs.
 3. **`.fogsettings` from the previous install** — unless you pass `-U`.
 4. **An interactive prompt.** `-y` skips the prompts and takes each default.
@@ -278,7 +281,7 @@ Two steps then finish the run:
 1. `.fogsettings` is set to `0600 root:root`.
 2. `.fogsettings.pub` is written beside it (`0644`), holding only the handful of
    facts the `/api/whoami` endpoint publishes. See
-   [[install-fogsettings#Security|Security]].
+   [[management/server/install-fogsettings#Security|Security]].
 
 ### The 1.6 rename
 
@@ -322,12 +325,12 @@ to set one of them, that guide predates FOG 1.6:
 |---|---|
 | Every pre-1.6 spelling of a setting that still exists | Renamed as above. Your value is copied onto the new name once, then the old line goes |
 | `caCreated` | Stood in for "the CA exists". Both of its readers already paired it with an existence check on the very file it named |
-| `acmeLeaf` | Now derived — see [[install-fogsettings#Certificates FOG did not issue\|Certificates FOG did not issue]] |
+| `acmeLeaf` | Now derived — see [[management/server/install-fogsettings#Certificates FOG did not issue\|Certificates FOG did not issue]] |
 | `webCertFile`, `webKeyFile` | Folded into `PKI_web_vhost_cert`/`PKI_web_vhost_key`, which are now canonical paths |
 | `sslcsr` | Could only ever hold one path, and was re-derived to it every run |
 | `externalca` | Derivable from "is an import path set", and now scoped to the run rather than persisted |
 | `catrust` | FOG's CA is now always anchored in this server's own trust store |
-| `sbNameConstraints` | Name constraints come off the Secure Boot zone entirely — see [[install-fogsettings#Secure Boot\|Secure Boot]] |
+| `sbNameConstraints` | Name constraints come off the Secure Boot zone entirely — see [[management/server/install-fogsettings#Secure Boot\|Secure Boot]] |
 | `extcacert`, `extcakey`, `extcaroot`, `webExtCACert`, `webExtCAKey`, `webExtCARoot` | Six keys that only ever held three values, reached two ways. Both spellings of the flag still work; they are run-scoped inputs now |
 | `bootfilename`, `notpxedefaultfile` | Replaced by per-architecture boot file selection |
 | `storageftpuser`, `storageftppass` | Storage node FTP credentials moved into the database |
@@ -351,7 +354,7 @@ to set one of them, that guide predates FOG 1.6:
 | Setting | Kind | Meaning |
 |---|---|---|
 | `FOG_install_type` | Preference | `N` for a full server, `S` for a storage node |
-| `FOG_install_mode` | Preference | Which of the four `--install-mode` presets was chosen — `standard`, `http-only`, `public-cert` or `embed-ca` — or empty for a shape built from the individual transport options. Asked once and remembered, so the four-mode menu is not shown again on an upgrade. Any individual transport option clears it; see [[command-line-options#The four install modes\|The four install modes]] |
+| `FOG_install_mode` | Preference | Which of the four `--install-mode` presets was chosen — `standard`, `http-only`, `public-cert` or `embed-ca` — or empty for a shape built from the individual transport options. Asked once and remembered, so the four-mode menu is not shown again on an upgrade. Any individual transport option clears it; see [[installation/server/command-line-options#The four install modes\|The four install modes]] |
 | `FOG_os_id` | Record | `1` Redhat, `2` Debian, `3` Alpine (experimental), `4` Arch |
 | `FOG_os_name` | Record | The detected distribution family |
 | `FOG_install_lang` | Preference | Whether the extra language packs were installed |
@@ -361,7 +364,7 @@ to set one of them, that guide predates FOG 1.6:
 | `FOG_packages` | Record | What was installed on this box. Re-derived every run from the distribution package lists |
 | `FOG_git_path` | Record | Where the checkout is. Re-asserted from what the run actually resolved, so a moved or re-cloned tree cannot point `updatefog.sh` at a directory that is gone |
 | `FOG_update_channel` | Preference | Which channel this server tracks: `stable`, `patches` or `beta`. The same word as the `FOG_CHANNEL` the server reports, in lowercase. The earlier spellings `staging` and `dev` mean `patches` and `beta`, and are still accepted so existing servers keep updating |
-| `FOG_program_dir` | Record | Where this install lives, so `grep FOG_program_dir .fogsettings` answers the question. Not a control — see [[install-fogsettings#Where the install lives\|Where the install lives]] |
+| `FOG_program_dir` | Record | Where this install lives, so `grep FOG_program_dir .fogsettings` answers the question. Not a control — see [[management/server/install-fogsettings#Where the install lives\|Where the install lives]] |
 
 >[!warning] `FOG_os_id` changed meaning between 1.5 and 1.6
 >In FOG 1.5, Arch was `3`. In 1.6, `3` is Alpine and Arch is `4`. An Arch server
@@ -459,7 +462,7 @@ continues and tells you what to fix.
 | `BOOT_rebuild_ipxe_with_my_ca` | Preference | Recompile iPXE with the configured CA embedded, so netboot can use HTTPS behind a **private** CA. The build takes 10–25 minutes, but is stamped against the pinned iPXE version and the CA, so it re-runs only when one of those changes |
 | `BOOT_external_tftp_server` | Preference | Your TFTP server is elsewhere, so leave the TFTP configuration alone. Also keeps `69/udp` closed in the firewall |
 | `BOOT_tftp_options` | Hand-set | Extra options for `in.tftpd` |
-| `BOOT_dhcp_delay_seconds` | Preference | Seconds (0–120) a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. `0` writes no delay. See [[dhcp-server-settings\|DHCP server settings]] |
+| `BOOT_dhcp_delay_seconds` | Preference | Seconds (0–120) a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. `0` writes no delay. See [[installation/network-setup/dhcp-server-settings\|DHCP server settings]] |
 | `BOOT_kernel_backups_kept` | Preference | How many previous kernel and init sets to keep. Default 3 |
 
 ### `STORAGE_` — image storage
@@ -480,7 +483,7 @@ continues and tells you what to fix.
 ### `PKI_` — certificates and trust
 
 The zone token in each name (`root`, `web`, `client`, `sb`) says which authority
-it belongs to; [[pki-zones|FOG PKI Infrastructure]] explains the split.
+it belongs to; [[kb/reference/pki-zones|FOG PKI Infrastructure]] explains the split.
 
 **Policy and inputs** — these are yours to set:
 
@@ -492,7 +495,7 @@ it belongs to; [[pki-zones|FOG PKI Infrastructure]] explains the split.
 | `PKI_san_ip_addresses` | Preference | Every address this server answers on. Used for certificate names, `server_name`/`ServerAlias`, and the nginx maintenance allow list |
 | `PKI_san_dns_names` | Preference | Extra names this server answers to, set with `--extra-server-name`. Mirrored into `FOG_EXTRA_SERVER_NAMES` in the web UI |
 | `PKI_client_cert_dir` | Preference | Holds uploaded snapin SSL material and the client communication certificate. **Not** where FOG's own authorities live any more |
-| `PKI_sb_enabled` | Preference | `1`/`0`. On by default. See [[install-fogsettings#Secure Boot\|Secure Boot]] |
+| `PKI_sb_enabled` | Preference | `1`/`0`. On by default. See [[management/server/install-fogsettings#Secure Boot\|Secure Boot]] |
 
 **Canonical paths** — these are records, under the `## Derived — do not edit`
 marker in the file:
@@ -664,7 +667,7 @@ rather than leaving your kernels unsigned.
 >the install — without the copy they would be deleted before the kernels were
 >ever signed.
 
-Full walkthrough: [[secure-boot-signing|Secure Boot - signing FOS with your own key]].
+Full walkthrough: [[kb/how-tos/secure-boot-signing|Secure Boot - signing FOS with your own key]].
 
 ## Security
 
@@ -698,14 +701,14 @@ Two habits worth keeping:
 
 - **Never copy `.fogsettings` between servers** to clone a configuration. The
   credentials in it belong to the machine that generated them. To move a server,
-  follow [[migrating-fog-server|Migrating FOG Server]].
+  follow [[installation/server/migrating-fog-server|Migrating FOG Server]].
 - **Redact before sharing.** `.fogsettings.pub` is safe to post; `.fogsettings`
   is not.
 
 ## Editing it by hand
 
 Which settings respond to a hand edit follows straight from
-[[install-fogsettings#The four kinds of setting|the four kinds]]: **preferences**
+[[management/server/install-fogsettings#The four kinds of setting|the four kinds]]: **preferences**
 and **hand-set** values do, **records** do not. Some common ones:
 
 | Setting | When you would |
@@ -726,20 +729,21 @@ Before you edit:
    address properly, follow [[change-fog-server-ip-address|Change FOG Server IP Address]].
 4. **Certificate paths are canonical.** Do not repoint one at your own file;
    make the path *resolve* there instead. See
-   [[install-fogsettings#Certificates FOG did not issue|Certificates FOG did not issue]].
+   [[management/server/install-fogsettings#Certificates FOG did not issue|Certificates FOG did not issue]].
 5. **Take a copy first.** The installer rewrites the file with no backup.
 6. **Do not edit `.fogsettings.pub`** — it is regenerated from `.fogsettings`
    every run.
 
 ## Related
 
-- [[command-line-options|Fog installer command line options]] — every option that writes a setting here
-- [[netboot-transport-and-pki|Netboot Transport and PKI]] — why `WEB_` and `BOOT_` are separate
-- [[install-fog-server|Install FOG Server]] — the install itself
+- [[installation/server/command-line-options|Fog installer command line options]] — every option that writes a setting here
+- [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] — why `WEB_` and `BOOT_` are separate
+- [[installation/server/install-fog-server|Install FOG Server]] — the install itself
 - [[install-script-architecture|Install Script Architecture]] — how the installer is put together
-- [[pki-zones|FOG PKI Infrastructure]] — what each `PKI_` zone is for
-- [[secure-boot-signing|Secure Boot - signing FOS with your own key]]
+- [[kb/reference/pki-zones|FOG PKI Infrastructure]] — what each `PKI_` zone is for
+- [[kb/how-tos/secure-boot-signing|Secure Boot - signing FOS with your own key]]
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]]
 - [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]]
-- [[migrating-fog-server|Migrating FOG Server]]
+- [[installation/server/migrating-fog-server|Migrating FOG Server]]
 - [[uninstall-fog-server|Uninstalling the Fog server]]
+- [[1.5/management/server/install-fogsettings|The .fogsettings file (1.5)]] — the FOG 1.5 version of this page, with the pre-rename flat key names

@@ -15,47 +15,25 @@ tags:
 
 # The Ping Hosts Service
 
+>[!info] FOG 1.6
+>This page describes FOG 1.6. See the
+>[[1.5/kb/reference/ping-hosts-service|1.5 version]] of this page for FOG 1.5,
+>which never sent a real ICMP ping and had no configurable port or timeout.
+
 `FOGPingHosts` is the background service that answers one question for every
 host in your database: *can the server reach it right now?* Its verdict is what
-the **Ping Status** column on [[hosts|Host Management]] shows, and since 1.6 it
+the **Ping Status** column on [[management/web/hosts|Host Management]] shows, and since 1.6 it
 also stamps the **Last Successful Ping** field on each host.
 
 This page explains what that verdict actually measures — which is not what most
 people assume — and what changed in 1.6.
 
->[!warning] Before 1.6, it was not an ICMP ping
->Despite the name, the service never sent an ICMP echo request until 1.6. It
->opened a **TCP connection to a single port** and recorded whether the
->connection succeeded, so a host that answered `ping` at the command line but
->did not listen on that port was reported unreachable — and that was working as
->designed. Since 1.6 it sends a real echo request first and falls back to the
->TCP check; see [[#It sends a real ping now]].
-
-## What "up" meant before 1.6
-
-The old behavior, in order:
-
-1. Resolve the host's **name** through DNS.
-2. Open a TCP connection to **port 445** (SMB), giving up after **2 seconds**.
-3. Record the resulting socket error number on the host. `0` means the
-   connection succeeded.
-
-Both the port and the timeout were fixed in the code with no way to change
-them. Three consequences followed from that, and all three were reported as
-bugs over the years:
-
-- **"Is this host up?" really meant "does this host accept SMB?"** A Linux
-  host, a Windows host with file and printer sharing turned off, and anything
-  behind a host firewall are all permanently "unreachable" no matter how
-  healthy they are.
-- **Hosts were tested one at a time.** Every unreachable host cost the full
-  2-second timeout before the next one was tried. 500 powered-off hosts is
-  500 × 2s ≈ 17 minutes against a 300-second sleep interval, so on a fleet of
-  any size the service simply ran continuously and its answers were always
-  stale.
-- **Only the latest verdict was kept.** There was no record of *when* a host
-  was last reachable, so "this host has been off for a month" and "this host
-  went off ten minutes ago" looked identical.
+>[!note] Before 1.6, it was not an ICMP ping
+>The service never sent an ICMP echo request until 1.6 — it only opened a TCP
+>connection to a fixed port (445) with a fixed 2-second timeout, and neither
+>was configurable. Since 1.6 it sends a real echo request first and falls back
+>to the TCP check; see [[#It sends a real ping now]]. Full detail on the old
+>behavior: [[1.5/kb/reference/ping-hosts-service|the 1.5 version of this page]].
 
 ## What changed in 1.6
 
@@ -210,11 +188,11 @@ column is shown or not.
 
 >[!note] Older advice about this setting no longer applies
 >Long-standing documentation said to untick `FOG_HOST_LOOKUP` on fleets over
->about 250 hosts to stop the host list being slow. On 1.5 that setting is
->read by the configuration page and by nothing else — it gates no behavior at
->all, so unticking it never sped anything up. In 1.6 it does have an effect
->again: it controls whether the Ping Status column is **shown**. Turn it off
->if the column is noise on your fleet, not for speed.
+>about 250 hosts to stop the host list being slow. On 1.5 that setting did
+>nothing — see [[1.5/kb/reference/ping-hosts-service|the 1.5 version of this page]].
+>In 1.6 it does have an effect again: it controls whether the Ping
+>Status column is **shown**. Turn it off if the column is noise on your
+>fleet, not for speed.
 
 A host that has never been pinged — a brand-new registration, or any host on a
 server where the service is disabled — shows **Not pinged** rather than
@@ -321,6 +299,6 @@ a storage node from pinging your whole fleet.
 
 ## Related
 
-- [[hosts|Host Management]]
+- [[management/web/hosts|Host Management]]
 - [[fog-client-installation-options|FOG Client installation options]]
 - [[network-and-firewall-requirements|Network and firewall requirements]]

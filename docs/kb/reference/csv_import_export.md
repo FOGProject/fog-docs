@@ -1,6 +1,6 @@
 ---
 title: CSV Import / Export
-description: Describes new Fog 1.6 csv import/emport behavior and why we chose this method
+description: Describes FOG 1.6's csv import/export format (headered or positional, associations, name-resolved foreign keys) and why we chose this method
 context_id: csv_import_export
 aliases:
     - CSV Import / Export
@@ -18,10 +18,17 @@ tags:
 
 # CSV Import / Export
 
+>[!info] FOG 1.6
+>This page describes FOG 1.6. CSV import/export itself isn't new — FOG 1.5
+>has had it for a long time — but 1.6 reworks the format significantly. See
+>the [[1.5/kb/reference/csv_import_export|1.5 version]] of this page for
+>what 1.5 does: raw, positional columns with no header row, no associations
+>column, and no foreign-key name resolution.
+
 FOG can mass-import and export most management objects (hosts, images,
 snapins, groups, printers, users, modules, storage groups and storage nodes)
 as CSV files from each object's **Import** / **Export** page — see
-[[hosts|Host Management]] for where to find the Import Hosts page in the UI.
+[[management/web/hosts|Host Management]] for where to find the Import Hosts page in the UI.
 
 > **Two ways to map columns:**
 > 1. **Headered** — if the file's first row names the columns (which is what

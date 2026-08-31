@@ -24,9 +24,11 @@ control how many multicast sessions may run at the same time, which ports and
 addresses they use, and how long a session waits for its clients before it starts
 transmitting.
 
-`FOG_MULTICAST_PORT_OVERRIDE` in particular changed in FOG 1.6: it is now a comma
-separated pool of base ports, and **each port in the list is one session that can
-run concurrently**. A single port still works and behaves as a pool of one.
+`FOG_MULTICAST_PORT_OVERRIDE` in particular used to force every session onto a
+single port; it is now a comma separated pool of base ports, and **each port in
+the list is one session that can run concurrently**. A single port still works
+and behaves as a pool of one. (This changed on both the 1.6 and current 1.5.x
+lines — it is not something that distinguishes them.)
 
 These are documented in full, with their upgrade implications, on the
 [Multicast Sessions](multicast.md) page.
@@ -34,6 +36,11 @@ These are documented in full, with their upgrade implications, on the
 ## Other Settings
 
 ## Table display mode (infinite scroll vs. paging)
+
+>[!info] FOG 1.6
+>This setting does not exist on FOG 1.5, which renders management tables with
+>an older, different JavaScript table library and has no scroll-mode toggle.
+>See the [[1.5/management/web/config|1.5 version]] of this page.
 
 The management list and export tables (Hosts, Images, Snapins, and so on) can
 page through records in one of two ways, controlled by a single install-wide
@@ -193,6 +200,11 @@ slovene
 
 ## Settings Cache
 
+>[!info] FOG 1.6
+>1.5 has no settings cache at all — every setting read hits the database
+>directly, every time. See the [[1.5/management/web/config|1.5 version]] of
+>this page.
+
 FOG reads its global settings constantly — on every page load, and inside the
 background services. To avoid asking the database for the same values over and
 over, FOG keeps a short-lived **cache** of those settings. You normally never
@@ -217,19 +229,19 @@ At the bottom of the **FOG Settings** page is a read-only cache readout:
 | **Last flush** | How long ago the cache was last flushed, across all FOG processes. |
 | **Cached keys** | The names of the settings currently cached. |
 
-!!! note
-    The Hits / Misses / Queries figures reflect the **page you are currently
-    viewing** — reload the page to take a fresh sample. Thanks to the persistent
-    file, a normal reload is usually served entirely from cache, so you will
-    typically see **0 queries** even though the counters reset each page load.
-    Only setting **names** are ever shown here; setting **values** (which can
-    include passwords and API tokens) are never exposed.
+>[!note]
+>The Hits / Misses / Queries figures reflect the **page you are currently
+>viewing** — reload the page to take a fresh sample. Thanks to the persistent
+>file, a normal reload is usually served entirely from cache, so you will
+>typically see **0 queries** even though the counters reset each page load.
+>Only setting **names** are ever shown here; setting **values** (which can
+>include passwords and API tokens) are never exposed.
 
-!!! warning "Sensitive settings"
-    Passwords, tokens and other secrets are **never written to the persistent
-    cache file** — they are always read straight from the database. So those
-    particular settings will always show as a query rather than a cache hit, by
-    design.
+>[!warning] Sensitive settings
+>Passwords, tokens and other secrets are **never written to the persistent
+>cache file** — they are always read straight from the database. So those
+>particular settings will always show as a query rather than a cache hit, by
+>design.
 
 ### Flushing and refreshing
 
@@ -244,11 +256,11 @@ Both actions raise a cross-process signal, so **every** FOG process — the web 
 *and* the background services — picks up the change on its next read, not just
 the worker that handled your click.
 
-!!! tip
-    You rarely need these. The main reason to use them is when you have changed
-    a setting **outside** the web UI — for example directly in the database — and
-    want FOG to pick it up immediately instead of waiting up to the TTL
-    (5 minutes). Changes made through the web UI do not require a manual flush.
+>[!tip]
+>You rarely need these. The main reason to use them is when you have changed
+>a setting **outside** the web UI — for example directly in the database — and
+>want FOG to pick it up immediately instead of waiting up to the TTL
+>(5 minutes). Changes made through the web UI do not require a manual flush.
 
 ### Automating with the API
 
@@ -297,5 +309,5 @@ To do this perform the following steps:
 -   Click the download icon
 -   Select a file name for your kernel, to make it the default kernel leave the name as **bzImage**
        * *!!! tip
-	    If you set it to a different name, you can set a host to use t in the [[hosts#Kernel]]
+	    If you set it to a different name, you can set a host to use t in the [[management/web/hosts#Kernel|Kernel]]
 -   Click the **Next** Button

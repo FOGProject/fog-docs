@@ -18,7 +18,7 @@ FOG 1.6 uses SFTP/SSH for image capture instead of FTP as was used in the past. 
 
 A by-product of this change from ftp to SSH/SFTP is that we need the SSH daemon configured to use internal-sftp for the sftp module in the OS.
 
-During install/update of 1.6 the [[install-fog-server|Installer]] uses a sed command to attempt to update the `/etc/ssh/sshd_config` to have this line
+During install/update of 1.6 the [[installation/server/install-fog-server|Installer]] uses a sed command to attempt to update the `/etc/ssh/sshd_config` to have this line
 
 ```
 # override default of no subsystems

@@ -33,7 +33,7 @@ outstanding tasks.
 This polling is done via HTTP or HTTPS. When there is a firewall in
 between the FOG Client and Server, make sure you open port 80/tcp (HTTP)
 or port 443/tcp (HTTPS), depending if you use HTTP or HTTPS for
-client/server communications. See [[install-fog-server|Install Fog Server]]
+client/server communications. See [[installation/server/install-fog-server|Install Fog Server]]
 for choosing HTTP vs. HTTPS during install.
 
 Downloading of snapins also is done via HTTP/HTTPS.
@@ -57,7 +57,7 @@ a DHCP server in the same subnet as the client. There are different
 possibilities:
 
 -   Run the DHCP service on the FOG Server. This is one of the
-    installation options offered by [[install-fog-server|Install Fog Server]].
+    installation options offered by [[installation/server/install-fog-server|Install Fog Server]].
     Choose this option if you do not already have a running DHCP server in
     your network.
 -   Run a separate DHCP server. Most networks already have a DHCP server
@@ -100,7 +100,7 @@ or start a image capture/deployment task.
 
 For this, if not already done, open port 80/tcp (HTTP) or port 443/tcp
 (HTTPS), depending if you use HTTP or HTTPS for client/server
-communications (see [[install-fog-server|Install Fog Server]]).
+communications (see [[installation/server/install-fog-server|Install Fog Server]]).
 
 ### 4. Image capture or deployment via unicast
 

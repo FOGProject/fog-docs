@@ -1,6 +1,6 @@
 ---
 title: Version Sync Automation
-description: How FOG_VERSION/FOG_CHANNEL are kept in sync across branches
+description: How FOG_VERSION/FOG_CHANNEL are computed from git state and generated into a local file
 context_id: version-sync-automation
 aliases:
     - Version Sync Automation
@@ -10,39 +10,34 @@ tags:
     - release
     - automation
 ---
+
 # Version Sync Automation
 
-`FOG_VERSION` and `FOG_CHANNEL` (defined in
-`packages/web/lib/fog/system.class.php`) are computed from git state — the
-current branch name, distance from the last tag, and commit counts — rather
-than being bumped by hand. See the main repo's README ("Versioning and
-branches") for the version format itself
-(`{CodeBaseMajor}.{Major}.{Minor}.{Patch}`) and what each branch represents.
-This page covers how the version *string* stays correct on each branch
-without anyone bumping it by hand.
+`FOG_VERSION` and `FOG_CHANNEL` are computed from git state — the branch
+name, distance from the last tag, and commit counts — rather than being
+bumped by hand. See the main repo's README ("Versioning and branches") for
+the version format itself (`{CodeBaseMajor}.{Major}.{Minor}.{Patch}`) and
+what each branch represents. This page covers how the version *string*
+stays correct without anyone bumping it, and how that changed in August
+2026.
 
-## The formula lives in one script, split from the write
+>[!warning] This mechanism changed in August 2026 (GH-1510, GH-1513)
+>Earlier, `FOG_VERSION`/`FOG_CHANNEL` were stamped into a **tracked** line
+>of `packages/web/src/Base/System.php` — by a local pre-commit hook, and
+>(for `working-1.6`) by a CI job predicting the version a pull request would
+>carry once merged. That broke structurally: every branch open at once
+>wrote a *different* value onto the *same* line, so getting current before
+>merging (which the branch ruleset requires) routinely conflicted on that
+>line and had to be redone. The fix wasn't a smarter prediction — it was to
+>stop tracking the value in git at all.
 
-`.githooks/lib/fog-version.sh` is the single source of truth for the formula.
-Given a branch name, it computes `FOG_VERSION`/`FOG_CHANNEL` and prints three
-lines: the version, the channel, and whether that differs from what's
-currently committed (`true`/`false`). It touches no files — purely a
-function of git state, safe to run ad hoc (locally or in CI) without leaving
-a dirty working tree behind.
+## The formula: unchanged, still one script
 
-`.githooks/lib/apply-fog-version.sh <version> <channel>` is the only thing
-that writes `system.class.php` — two `sed` calls, nothing else. Callers
-(the local hook, CI) run `fog-version.sh`, and only call `apply-fog-version.sh`
-when the third line says `true`. This split exists so:
-
-- the formula (the genuinely error-prone part — see *Incident history*
-  below) and the write (mechanical, effectively foolproof) each live in
-  exactly one place, and
-- nothing gets written, staged, or committed at all when there's nothing to
-  fix, instead of always writing and checking `git diff` afterward to
-  decide whether to commit.
-
-The formula per branch prefix:
+`.githooks/lib/fog-version.sh` is still the single source of truth for the
+formula. Given a branch name and a mode, it computes
+`FOG_VERSION`/`FOG_CHANNEL` and prints three lines: the version, the
+channel, and whether that differs from the value it's comparing against
+(`true`/`false`).
 
 | Branch prefix | Channel written | Channel computed | Version scheme |
 |---|---|---|---|
@@ -50,16 +45,11 @@ The formula per branch prefix:
 | `stable` | *(none)* | Stable | Same as `dev`, but counted from `dev-branch` instead of `HEAD` |
 | `working` (`working-1.6`) | Beta | Beta | `{branch suffix}.0-beta.{commits since master}` |
 | `feature` (`feature-*`) | Feature | Feature | `{branch suffix}.0-feature.{commits since master}` |
-| `rc` (`rc-*`) | Release Candidate | Release Candidate | `{branch suffix}.0-RC-{n}`, where `n` increments by 1 from whatever's currently committed |
-
-The two channel columns differ only for `dev` and `stable`, which compute a
-label that is never written — see the note below. The *computed* label matters
-anyway: it is what the sync commit message and the CI job summary say.
+| `rc` (`rc-*`) | Release Candidate | Release Candidate | `{branch suffix}.0-RC-{n}`, incrementing off whatever's currently committed |
 
 **One vocabulary, shared with `FOG_update_channel`.** Since
 [fogproject#1279](https://github.com/FOGProject/fogproject/issues/1279) the
-channel label is the title-case form of the update channel a server tracks, so
-the value you configure and the value you read back are the same word:
+channel label is the title-case form of the update channel a server tracks:
 
 | Branch | `FOG_update_channel` | `FOG_CHANNEL` |
 |---|---|---|
@@ -68,486 +58,136 @@ the value you configure and the value you read back are the same word:
 | `working-1.6` | `beta` | Beta |
 | `rc-*` / `feature-*` | *(none — not a track anyone follows)* | Release Candidate / Feature |
 
-`lib/common/functions.sh` owns the update-track half and `fog-version.sh` owns
-the label half; nothing else connects the two files, which is how they drifted
-apart in the first place. `tests/update-channel-vocabulary.test.sh` parses the
-`case` arms out of both and fails if they disagree. The retired spellings
-`staging` and `dev` still resolve, so existing servers keep updating — see
-[[install-fogsettings]].
+`lib/common/functions.sh` owns the update-track half and `fog-version.sh`
+owns the label half; `tests/update-channel-vocabulary.test.sh` parses both
+and fails if they disagree. The retired spellings `staging` and `dev` still
+resolve, so existing servers keep updating — see
+[[management/server/install-fogsettings|.fogsettings]].
 
-`dev-branch` and `stable` deliberately carry **no `FOG_CHANNEL` line at all**
-— a clean version string with no channel text, by design. This isn't an
-oversight; don't add one. `working`/`feature`/`rc` branches do show a channel
-label. Because of this, drift detection only compares channel when a channel
-line actually exists on that branch — otherwise every check on `dev-branch`
-would find "drift" against an always-empty value that was never supposed to
-be there.
+`dev-branch` and `stable` deliberately carry **no `FOG_CHANNEL` line at
+all** — a clean version string with no channel text, by design.
+`working`/`feature`/`rc` branches do show a channel label. The `rc` case is
+a manual per-change counter, not a commit count — a deliberate, separate
+choice from the count-based branches.
 
-The `rc` case is intentionally different from the others: it's a manual
-per-change counter (each real change to a release candidate bumps `-N` by
-one), not a commit count. That's a deliberate choice for how release
-candidates are numbered, not something to make consistent with the
-count-based branches. (It shares the same "anticipate the commit" flaw the
-count-based branches used to have — every check proposes `current + 1`
-regardless of whether a real change happened, so once an `rc-*` branch
-exists this will need the same kind of fix the count-based branches already
-got. No `rc-*` branch has existed yet to force the issue.)
+## Where the version actually lives now: a generated file, not git
 
-## 1. The local pre-commit hook
+`packages/web/commons/version.php` carries `FOG_VERSION`/`FOG_CHANNEL` for
+a git checkout. It is **generated and gitignored** — never committed, never
+part of a diff, never a merge conflict. `.githooks/lib/write-version-file.sh`
+writes it, run from four places:
 
-`.githooks/pre-commit` calls `fog-version.sh` on every local commit to
-`working-1.6`, `dev-branch`, `rc-*`, and `feature-*` branches. If the third
-line says there's drift, it calls `apply-fog-version.sh` and stages the
-result as part of that same commit; otherwise it does nothing. This is what
-most contributors experience day-to-day, and it's why a version bump
-usually rides along silently inside an otherwise-unrelated commit rather
-than showing up as its own change.
+- `.githooks/post-commit`, `post-checkout`, `post-merge` — so a working
+  checkout always reports the build it's actually on, refreshed the instant
+  anything moves the commit count. None of these stage anything, so unlike
+  `pre-commit` they can never change what a commit contains.
+- `bin/installfog.sh` — so an install from a clone stamps the exact build
+  being deployed, whether or not the installer's hooks are enabled.
 
-## 2. PR-time regeneration
+`packages/web/src/Base/System.php` `include`s this file when it's readable,
+and falls back to release constants it carries itself when it isn't — a
+source zip with no `.git`, or a checkout by someone who never enabled
+hooks, still reports a truthful, if less precise, version. **That fallback
+is rewritten only at an actual release**, never by a commit, a merge, or
+CI. `write-version-file.sh` fails open at every step — a version string
+isn't worth blocking a commit, checkout, or install over.
 
-Translations and PSR2 formatting are corrected **on the pull request**, before
-it merges, by `fog-workflows`'
-[`fogproject-pr-regen.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/fogproject-pr-regen.yml).
-`fogproject`'s `.github/workflows/tests.yml` calls it from a `regen` job that
-`needs:` the test suite, so it runs only once every check has gone green.
+`bin/installfog.sh`, `bin/updatefog.sh`, and `lib/common/utils.sh` all read
+the version with an `awk` for the identical `define('FOG_VERSION', '...');`
+shape the generated file and the fallback both use — one parser works
+against either.
 
-That `needs:` is the entire gate. A caller job that `uses:` a reusable
-workflow succeeds only if *every* job inside it succeeded, so no aggregate
-"did everything pass" job is needed on the far side.
+## What this replaced, and why it had to change
 
-What it does, once:
+Two writers used to stamp the tracked line in `System.php`:
 
-1. Checks out the pull request's **head branch** — not `github.ref`, which for
-   a `pull_request` event is `refs/pull/N/merge`, a synthesised merge preview
-   that cannot be pushed to.
-2. Runs `php-cs-fixer --rules=@PSR2` over **only the `packages/web` PHP files
-   this pull request touches**, computed from the merge base. This is the one
-   place it deliberately differs from the sweep, which formats the tree
-   wholesale: the sweep owns the branch it pushes to, whereas this commit
-   lands in somebody's pull request, and a whole-tree pass would drag every
-   pre-existing violation into their diff under their name. It mirrors the
-   local hook's scope instead.
-3. Regenerates the catalogue with `update-language.sh` — whole-tree by
-   necessity, since `messages.pot` is a single artifact with no per-PR subset.
-4. Computes the version the branch will carry once it merges, and applies it.
-5. Commits once and pushes to the head branch.
+- `.githooks/pre-commit`, on every local commit — **removed**, along with
+  `.githooks/pre-push` (which only ever existed to refuse a push whose
+  committed version had drifted; with nothing stamping a version there was
+  nothing left for it to guard).
+- `working-1.6`'s PR-time regeneration job (`tests.yml`'s `regen` job, via
+  `fogproject-pr-regen.yml`'s `sync_version: true`), predicting the version
+  a pull request would carry once its merge commit landed — **removed**.
+  `fogproject`'s `tests.yml` no longer passes `sync_version` at all, and
+  `.github/workflows/sync-generated-files.yml` — the merge-time backstop
+  this fed into — is deleted from `working-1.6` entirely.
 
-### The version is predicted, and that prediction has prerequisites
+The problem wasn't that the prediction was wrong — it's that it could only
+ever be right for the *one* pull request that merged next. Every other open
+branch was left holding a different value on the same tracked line, and the
+ruleset's "branches must be up to date before merging" turned that into
+recurring, structural conflict:
 
-`FOG_VERSION` is the commit count since `master`, so computing it before the
-merge means predicting what that count will become. That is only possible
-because `working-1.6`'s ruleset forces two things:
+| | |
+|---|---|
+| #1504 | needed three separate version commits (`4598` → `4600` → `4608`) as neighboring PRs landed |
+| `3fbacbc73` | records the `System.php` conflict this caused, in its own commit message |
+| #1507 / #1508 | sat open simultaneously holding `4620` and `4619` |
 
-- **branches must be up to date before merging**, so the base is an ancestor of
-  the head and the merge brings nothing in from the base's side;
-- **merge commits are the only allowed merge method**, so the merge adds
-  exactly one commit.
+Worse than a plain race: getting a branch current *changed the very count
+being predicted* — merging the base in added a commit, the bot's re-stamp
+got rejected as non-fast-forward, merging the bot's fix added another
+commit, and so on. A busy afternoon could make a PR lose that race
+indefinitely with every check green. A derived value belongs in a generated
+file instead — the same reasoning that keeps `commons/config.class.php`
+generated rather than tracked.
 
-With both in force, and `H` being the count as the job finds it, the merge
-produces `H + 1` — plus one more for any commit the job itself writes.
+Second-order effect worth knowing: a merge no longer produces a follow-up
+bot commit on the base branch, so each merge now moves the base by exactly
+**one** commit instead of two.
 
-The subtlety worth knowing, because it is invisible in the output when it goes
-wrong: `fog-version.sh`'s "mid-commit" flag *already* adds one, but that
-increment is for the commit its **caller** is about to write. It knows nothing
-about a merge commit, which `git rev-list` also counts. So the merge commit
-needs its own increment, supplied by an empty marker commit that the job makes
-before calling the script and removes immediately after. Without it every
-version written this way is exactly one low, and the merge-time sync corrects
-it — reintroducing the churn this arrangement exists to remove.
+## The fog-workflows sweep still exists — for what's left
 
-The termination property from
-[Why this one is allowed to re-trigger itself](#why-this-one-is-allowed-to-re-trigger-itself)
-extends to the version for one specific reason: the "mid-commit" flag is set
-only when the regeneration actually staged something. On the re-run the job's
-own push triggers, nothing is stale, so the flag is `0`, the script performs an
-honest check against the value the previous run wrote, finds no drift, and
-stages nothing. Passing that flag unconditionally would return a version one
-higher on every run and push forever.
+[`FOGProject/fog-workflows`'s `update-lang-fix-psr-and-sync-version.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/update-lang-fix-psr-and-sync-version.yml)
+still runs daily and corrects gettext translations and PSR2 formatting on
+`working-1.6`, `dev-branch`, `rc-*`, and `feature-*` — the gap the local
+pre-commit hook can't close, since it never runs for a PR merged through
+GitHub's web UI, and doesn't run at all for a direct push or a merged fork
+PR.
 
->[!warning]
->Turning off either ruleset setting silently makes every version computed this
->way wrong. Squash collapses N commits into one and makes the count
->unrecoverable; rebase adds no merge commit at all. Nothing fails loudly — the
->merge-time backstop corrects the value afterwards, so the symptom is churn
->rather than a bad release. If either setting is changed, revert
->`sync_version` in `fogproject`'s `tests.yml` in the same change.
+**It detects the generated-version mechanism from the tree, not from a
+branch name**, and skips its own version-stamping step wherever it finds
+`.githooks/lib/write-version-file.sh` present: stamping a commit count into
+the release fallback on a branch that generates its own version would put
+the removed churn straight back. `working-1.6`'s PR-time regeneration job
+makes the identical check for the same reason
+([FOGProject/fog-workflows#39](https://github.com/FOGProject/fog-workflows/pull/39)).
+Neither has a branch listed anywhere for this — a branch flips itself the
+moment its own port of GH-1513 lands, with no workflow edit needed.
 
-The job re-checks the up-to-date condition itself rather than trusting the
-setting, because the ruleset blocks the *merge* while the job runs earlier, and
-the base can move in between. If it has, the version step is skipped rather
-than committing a number that cannot be stood behind.
+>[!warning] `dev-branch` is mid-migration as of this writing
+>`dev-branch`'s pre-commit hook no longer stamps a version — that removal
+>ported cleanly — but it has **not yet** received `write-version-file.sh`,
+>so it has no generated-file version either. Until that lands, `dev-branch`'s
+>version is written only by the sweep's legacy path (still stamping the
+>tracked line in `System.php`, the way both branches worked before this
+>change) and by `stable-releases.yml`'s pre-release pass. Check
+>`git show dev-branch:.githooks/lib/write-version-file.sh` before trusting
+>anything on this page as still-accurate for `dev-branch` specifically.
 
-### The ruleset
+### Verification
 
-Not a file — GitHub reads no in-repo config for this, so it is applied once by
-someone with admin on the repository and is not part of any pull request diff.
+`tests/generated-version-file.test.sh` pins the contract on branches that
+have adopted it: the generated file is gitignored and untracked, its shape
+is what the shell parsers expect, `System.php`'s `include` is guarded so the
+generated file wins when present, and no hook writes a version into a
+tracked file. Each assertion was proven to fail before being kept —
+removing the `.gitignore` entry, force-adding the generated file, breaking
+the generator's `define()` shape, unguarding the `include`, and making a
+hook call the old tracked-file writer all fail their respective checks.
 
-```bash
-gh api --method POST /repos/FOGProject/fogproject/rulesets \
-  --input ruleset.json
-```
+## stable-releases.yml
 
-```json
-{
-  "name": "working-1.6 pull request gate",
-  "target": "branch",
-  "enforcement": "active",
-  "conditions": { "ref_name": { "include": ["refs/heads/working-1.6"], "exclude": [] } },
-  "bypass_actors": [
-    { "actor_id": 971767, "actor_type": "Integration", "bypass_mode": "always" },
-    { "actor_id": 1, "actor_type": "OrganizationAdmin", "bypass_mode": "always" }
-  ],
-  "rules": [
-    { "type": "pull_request", "parameters": {
-        "required_approving_review_count": 0,
-        "dismiss_stale_reviews_on_push": false,
-        "require_code_owner_review": false,
-        "require_last_push_approval": false,
-        "required_review_thread_resolution": false,
-        "allowed_merge_methods": ["merge"] } },
-    { "type": "required_status_checks", "parameters": {
-        "strict_required_status_checks_policy": true,
-        "required_status_checks": [
-          { "context": "fogproject / tests (PHP 7.4)" },
-          { "context": "fogproject / tests (PHP 8.3)" },
-          { "context": "fogproject / vendor matches composer.lock" },
-          { "context": "fogproject / schema on mariadb:10.5" },
-          { "context": "fogproject / schema on mariadb:11.8" },
-          { "context": "fogproject / schema on mysql:8.0" },
-          { "context": "fogproject / release pins resolve" } ] } }
-  ]
-}
-```
-
-Four things that will bite if they are skipped:
-
-- **`bypass_actors` for the GitHub App is mandatory, not defensive.** A
-  `pull_request` rule blocks direct pushes to the branch, and both the daily
-  sweep and the merge-time sync push *directly* with the App token. Without a
-  bypass, every sweep run turns red the moment the ruleset goes active.
-  `actor_id` is the **App id**, not the installation id -- the two are
-  different numbers and the wrong one is accepted silently, leaving a ruleset
-  that looks correct and bypasses nobody. For `fog-workflows` it is `971767`,
-  as written above; read it back from
-  `gh api orgs/FOGProject/installations --jq '.installations[]|"\(.app_id) \(.app_slug)"'`.
-- **The `OrganizationAdmin` bypass is a deliberate trade, not an oversight.** A
-  `pull_request` rule blocks direct pushes from *everyone*, maintainers
-  included -- rulesets do not exempt admins by default. Without this entry a
-  maintainer cannot push to `working-1.6` at all. With it, a maintainer can
-  also squash, rebase or push directly, any of which breaks the commit-count
-  prediction; that is precisely the "an admin bypassed the ruleset" case the
-  merge-time sync is retained to cover, so the failure mode stays churn rather
-  than a wrong version reaching a release. GitHub normalises this entry's
-  `actor_id` to `null` on read-back, which is expected.
-- **Confirm the seven check names against a real run before enabling.** They
-  are `<caller job name> / <called job name>`, and a mistyped required check
-  blocks every pull request permanently while looking like a workflow that
-  simply never ran.
-- **Do not make the `regenerate` job a required check.** It is skipped on fork
-  pull requests and on any PR its guards exclude, and a required check that
-  never reports leaves those unmergeable.
-- **Do not enable "require linear history"** — it is mutually exclusive with
-  requiring merge commits.
-
-Extending this to `dev-branch` needs one more step first: `dev-branch`'s
-`tests.yml` has no `name: fogproject` on its `suite` job, so it currently
-reports `suite / …` instead. Normalise that before registering contexts, or
-half the required checks will never appear.
-
-**Who is skipped, and where they are caught instead.** Pull requests from
-forks: `pull_request` withholds secrets from a fork, so there is no App token
-to mint, and pushing to a fork head would need `maintainer_can_modify`, which
-is the contributor's to set. Those are corrected by the daily sweep after they
-merge, exactly as they are today. Pull requests whose *head* is a long-lived
-branch are skipped too — `stable-releases.yml` opens one of those to sync a
-release back, and it must never be written to.
-
->[!warning]
->This is the **only** workflow in the fleet whose own push raises the event
->that runs it. Its push to the head branch fires `pull_request: synchronize`,
->which runs it again. See
->[Why this one is allowed to re-trigger itself](#why-this-one-is-allowed-to-re-trigger-itself)
->before changing anything in it.
-
-## 3. The fog-workflows sweep
-
-The pre-commit hook is client-side — it never runs for a PR merged through
-GitHub's web UI (squash, merge-commit, or rebase), so a version merged that
-way can silently go stale. That gap is covered by
-[`FOGProject/fog-workflows`'s `update-lang-fix-psr-and-sync-version.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/update-lang-fix-psr-and-sync-version.yml),
-which despite the "version sync" shorthand keeps *three* derived things in
-step — gettext translations, PSR2 formatting, and `FOG_VERSION`/`FOG_CHANNEL`
-— as one job, one commit, one push per branch. Within this workflow they
-cannot be separated: a translation or formatting fixup is itself a commit, so
-it changes the count the version is derived from, and the version therefore
-has to be computed after those are staged rather than racing them.
-
-That ordering constraint is what makes the *timing* interesting. It does not
-say the three must always happen together — it says that whenever they happen
-together, the version goes last. Correcting the first two **before** a pull
-request merges satisfies it just as well, because by merge time those commits
-are already part of the count. That is what
-[PR-time regeneration](#2-pr-time-regeneration) above does, and it is why the
-merge path can now ask for the version alone.
-
-It has **two entry points**:
-
-- **On merge, for the version only — and now as a backstop.** `fogproject`'s
-  `.github/workflows/sync-generated-files.yml` — a trigger stub carrying no
-  logic — calls it over `workflow_call` when a PR is merged into
-  `working-1.6` or `dev-branch`. It passes `version_only: true`: on a same-repo
-  pull request the formatting and the catalogue were already corrected on the
-  branch before it merged, so repeating them here can only be a no-op — one
-  that would still cost a `fog-plugins` release download and a full gettext
-  regeneration on every merge.
-  On `working-1.6` the version arrives correct too, so this path finds nothing
-  to do at all. It is kept rather than removed because it still covers what the
-  prediction cannot: a squash or rebase that slipped past the ruleset, an admin
-  bypass, a merged fork PR that never ran the PR-time job, and anything the
-  `regen` guards skipped. **A run that reports no change is the expected
-  outcome, not a symptom.** One copy of that stub lives on each of
-  those branches, byte-identical; GitHub reads a `pull_request` workflow from
-  the PR's *base* branch, so each copy only ever acts on merges into its own
-  branch. A merged PR from a *fork* is skipped and left to the schedule —
-  see below.
-- **Daily at 10:10 UTC**, plus `workflow_dispatch` for a one-off or
-  all-branches run — just over an hour before
-  [`stable-releases.yml`](stable-release-workflow.md)'s monthly 11:11 UTC run,
-  so a release day never reads a stale version. This is the only cover for
-  direct pushes, for merged pull requests from forks, and for
-  `rc-*`/`feature-*` branches, which are deliberately left off the merge path
-  (see below).
-
-Each run:
-
-1. Works out which branches to act on. Given a `branch` input (the merge
-   path, and `stable-releases.yml`) it takes just that one; otherwise it
-   lists `fogproject`'s branches via the GitHub API and filters to the
-   watched patterns (`working-1.6`, `dev-branch`, `rc-*`, `feature-*` — the
-   same set the local hook covers, and **not** `stable`, see below).
-2. For each match, checks out that branch, fetches the plugin tree, then
-   regenerates the translation catalogue with `update-language.sh` and
-   reformats `packages/web` with a pinned `php-cs-fixer` — the same
-   `.githooks/lib` scripts the local hook calls, not separately-maintained
-   copies. This is also the backstop for contributors whose machines lack
-   `gettext`/`php-cs-fixer`, where the hook skips those steps loudly rather
-   than refusing the commit.
-   **Skipped entirely when the caller passes `version_only: true`** — the
-   merge path does, because a same-repo pull request arrives already
-   formatted and regenerated. The plugin fetch is skipped with it, so that
-   path stops downloading a `fog-plugins` release on every merge.
-3. Runs `fog-version.sh`, passing the same "mid-commit" flag the hook passes
-   when step 2 staged something — so the version it computes already accounts
-   for the commit about to exist.
-4. If the third line says there's drift, runs `apply-fog-version.sh`.
-5. If anything from steps 2 or 4 is staged, commits as the GitHub App bot and
-   pushes directly to that branch (no PR — this is the same kind of
-   mechanical correction the local hook already makes without review).
-   Otherwise nothing is written, staged, or committed.
-6. For `dev-branch` and `working-1.6`, updates that branch's
-   `badges/<branch>.json` in fog-workflows, using its own App token scoped to
-   that repo. Not `github.token`: under `workflow_call` that is the *caller's*
-   token, and a `GITHUB_TOKEN` cannot write to another repository.
-
-The merge path needs a stub file in `fogproject` because GitHub Actions has
-no cross-repo merge trigger — something has to live there to react to the
-event. The scheduled path needs nothing propagated: it discovers branches
-itself via the API, so a new `feature-*`/`rc-*` branch is covered
-automatically the next time the schedule fires.
-
-`rc-*` and `feature-*` are deliberately left off the merge path. `rc-*`
-especially: the formula increments an RC off the *committed* suffix rather
-than off a commit count, so it reports drift on every run by design (only
-`head` mode special-cases that), and syncing it per merge would bump the RC
-suffix on every merge. The daily tick keeps that to at most one per day.
-
-Keeping the version correct within minutes of a merge costs one bot commit per
-merged PR — on `dev-branch`, which still works this way, and on `working-1.6`
-for anything that bypassed the PR-time path. That is inherent rather than
-incidental: the version *is* the commit count, so a merge changes what it
-should be. On `working-1.6` the cost has moved rather than disappeared — the
-same commit is now made on the pull request, before review, where it is at
-least visible to the person whose change caused it. One knock-on either way:
-`stable`'s version is computed from `master..dev-branch`, so it advances
-faster than it used to. That is larger, not wrong; the count is what the
-version is defined as.
-
-### Run visibility
-
-Each matrix instance writes its own outcome — fixed (old → new version), or
-already correct — to `$GITHUB_STEP_SUMMARY`. GitHub renders every job's
-summary together on the run's Summary page, so the state of every watched
-branch is visible from one screen without opening individual job logs.
-`discover-branches` also lists what it found watching, so a run's scope is
-visible up front too.
-
-### Why a fixup commit anticipates its own `+1`
-
-A fixup commit is itself a real commit on the branch, so if it simply wrote
-"the value that's correct right now" it would be wrong the instant it lands
-— the next check would see the fixup commit itself as one more commit than
-what got written, and "fix" it again. `fog-version.sh` avoids this with a
-two-pass compute: first with the raw commit count; if that already matches
-what's committed (the third line is `false`), nothing happens. If it
-doesn't, it recomputes once more with the count incremented by one — the
-value that will actually be true once this fix exists — and that's what
-gets applied. This converges in exactly one commit no matter how large the
-gap is, and is dynamic (a real recount every run), not a fixed offset
-applied forever.
-
-### Incident history (2026-07-28)
-
-An earlier version of this workflow didn't anticipate its own commit. It
-lived as a push-triggered stub in `fogproject` calling a reusable workflow in
-`fog-workflows`, and its commit-count formula counted its own prior fixup
-commits as real drift. A bot-authored push re-triggered the push-triggered
-stub, which recomputed a value one higher than it had just committed, and
-pushed another fixup — 30 commits landed on `dev-branch` in about 20 minutes
-before it was caught. Moving to a schedule trigger (instead of push) removed
-the immediate retrigger, and the two-pass anticipation above removed the
-underlying non-convergence, which would otherwise have just repeated once
-per scheduled run instead of once per push. The ~150 leftover fixup commits
-from that incident were left in `dev-branch`/`working-1.6` history rather
-than rewritten away; `stable-releases.yml`'s changelog generation excludes
-them by commit-message pattern so they don't spam release notes, but they're
-still there in `git log` for anyone who needs to look.
-
-#### Why the merge trigger isn't a repeat of it
-
-The merge path described above reacts to repository activity, which is what
-the reverted stub did — so the difference is worth stating plainly rather
-than trusting that it will be remembered.
-
-The rule that came out of the incident is not "the trigger must be a cron".
-It is that **version syncing must not be triggered by any event the sync bot's
-own push can raise**. A cron passes that test because it cannot see what was
-last pushed. `push` fails it: the bot pushes its fixup directly to the branch,
-the trigger fires, and the workflow feeds itself. A merge event —
-`pull_request: types: [closed]` — passes it for a different reason: a direct
-push is not a PR merge, so the bot cannot raise the event that would call the
-workflow again.
-
-So the loop is closed by the shape of the event, not by an actor-name guard
-that has to be kept correct as bot identities change. The two fixes above
-still hold underneath it: the two-pass anticipation means a fixup is right
-the instant it lands, and the translation regen is byte-idempotent
-(`--omit-header --no-location`, sorted and unwrapped), so a second look at an
-unchanged tree finds nothing to do. Even without the trigger's structural
-guarantee those would converge; with it, there is no second run to converge.
-
-Apply that one question to any new trigger, rather than pattern-matching on
-this list of examples.
-
-#### Why this one is allowed to re-trigger itself
-
-[PR-time regeneration](#2-pr-time-regeneration) is the single documented
-exception, and it fails the question above rather than passing it: its push
-lands on a pull request's head branch, and that push *does* raise
-`pull_request: synchronize`, which runs it again. There is no structural
-guarantee to lean on here, so the exception has to earn its place three times
-over.
-
-1. **It terminates in one step.** `php-cs-fixer` in fix mode is a fixed point —
-   a conforming file comes back byte-identical — and `update-language.sh` is a
-   pure function of the source strings, for the reasons in
-   [Why a fixup commit anticipates its own `+1`](#why-a-fixup-commit-anticipates-its-own-1)
-   and the `--omit-header --no-location` / `msgcat --no-wrap --sort-output`
-   flags it uses. So run *n+1* finds nothing to stage, pushes nothing, and
-   raises no event. The bound is **one extra run and exactly one bot commit
-   per contributor push** — a two-step sequence, not a loop that happens to
-   converge.
-2. **A runtime assertion proves it on the actual tree**, rather than trusting
-   the paragraph above. Before committing, the workflow re-runs both
-   operations and **fails the job** if a second pass changes anything. Any
-   future non-idempotency therefore surfaces as one red check instead of a
-   runaway.
-3. **A hard bound holds even if 1 and 2 are wrong.** It refuses to push when
-   the head branch already ends in a bot commit and there is still work to do.
-
-The version-formula fix that closed the 2026-07-28 incident was of the first
-kind alone. The lesson encoded here is that "it should converge" is not enough
-on its own — the reverted stub would have passed that bar too. An exception to
-the trigger rule needs the assertion and the bound as well.
-
-Two things that look like simplifications and are traps. Pushing with
-`GITHUB_TOKEN` instead of an App token would suppress the re-run entirely,
-which sounds ideal — but once required status checks are enabled, checks
-attach to the head SHA, and a push that starts no run leaves the pull request
-waiting on a status that will never arrive. `[skip ci]` in the commit message
-deadlocks the same way.
-
-#### A second question: which ref is the trigger read from?
-
-Safety is not the only thing that decides whether a trigger works, and the
-first attempt at the merge path got this wrong. It used
-`pull_request_target`, which is the obvious choice because it is the variant
-that receives secrets on a fork PR — and it never fired once.
-
-GitHub reads a `pull_request_target` workflow from the repository's **default**
-branch, which here is `stable`, rather than from the pull request's base
-branch. A stub living on `working-1.6` and `dev-branch` is therefore never
-consulted, however correct it is: it did not appear in the repository's
-Actions workflow list at all, and four pull requests merged into
-`working-1.6` without producing a run. Most events behave this way —
-`schedule` and `workflow_dispatch` among them. `push`, `create` and
-`pull_request` are the ones that resolve per-ref.
-
-`pull_request` is what the stub uses now, for exactly that reason. The cost is
-that `pull_request` withholds secrets from a fork PR, so the App token cannot
-be minted there; the stub skips merged fork PRs with a same-repo guard and the
-daily schedule picks them up, the same way it covers direct pushes.
-
-Worth checking deliberately, because a workflow that is correct but never runs
-looks identical to one that ran and found nothing to do. Confirm a new trigger
-actually produced a run.
-
-Two further refinements landed the same day, both about *how often* and
-*how visibly* this runs rather than the formula itself:
-
-- **`fog-version.sh` used to write `system.class.php` itself**, so running
-  it for any reason — including a future "detect only, don't fix" use —
-  mutated the working tree as a side effect. Splitting it into a pure
-  compute (`fog-version.sh`) and a separate write (`apply-fog-version.sh`),
-  gated on the compute step's own drift signal, means nothing gets written
-  at all when nothing needs to change.
-- **Hourly was excessive** for how rarely real drift actually occurs — every
-  run that found nothing to fix was still real CI time spent for no reason,
-  and any run that did find drift was one more bot commit than necessary if
-  it happened to repeat before a human noticed. Daily (at 10:10 UTC, ahead
-  of the monthly release check) caps any real fixup to at most one commit
-  per branch per day.
-
-## 4. stable-releases.yml
-
-`stable`'s version is owned entirely by fog-workflows'
+`stable`'s version is still owned entirely by fog-workflows'
 [`stable-releases.yml`](https://github.com/FOGProject/fog-workflows/blob/main/.github/workflows/stable-releases.yml)
-(see [Stable Release Workflow](stable-release-workflow.md) for how that
-pipeline works end to end), which drives the whole release flow (validation,
-tagging, release notes, syncing `stable` back into `dev-branch`). The sweep
-above deliberately excludes `stable` on both of its entry points — the
-schedule's branch filter skips it, and the merge stub's allowlist names only
-`working-1.6` and `dev-branch` — so the two mechanisms never fight over the
-same branch, and the schedule runs early enough in the day to stay ahead of
-it.
+(see [[stable-release-workflow|Stable Release Workflow]] for the full
+pipeline), which drives tagging, release notes, and syncing `stable` back
+into `dev-branch`. Before opening the release PR it still calls the sweep
+against `dev-branch` for a full whole-tree PSR2/gettext pass — not
+version-only, since `dev-branch` doesn't yet generate its own version (see
+the migration note above) and this remains the last correction before a
+tagged release.
 
-Before it opens the release PR, it calls the sweep against `dev-branch` — and
-that call keeps the **full** whole-tree pass: gettext regeneration and
-`php-cs-fixer` over all of `packages/web`, not just changed files. It passes
-`version_only: false` explicitly rather than relying on the default, because
-this is the last whole-tree pass before a tagged release and it has to cover
-what PR-time regeneration cannot: anything merged from a fork, anything pushed
-directly to `dev-branch`, and every commit predating PR-time regeneration.
-`version_only` is opt-in — a caller that says nothing gets the full behaviour —
-but on this path the intent is written down rather than inferred.
-
-One interaction worth knowing: that last step, syncing `stable` back into
-`dev-branch`, is done by merging a PR whose base is `dev-branch`, so it trips
-the merge stub and re-syncs `dev-branch` once the release lands. That is
-correct — the commit count really did change — and it cannot loop, because
-the sync's own push is not a PR merge. The earlier `dev-branch → stable`
-merge has `stable` as its base, which is not in the allowlist, so it does
-nothing.
-
-See [Fog Release](fog-release.md) for the manual side of cutting a release
+See [[fog-release|Fog Release]] for the manual side of cutting a release
 (kernel/init/iPXE updates); this page covers only how the version *string*
-itself stays correct.
+stays correct.

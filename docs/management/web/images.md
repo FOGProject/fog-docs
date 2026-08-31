@@ -193,6 +193,14 @@ a great option to save image space and network transfer volume.
 
 ## Deleting an Image object (1.6)
 
+>[!info] FOG 1.6
+>1.5 already cancels tasks and cleans up host/storage-group/Windows-key
+>references on image delete — the change here is centralizing that cascade
+>so every deletion path (not just the model's own delete method) is
+>guaranteed to run it, and clearing a task's image reference rather than
+>canceling the task outright. See the
+>[[1.5/management/web/images|1.5 version]] of this page.
+
 Deleting an image definition no longer leaves anything pointing at it:
 
 - **Hosts assigned that image are unassigned.** The host survives with no

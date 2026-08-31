@@ -27,30 +27,30 @@ Documentation related to how to use the web management ui.
 
 - [[users|User Management]]
 - [[roles|Roles & Permissions]]
-- [[site-scoping|Site Scoping]]
-- [[ldap|LDAP Authentication]]
+- [[management/web/site-scoping|Site Scoping]]
+- [[management/web/ldap|LDAP Authentication]]
 - [[oidc|OpenID Connect Sign-in]]
 - [[local-login|The Local Login Page]]
 - [[ad-integration|Active Directory Integration]]
 
 **Imaging Objects**
 
-- [[hosts|Host Management]]
+- [[management/web/hosts|Host Management]]
 - [[groups|Group Management]]
 - [[management/web/images|Image Management]]
-- [[storage-node|Storage Node Management]]
+- [[management/web/storage-node|Storage Node Management]]
 - [[snapins|Snapin Management]]
 - [[printers|Printer Management]]
 
 **Operations**
 
 - [[tasks|Task Management]]
-- [[multicast|Multicast Sessions]]
-- [[reports|Report Management]]
+- [[management/web/multicast|Multicast Sessions]]
+- [[management/web/reports|Report Management]]
 
 **System**
 
 - [[dashboard|Dashboard]]
 - [[service|Fog Service (aka Client) Management]]
-- [[config|Fog Configuration]]
-- [[plugins|Plugins]]
+- [[management/web/config|Fog Configuration]]
+- [[management/web/plugins|Plugins]]

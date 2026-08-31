@@ -105,7 +105,7 @@ Boot a shim from `secureboot-upstream\` or `secureboot-fog\`. When it cannot ver
 the next stage it launches MokManager: choose *Enroll key from disk* and select
 `MOK.der` from that same folder. Reboot.
 
-See [[secure-boot-mok-enrollment|Secure Boot: MOK enrollment]] for the full
+See [[kb/how-tos/secure-boot-mok-enrollment|Secure Boot: MOK enrollment]] for the full
 walkthrough.
 
 ### As the `db` certificate, for booting with no shim
@@ -304,7 +304,7 @@ with your own CA; otherwise the plain folders are fine.
 
 ## See also
 
-- [[secure-boot-mok-enrollment|Secure Boot: MOK enrollment]] — the attended shim route
+- [[kb/how-tos/secure-boot-mok-enrollment|Secure Boot: MOK enrollment]] — the attended shim route
 - [[secure-boot-setup-mode-enrollment|Secure Boot: Setup Mode enrollment]] — FOG's unattended `db`/KEK/PK task
-- [[secure-boot-signing|Secure Boot: signing FOS with your own key]]
+- [[kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]]
 - [[uefi-boot-entries|UEFI boot entries]]

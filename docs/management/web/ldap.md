@@ -27,13 +27,12 @@ The **LDAP** plugin lets people sign in to FOG with their directory
 account — Active Directory, OpenLDAP, FreeIPA, or any generic LDAP
 server — instead of a password stored in FOG.
 
-!!! note "This page describes FOG 1.6"
-
-    Two things work differently on 1.5, and both are covered where they
-    come up below: what a directory login is granted
-    ([roles and user groups](#what-a-directory-user-gets), where 1.5 has
-    a single admin group and a single user group), and
-    [nested groups](#nested-groups).
+>[!info] FOG 1.6
+>This page describes FOG 1.6. LDAP group handling changed significantly from
+>1.5 — where a directory login gets one of two fixed tiers instead of
+>per-group role mappings, and nested groups is a single AD-only checkbox
+>instead of a choice of strategies. See the
+>[[1.5/management/web/ldap|1.5 version]] of this page for FOG 1.5.
 
 You do not create these users by hand. The first time someone signs in
 successfully, FOG creates a matching user account for them
@@ -49,11 +48,10 @@ automatically, and refreshes it on every later login.
   the upgrade, the CSV export and the local login path from treating
   directory accounts as ordinary FOG users.
 
-!!! note "Upgrading from an earlier build"
-
-    Older versions of this plugin stored a hash of the user's real
-    directory password in FOG. Those rows are cleaned up automatically
-    on each user's first login after upgrading.
+>[!note] Upgrading from an earlier build
+>Older versions of this plugin stored a hash of the user's real
+>directory password in FOG. Those rows are cleaned up automatically
+>on each user's first login after upgrading.
 
 ## Connecting over LDAPS
 
@@ -105,12 +103,11 @@ at the same time, and whether verification can succeed is a property of
 the *directory*, not of FOG. Putting a server on **Hard** with its own
 CA leaves every other server's setting alone.
 
-!!! warning "Never is a diagnostic, not a fix"
-
-    **Never** encrypts the traffic but accepts any certificate at all,
-    including one presented by a machine that is not your directory
-    server. Use it to confirm that a connection problem really is
-    certificate-related, then fix the certificate and move back off it.
+>[!warning] Never is a diagnostic, not a fix
+>**Never** encrypts the traffic but accepts any certificate at all,
+>including one presented by a machine that is not your directory
+>server. Use it to confirm that a connection problem really is
+>certificate-related, then fix the certificate and move back off it.
 
 ### Getting Hard to work with a private CA
 
@@ -127,32 +124,30 @@ Two things have to be true, and only the first one is obvious:
   the certificate with the address you actually use as a
   subjectAltName.
 
-!!! note "The path must be absolute, and readable by PHP"
+>[!note] The path must be absolute, and readable by PHP
+>A relative path is resolved against the PHP process's working
+>directory, which is not where you would expect — always give a full
+>path beginning with `/`.
+>
+>The file is opened by the **PHP-FPM pool user**, which is not
+>necessarily the account that owns your web root (on RedHat with
+>nginx, PHP runs as `apache` while nginx runs as `nginx`). If FOG
+>cannot read the file, it writes a line to the web server's error log
+>and carries on **without** it — so a private CA quietly stops being
+>trusted and **Hard** starts failing until the permissions are fixed.
+>
+>FOG deliberately does not reject an unreadable path when you save
+>it. Administrators routinely configure a server before its
+>certificate is in place, and refusing the save would make that
+>impossible.
 
-    A relative path is resolved against the PHP process's working
-    directory, which is not where you would expect — always give a full
-    path beginning with `/`.
-
-    The file is opened by the **PHP-FPM pool user**, which is not
-    necessarily the account that owns your web root (on RedHat with
-    nginx, PHP runs as `apache` while nginx runs as `nginx`). If FOG
-    cannot read the file, it writes a line to the web server's error log
-    and carries on **without** it — so a private CA quietly stops being
-    trusted and **Hard** starts failing until the permissions are fixed.
-
-    FOG deliberately does not reject an unreadable path when you save
-    it. Administrators routinely configure a server before its
-    certificate is in place, and refusing the save would make that
-    impossible.
-
-!!! note "Settable outside the web UI too"
-
-    Both fields are part of the LDAP server CSV export and import, and
-    both are readable and writable on `/fog/ldap/<id>` through the
-    [REST API](../../kb/integrations/api.md). An illegal verification
-    level, or a CA path that is relative or too long, is refused there
-    with a **406** naming the value it rejected — the same rule the form
-    applies.
+>[!note] Settable outside the web UI too
+>Both fields are part of the LDAP server CSV export and import, and
+>both are readable and writable on `/fog/ldap/<id>` through the
+>[REST API](../../kb/integrations/api.md). An illegal verification
+>level, or a CA path that is relative or too long, is refused there
+>with a **406** naming the value it rejected — the same rule the form
+>applies.
 
 ## What a directory user gets
 
@@ -176,14 +171,11 @@ Group mappings are **additive**. A user in three mapped groups receives
 everything all three grant; there is no ranking and no "highest wins".
 Directory groups you have not mapped grant nothing.
 
-!!! note "On FOG 1.5 this is two groups and two tiers"
-
-    1.5 has one **admin group** and one **user group** per server, and a
-    login lands in whichever it matches — administrator, or the
-    restricted "mobile" tier. There are no per-group mappings, no roles,
-    and no user group grants. Upgrading converts those two lists into
-    mappings; see the note below about what the two surviving role
-    settings are for.
+>[!info] Looking for FOG 1.5's group model?
+>1.5 has one **admin group** and one **user group** per server instead of
+>per-group mappings — see the
+>[[1.5/management/web/ldap#What a directory user gets|1.5 version]] of this
+>page.
 
 One setting in **LDAP → Global Options** covers the case where there are
 no groups to look at:
@@ -195,23 +187,21 @@ no groups to look at:
 Leaving it unset means such a login earns no role, and therefore no
 access.
 
-!!! warning "Group matching off means *everyone*"
+>[!warning] Group matching off means *everyone*
+>On a server with group matching disabled, FOG can authenticate the
+>account but has no way to tell an administrator from anybody else.
+>The "group matching is off" role is therefore granted to **every
+>account in the directory that can bind** — not a subset. Choose it
+>accordingly, or leave it blank.
 
-    On a server with group matching disabled, FOG can authenticate the
-    account but has no way to tell an administrator from anybody else.
-    The "group matching is off" role is therefore granted to **every
-    account in the directory that can bind** — not a subset. Choose it
-    accordingly, or leave it blank.
-
-!!! note "Where the old admin/user group settings went"
-
-    Earlier builds had a single **admin group** and **user group** per
-    server, each mapped to one role. Those became per-group mappings so
-    that different groups can grant different roles. Your existing group
-    lists are converted automatically on upgrade, using the **Role for
-    LDAP admin group** and **Role for LDAP user group** settings as the
-    targets — which is all those two settings are still for. Nobody's
-    access changes as a result of the conversion.
+>[!note] Where the old admin/user group settings went
+>Earlier builds had a single **admin group** and **user group** per
+>server, each mapped to one role. Those became per-group mappings so
+>that different groups can grant different roles. Your existing group
+>lists are converted automatically on upgrade, using the **Role for
+>LDAP admin group** and **Role for LDAP user group** settings as the
+>targets — which is all those two settings are still for. Nobody's
+>access changes as a result of the conversion.
 
 ### Grants are re-evaluated on every login
 
@@ -255,23 +245,22 @@ nesting works and what it costs depends on the directory:
 is small. Choose **Chain** on Active Directory when you want the lowest
 possible query count.
 
-!!! warning "Nesting widens access, including for users who already matched"
-
-    A parent group's roles reach **everyone beneath it**. That includes
-    people who were already matching directly.
-
-    In the example above, if `all-staff` is also mapped, then turning
-    nesting on gives `alice` the roles from both `all-techs` and
-    `all-staff` — and it does the same for a user who was already a
-    direct member of `all-techs`, because that group is still beneath
-    `all-staff`.
-
-    Before enabling it, look at what your **top-level** groups are
-    mapped to. A role attached to a broad parent group like "all staff"
-    reaches every nested member of it.
-
-    Turning nesting on can only ever **add** access, never remove it, so
-    it is safe to enable in the sense that nobody loses anything.
+>[!warning] Nesting widens access, including for users who already matched
+>A parent group's roles reach **everyone beneath it**. That includes
+>people who were already matching directly.
+>
+>In the example above, if `all-staff` is also mapped, then turning
+>nesting on gives `alice` the roles from both `all-techs` and
+>`all-staff` — and it does the same for a user who was already a
+>direct member of `all-techs`, because that group is still beneath
+>`all-staff`.
+>
+>Before enabling it, look at what your **top-level** groups are
+>mapped to. A role attached to a broad parent group like "all staff"
+>reaches every nested member of it.
+>
+>Turning nesting on can only ever **add** access, never remove it, so
+>it is safe to enable in the sense that nobody loses anything.
 
 ### Chain is refused on directories that cannot do it
 
@@ -311,34 +300,18 @@ Cycles are handled automatically. A group that contains a group that
 contains the first one resolves correctly and does not consume the depth
 limit.
 
-!!! warning "Nesting on FOG 1.5 is not this feature"
+>[!info] Looking for FOG 1.5's nesting setting?
+>1.5 has a single **nested group** checkbox — `LDAP_MATCHING_RULE_IN_CHAIN`
+>only, Active Directory only, and unreachable on most pre-February-2026
+>installs. See the
+>[[1.5/management/web/ldap#Nested groups|1.5 version]] of this page.
 
-    1.5 has a single **nested group** checkbox instead of the three
-    strategies above, and it is `LDAP_MATCHING_RULE_IN_CHAIN` only. On
-    OpenLDAP, FreeIPA or anything else that rule matches nobody, and 1.5
-    does not check whether the directory supports it — so the box ticks,
-    saves, and silently grants nothing.
-
-    It is also unreachable on most installs. The setting needs a column
-    that was added to the plugin's table in February 2026, and 1.5 has
-    no mechanism to add a column to a *plugin* table on an install that
-    already exists — the core schema updater only ever touches core
-    tables. If your LDAP plugin was installed before that date, the
-    column is simply not there and the setting has nowhere to go.
-
-    Reinstalling the plugin would create the column, and would also drop
-    every LDAP server you have configured along with the FOG accounts
-    the plugin created, so it is not a workaround. Upgrading to 1.6 is
-    the fix — see
-    [issue #892](https://github.com/FOGProject/fogproject/issues/892).
-
-!!! note "posixGroup / memberUid groups cannot nest"
-
-    If your groups record membership with `memberUid` rather than
-    `member`, nesting cannot work — and that is a property of the schema,
-    not a limitation of FOG. `memberUid` holds bare **usernames**, so
-    there is no way to express "this group contains that group". Direct
-    membership works exactly as before.
+>[!note] posixGroup / memberUid groups cannot nest
+>If your groups record membership with `memberUid` rather than
+>`member`, nesting cannot work — and that is a property of the schema,
+>not a limitation of FOG. `memberUid` holds bare **usernames**, so
+>there is no way to express "this group contains that group". Direct
+>membership works exactly as before.
 
 ### Cost per login
 

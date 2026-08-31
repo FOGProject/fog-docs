@@ -46,7 +46,7 @@ offers a small enrollment kit.
 >[!note] If `/tftpboot/secureboot/` is missing
 >The download is deliberately non-fatal, so a failed fetch is skipped with a
 >warning rather than aborting the install. Re-run the installer. See
->[[secure-boot-signing#before-you-start|Before you start]] for what the directory should contain.
+>[[kb/how-tos/secure-boot-signing#before-you-start|Before you start]] for what the directory should contain.
 
 ## Step 1 — Point DHCP at the signed chain
 
@@ -167,7 +167,7 @@ class "UEFI-ARM64" {
 
 When FOG hosts DHCP itself it writes these classes for you. If you run a
 dedicated ISC server, the `/etc/dhcp/dhcpd.conf` FOG generates is the easiest
-reference to copy from — see [[dhcp-server-settings|DHCP Server Settings]].
+reference to copy from — see [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]].
 
 ### Kea
 
@@ -260,13 +260,13 @@ stage a whole fleet while it is still off and switch enforcement on afterward.
 
 Where to go for more:
 
-- [[secure-boot-mok-enrollment|MOK enrollment]] — the route above (Route B) in
+- [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — the route above (Route B) in
   full, plus Route A, a stock Ubuntu/Debian live USB, which is the fallback when
   `Enroll key from disk` hangs on stubborn firmware.
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — Route C, the
   only route with **nobody at the console**, if your firmware can be put into
   Setup Mode. This is the one that scales.
-- [[secure-boot-signing|Secure Boot signing]] — the concepts: why FOG cannot
+- [[kb/how-tos/secure-boot-signing|Secure Boot signing]] — the concepts: why FOG cannot
   ship signed kernels, the CA/leaf split, bringing your own key, and rotation.
 
 ## Step 3 — Turn Secure Boot on in firmware
@@ -289,7 +289,7 @@ has to enable it in each machine's firmware settings.
   embed your CA without voiding the signature. A publicly-issued certificate on
   an FQDN needs no rebuild and keeps the signed shim; a private CA means either
   keeping netboot on HTTP or enrolling into `db` via Setup Mode. See
-  [[netboot-transport-and-pki|Netboot Transport and PKI]] and
+  [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] and
   [[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]].
 
 ## If something goes wrong
@@ -304,14 +304,14 @@ has to enable it in each machine's firmware settings.
 
 Deeper detail — how `autoexec.ipxe` is resolved, how the kernels are signed, and
 how to verify a signature end to end — is in
-[[secure-boot-technical-details|Secure Boot technical details]].
+[[kb/reference/secure-boot-technical-details|Secure Boot technical details]].
 
 ## See also
 
-- [[dhcp-server-settings|DHCP Server Settings]] — options 66 and 67 in full, with per-server examples
-- [[proxy-dhcp|Proxy DHCP with dnsmasq]] — the complete dnsmasq configuration
-- [[secure-boot-signing|Secure Boot signing]] — start here for the concepts
-- [[secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B, in full
+- [[installation/network-setup/dhcp-server-settings|DHCP Server Settings]] — options 66 and 67 in full, with per-server examples
+- [[installation/network-setup/proxy-dhcp|Proxy DHCP with dnsmasq]] — the complete dnsmasq configuration
+- [[kb/how-tos/secure-boot-signing|Secure Boot signing]] — start here for the concepts
+- [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] — Routes A and B, in full
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] — the unattended route
-- [[secure-boot-technical-details|Secure Boot technical details]]
-- [[pki-glossary|PKI & Secure Boot Glossary]]
+- [[kb/reference/secure-boot-technical-details|Secure Boot technical details]]
+- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]

@@ -23,11 +23,11 @@ Linux distribution. It intentionally does **not** repeat what's already
 documented for end users:
 
 - For running the installer and what it asks you, see
-  [[install-fog-server|Install FOG Server]].
+  [[installation/server/install-fog-server|Install FOG Server]].
 - For every CLI flag, see
-  [[command-line-options|Fog installer command line options]].
+  [[installation/server/command-line-options|Fog installer command line options]].
 - For the persisted settings file the installer reads/writes, see
-  [[install-fogsettings|The .fogsettings file]].
+  [[management/server/install-fogsettings|The .fogsettings file]].
 
 ## Where the code lives
 
@@ -351,7 +351,7 @@ reading before changing the surrounding code:
   merge-not-overwrite behavior), which is what makes "just run the installer
   again" a reasonable first troubleshooting step.
 - See the full flag reference at
-  [[command-line-options|Fog installer command line options]].
+  [[installation/server/command-line-options|Fog installer command line options]].
 
 ## Candidates for cleanup
 
@@ -367,9 +367,9 @@ dependency-reduction angle of this installer.
 
 ## Related
 
-- [[install-fog-server|Install FOG Server]] — the user-facing installation
+- [[installation/server/install-fog-server|Install FOG Server]] — the user-facing installation
   walkthrough this page's internals sit behind.
-- [[command-line-options|Fog installer command line options]] — every CLI
+- [[installation/server/command-line-options|Fog installer command line options]] — every CLI
   flag.
-- [[install-fogsettings|The .fogsettings file]] — the format `writeUpdateFile()`
+- [[management/server/install-fogsettings|The .fogsettings file]] — the format `writeUpdateFile()`
   produces and every later run reads back.

@@ -45,7 +45,7 @@ tags:
     7. Then you will be prompted for a username (typically fogstorage) 
     8. and a password that is located on the FOG server, that will allow the storage node to access the main FOG server's database. This information is located in the FOG management portal for convenience (on the main for server). It can be accessed via **Other Information** -> **FOG settings** -> section **FOG Storage Nodes**. 
     9. You will then be prompted to confirm your installation settings, if they are correct press **Y** end hit **Enter**. 
-    10. When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings (see also [[install-fogsettings]] )
+    10. When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings (see also [[management/server/install-fogsettings|.fogsettings]] )
 
 ## Adding the Node to the Management Portal
 
@@ -57,7 +57,7 @@ tags:
     5. Enter any description you wish 
     6. Enter the IP address of the storage node you are adding. This must be the IP address of the node, DO NOT use a hostname here or the node will not function correctly.
     7. Enter the maximum number of unicast clients you would like this node to handle at one time. The value that we recommend is 10. 
-    8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[storage-node#Master Node Status]] 
+    8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[management/web/storage-node#Master Node Status|Master Node Status]] 
     9. Next, select the storage group you would like this member to be a part of, in our example we will pick **Default**
     10. Next, specify the image location on the storage node, typically **/images/**, your image location should always end with a **/**. 
     11. Next, you will want to check the box, to enable the node.
@@ -79,6 +79,11 @@ tags:
 >Master node status also decides which node transmits a multicast session, so a site whose node is not a master cannot serve multicast locally even with the image replicated to it. If you multicast to more than one site, see [[management/web/multicast#Multicast across multiple sites|Multicast across multiple sites]].
 
 ## Moving and deleting nodes (1.6)
+
+>[!info] FOG 1.6
+>1.5 has none of this referential-integrity checking — deleting a group or a
+>node there is unconditional and silently orphans anything pointing at it.
+>See the [[1.5/management/web/storage-node|1.5 version]] of this page.
 
 A storage node **must** belong to a storage group. A group with no nodes is
 fine; a node in no group is not — it is invisible to replication and to

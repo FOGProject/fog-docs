@@ -16,13 +16,18 @@ tags:
 
 # Referential Integrity
 
+>[!info] FOG 1.6
+>This page describes FOG 1.6. See the
+>[[1.5/kb/reference/referential-integrity|1.5 version]] of this page for FOG
+>1.5, which has no database-level enforcement at all — cleanup after a delete
+>is PHP's job, and nothing stops an orphaned reference.
+
 Up to and including FOG 1.5, nothing in the database itself recorded that one
-record pointed at another. Cleaning up after a delete was the job of the PHP
-that ran the delete, which meant every delete path had to remember every
-dependent table — and a path that forgot left rows behind pointing at
-something that no longer existed. Nobody found those rows until one of them
-did something visible: a host in a group that had been deleted, a task
-against an image that was gone, a storage node in no group at all.
+record pointed at another; cleaning up after a delete was the job of the PHP
+that ran the delete, and a path that forgot a dependent table left rows behind
+pointing at something that no longer existed. See the
+[[1.5/kb/reference/referential-integrity|1.5 version]] of this page for what
+that means in practice on that version.
 
 FOG 1.6 declares those relationships in the database. The rules below are
 enforced by MariaDB on every delete, whatever performed it — the web UI, the
@@ -82,8 +87,10 @@ and a running multicast session on the group ends with it.
 
 >[!warning]
 >Before 1.6 this delete was allowed and silently orphaned whatever was
->pointing at the group. On one real installation, deleting a single storage
->group left three storage nodes belonging to nothing.
+>pointing at the group — see the
+>[[1.5/kb/reference/referential-integrity|1.5 version]] of this page. On one
+>real installation, deleting a single storage group left three storage nodes
+>belonging to nothing.
 
 ### Deleting a storage node
 

@@ -84,36 +84,42 @@ deciding whether a token is still needed.
 
 The token is displayed once, immediately after creation. Copy it then.
 
-!!! warning "Send the API token exactly as shown &mdash; do not base64-encode it"
-    This is the opposite of the token pair below. The `fog-api-token` and
-    `fog-user-token` headers carry **base64** values, because that is the form
-    the UI displays them in. An API token is sent **raw**, exactly as the UI
-    showed it, `fog_` prefix included. Encoding it first will fail with
-    `401 Unauthorized`.
+>[!warning] Send the API token exactly as shown — do not base64-encode it
+>This is the opposite of the token pair below. The `fog-api-token` and
+>`fog-user-token` headers carry **base64** values, because that is the form
+>the UI displays them in. An API token is sent **raw**, exactly as the UI
+>showed it, `fog_` prefix included. Encoding it first will fail with
+>`401 Unauthorized`.
 
 The same card lists your existing tokens with their creation date and when each
 was last used, so a token nothing has touched in months is easy to spot and
 delete. Deleting a user deletes that user's tokens with it.
 
-!!! tip "`Bearer` with nothing after it"
-    If you build the header from a config value that turns out to be unset, you
-    send a bare `Authorization: Bearer`. FOG answers `401 Unauthorized` for that
-    specifically, rather than falling through to another method &mdash; so a 401
-    on a request you believe is authenticated is worth checking for an empty
-    token variable.
+>[!tip] `Bearer` with nothing after it
+>If you build the header from a config value that turns out to be unset, you
+>send a bare `Authorization: Bearer`. FOG answers `401 Unauthorized` for that
+>specifically, rather than falling through to another method — so a 401
+>on a request you believe is authenticated is worth checking for an empty
+>token variable.
 
-!!! info "Availability"
-    API tokens are available from FOG 1.6.0. On older servers, and on 1.5.x, use
-    the token pair below. Both older methods keep working on 1.6 and are not
-    deprecated &mdash; nothing you have already built needs to change.
-
-    **If you tried Bearer authentication on an early 1.6.0 beta:** briefly, the
-    **User API Token** was accepted as a Bearer value. It no longer is &mdash; a
-    plaintext, UI-visible, non-revocable secret gave the Bearer scheme none of
-    the properties listed above. Issue an API token from the card described here,
-    or keep using that token in the header pair, where it is unchanged.
+>[!info] Availability
+>API tokens are available from FOG 1.6.0. On older servers, and on 1.5.x, use
+>the token pair below — see the [[1.5/kb/integrations/api|1.5 version]] of
+>this page. Both older methods keep working on 1.6 and are not deprecated —
+>nothing you have already built needs to change.
+>
+>**If you tried Bearer authentication on an early 1.6.0 beta:** briefly, the
+>**User API Token** was accepted as a Bearer value. It no longer is — a
+>plaintext, UI-visible, non-revocable secret gave the Bearer scheme none of
+>the properties listed above. Issue an API token from the card described here,
+>or keep using that token in the header pair, where it is unchanged.
 
 ### Token pair
+
+>[!info] FOG 1.6
+>This section, and HTTP Basic below, work exactly the same on FOG 1.5, which
+>has no Bearer token option — see the
+>[[1.5/kb/integrations/api|1.5 version]] of this page.
 
 The original scheme, and the one to use on 1.5.x. **Both** headers are required
 together.
@@ -132,11 +138,11 @@ This is **not** the same credential as an API token. The two are separate, with
 separate properties; see [Bearer token](#bearer-token-recommended) above. This
 one is unchanged from 1.5.x and keeps working exactly as it always has.
 
-!!! note "Copy the token values as shown"
-    The web UI already displays both tokens **base64-encoded**, which is exactly
-    the form the server expects in the header. Copy the displayed value verbatim
-    &mdash; the server base64-decodes the header before comparing it. A raw,
-    un-encoded token will fail with `403 Forbidden`.
+>[!note] Copy the token values as shown
+>The web UI already displays both tokens **base64-encoded**, which is exactly
+>the form the server expects in the header. Copy the displayed value verbatim
+>— the server base64-decodes the header before comparing it. A raw,
+>un-encoded token will fail with `403 Forbidden`.
 
 ### HTTP Basic Auth
 
@@ -162,17 +168,17 @@ from `/fog/user` whether they authenticated by token or by password. Accounts
 from an external directory (LDAP) can authenticate this way too, provided
 **Allow API** is enabled on the LDAP server.
 
-!!! warning "Upgrading an existing server: re-run the installer"
-    Basic auth **and Bearer** both depend on the `Authorization` header reaching
-    PHP, and under FastCGI it does not arrive on its own &mdash; nginx forwards
-    only a fixed parameter list, and Apache strips it before `proxy_fcgi`. The
-    FOG installer emits the necessary web server configuration, but a server
-    installed before this was fixed still has the old configuration on disk. If
-    either method returns `401 Unauthorized` with credentials you know are
-    correct, re-run the installer to refresh the web server configuration. The
-    `fog-api-token` / `fog-user-token` pair travels in its own headers, is
-    unaffected, and needs no reinstall &mdash; so it is also the quickest way to
-    tell this problem apart from a genuinely bad credential.
+>[!warning] Upgrading an existing server: re-run the installer
+>Basic auth **and Bearer** both depend on the `Authorization` header reaching
+>PHP, and under FastCGI it does not arrive on its own — nginx forwards
+>only a fixed parameter list, and Apache strips it before `proxy_fcgi`. The
+>FOG installer emits the necessary web server configuration, but a server
+>installed before this was fixed still has the old configuration on disk. If
+>either method returns `401 Unauthorized` with credentials you know are
+>correct, re-run the installer to refresh the web server configuration. The
+>`fog-api-token` / `fog-user-token` pair travels in its own headers, is
+>unaffected, and needs no reinstall — so it is also the quickest way to
+>tell this problem apart from a genuinely bad credential.
 
 ### Example
 
@@ -249,9 +255,9 @@ task with a `taskTypeID` key, for example:
 
 `taskTypeID` `1` deploys and `2` captures. The full list of task types follows.
 
-!!! warning "The body key is `taskTypeID`, not `taskType`"
-    The endpoint reads the JSON property `taskTypeID`. A body of
-    `{"taskType": "1"}` leaves `taskTypeID` unset and results in a `404`.
+>[!warning] The body key is `taskTypeID`, not `taskType`
+>The endpoint reads the JSON property `taskTypeID`. A body of
+>`{"taskType": "1"}` leaves `taskTypeID` unset and results in a `404`.
 
 **Task types** &mdash; the value to pass as `taskTypeID`:
 
@@ -279,13 +285,13 @@ task with a `taskTypeID` key, for example:
 | 21 | Virus Scan |
 | 22 | Virus Scan - Quarantine |
 
-!!! note "The IDs are not contiguous"
-    There is intentionally no task type `9`, and `8` is Multi-Cast &mdash; pass
-    the ID from the table, not the row position.
+>[!note] The IDs are not contiguous
+>There is intentionally no task type `9`, and `8` is Multi-Cast — pass
+>the ID from the table, not the row position.
 
-!!! note "Assign an image first"
-    You must assign an image to the host (and the image must be enabled) before
-    you can deploy it. Assign it with a PUT request (see below).
+>[!note] Assign an image first
+>You must assign an image to the host (and the image must be enabled) before
+>you can deploy it. Assign it with a PUT request (see below).
 
 A successful task call returns an empty string (`""`).
 
