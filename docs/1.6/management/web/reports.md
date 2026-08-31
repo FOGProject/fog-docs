@@ -239,24 +239,37 @@ If you are writing a plugin, see the `REPORT_TITLE_DATA` event in
 plugin names its report in the menu instead of having FOG guess a label
 from the file name.
 
-## Importing a report
+## Installing a report someone else wrote
 
-FOG can load a report someone else wrote.
-
-![[reports-16-import.png]]
-
-1.  Go to **Reports** → **Import Reports**.
-2.  Click **Browse** and pick the `.report.php` file.
-3.  Click **Import**.
-
-The report appears in the left-hand menu straight away.
+There is no **Import Reports** page. Earlier FOG showed one, but nothing
+was ever wired behind its button — it answered without an error and
+imported nothing — so 1.6 removes it rather than completing it.
 
 >[!danger]
 >**A FOG report is PHP that runs on your server.** It has the same access
 >to your system and your database that FOG itself does — it can read
->anything, change anything, and delete anything. Import a report only from
->a source you actually trust, and read it first if you can. There is no
->sandbox around it.
+>anything, change anything, and delete anything. This is why there is no
+>one-click importer for a loose `.php` file, and why the route below has
+>two switches an administrator has to throw deliberately.
+
+A report from someone else arrives as a **plugin**, which is FOG's one
+supported way to add code to a running server:
+
+1.  The report ships inside the plugin at `<plugin>/src/Reports/`, exactly
+    as described under [Writing a report](#writing-a-report) below.
+2.  Install the plugin — either by unpacking it into the plugin directory
+    on the server, or through **Plugin Management → Upload plugin**.
+
+The upload route is off by default and takes both
+`FOG_PLUGIN_UI_INSTALL_ENABLED` and a root-run
+`bin/fog-plugin-uploads.sh enable` to turn on. It stages the archive
+somewhere FOG does not execute it and shows you the manifest, the file
+list and a SHA-256 before anything is installed.
+See [[plugins#Installing a plugin from an archive|Installing a plugin from an archive]]
+for the whole sequence.
+
+The report appears in the left-hand menu as soon as the plugin is
+installed.
 
 ## Writing a report
 
@@ -284,9 +297,9 @@ A minimal list report:
 ``` php
 <?php
 
-use FOG\Router\Route;
-
 namespace FOG\Reports;
+
+use FOG\Router\Route;
 
 class Example_Report extends \FOG\Pages\ReportManagement
 {
