@@ -17,6 +17,10 @@ tags:
 
 much more content is needed here
 
+## Certificates
+
+The Certificates tab has its own page: [[1.6/management/web/certificates|The Certificates Page]].
+
 ## Multicast Settings
 
 The settings under **FOG Settings → Multicast Settings**
