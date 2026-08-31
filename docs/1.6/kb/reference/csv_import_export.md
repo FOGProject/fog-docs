@@ -404,7 +404,7 @@ import and export, without patching core:
   primed simply falls back to the per-row `get` path, so listening is purely an
   optimization.
 
-The Location plugin (`addlocationimport.hook.php`) is the reference
+The Location plugin (`AddLocationImport`, in its `src/Hooks/`) is the reference
 implementation, registering a single-valued `location` type for hosts and
 listening for `EXPORT_ASSOCIATIONS_PRIME` to batch that label. The retired
 Site plugin used to follow the same pattern for a host's `site`; sites moved
