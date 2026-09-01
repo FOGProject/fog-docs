@@ -25,6 +25,7 @@ More advanced/situational guides:
 - [[uefi-boot-entries|Managing UEFI Boot Entries (efibootmgr)]]
 - [[deploy-dual-boot-multi-disk-image|Deploying a Dual-Boot Multi-Disk Image]]
 - [[add-extend-a-2nd-virtual-hdd|Add & Extend a 2nd Virtual HDD]]
+- [[chocolatey-snapins|Install software with Chocolatey snapins]]
 - [[post-download-scripts|Post Download Scripts]]
 - [[unify-certificates-across-fog-servers|Unify Certificates Across FOG Servers]]
 - [[lets-encrypt-setup|Set up Let's Encrypt on a FOG server]]

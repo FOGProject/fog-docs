@@ -188,9 +188,9 @@ plugins:
             "management/fos": ["using-fog-boot-menu"],
             "management/server": ["install-fogsettings", "supported-customizations"],
             "management/web": ["users", "roles", "oidc", "local-login", "ad-integration", "ldap", "site-scoping", "groups", "hosts", "images", "storage-node", "snapins", "printers", "tasks", "multicast", "reports", "dashboard", "service", "config", "certificates", "plugins"],
-            "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "reports", "storage-node", "config", "images", "multicast"],
+            "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
             "1.5/kb/reference": ["pki-zones", "netboot-transport-and-pki", "pki-glossary", "bringing-your-own-ca", "secure-boot-trust-stores", "secure-boot-technical-details", "csv_import_export", "ping-hosts-service", "referential-integrity"],
-            "1.6/management/web": ["plugins", "ldap", "site-scoping", "hosts", "reports", "storage-node", "config", "images", "multicast"],
+            "1.6/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
             "1.6/kb/reference": ["pki-zones", "netboot-transport-and-pki", "pki-glossary", "bringing-your-own-ca", "secure-boot-trust-stores", "secure-boot-technical-details", "csv_import_export", "ping-hosts-service", "referential-integrity"],
           }
 

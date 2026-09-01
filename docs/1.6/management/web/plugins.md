@@ -227,7 +227,6 @@ this page for how it differs on the older line.
 | **ntfy** | Notifications via ntfy.sh or your own ntfy server |
 | **oidc** | Sign in to FOG with an OpenID Connect identity provider (Entra ID, Keycloak, Okta, ...). See [[oidc\|OpenID Connect Sign-in]] |
 | **ou** | Predefine Active Directory OUs and associate them with hosts |
-| **persistentgroups** | When a host joins a group, copy image, AD, printer, snapin and location settings onto it from a template host named after that group |
 | **pushbullet** | Pushbullet notifications |
 | **slack** | Slack notifications |
 | **subnetgroup** | Assign hosts to groups automatically based on their IP subnet |
@@ -240,6 +239,20 @@ this page for how it differs on the older line.
 >The Access Control plugin was replaced by native roles and permissions in
 >1.6. For what happens to plugin-era roles on upgrade, see
 >[[management/web/roles#Upgrading from the Access Control plugin|Roles & Permissions]].
+
+>[!note] persistentgroups is gone, because the defect it worked around is fixed
+>The plugin copied settings from a template host onto every machine that
+>joined a group, because on 1.5 a group could not hand anything to a machine
+>by itself. In 1.6 a group **grants** its snapins and printers to every
+>member, including hosts added later, so there is nothing left to work around
+>— and the template-host naming convention goes with it.
+>
+>**Upgrading removes it for you, trigger included.** The plugin installed a
+>database trigger, and deleting the plugin's files never removed that: it
+>would have kept copying settings onto every new group member, silently, long
+>after the plugin that created it was gone. The upgrade drops the trigger and
+>retires the plugin's row. See
+>[[1.6/management/web/groups#persistentgroups is retired|Group Management]].
 
 >[!note] Site is gone too, and for the same reason
 >Sites and per-site host visibility moved into 1.6 core, so there is no

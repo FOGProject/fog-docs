@@ -261,7 +261,7 @@ $subnets | ForEach-Object { # loop through each subnet
     button or on the Host Name itself. Clicking on the edit button will
     display all the properties that were shown during host creation with
     the addition of snapin, printers, active directory, service
-    settings, hardware, virus history, and login information.
+    settings, hardware, and login information.
 -   The entire host object can be removed from the FOG system by
     clicking on the delete option at the bottom of the Host Menu.
 
@@ -367,15 +367,66 @@ where the two disagree:
 The second row is the one worth acting on. Full detail, including how to pick a
 port for a mixed fleet: [[1.6/kb/reference/ping-hosts-service|The Ping Hosts Service]].
 
+### Editing many hosts at once
+
+Tick the hosts you want on the Hosts list and use **Edit selected hosts**.
+This is where the settings that used to be pushed from a group page now live —
+image, kernel, kernel arguments, primary disk, init, product key, BIOS and EFI
+exit type, printer management level, Active Directory, hostname enforcement,
+screen resolution and auto-logout.
+
+Every field carries its own action, and the default is always to do nothing:
+
+| Action | What it does |
+|---|---|
+| **No change** | Leave every selected host's value alone |
+| **Set on all** | Write the value you type to every selected host |
+| **Clear on all** | Empty the field on every selected host |
+
+Fields that are only on or off — joining the domain, hostname enforcement —
+offer *No change*, *Enable on all* and *Disable on all* instead.
+
+Two things follow from the action being separate from the value:
+
+- **A form you open and submit without touching anything changes nothing.**
+  There is no way to overwrite a field by forgetting about it.
+- **"Set this to blank" and "leave this alone" are different instructions.**
+  Choosing *Set on all* with an empty box makes the field blank; that is what
+  *Clear on all* does explicitly, and it is why you never have to type a magic
+  word to clear something.
+
+Where the selection holds different values, the form says so — `(varies)` —
+rather than picking one of them to show you.
+
+>[!info] Coming from FOG 1.5?
+>On 1.5 the only way to change a setting across many machines was to put them
+>in a group and press *Update* on the group page. That wrote the value onto
+>whichever hosts were members at that moment. *Edit selected hosts* works on
+>any selection you can build — a search, a filter, a handful of ticks — and
+>can be repeated. The group-page controls still exist on 1.6, marked
+>deprecated, and are removed in a later release. See
+>[[1.6/management/web/groups#Settings that are no longer on the group page|Group Management]].
+
 ### Creating Host Groups
 
--   FOG allows you to create groups of hosts which then allows you to
-    take action on a whole grouping of hosts.
--   Hosts can be created either on the "List All Hosts" section or by
-    doing a search for hosts.
--   To create a group select the computer you would like to be member of
-    the group by placing a check in the box next to the hostname, or by
-    clicking the check all button in the title row. After the hosts are
-    selected scroll to the bottom of the screen and then enter a name in
-    the create to group box or select a group to add the hosts to. Then
-    click on the "Process Group Changes" button.
+Group membership is editable straight from the Hosts list, which is usually
+the fastest way to label a fleet:
+
+1.  Filter or search until the machines you want are on screen. The **Groups**
+    column shows each host's groups as links, in the order group assignments
+    are applied, and it can be searched and filtered like any other column —
+    so "everything in *Third Floor* that is not in *Dell PCs*" is a filter
+    rather than a cross-referencing exercise.
+2.  Tick the hosts, or use the check-all box in the title row.
+3.  Click **Edit groups**, pick one or more groups, and choose **Add** or
+    **Remove**.
+
+Typing a name that is not a group yet **creates it** when you add. *Remove*
+only works on groups that already exist.
+
+>[!important] On FOG 1.6 that is the whole job
+>A group **grants** its snapins and printers to its members rather than
+>copying them, so adding forty machines to a group is all it takes for those
+>machines to receive what the group holds — there is no second step and no
+>button to press afterwards. Removing a host takes them away again. See
+>[[1.6/management/web/groups|Group Management]].

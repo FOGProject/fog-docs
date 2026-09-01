@@ -36,7 +36,7 @@ Documentation related to how to use the web management ui.
 **Imaging Objects**
 
 - [[hosts|Host Management]] — differs between FOG 1.5 and 1.6
-- [[groups|Group Management]]
+- [[groups|Group Management]] — differs between FOG 1.5 and 1.6
 - [[images|Image Management]] — differs between FOG 1.5 and 1.6
 - [[storage-node|Storage Node Management]] — differs between FOG 1.5 and 1.6
 - [[snapins|Snapin Management]]

@@ -47,7 +47,8 @@ imaging/cloning and network management solution.
 -   Change hostname and join domain
 -   Track user access on computers, automatic log off and shutdown on
     idle timeouts
--   Anti-Virus
+-   Anti-Virus — *FOG 1.5 only;*
+    *[[1.6/kb/reference/virus-scan-removed|removed in 1.6]]*
 -   Disk wiping
 -   Restore deleted files
 -   Bad blocks scan

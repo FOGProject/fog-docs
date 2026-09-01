@@ -92,7 +92,7 @@ Menu Logo | Name | Description
 ![[dashboard-ico.png]] | **Home/Dashboard** | This is the home screen of the FOG management portal.
  ![[users-ico.png]] | **[User Management](users.md)** |  Individual administrators of the FOG resources.
 ![[hosts-ico.png]] | **[hosts](hosts.md)** |  This section houses the hosts, which are the pcs to be imaged or to extract images from.
-![[groups.ico.png]] | **[groups](groups.md)** | This section houses groups, which are similar PCS' that need tasks done en-masse.
+![[groups.ico.png]] | **[[1.6/management/web/groups\| Group Management]]** | This section houses groups, which are similar PCs that need tasks done en-masse. On FOG 1.6 a group also **owns** the snapins and printers it hands to its members.
 ![[images-ico.png]] | **[[1.6/management/web/images\| Image Management]]** | This section allows you to manage the image files stored on the FOG server.
 ![[Storage-ico.png]] | **[storage-node](storage-node.md)** | This section allows you to add/remove storage nodes from the FOG system.
 ![[snapin-ico.png]] | **[Snapin Management](snapins.md)** | This section provides ways to automate various post-imaging tasks such as silently installing programs

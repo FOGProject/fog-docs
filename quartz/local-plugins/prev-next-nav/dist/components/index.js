@@ -76,7 +76,7 @@ const EXPLICIT_ORDER = {
     "certificates",
     "plugins",
   ],
-  "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "reports", "storage-node", "config", "images", "multicast"],
+  "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
   "1.5/kb/reference": [
     "pki-zones",
     "netboot-transport-and-pki",
@@ -88,7 +88,7 @@ const EXPLICIT_ORDER = {
     "ping-hosts-service",
     "referential-integrity",
   ],
-  "1.6/management/web": ["plugins", "ldap", "site-scoping", "hosts", "reports", "storage-node", "config", "images", "multicast"],
+  "1.6/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
   "1.6/kb/reference": [
     "pki-zones",
     "netboot-transport-and-pki",

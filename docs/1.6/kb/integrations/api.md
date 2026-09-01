@@ -282,12 +282,15 @@ task with a `taskTypeID` key, for example:
 | 18 | Fast Wipe |
 | 19 | Normal Wipe |
 | 20 | Full Wipe |
-| 21 | Virus Scan |
-| 22 | Virus Scan - Quarantine |
 
 >[!note] The IDs are not contiguous
 >There is intentionally no task type `9`, and `8` is Multi-Cast — pass
 >the ID from the table, not the row position.
+
+>[!warning] 21 and 22 no longer exist
+>They were the two virus-scan types, and the 1.6 upgrade deletes them —
+>queueing either now fails. See
+>[[1.6/kb/reference/virus-scan-removed|The virus scan is gone in 1.6]].
 
 >[!note] Assign an image first
 >You must assign an image to the host (and the image must be enabled) before
