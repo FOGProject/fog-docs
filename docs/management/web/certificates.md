@@ -2,6 +2,7 @@
 title: The Certificates Page
 aliases:
     - The Certificates Page
+    - 1.6/management/web/certificates
     - Certificate Management
     - FOG Configuration Certificates
 description: Reading FOG's certificate chain from the web UI, importing a corporate root CA, and setting the PKI preferences the next installer run acts on
@@ -17,6 +18,10 @@ tags:
 ---
 
 # The Certificates Page
+
+>[!info] FOG 1.6 and later
+>This page describes a feature introduced in FOG 1.6. FOG 1.5 has no
+>Certificates page and no equivalent.
 
 **FOG Configuration → Certificates.** New in 1.6.
 

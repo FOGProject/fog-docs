@@ -222,7 +222,7 @@ this page for how it differs on the older line.
 |---|---|
 | **capone** | Match a machine's DMI value against a key you define and deploy the associated image, without registering the host first |
 | **helloworld** | A skeleton example plugin — the reference for people writing their own |
-| **ldap** | Authenticate FOG users against an LDAP or Active Directory server. Needs your distribution's `php-ldap` package. See [[management/web/ldap\|LDAP Authentication]] |
+| **ldap** | Authenticate FOG users against an LDAP or Active Directory server. Needs your distribution's `php-ldap` package. See [[1.6/management/web/ldap\|LDAP Authentication]] |
 | **location** | Point hosts at the storage node local to their site, for sites with more than one place to fetch an image from |
 | **ntfy** | Notifications via ntfy.sh or your own ntfy server |
 | **oidc** | Sign in to FOG with an OpenID Connect identity provider (Entra ID, Keycloak, Okta, ...). See [[oidc\|OpenID Connect Sign-in]] |
@@ -257,7 +257,7 @@ this page for how it differs on the older line.
 >[!note] Site is gone too, and for the same reason
 >Sites and per-site host visibility moved into 1.6 core, so there is no
 >longer a Site plugin to activate — the feature is simply there. See
->[[management/web/site-scoping|Site Scoping]].
+>[[1.6/management/web/site-scoping|Site Scoping]].
 
 >[!info] Looking for FOG 1.5's plugin screens?
 >1.5's plugin system is the same idea with a different, older interface — a

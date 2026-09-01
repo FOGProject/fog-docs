@@ -28,7 +28,7 @@ tags:
 FOG can mass-import and export most management objects (hosts, images,
 snapins, groups, printers, users, modules, storage groups and storage nodes)
 as CSV files from each object's **Import** / **Export** page — see
-[[management/web/hosts|Host Management]] for where to find the Import Hosts page in the UI.
+[[1.6/management/web/hosts|Host Management]] for where to find the Import Hosts page in the UI.
 
 > **Two ways to map columns:**
 > 1. **Headered** — if the file's first row names the columns (which is what

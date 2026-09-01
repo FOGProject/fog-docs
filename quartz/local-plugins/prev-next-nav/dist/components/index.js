@@ -1,27 +1,29 @@
 import { h } from "preact"
 import { resolveRelative } from "@quartz-community/utils"
 
-// mkdocs-material's `navigation.footer` feature (enabled in mkdocs.yml) renders
-// Previous/Next links at the bottom of the page, following the site's nav order.
-// No @quartz-community plugin does this. This reconstructs the same reading
-// order the Explorer sidebar already shows (folders before files, the same
-// per-directory explicit orders, alphabetical fallback) by rebuilding the same
-// tree structure server-side and flattening it depth-first, then finds the
-// current page's neighbors in that flattened list.
+// Renders Previous/Next links at the bottom of each page, following the site's
+// nav order -- the mkdocs-material `navigation.footer` feature, which no
+// @quartz-community plugin provides. This reconstructs the same reading order
+// the Explorer sidebar shows (folders before files, the same per-directory
+// explicit orders, alphabetical fallback) by rebuilding the same tree
+// structure server-side and flattening it depth-first, then finds the current
+// page's neighbors in that flattened list.
 //
-// Keep TOP_ORDER / EXPLICIT_ORDER in sync with the Explorer plugin's sortFn in
-// quartz.config.yaml -- same duplication tradeoff already accepted there
-// between mkdocs.yml's nav and this file.
-const TOP_ORDER = ["installation", "management", "kb", "development"]
+// TOP_ORDER / EXPLICIT_ORDER MUST stay in sync with the Explorer plugin's
+// sortFn in quartz.config.yaml. The sortFn is a string inside YAML, so the two
+// cannot share a module -- the duplication is structural. See VERSIONING.md
+// for the check that compares them.
+const TOP_ORDER = ["installation", "management", "kb", "development", "1.5", "1.6"]
 const EXPLICIT_ORDER = {
+  "installation/network-setup": ["dhcp-server-settings", "proxy-dhcp", "secure-boot-netboot"],
   "installation/server": [
     "requirements",
     "install-fog-server",
     "command-line-options",
-    "virtualization",
     "migrating-fog-server",
+    "virtualization",
+    "uninstall-fog-server",
   ],
-  "installation/network-setup": ["dhcp-server-settings", "proxy-dhcp"],
   "kb/how-tos": [
     "capture-an-image",
     "deploy-an-image",
@@ -32,15 +34,35 @@ const EXPLICIT_ORDER = {
     "deploy-dual-boot-multi-disk-image",
     "add-extend-a-2nd-virtual-hdd",
     "post-download-scripts",
+    "secure-boot-signing",
+    "secure-boot-mok-enrollment",
+    "secure-boot-setup-mode-enrollment",
   ],
+  "kb/integrations": ["api", "api-expansion-and-pagination", "api-openapi-reference", "external-ca-lets-encrypt"],
+  "kb/reference": [
+    "pki-zones",
+    "netboot-transport-and-pki",
+    "pki-glossary",
+    "bringing-your-own-ca",
+    "secure-boot-trust-stores",
+    "secure-boot-technical-details",
+    "csv_import_export",
+    "ping-hosts-service",
+    "referential-integrity",
+  ],
+  "kb/troubleshooting": ["database-schema-update", "primary-mac-address-issues"],
+  "management/fos": ["using-fog-boot-menu"],
+  "management/server": ["install-fogsettings", "supported-customizations"],
   "management/web": [
     "users",
     "roles",
-    "site-scoping",
-    "ldap",
+    "oidc",
+    "local-login",
     "ad-integration",
-    "hosts",
+    "ldap",
+    "site-scoping",
     "groups",
+    "hosts",
     "images",
     "storage-node",
     "snapins",
@@ -51,7 +73,32 @@ const EXPLICIT_ORDER = {
     "dashboard",
     "service",
     "config",
+    "certificates",
     "plugins",
+  ],
+  "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
+  "1.5/kb/reference": [
+    "pki-zones",
+    "netboot-transport-and-pki",
+    "pki-glossary",
+    "bringing-your-own-ca",
+    "secure-boot-trust-stores",
+    "secure-boot-technical-details",
+    "csv_import_export",
+    "ping-hosts-service",
+    "referential-integrity",
+  ],
+  "1.6/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
+  "1.6/kb/reference": [
+    "pki-zones",
+    "netboot-transport-and-pki",
+    "pki-glossary",
+    "bringing-your-own-ca",
+    "secure-boot-trust-stores",
+    "secure-boot-technical-details",
+    "csv_import_export",
+    "ping-hosts-service",
+    "referential-integrity",
   ],
 }
 

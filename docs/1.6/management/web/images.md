@@ -211,4 +211,4 @@ Deleting an image definition no longer leaves anything pointing at it:
 
 >[!note]
 >This removes the image *definition* from the FOG database. It does not
->delete the image files on the storage node — see [[kb/reference/referential-integrity|Referential Integrity]] for the full set of delete rules.
+>delete the image files on the storage node — see [[1.6/kb/reference/referential-integrity|Referential Integrity]] for the full set of delete rules.

@@ -1,6 +1,6 @@
 ---
 title: Storage Node Management
-description: The home page for fog docs with navigation to the various sections
+description: Storage groups, storage nodes and the master node, including the referential-integrity checks that run when you delete one
 aliases:
     - Storage Node Management
 context_id: storage-node
@@ -45,7 +45,7 @@ tags:
     7. Then you will be prompted for a username (typically fogstorage) 
     8. and a password that is located on the FOG server, that will allow the storage node to access the main FOG server's database. This information is located in the FOG management portal for convenience (on the main for server). It can be accessed via **Other Information** -> **FOG settings** -> section **FOG Storage Nodes**. 
     9. You will then be prompted to confirm your installation settings, if they are correct press **Y** end hit **Enter**. 
-    10. When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings (see also [[management/server/install-fogsettings|.fogsettings]] )
+    10. When installation completes, the install will produce a username and password that will be needed to add the storage node to the FOG management portal. Username is "fog", password is in /opt/fog/.fogsettings (see also [[1.6/management/server/install-fogsettings|.fogsettings]] )
 
 ## Adding the Node to the Management Portal
 
@@ -57,7 +57,7 @@ tags:
     5. Enter any description you wish 
     6. Enter the IP address of the storage node you are adding. This must be the IP address of the node, DO NOT use a hostname here or the node will not function correctly.
     7. Enter the maximum number of unicast clients you would like this node to handle at one time. The value that we recommend is 10. 
-    8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[management/web/storage-node#Master Node Status|Master Node Status]] 
+    8. Is Master Node is a very dangerous settings, but for right now leave it unchecked, for more details please see: [[1.6/management/web/storage-node#Master Node Status|Master Node Status]] 
     9. Next, select the storage group you would like this member to be a part of, in our example we will pick **Default**
     10. Next, specify the image location on the storage node, typically **/images/**, your image location should always end with a **/**. 
     11. Next, you will want to check the box, to enable the node.
@@ -76,7 +76,7 @@ tags:
 >You **can** have many storage nodes in a storage group. You **can** have one master storage node in a storage group. You **can not** have more than one master storage node in a storage group. You **must have** one master storage node for replication to take place to other nodes in the group. **If** a master storage node is set, all captures **first** go to the master storage node of the storage group the image is assigned to; and are **then** replicated to other storage nodes.
 
 >[!note]
->Master node status also decides which node transmits a multicast session, so a site whose node is not a master cannot serve multicast locally even with the image replicated to it. If you multicast to more than one site, see [[management/web/multicast#Multicast across multiple sites|Multicast across multiple sites]].
+>Master node status also decides which node transmits a multicast session, so a site whose node is not a master cannot serve multicast locally even with the image replicated to it. If you multicast to more than one site, see [[1.6/management/web/multicast#Multicast across multiple sites|Multicast across multiple sites]].
 
 ## Moving and deleting nodes (1.6)
 
@@ -101,7 +101,7 @@ multicast, and nothing will ever assign it work.
   node, and a location that named that specific node falls back to choosing
   the best node in its group.
 
-For the full set of rules and what a refused delete looks like, see [[kb/reference/referential-integrity|Referential Integrity]].
+For the full set of rules and what a refused delete looks like, see [[1.6/kb/reference/referential-integrity|Referential Integrity]].
 
 ## Including multiple PXE / TFTP servers
 

@@ -20,7 +20,7 @@ tags:
 - [[1.6/management/web/reports|Report Management]]
 - [[1.6/management/web/storage-node|Storage Node Management]]
 - [[1.6/management/web/config|Fog Configuration]]
-- [[1.6/management/web/certificates|The Certificates Page]]
+- [[management/web/certificates|The Certificates Page]]
 - [[1.6/management/web/images|Image Management]]
 - [[1.6/management/web/multicast|Multicast Sessions]]
 

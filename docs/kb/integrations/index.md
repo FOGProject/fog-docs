@@ -13,10 +13,7 @@ tags:
 
 This sections contains articles related to known integrations with fog, especially with the API.
 
->[!info] The REST API and API Pagination, Expansion & Plugin Items differ
->between FOG 1.5 and 1.6 and are covered separately — see
->[[1.5/kb/integrations/index|the 1.5 pages]] or
->[[1.6/kb/integrations/index|the 1.6 pages]].
-
+- [[api|The REST API]] — differs between FOG 1.5 and 1.6
+- [[api-expansion-and-pagination|API Pagination, Expansion & Plugin Items]] — differs between FOG 1.5 and 1.6
 - [[api-openapi-reference|API Documentation Page & OpenAPI Spec]]
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]]

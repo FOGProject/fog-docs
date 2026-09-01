@@ -98,7 +98,7 @@ entries and background on top of the built-in commands below.
 >     form.
 >
 > -   Image IDs can be found in the management console, in the
->     [[management/web/images| Image Management]] section.
+>     [[1.6/management/web/images| Image Management]] section.
 >
 > -   
 >
@@ -151,4 +151,4 @@ entries and background on top of the built-in commands below.
 >
 > -   The full procedure, including what to do if you would rather sign
 >     with your own key, is in
->     [[kb/how-tos/secure-boot-signing| Secure Boot: signing FOS with your own key]].
+>     [[1.6/kb/how-tos/secure-boot-signing| Secure Boot: signing FOS with your own key]].

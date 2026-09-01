@@ -26,8 +26,8 @@ web interface and its netboot fetches over **separately chosen protocols**, and
 why the certificate you put on the vhost decides what the netboot side can do.
 
 This page covers that choice. For what the certificates themselves are and how
-they are laid out on disk, see [[kb/reference/pki-zones|FOG PKI Infrastructure]]. For the
-vocabulary, see [[kb/reference/pki-glossary|PKI Glossary]].
+they are laid out on disk, see [[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]]. For the
+vocabulary, see [[1.6/kb/reference/pki-glossary|PKI Glossary]].
 
 >[!note] Terms used on this page
 >**Netboot** is the PXE/UEFI network boot: the client asks DHCP where to boot,
@@ -52,7 +52,7 @@ vocabulary, see [[kb/reference/pki-glossary|PKI Glossary]].
 >[[1.5/kb/reference/netboot-transport-and-pki|1.5 version]] of this page for
 >the full detail. Every setting on this page was also renamed in 1.6 — an
 >existing `.fogsettings` migrates itself on the first run. See
->[[management/server/install-fogsettings#The 1.6 rename|The 1.6 rename]].
+>[[1.6/management/server/install-fogsettings#The 1.6 rename|The 1.6 rename]].
 
 ## The four install modes
 
@@ -78,7 +78,7 @@ something else.
 
 ## The settings underneath
 
-Each is an independent key in [[management/server/install-fogsettings|the .fogsettings file]], and
+Each is an independent key in [[1.6/management/server/install-fogsettings|the .fogsettings file]], and
 no setting silently changes another:
 
 | Setting | Default | What it means |
@@ -106,7 +106,7 @@ outside FOG's own web zone directory, the leaf belongs to something else, so FOG
 neither re-issues it nor locks its private key away from whatever renews it.
 Both answers are independent — an internal ACME server such as step-ca is an
 externally-renewed leaf with `PKI_web_cert_publicly_trusted='no'`. See
-[[management/server/install-fogsettings#Certificates FOG did not issue|Certificates FOG did not issue]].
+[[1.6/management/server/install-fogsettings#Certificates FOG did not issue|Certificates FOG did not issue]].
 
 ### How the netboot protocol is decided
 
@@ -146,7 +146,7 @@ the claim being corrected.
 What is never re-signed is upstream's own material: the shim, `mmx64.efi` /
 `mmaa64.efi`, and the signed loaders that shim vouches for. Adding FOG's
 signature to those would buy nothing. See
-[[kb/reference/secure-boot-technical-details|Secure Boot Technical Details]].
+[[1.6/kb/reference/secure-boot-technical-details|Secure Boot Technical Details]].
 
 ## `public-cert`: HTTPS netboot with no rebuild
 
@@ -199,7 +199,7 @@ load it — *once this server's MOK is enrolled in that machine's firmware*. So 
 a Secure Boot machine the MOK has to be enrolled **before** the machine can
 netboot at all, which is a different and harder ordering than the usual one,
 where a machine netboots first and enrols afterwards. See
-[[kb/how-tos/secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
+[[1.6/kb/how-tos/secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
 
 **It costs 10–25 minutes on every install and every update**, with no warm path.
 The rebuild is skipped only when the iPXE release, the embedded CA and the
@@ -232,7 +232,7 @@ The enforcement is deliberately strict, and it fails closed:
 
 If you are handing FOG an enterprise intermediate, either leave it unconstrained
 or constrain it with `dNSName`/`iPAddress` subtrees only. See
-[[kb/reference/bringing-your-own-ca|Bringing Your Own CA]].
+[[1.6/kb/reference/bringing-your-own-ca|Bringing Your Own CA]].
 
 ## Why the HTTPS redirect is off by default
 
@@ -285,12 +285,12 @@ not the transport. See [[fog-security|FOG Security]].
 
 ## See also
 
-- [[kb/reference/pki-zones|FOG PKI Infrastructure]] — the three certificate zones and the layout on disk
-- [[kb/reference/bringing-your-own-ca|Bringing Your Own CA]] — replacing FOG's authorities per zone
+- [[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]] — the three certificate zones and the layout on disk
+- [[1.6/kb/reference/bringing-your-own-ca|Bringing Your Own CA]] — replacing FOG's authorities per zone
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt Certificates]] — ACME, step-ca and public certificates
-- [[kb/how-tos/secure-boot-signing|Secure Boot Signing]] — how the signed chain is put together
-- [[kb/how-tos/secure-boot-mok-enrollment|Secure Boot MOK Enrollment]] — enrolling this server's key on a client
-- [[installation/server/command-line-options|Fog installer command line options]] — every option named here
-- [[management/server/install-fogsettings|The .fogsettings file]] — where these settings persist
+- [[1.6/kb/how-tos/secure-boot-signing|Secure Boot Signing]] — how the signed chain is put together
+- [[1.6/kb/how-tos/secure-boot-mok-enrollment|Secure Boot MOK Enrollment]] — enrolling this server's key on a client
+- [[1.6/installation/server/command-line-options|Fog installer command line options]] — every option named here
+- [[1.6/management/server/install-fogsettings|The .fogsettings file]] — where these settings persist
 - [[compile_ipxe_binaries|Compile iPXE binaries]] — building iPXE by hand
 - [[local-esp-boot|Booting FOG from the local ESP]] — the same transport choices when iPXE is started from disk rather than PXE

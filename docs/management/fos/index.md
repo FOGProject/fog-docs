@@ -13,6 +13,4 @@ tags:
 
 This section contains docs relating to managing the Fog operating system that is used when a host is being imaged. For the most part, this is a maintenance free os as its only used at imaging time, this section will cover mostly special cases like using debug mode.
 
->[!info] Using the FOG Boot Menu differs between FOG 1.5 and 1.6 and is
->covered separately — see [[1.5/management/fos/index|the 1.5 page]] or
->[[1.6/management/fos/index|the 1.6 page]].
+- [[using-fog-boot-menu|Using the FOG Boot Menu]] — differs between FOG 1.5 and 1.6

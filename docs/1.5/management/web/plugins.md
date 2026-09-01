@@ -86,11 +86,11 @@ than as a bulk action on a shared list.
 | **example** | A skeleton example plugin — the reference for people writing their own |
 | **fileintegrity** | Records checksums, modification dates and locations for files on storage nodes |
 | **hoststatus** | Adds a live power/OS status entry to the host edit page. Needs TCP 445 open on the client |
-| **ldap** | Authenticate FOG users against an LDAP or Active Directory server. Needs your distribution's `php-ldap` package. See [[management/web/ldap\|LDAP Authentication]] |
+| **ldap** | Authenticate FOG users against an LDAP or Active Directory server. Needs your distribution's `php-ldap` package. See [[1.5/management/web/ldap\|LDAP Authentication]] |
 | **location** | Point hosts at the storage node local to their site, for sites with more than one place to fetch an image from |
 | **persistentgroups** | When a host joins a group, copy image, AD, printer, snapin and location settings onto it from a template host named after that group |
 | **pushbullet** | Pushbullet notifications |
-| **site** | Restrict what a user can see to their own site. See [[management/web/site-scoping\|Site Scoping]] |
+| **site** | Restrict what a user can see to their own site. See [[1.5/management/web/site-scoping\|Site Scoping]] |
 | **slack** | Slack notifications |
 | **subnetgroup** | Assign hosts to groups automatically based on their IP subnet |
 | **taskstateedit** | Create and edit FOG's task states |

@@ -30,10 +30,22 @@ Both scripts point Quartz at `../docs` via its `--directory` flag, so `docs/`
 remains the single source of truth for content — nothing is copied or
 symlinked into `quartz/content/`.
 
-The only tests in this repo cover the translation pipeline's helpers
-(`node --test "scripts/*.test.mjs"`). There are no linters — otherwise the only
-"validation" is that `npm run docs:build` completes without errors (broken
-wikilinks, duplicate `context_id`s, etc. surface as build warnings/errors).
+The tests in this repo (`node --test "scripts/*.test.mjs"`) cover the
+translation pipeline's helpers, the anchor checker, and the version-split
+checker. There are no linters. Beyond the tests, validation is three commands:
+
+```bash
+cd quartz && npm run docs:build        # broken wikilinks, duplicate context_ids
+node scripts/check-anchors.mjs         # broken #fragments (needs the build)
+node scripts/check-version-split.mjs   # the 1.5/1.6 split invariants
+node scripts/show-nav.mjs <folder>...  # the Explorer sidebar order
+```
+
+The build catches structural problems only. Broken anchors, line-wrapped
+wikilinks, unescaped table pipes, a page silently missing from the nav, and
+every 1.5/1.6 split invariant are all **silent** — the page renders and
+misdirects the reader. That is what the scripts are for; see
+[VERSIONING.md](VERSIONING.md) for the remaining manual checks.
 
 Production builds happen on Read the Docs per `.readthedocs.yml`, which fully
 overrides RTD's default build via `build.commands`: install Node, then run
@@ -136,6 +148,44 @@ node scripts/rtd-build.mjs --language fr -o /tmp/fr-site
   docs. It sits outside `docs/`, so Quartz never builds it.
 - The old RST/Sphinx source has been fully removed; Markdown/Quartz is the
   only current format (full history is still in git if ever needed).
+
+## Version-split pages (FOG 1.5 / 1.6)
+
+The site documents both FOG lines at once. `docs/1.5/` and `docs/1.6/` hold
+only the pages where the two genuinely diverge; the other ~90 pages are shared
+and live at their normal topic path. **[VERSIONING.md](VERSIONING.md) is the
+authoritative runbook** — how to fork a page, and how to undo the whole split
+when 1.5 is deprecated. Read it before adding or changing a versioned page.
+
+The rules that must not be broken:
+
+- **A page is forked only where 1.5 and 1.6 genuinely differ.** The default is
+  one shared page. Forking a page that does not need it doubles the maintenance
+  and gives the reader a pointless decision.
+- **A forked topic is three files, never two**: `docs/1.5/<path>.md`,
+  `docs/1.6/<path>.md`, and an unversioned **chooser** at `docs/<path>.md` that
+  says what differs and links both. The chooser is not optional — the Explorer
+  builds the sidebar from folder structure alone, so without it the topic
+  vanishes from the nav entirely and nothing warns.
+- **The 1.6 page owns the unsuffixed `context_id`, `title` and `aliases`**, so
+  `/{context_id}` permalinks always resolve to the newest docs. 1.5 takes
+  `-1.5` on the `context_id` and `(1.5)` on the title/aliases. The chooser takes
+  `<basename>-versions` and **declares no `aliases` at all**.
+- **Every chooser carries the `version-chooser` tag.** That tag is the
+  inventory the teardown runbook works from.
+- **A 1.6-only feature is not forked and gets no chooser.** It lives at the
+  unversioned path with an "applies to FOG 1.6 and later" callout.
+- **Inside a version tree, links to forked pages must carry that same version**
+  — including a page linking its own headings. An unversioned link there
+  resolves to the chooser and silently drops the `#anchor`. From outside the
+  trees, an unversioned link is correct: it lands on the chooser.
+- **Reading order is encoded twice and both copies must be edited together**:
+  `quartz.config.yaml`'s Explorer `sortFn` and `prev-next-nav`'s
+  `TOP_ORDER`/`EXPLICIT_ORDER`. The `sortFn` is a string inside YAML, so they
+  cannot share a module — the duplication is structural.
+
+`node scripts/check-version-split.mjs` enforces all of the above and needs no
+build. Run it after touching anything in this area.
 
 ## Quartz build details
 

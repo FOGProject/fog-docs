@@ -15,17 +15,6 @@ tags:
 
 Documentation related to how to use the web management ui.
 
->[!info] Site Scoping, LDAP, Host Management, **Group Management**, Image
->Management, Storage Node Management, Multicast Sessions, Report Management,
->Fog Configuration and Plugins differ between FOG 1.5 and 1.6 and are covered
->separately — see [[1.5/management/web/index|the 1.5 pages]] or
->[[1.6/management/web/index|the 1.6 pages]].
->
->Group Management is the newest of those and the difference is the largest: on
->1.6 a group **owns** its snapins and printers and hands them to every member,
->including hosts added later, where 1.5 copied rows onto whichever hosts were
->members at the time.
-
 **Using the Interface**
 
 - [[filtering-lists|Filtering Lists]]
@@ -41,17 +30,28 @@ Documentation related to how to use the web management ui.
 - [[oidc|OpenID Connect Sign-in]]
 - [[local-login|The Local Login Page]]
 - [[ad-integration|Active Directory Integration]]
+- [[ldap|LDAP Authentication]] — differs between FOG 1.5 and 1.6
+- [[site-scoping|Site Scoping]] — differs between FOG 1.5 and 1.6
 
 **Imaging Objects**
 
+- [[hosts|Host Management]] — differs between FOG 1.5 and 1.6
+- [[groups|Group Management]] — differs between FOG 1.5 and 1.6
+- [[images|Image Management]] — differs between FOG 1.5 and 1.6
+- [[storage-node|Storage Node Management]] — differs between FOG 1.5 and 1.6
 - [[snapins|Snapin Management]]
 - [[printers|Printer Management]]
 
 **Operations**
 
 - [[tasks|Task Management]]
+- [[multicast|Multicast Sessions]] — differs between FOG 1.5 and 1.6
+- [[reports|Report Management]] — differs between FOG 1.5 and 1.6
 
 **System**
 
 - [[dashboard|Dashboard]]
 - [[service|Fog Service (aka Client) Management]]
+- [[config|Fog Configuration]] — differs between FOG 1.5 and 1.6
+- [[certificates|The Certificates Page]] — FOG 1.6 and later
+- [[plugins|Plugins]] — differs between FOG 1.5 and 1.6

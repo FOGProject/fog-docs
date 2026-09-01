@@ -25,9 +25,9 @@ tags:
 This page covers the mechanics behind Secure Boot signing that aren't
 specific to any one enrollment route: how the signed shim chain is served,
 how FOS kernels actually get signed, and how to sign your own FOS builds.
-For the concepts, start at [[kb/how-tos/secure-boot-signing|Secure Boot signing]]. For
+For the concepts, start at [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]]. For
 enrolling a certificate on a client, see
-[[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] or
+[[1.6/kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] or
 [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]].
 
 ## Serve the signed chain
@@ -126,7 +126,7 @@ side in one directory and DHCP alone decides which runs.
 This is the part that is genuinely yours to sign, and **the installer has
 already done it** — there is no step here unless you supplied your own key,
 in which case
-[[kb/how-tos/secure-boot-signing#bringing-your-own-key|bringing your own key]] covers
+[[1.6/kb/how-tos/secure-boot-signing#bringing-your-own-key|bringing your own key]] covers
 passing it.
 
 Every install and upgrade re-signs the kernels, and it has to: the FOS
@@ -219,17 +219,17 @@ is not being accepted. In order of likelihood:
 | Symptom | Cause |
 | --- | --- |
 | `Security Policy Violation` | Certificate not enrolled on *this* machine, or the leaf was signed under a different CA than what's enrolled |
-| `Security Policy Violation`, but the certificate *is* listed by `mokutil --list-enrolled` | The key carries the Module-signing only OID — see [[kb/how-tos/secure-boot-signing#bringing-your-own-key\|Bringing your own key]] |
-| Fails on every machine, including enrolled ones | Shim is not in the boot chain — see [[kb/how-tos/secure-boot-signing#the-chain-you-are-building\|the chain]] |
+| `Security Policy Violation`, but the certificate *is* listed by `mokutil --list-enrolled` | The key carries the Module-signing only OID — see [[1.6/kb/how-tos/secure-boot-signing#bringing-your-own-key\|Bringing your own key]] |
+| Fails on every machine, including enrolled ones | Shim is not in the boot chain — see [[1.6/kb/how-tos/secure-boot-signing#the-chain-you-are-building\|the chain]] |
 | Worked yesterday, fails today | Something replaced the kernels without re-signing them. The installer always re-signs on install/upgrade — suspect anything that copies into `service/ipxe/` outside it — check with `sbverify` and re-run the installer |
-| Every machine stops working after a change | Either the CA was regenerated, or you switched to a different admin-supplied flat key. Enrollment is per-CA (or per-flat-key), so all clients need re-enrolling — see [[kb/how-tos/secure-boot-signing#rotating-or-removing-a-key\|Rotating or removing a key]] |
+| Every machine stops working after a change | Either the CA was regenerated, or you switched to a different admin-supplied flat key. Enrollment is per-CA (or per-flat-key), so all clients need re-enrolling — see [[1.6/kb/how-tos/secure-boot-signing#rotating-or-removing-a-key\|Rotating or removing a key]] |
 | Complains about format, not signature | Kernel lacks `CONFIG_EFI_STUB` |
 
 ## See also
 
-- [[kb/reference/secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
-- [[kb/how-tos/secure-boot-signing|Secure Boot signing]]
-- [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]]
+- [[1.6/kb/reference/secure-boot-trust-stores|The two trust stores]] — `db` vs `MokList`, and which one your boot path consults
+- [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]]
+- [[1.6/kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]]
 - [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]]
-- [[kb/reference/pki-zones|FOG's Certificate Zones]]
-- [[kb/reference/netboot-transport-and-pki|Netboot transport and PKI]] — how Secure Boot and an HTTPS netboot transport combine
+- [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[1.6/kb/reference/netboot-transport-and-pki|Netboot transport and PKI]] — how Secure Boot and an HTTPS netboot transport combine

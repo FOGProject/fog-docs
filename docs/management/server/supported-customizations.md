@@ -4,6 +4,7 @@ description: What FOG preserves across an install or update, what it deliberatel
 context_id: supported-customizations
 aliases:
     - Supported customizations
+    - 1.6/management/server/supported-customizations
     - What survives an update
     - Customizations preserved on update
 tags:
@@ -98,7 +99,7 @@ your own configuration.
 |---|---|
 | Extra directives, headers, `location`/`Directory` blocks | Keep them outside the markers; never touched |
 | Extra hostnames / DNS aliases | Use `--extra-server-name` (repeatable) so they land in both the vhost **and** the certificate SAN |
-| Primary hostname | Use `--hostname`; remembered in [[1.6/management/server/install-fogsettings|the `.fogsettings` file]] |
+| Primary hostname | Use `--hostname`; remembered in [[1.6/management/server/install-fogsettings\|the `.fogsettings` file]] |
 | Custom certificate paths | Point the vhost's cert directives at your paths **outside** the block, or replace the files FOG already references |
 
 On the first run after upgrading into this scheme, a vhost with no markers is

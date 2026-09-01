@@ -147,7 +147,7 @@ images — all of that lives in the database.
 **Recommended: let the installer produce the backup.** FOG's installer
 automatically backs up the database every time it runs an update, dropping a
 timestamped dump in `$backupPath/fogDBbackups/` (`$backupPath` defaults to
-`/home/`, and is recorded in [[install-fogsettings|.fogsettings]]). On the
+`/home/`, and is recorded in [[1.5/management/server/install-fogsettings|.fogsettings]]). On the
 **old** server, re-run the installer (or just answer through an update) to
 produce a fresh dump, then copy the resulting `fog_sql_*.sql` file to the
 **new** server (over the same NFS mount used for images, or with `scp`), and
@@ -176,7 +176,7 @@ installation is actually secured (no root password, a different host, etc.).
 > Because this import brings the old server's IP address and generated
 > passwords with it, the new server's web interface login will be whatever
 > the old server's was. If you don't know it, see
-> [[install-fogsettings|.fogsettings]] for where FOG stores it, or reset it
+> [[1.5/management/server/install-fogsettings|.fogsettings]] for where FOG stores it, or reset it
 > from a shell on the new server.
 
 # Migrating the certificate authority
@@ -185,7 +185,7 @@ FOG generates its own certificate authority at install time, and three
 different things depend on it: the web server's HTTPS certificate, the iPXE
 binaries (which are compiled to trust that CA), and the **fog-client**, which
 pins the CA and validates the server against it before acting on any task.
-See [[pki-zones|FOG PKI Infrastructure]] for the full model and
+See [[1.5/kb/reference/pki-zones|FOG PKI Infrastructure]] for the full model and
 [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]] for the
 fog-client pinning specifically.
 
@@ -285,7 +285,7 @@ client-side change at all.
 If you'd rather run your own CA going forward — for example to integrate with
 your organization's PKI — supply it at install time with
 `--web-ca-cert`/`--web-ca-key`/`--web-ca-root` instead of using FOG's
-generated one; see [[bringing-your-own-ca|Bringing your own CA]]. That
+generated one; see [[1.5/kb/reference/bringing-your-own-ca|Bringing your own CA]]. That
 replaces the **web** certificate only and deliberately leaves fog-client's
 pinned CA alone, which is what makes it safe to do on a live fleet.
 
@@ -569,13 +569,13 @@ Once images, the database, and certificate trust are migrated:
 -   [[requirements|System Requirements]]
 -   [[1.5/installation/server/command-line-options|Fog installer command line options (1.5)]]
 -   [[change-fog-server-ip-address|Change FOG Server IP Address]]
--   [[install-fogsettings|The .fogsettings file]]
--   [[storage-node|Storage Node Management]]
+-   [[1.5/management/server/install-fogsettings|The .fogsettings file]]
+-   [[1.5/management/web/storage-node|Storage Node Management]]
 -   [[snapins|Snapin Management]]
--   [[pki-zones|FOG PKI Infrastructure]]
--   [[bringing-your-own-ca|Bringing your own CA]]
+-   [[1.5/kb/reference/pki-zones|FOG PKI Infrastructure]]
+-   [[1.5/kb/reference/bringing-your-own-ca|Bringing your own CA]]
 -   [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
--   [[secure-boot-signing|Secure Boot: signing FOS with your own key]]
+-   [[1.5/kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]]
 -   [[secure-boot-setup-mode-enrollment|Secure Boot: Setup Mode enrollment]]
 -   [[fog-security|FOG Security]]
 -   [[troubleshoot-ftp|Troubleshooting FTP]]

@@ -24,7 +24,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
 
 ## Adding a new host
 
-[[management/web/storage-node#Adding a Storage Node|Adding a Storage Node]]
+[[1.6/management/web/storage-node#Adding a Storage Node|Adding a Storage Node]]
 
 ### Method 1: Adding a new host via Full registration
 
@@ -48,7 +48,7 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
     wired only), serial number(if available in BIOS), Make/Model, and
     other Hardware information with the FOG server.
 
--   For more information on these commands please see: [[management/fos/using-fog-boot-menu#Perform Full Registration and Inventory|Perform Full Registration and Inventory]]
+-   For more information on these commands please see: [[1.6/management/fos/using-fog-boot-menu#Perform Full Registration and Inventory|Perform Full Registration and Inventory]]
 
 ### Method 2: Adding a new host via Quick Registration
 
@@ -202,7 +202,7 @@ Hosts can also include, but are not required:
 >[!note]
 >The CSV format changed significantly in FOG 1.6 (headered **or**
 >positional columns, an `associations` column for groups/snapins/printers,
->and name-resolved foreign keys). See [[kb/reference/csv_import_export|CSV Import / Export]]
+>and name-resolved foreign keys). See [[1.6/kb/reference/csv_import_export|CSV Import / Export]]
 >for the full, current column layout and format rules — the safest workflow
 >is **Export → edit → Import**, so you always start from a file FOG already
 >considers valid.
@@ -298,7 +298,7 @@ service could reach the machine the last time it ran.
 >
 >The port and the timeout are settings in 1.6: **FOG Configuration** →
 >**FOG Settings** → **Ping Host Settings**. See
->[[kb/reference/ping-hosts-service|The Ping Hosts Service]] for how to choose them.
+>[[1.6/kb/reference/ping-hosts-service|The Ping Hosts Service]] for how to choose them.
 
 -   Hosts are looked up by **name**, so you need an internal DNS server tied in
     with your DHCP server, so that when a DHCP address is handed out the DNS
@@ -365,7 +365,7 @@ where the two disagree:
 | old | old | the machine has genuinely been off since the later of the two |
 
 The second row is the one worth acting on. Full detail, including how to pick a
-port for a mixed fleet: [[kb/reference/ping-hosts-service|The Ping Hosts Service]].
+port for a mixed fleet: [[1.6/kb/reference/ping-hosts-service|The Ping Hosts Service]].
 
 ### Editing many hosts at once
 
