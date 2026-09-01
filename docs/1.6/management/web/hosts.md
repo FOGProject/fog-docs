@@ -386,6 +386,12 @@ Every field carries its own action, and the default is always to do nothing:
 Fields that are only on or off — joining the domain, hostname enforcement —
 offer *No change*, *Enable on all* and *Disable on all* instead.
 
+>[!note] Plugins can add fields here
+>If you run the **Location** or **OU** plugins, their settings appear in this
+>form alongside the built-in ones. Both used to have their own group tab that
+>rewrote the value on every member; they use this form now, so *No change*
+>works for them exactly as it does for everything else.
+
 Two things follow from the action being separate from the value:
 
 - **A form you open and submit without touching anything changes nothing.**

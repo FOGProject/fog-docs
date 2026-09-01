@@ -30,10 +30,11 @@ what the group page's remaining push-to-all controls do.
 >    ticked box is a row about the group, and every member gets the item,
 >    including hosts added later. Nothing is written onto a host.
 > 2. **Pushed values** — Active Directory, auto-logout, kernel and general
->    fields, screen resolution, image, product key. These are **not** group
->    properties. Pressing *Update* writes the value onto the hosts that are
->    members at that instant, once. They are **deprecated** in 1.6 and removed
->    in a later release; use *Edit selected hosts* on the Hosts list instead.
+>    fields, screen resolution, image, product key. These were **not** group
+>    properties: pressing *Update* wrote the value onto the hosts that were
+>    members at that instant, once. **They are gone from the group page in
+>    1.6.** Use *Edit selected hosts* on the Hosts list instead. The section
+>    below is kept as the record of what they did and why they went.
 
 ---
 
@@ -44,7 +45,7 @@ what the group page's remaining push-to-all controls do.
   - [The default printer](#the-default-printer)
   - [Modules: the third state](#modules-the-third-state)
 - [When it is worked out](#when-it-is-worked-out)
-- [Pushed values (deprecated)](#pushed-values-deprecated)
+- [Pushed values, and why they are gone](#pushed-values-and-why-they-are-gone)
   - [The shared-value hints](#the-shared-value-hints)
   - [The no-clobber convention](#the-no-clobber-convention)
   - [Active Directory](#active-directory)
@@ -156,22 +157,34 @@ to be able to reach the machine on its own.
 
 ---
 
-## Pushed values (deprecated)
+## Pushed values, and why they are gone
 
-Everything in this section applies a value **once**, to the hosts that are
-members at the moment you press *Update*. A host added afterwards does not get
-it; a host removed keeps it. Nothing records that the write happened, so
-nothing can replay it.
+>[!warning] Removed from the group page in FOG 1.6
+>Everything in this section describes how these controls behaved **on FOG
+>1.5**, and on 1.6 before they were removed. They are no longer on the group
+>page. **Use Hosts → tick → Edit selected hosts instead** — it does the same
+>job over any selection, with an explicit *No change* / *Set on all* /
+>*Clear on all* per field.
+>
+>It is kept because the behavior explains a class of question that will keep
+>arriving from 1.5 installs: values that appear on a host with no record of
+>how they got there.
 
-These controls carry a deprecation notice on the group page and are removed in
-a later release. **Use Hosts → tick → Edit selected hosts instead** — it does
-the same job over any selection, with an explicit *No change* / *Set on all* /
-*Clear on all* per field.
+Everything in this section applied a value **once**, to the hosts that were
+members at the moment you pressed *Update*. A host added afterwards did not
+get it; a host removed kept it. Nothing recorded that the write had happened,
+so nothing could replay it — which is the whole reason the model was replaced
+rather than repaired.
+
+The two plugin equivalents, the `location` and `ou` group tabs, went the same
+way and for the same reason, with one extra defect: they had no *No change*
+state at all, so saving either tab rewrote the value on **every** member.
 
 ### The shared-value hints
 
-Because these fields are per-host, the group page shows a muted hint beneath
-each control saying what the members currently hold:
+Because these fields were per-host, the group page showed a muted hint beneath
+each control saying what the members held. The same hints appear in **Edit
+selected hosts**, computed over your selection rather than over a group:
 
 | Hint | Meaning |
 |------|---------|
