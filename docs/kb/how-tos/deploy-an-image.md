@@ -67,11 +67,17 @@ this machine.
 ### Host Groups
 
 You are asked if you would like to associate this machine with host
-Groups in FOG. In FOG you can group hosts and you can assign certain
-settings and snapins to a group. Group membership can later be managed
-in the Web UI.
+Groups in FOG. In FOG you can group hosts and assign snapins and printers
+to a group. Group membership can later be managed in the Web UI.
 
 For now we will say 'N' here.
+
+>[!info] FOG 1.6
+>Joining a group later is enough: a 1.6 group **owns** its snapins and
+>printers and hands them to every member, including hosts added after the
+>fact. On 1.5 a host had to be a member at the moment somebody pressed the
+>group's buttons, so answering 'N' here and joining later meant the machine
+>quietly got nothing. See [[1.6/management/web/groups|Group Management]].
 
 ### Snapins
 

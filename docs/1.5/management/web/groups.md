@@ -1,19 +1,24 @@
 ---
-title: Group Management
+title: "Group Management (1.5)"
 aliases:
-    - Group Management
-    - Fog Group Management
-description: index page for groups
-context_id: groups
+    - "Group Management (1.5)"
+description: "How FOG 1.5 groups work: a group owns nothing of its own, and every group action writes onto the hosts that are members at that moment"
+context_id: "groups-1.5"
 tags:
-    - in-progress
     - management
     - web-management
     - web-ui
     - groups
+    - 1_5-legacy
 ---
 
-# Group Management
+# Group Management (1.5)
+
+>[!info] This page describes FOG 1.5.
+>See the [[1.6/management/web/groups|1.6 version]] of this page for FOG 1.6,
+>where a group **owns** its snapins and printers and applies them to every
+>member — including hosts added after the fact — instead of copying rows onto
+>whichever hosts happened to be members when you pressed the button.
 
 ## Groups
 
@@ -24,7 +29,6 @@ tags:
     Floor", it could also be a member of "Math Department", or "Dell
     PCs." Groups make using FOG possible for organizations with a very
     large number of PC's.
-    see also [[group-shared-state|Group Shared State]]
 
 ## Creating Groups
 
@@ -32,7 +36,7 @@ tags:
 
 1.  **Group Management** → **Create New Group**
 2.  Hosts section of FOG based on searches, for information on how to
-    create groups, please see [[1.6/management/web/hosts#Creating Host Groups]]
+    create groups, please see [[1.5/management/web/hosts#Creating Host Groups]]
 
 ## Managing Groups
 
