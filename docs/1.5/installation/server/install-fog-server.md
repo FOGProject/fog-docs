@@ -107,13 +107,54 @@ You can see a list of current branches here:
 
 ### Updating an existing install
 
-FOG 1.5 has no `updatefog.sh` wrapper — that script, and the update-channel
-tracking behind it, is a FOG 1.6 feature. On 1.5 the manual steps above
-(`git fetch`/`git checkout`/`git pull`) are the only way to update: pick the
-branch you're tracking, pull it, then re-run the installer from `bin/`:
+The manual steps above (`git fetch`/`git checkout`/`git pull`) always work:
+pick the branch you're tracking, pull it, then re-run the installer from
+`bin/`:
 
     cd /root/fogproject/bin
     ./installfog.sh
+
+There is also a `bin/updatefog.sh` on 1.5 now, which does the same thing in one
+command:
+
+    cd /root/fogproject/bin
+    ./updatefog.sh --channel patches
+
+It exists mainly for one job: **moving a 1.5 server onto 1.6.**
+
+    ./updatefog.sh --channel rc      # the current 1.6 release candidate
+    ./updatefog.sh --channel beta    # the 1.6 development line
+
+It runs the installer **interactively**, which matters here more than for an
+ordinary update: the 1.6 installer asks about settings your 1.5
+`.fogsettings` has never held, and running it unattended would take a default
+for every one of them without telling you. Pass `-y` only if you genuinely
+want that.
+
+> [!warning]
+> Going from 1.5 to 1.6 is a **major upgrade**, not a patch. The database
+> schema is migrated forward and the web tree is replaced.
+>
+> The 1.6 installer takes a database dump before it starts, and the 1.6 tree
+> carries `bin/revertfog.sh`, which uses that dump to put the server back.
+> **That dump is the only supported way back** — there is no down-migration
+> and there will not be one, because the migration steps are lossy by design.
+> Take your own backup as well.
+
+If your server is not a git checkout — you installed from a tarball or a copied
+directory — there is no branch to move, so use the bootstrap installer instead.
+It clones a checkout and runs the installer over your existing install, which
+it finds through `/etc/fog/fog.conf`:
+
+    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh | bash -s -- --channel rc
+
+> [!note]
+> `utils/FOGUpdater/fogupdater.sh` is **retired** and no longer updates
+> anything. It could not reach 1.6 at all — it resolved the version of a 1.6
+> branch from a file path that only exists on 1.5, so every attempt failed on a
+> missing file — and it ran the installer unattended, which is the wrong
+> default for this upgrade. The script is still present, and running it now
+> prints the alternatives above. If you have it in a cron entry, replace it.
 
 ### Alternatives
 
