@@ -217,8 +217,7 @@ in some less obvious way.
 > `./installfog.sh` upgrade too — which is how most people upgrade, and which
 > the wrapper could never have covered. What is preserved, what is deliberately
 > not, and where to put things so they survive is documented in
-> [docs/SUPPORTED_CUSTOMIZATIONS.md](https://github.com/FOGProject/fogproject/blob/working-1.6/docs/SUPPORTED_CUSTOMIZATIONS.md)
-> in the repository. It has not been mirrored here yet.
+> [[1.6/management/server/supported-customizations|Supported customizations]].
 >
 > The automatic revert became an *offer*. When an install fails and the
 > checkout has moved since the last one that succeeded, the installer prints

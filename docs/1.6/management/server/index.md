@@ -13,3 +13,4 @@ tags:
 # Server Management — FOG 1.6 differences
 
 - [[1.6/management/server/install-fogsettings|.fogsettings]]
+- [[1.6/management/server/supported-customizations|Supported customizations]] — what survives an install or update, and where to put things so they do
