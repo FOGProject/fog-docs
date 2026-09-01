@@ -13,6 +13,5 @@ tags:
 
 Articles related to managing FOG linux server services and its dependent services via the linux shell.
 
->[!info] The .fogsettings file differs between FOG 1.5 and 1.6 and is
->covered separately — see [[1.5/management/server/index|the 1.5 page]] or
->[[1.6/management/server/index|the 1.6 page]].
+- [[install-fogsettings|The .fogsettings file]] — differs between FOG 1.5 and 1.6
+- [[supported-customizations|Supported customizations]] — what survives an install or update, and where to put things so they do (FOG 1.6 and later)

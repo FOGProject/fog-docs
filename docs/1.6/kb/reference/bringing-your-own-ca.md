@@ -23,9 +23,9 @@ tags:
 # Bringing your own CA
 
 FOG generates its own certificates by default, but each zone described in
-[[kb/reference/pki-zones|FOG's Certificate Zones]] can be replaced independently with a
+[[1.6/kb/reference/pki-zones|FOG's Certificate Zones]] can be replaced independently with a
 CA or key you already run. This page is the reference for doing that; see
-[[kb/reference/pki-glossary|the PKI glossary]] if a term here is unfamiliar.
+[[1.6/kb/reference/pki-glossary|the PKI glossary]] if a term here is unfamiliar.
 
 >[!info] Version support
 >`--secureboot-ca-cert` is a FOG 1.6 addition; on earlier releases only
@@ -69,7 +69,7 @@ replacement, the same shape as FOG's own auto-generated pair. Without it,
 and the thing you enroll — the flat model, same as before the CA/leaf split
 existed for FOG's own key. Rotating a flat key later means re-enrolling
 every machine — see
-[[kb/how-tos/secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]].
+[[1.6/kb/how-tos/secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]].
 
 ### Generating a leaf yourself
 
@@ -155,7 +155,7 @@ with any leaf issued under it afterward: reissue or rotate the leaf and no
 machine needs to be touched again — the same benefit FOG's own auto-generated
 key already gets automatically. Without `--secureboot-ca-cert`, doing this
 with your own CA means signing and publishing by hand: follow
-[[kb/reference/secure-boot-technical-details#signing-the-fos-kernels|signing the FOS kernels]]
+[[1.6/kb/reference/secure-boot-technical-details#signing-the-fos-kernels|signing the FOS kernels]]
 with `--addcert` added to the `sbsign` call, and enroll the CA's
 certificate rather than a leaf.
 
@@ -170,7 +170,7 @@ just becomes permanent once done.
 Nor does any of this extend to HTTPS. Kernel/shim trust and iPXE's TLS root
 store are two unrelated mechanisms — enrolling a CA here changes nothing
 about which HTTPS servers a Secure Boot client will fetch from. See
-[[kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]].
+[[1.6/kb/reference/pki-zones#https-and-netboot|HTTPS and netboot]].
 
 >[!warning] Generate a fresh key — do not reuse the MOK you already have
 >If this machine has ever built a DKMS module, it already has a MOK, and it is
@@ -198,7 +198,7 @@ certificate every fog-client has already pinned, so replacing it means
 re-deploying trust to every registered machine by some other means (GPO,
 client reinstall) — there's no built-in path for it, because there's no way
 to do it without touching every endpoint. See
-[[kb/reference/pki-glossary#client-communication-keypair|Client Communication keypair]].
+[[1.6/kb/reference/pki-glossary#client-communication-keypair|Client Communication keypair]].
 
 ## `pathlen:0` CAs
 
@@ -209,9 +209,9 @@ Boot on its self-signed key. Nothing is silently broken.
 
 ## See also
 
-- [[kb/reference/pki-zones|FOG's Certificate Zones]]
-- [[kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
+- [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]]
+- [[1.6/kb/reference/pki-glossary|PKI & Secure Boot Glossary]]
 - [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]
-- [[kb/how-tos/secure-boot-signing|Secure Boot signing]]
+- [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]]
 - [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]] — applying the Web zone options across a fleet
-- [[kb/reference/netboot-transport-and-pki|Netboot transport and PKI]] — which zone each install mode uses, and why replacing the CA changes what iPXE must trust
+- [[1.6/kb/reference/netboot-transport-and-pki|Netboot transport and PKI]] — which zone each install mode uses, and why replacing the CA changes what iPXE must trust

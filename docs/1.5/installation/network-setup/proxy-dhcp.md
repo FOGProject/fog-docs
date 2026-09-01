@@ -333,7 +333,7 @@ machines must have Secure Boot **disabled** to network boot.
 > setup step. A correct DHCP configuration with an untrusted kernel gets you a
 > signed iPXE and then a failure one step later.
 >
-> [[secure-boot-signing|Secure Boot signing]] covers the concepts;
+> [[1.5/kb/how-tos/secure-boot-signing|Secure Boot signing]] covers the concepts;
 > [[1.5/installation/server/command-line-options#Secure Boot options|Secure Boot options (1.5)]] covers the installer side.
 
 ## Advanced dnsmasq techniques

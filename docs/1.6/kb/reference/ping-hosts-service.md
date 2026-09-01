@@ -22,7 +22,7 @@ tags:
 
 `FOGPingHosts` is the background service that answers one question for every
 host in your database: *can the server reach it right now?* Its verdict is what
-the **Ping Status** column on [[management/web/hosts|Host Management]] shows, and since 1.6 it
+the **Ping Status** column on [[1.6/management/web/hosts|Host Management]] shows, and since 1.6 it
 also stamps the **Last Successful Ping** field on each host.
 
 This page explains what that verdict actually measures — which is not what most
@@ -299,6 +299,6 @@ a storage node from pinging your whole fleet.
 
 ## Related
 
-- [[management/web/hosts|Host Management]]
+- [[1.6/management/web/hosts|Host Management]]
 - [[fog-client-installation-options|FOG Client installation options]]
 - [[network-and-firewall-requirements|Network and firewall requirements]]

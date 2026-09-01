@@ -24,7 +24,7 @@ tags:
 
 The FOG installer takes a lot of options. Most installs need none of them —
 the defaults are chosen for the common case, and anything you do pass is
-recorded in [[management/server/install-fogsettings|the .fogsettings file]] so an upgrade keeps
+recorded in [[1.6/management/server/install-fogsettings|the .fogsettings file]] so an upgrade keeps
 it without you passing it again.
 
 >[!note] Options beat the stored value
@@ -37,7 +37,7 @@ it without you passing it again.
 
 `--install-mode` sets four settings at once, and is the easiest way to pick a
 combination that works. Full reasoning in
-[[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
+[[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 | Mode | `WEB_url_proto` | `BOOT_url_proto` | `PKI_web_cert_publicly_trusted` | `BOOT_rebuild_ipxe_with_my_ca` |
 |---|---|---|---|---|
@@ -59,7 +59,7 @@ passed something else, and on an upgrade you keep what you already had.
 
 >[!note] The mode is asked once and remembered
 >Your choice is stored as `FOG_install_mode` in
->[[management/server/install-fogsettings|.fogsettings]], so `--install-mode` only needs giving to
+>[[1.6/management/server/install-fogsettings|.fogsettings]], so `--install-mode` only needs giving to
 >*change* it — an upgrade keeps the mode you picked, and the four-mode menu is
 >not shown again.
 >
@@ -244,8 +244,8 @@ covered in detail in [[uninstall-fog-server|Uninstalling the Fog server]].
 >`--no-ca-trust` and `--no-sb-name-constraints` are gone, along with the
 >settings behind them. Both were opt-outs that put the safe answer behind a flag
 >nobody passes until something has already broken — see
->[[installation/server/command-line-options#Certificate options|Certificate options]] and
->[[installation/server/command-line-options#Name constraints|Name constraints]]. Passing either is
+>[[1.6/installation/server/command-line-options#Certificate options|Certificate options]] and
+>[[1.6/installation/server/command-line-options#Name constraints|Name constraints]]. Passing either is
 >now an unrecognized option.
 
 ## Certificate options
@@ -306,7 +306,7 @@ cannot issue for the whole internet.
 
 >[!note] The Secure Boot zone gets no constraints at all
 >`--no-sb-name-constraints` is gone because there is nothing left to turn off.
->See [[installation/server/command-line-options#Secure Boot options|Secure Boot options]].
+>See [[1.6/installation/server/command-line-options#Secure Boot options|Secure Boot options]].
 
 ### The local trust store
 
@@ -329,7 +329,7 @@ caused them.
 >`https://<your-fog-server>/fog/management/other/ca.cert.der`.
 
 For the per-zone mechanism in full see
-[[kb/reference/bringing-your-own-ca|Bringing your own CA]]. To point **several** FOG servers
+[[1.6/kb/reference/bringing-your-own-ca|Bringing your own CA]]. To point **several** FOG servers
 at a single CA so one import covers all of them, see
 [[unify-certificates-across-fog-servers|Unifying certificates across several FOG servers]].
 
@@ -390,15 +390,15 @@ hand back a key and a `sudoers` rule you deliberately declined.
 >[!tip] Migrating this server?
 >Copy `/opt/fog/pki/` forward, or already-enrolled clients need enrolling a
 >second time for no reason — see
->[[installation/server/migrating-fog-server#migrating-the-secure-boot-signing-material|Migrating the Secure Boot signing material]].
+>[[1.6/installation/server/migrating-fog-server#migrating-the-secure-boot-signing-material|Migrating the Secure Boot signing material]].
 
 The material lives under `/opt/fog/pki/secureboot/`: the enrolled authority in
 `ca/` and the signing certificate in `leaf/sign.{key,pem}`, private keys `0600`
 inside a directory owned by root. Nothing there is copied into the web root and
 the web server cannot read it — see
-[[kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]] for the
+[[1.6/kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]] for the
 full procedure and for what to do on each client, and
-[[kb/reference/pki-zones|FOG PKI Infrastructure]] for the layout.
+[[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]] for the layout.
 
 ## Kernel backups
 
@@ -409,7 +409,7 @@ full procedure and for what to do on each client, and
 
 ## See also
 
-- [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] — what the install modes mean
-- [[management/server/install-fogsettings|The .fogsettings file]] — where these options are remembered
-- [[installation/server/install-fog-server|Installing the FOG server]]
-- [[installation/network-setup/dhcp-server-settings|DHCP server settings]] — where `--boot-delay` shows up on the client
+- [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] — what the install modes mean
+- [[1.6/management/server/install-fogsettings|The .fogsettings file]] — where these options are remembered
+- [[1.6/installation/server/install-fog-server|Installing the FOG server]]
+- [[1.6/installation/network-setup/dhcp-server-settings|DHCP server settings]] — where `--boot-delay` shows up on the client

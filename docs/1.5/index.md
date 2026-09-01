@@ -73,6 +73,8 @@ there's nothing to fork, so they're just not listed here. Each says so on the
 page itself: [[oidc|OpenID Connect Sign-in]], [[local-login|The Local Login Page]], [[local-esp-boot|Local ESP Boot]],
 [[secure-boot-setup-mode-enrollment|Secure Boot: Setup Mode Enrollment]],
 [[api-openapi-reference|OpenAPI Reference]],
+[[certificates|The Certificates Page]],
+[[supported-customizations|Supported customizations]],
 [[group-shared-state|Group Shared State]],
 [[storage-node-selection-hooks|Storage Node Selection Hooks]],
 [[plugin-schema-migrations|Plugin Schema Migrations]], and

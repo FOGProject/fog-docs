@@ -265,7 +265,7 @@ The upload route is off by default and takes both
 `bin/fog-plugin-uploads.sh enable` to turn on. It stages the archive
 somewhere FOG does not execute it and shows you the manifest, the file
 list and a SHA-256 before anything is installed.
-See [[plugins#Installing a plugin from an archive|Installing a plugin from an archive]]
+See [[1.6/management/web/plugins#Installing a plugin from an archive|Installing a plugin from an archive]]
 for the whole sequence.
 
 The report appears in the left-hand menu as soon as the plugin is

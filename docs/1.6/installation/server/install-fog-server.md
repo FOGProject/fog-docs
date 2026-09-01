@@ -217,7 +217,7 @@ in some less obvious way.
 > `./installfog.sh` upgrade too — which is how most people upgrade, and which
 > the wrapper could never have covered. What is preserved, what is deliberately
 > not, and where to put things so they survive is documented in
-> [[1.6/management/server/supported-customizations|Supported customizations]].
+> [[management/server/supported-customizations|Supported customizations]].
 >
 > The automatic revert became an *offer*. When an install fails and the
 > checkout has moved since the last one that succeeded, the installer prints
@@ -234,7 +234,7 @@ in some less obvious way.
 
 The channel you choose is remembered for next time, the same way `.fogsettings`
 already remembers your other install choices — see
-[[management/server/install-fogsettings|The .fogsettings file]]. It's also mirrored into the
+[[1.6/management/server/install-fogsettings|The .fogsettings file]]. It's also mirrored into the
 database as `FOG_GIT_PATH`/`FOG_UPDATE_CHANNEL` under the **FOG Update**
 category on the Settings page in the web UI, so you can see which checkout and
 channel a server is tracking without SSHing in. That copy is informational
@@ -273,7 +273,7 @@ installer **must be done as root**.
 ```
 
 >[!tip]
->The installer also has various switches for running silently and more, see  [[installation/server/command-line-options#Fog installer command line options|Fog installer command line options]]
+>The installer also has various switches for running silently and more, see  [[1.6/installation/server/command-line-options#Fog installer command line options|Fog installer command line options]]
 
 Before all the components are installed, you are asked several questions
 to make sure the setup suits your situation and is ready to use right
@@ -286,9 +286,9 @@ Prompt  | Description
 **SELinux** | *this only applies to RedHat based installs* **FOG supports SELinux enforcing, and leaving it on is now the default.** The installer labels its own directories, ships a small policy module for the ports the web tier needs, and has been tested capturing, deploying and replicating under enforcing. You are still asked, and can still choose permissive, but you no longer need to. Older versions of FOG recommended permissive and switched to it automatically under `-y`; that is no longer the case.
 **Local Firewall** | **The installer now configures your firewall rather than asking you to switch it off.** It opens only the ports your install actually uses, on firewalld and ufw, and prints the exact commands for raw `iptables` (which it deliberately does not modify — see below). You can still choose to disable the firewall, or to leave it alone and configure it yourself. Note older versions did nothing at all here under `-y`, leaving the firewall in whatever state the machine happened to be in. For the port list, the manual steps for all three backends, and how to restrict FOG to one subnet, see [[firewall\|Firewall configuration for a FOG server]].
 **OS Selection** | The installer tries to guess the distribution you're running. Just confirm the selection if it's correct, otherwise choose the apropriate option.
-**Installation mode** | With the same installer you can install a normal FOG server (called master node) or a FOG storage node. A storage node uses this same installer — you would answer Y here to install one instead of a full server. For what a storage node is and how to manage one, see [[management/web/storage-node\|Storage Node Management]]. As we're installing a full FOG server here, choose N here.
+**Installation mode** | With the same installer you can install a normal FOG server (called master node) or a FOG storage node. A storage node uses this same installer — you would answer Y here to install one instead of a full server. For what a storage node is and how to manage one, see [[1.6/management/web/storage-node\|Storage Node Management]]. As we're installing a full FOG server here, choose N here.
 **Default Network interface** | The installer needs to know which network interface will be used for hosting PXE booting as well as sending images via unicast and multicast. If the installer guessed the right interface, then choose n(o) to proceed, using the pre-selected network interface. Otherwise, choose y(es) and type in the name of the network interface (like eth0, ens192).
-**DHCP Service** | You have the option to run a DHCP service on the FOG server itself or, if you already have a DHCP server in your network, then you can answer n(o) to the following three questions. For more information on configuring an existing DHCP server to work with FOG, see [[installation/network-setup/dhcp-server-settings\|DHCP Server Settings]]. The questions on DHCP are in reverse order; the settings first, and finally if you really want to enable DHCP on your FOG server. This order might be changed in future versions of the installer.
+**DHCP Service** | You have the option to run a DHCP service on the FOG server itself or, if you already have a DHCP server in your network, then you can answer n(o) to the following three questions. For more information on configuring an existing DHCP server to work with FOG, see [[1.6/installation/network-setup/dhcp-server-settings\|DHCP Server Settings]]. The questions on DHCP are in reverse order; the settings first, and finally if you really want to enable DHCP on your FOG server. This order might be changed in future versions of the installer.
 **DHCP Router address** | If you're going to run a DHCP server on this FOG server, then type y(es) and type in the router (or default gateway) address that the DHCP server will advertise. If you have an existing DHCP server on your network, choose N here. (This question is irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
 **DHCP handle DNS** | If you're going to run a DHCP server on this FOG server, then type y(es) to advertise DNS server IPs to the clients and type in the IP address of the local DNS server. If you have an existing DHCP server on your network, choose n(o) here. (This question is also irrelevant if you choose to use or set up your own DHCP server and will be hidden in future versions when DHCP is de-selected.)
 **Activate DHCP** | If you want to run a DHCP server on this FOG server, then choose y(es). Otherwise choose n(o).
@@ -349,7 +349,7 @@ The next time you start the installer, it will skip all questions (except for a 
 
 In this way you can easily re-install or update a Fog server.
 
-For an overview of all settings in the .fogsettings file, see [[management/server/install-fogsettings|The .fogsettings file]]
+For an overview of all settings in the .fogsettings file, see [[1.6/management/server/install-fogsettings|The .fogsettings file]]
 
 ## Install errors
 

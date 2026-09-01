@@ -26,7 +26,7 @@ no `--install-mode`, no `--netboot-proto`, no `--boot-delay`, and `-S`/
 netboot protocol, and whether iPXE gets recompiled all switch together,
 rather than being controlled separately. Most installs still need none of
 these — the defaults are chosen for the common case, and anything you do pass
-is recorded in [[install-fogsettings|the .fogsettings file]] so an upgrade
+is recorded in [[1.5/management/server/install-fogsettings|the .fogsettings file]] so an upgrade
 keeps it without you passing it again.
 
 ## The full option list
@@ -155,7 +155,7 @@ is the only spelling.
 >what makes this safe to do on a running fleet without re-registering a
 >single machine.
 
-For the per-zone mechanism in full see [[bringing-your-own-ca|Bringing your own CA]].
+For the per-zone mechanism in full see [[1.5/kb/reference/bringing-your-own-ca|Bringing your own CA]].
 
 ### Name constraints
 
@@ -247,13 +247,13 @@ you decline it.
 The material lives under `/opt/fog/pki/secureboot/`: the enrolled authority
 in `ca/` and the signing certificate in `leaf/sign.{key,pem}`, private keys
 `0600` inside a directory owned by root. See
-[[secure-boot-signing|Secure Boot: signing FOS with your own key]] for the
+[[1.5/kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]] for the
 full procedure and for what to do on each client, and
-[[pki-zones|FOG PKI Infrastructure]] for the layout.
+[[1.5/kb/reference/pki-zones|FOG PKI Infrastructure]] for the layout.
 
 ## See also
 
 - [[1.5/installation/server/install-fog-server|Install FOG Server (1.5)]]
-- [[install-fogsettings|The .fogsettings file]] — where these options are remembered
+- [[1.5/management/server/install-fogsettings|The .fogsettings file]] — where these options are remembered
 - [[1.5/installation/network-setup/dhcp-server-settings|DHCP server settings (1.5)]]
 - [[1.6/installation/server/command-line-options|The 1.6 version of this page]] — the fuller option set, including `--install-mode`, `--netboot-proto`, `--boot-delay` and the `--purge-*` uninstall flags

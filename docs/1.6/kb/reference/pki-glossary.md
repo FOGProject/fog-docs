@@ -20,8 +20,8 @@ tags:
 # PKI &amp; Secure Boot glossary
 
 Short definitions for terms used across
-[[kb/reference/pki-zones|FOG's Certificate Zones]],
-[[kb/how-tos/secure-boot-signing|Secure Boot signing]], and
+[[1.6/kb/reference/pki-zones|FOG's Certificate Zones]],
+[[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]], and
 [[external-ca-lets-encrypt|External CA & Let's Encrypt]]. If a term you hit
 in one of those pages isn't here, treat that as a gap in this page, not in
 your understanding.
@@ -30,7 +30,7 @@ your understanding.
 
 One of FOG's independent certificate hierarchies — Web TLS, Client
 Communication, or Secure Boot — each isolating key material by how
-expensive it is to change. See [[kb/reference/pki-zones|FOG's Certificate Zones]].
+expensive it is to change. See [[1.6/kb/reference/pki-zones|FOG's Certificate Zones]].
 
 ### Root CA
 
@@ -49,7 +49,7 @@ impersonate anything outside it.
 
 The certificate the web server (Apache/nginx) actually presents to
 browsers. Rotatable on its own — see
-[[kb/reference/pki-zones#leaf-renewal|Leaf renewal]] — without touching the Web CA.
+[[1.6/kb/reference/pki-zones#leaf-renewal|Leaf renewal]] — without touching the Web CA.
 
 ### Secure Boot CA
 
@@ -74,7 +74,7 @@ conversation usually means whichever certificate is currently enrolled.
 The UEFI variable the **firmware** checks every image against, governed by
 `PK`/`KEK` above it. Distinct from `MokList` below, and the distinction
 decides whether a given boot path can see your certificate at all — see
-[[kb/reference/secure-boot-trust-stores|The two trust stores]].
+[[1.6/kb/reference/secure-boot-trust-stores|The two trust stores]].
 
 ### `MokList`
 
@@ -96,7 +96,7 @@ The superseded, pre-intermediate model: a single self-signed, `CA:FALSE`,
 code-signing certificate that's simultaneously the enrolled anchor and the
 signer. Existed only as an early proof-of-concept and never shipped in a
 stable release — see the note in
-[[kb/how-tos/secure-boot-signing#the-old-flat-mok|the Secure Boot guide]] if you're
+[[1.6/kb/how-tos/secure-boot-signing#the-old-flat-mok|the Secure Boot guide]] if you're
 recovering from one.
 
 ### Client Communication keypair
@@ -105,7 +105,7 @@ recovering from one.
 root, used only for `FOGBase::certDecrypt()` — the encryption on
 fog-client's check-in handshake — never for TLS. Not replaceable by
 bringing your own CA; see
-[[kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]].
+[[1.6/kb/reference/pki-zones#bringing-your-own-ca|Bringing your own CA]].
 
 ### Fingerprint (aka thumbprint)
 

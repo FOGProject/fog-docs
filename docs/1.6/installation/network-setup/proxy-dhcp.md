@@ -206,14 +206,14 @@ dnsmasq's only job is to get the client to TFTP-download the boot binary
 mode. Every UEFI binary FOG ships is built **without** its boot script compiled
 in, so iPXE fetches `autoexec.ipxe` from the TFTP root and runs that; the BIOS
 builds carry their script internally and ignore the file — see
-[[installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
+[[1.6/installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script|How UEFI clients get their boot script]].
 (On FOG 1.5 this is only true of the `secureboot/` chain — FOG's own plain
 UEFI builds have the script compiled in there too, same as BIOS. See
 [[1.5/installation/network-setup/dhcp-server-settings#How UEFI clients get their boot script (1.5)|the 1.5 version of that section]].)
 Either way the script chainloads `tftp://<fog_server_IP>/default.ipxe`, which in
 turn chainloads your FOG server's boot script over HTTP or HTTPS. Which of those
 two it is depends on `BOOT_url_proto`, not on how you reach the web interface —
-see [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
+see [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 If the client loads iPXE but then hangs or errors when contacting FOG, the
 dnsmasq config is usually fine and the problem is downstream:
@@ -224,7 +224,7 @@ dnsmasq config is usually fine and the problem is downstream:
 > The HTTP→HTTPS redirect is off by default as well, and the installer only
 > recompiles the iPXE binaries if you chose `--install-mode embed-ca` or passed
 > `--rebuild-ipxe-with-my-ca`. See
-> [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] for which combination
+> [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]] for which combination
 > you want.
 >
 > If netboot *is* on HTTPS, make sure dnsmasq's `tftp-root` points at the FOG
@@ -273,7 +273,7 @@ is a superset: it covers the Secure Boot machines and costs the others nothing.
 ### The optimal configuration
 
 **It is the configuration already given above** — see
-[[installation/network-setup/proxy-dhcp#dns-masq-ltsp-settings|Dns Masq LTSP settings]]. That block points
+[[1.6/installation/network-setup/proxy-dhcp#dns-masq-ltsp-settings|Dns Masq LTSP settings]]. That block points
 every 64-bit UEFI and ARM64 client at the signed chain and leaves BIOS and
 32-bit UEFI on their unsigned binaries, which is the whole of it. There is no
 separate "Secure Boot config" to switch to.
@@ -336,7 +336,7 @@ reason: an option that cannot succeed should not be offered.
 > own, so a publicly-issued certificate on an FQDN needs no rebuild and keeps the
 > signed shim. Where a rebuild genuinely is required, FOG signs the result with
 > this server's own Secure Boot key and shim loads it once that key is enrolled.
-> See [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
+> See [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 > [!important] The boot file is only half of Secure Boot
 > Getting a signed iPXE to load is the part dnsmasq controls. The FOS kernel FOG
@@ -345,7 +345,7 @@ reason: an option that cannot succeed should not be offered.
 > signed iPXE and then a failure one step later.
 >
 > [[secure-boot-netboot|Moving to Secure Boot]] walks both halves in order;
-> [[kb/how-tos/secure-boot-signing|Secure Boot signing]] is the concepts behind them.
+> [[1.6/kb/how-tos/secure-boot-signing|Secure Boot signing]] is the concepts behind them.
 
 ## Advanced dnsmasq techniques
 

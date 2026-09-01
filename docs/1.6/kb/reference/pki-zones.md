@@ -29,7 +29,7 @@ FOG uses certificates for three unrelated jobs. This page describes how
 they're kept separate, what that buys you, and how to replace any of them
 with your own CA. For the Secure Boot signing workflow specifically (client
 enrollment, rotating keys, Setup Mode), see
-[[kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]]. For
+[[1.6/kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]]. For
 Let's Encrypt/ACME and fog-client's certificate pinning, see
 [[external-ca-lets-encrypt|External CA & Let's Encrypt certificates]]. This
 page is the reference the other two link back to.
@@ -137,7 +137,7 @@ directly.
 | `ca.cert.der` | **unchanged** — no client re-pins |
 | `.srvprivate.key` | **unchanged** — client authentication is unaffected |
 | the web certificate | **new**, issued by the Web CA, on its own keypair |
-| the Secure Boot MOK | **new** — see [[kb/how-tos/secure-boot-signing\|the Secure Boot guide]], this one needs action |
+| the Secure Boot MOK | **new** — see [[1.6/kb/how-tos/secure-boot-signing\|the Secure Boot guide]], this one needs action |
 
 The only endpoint-visible change is Secure Boot.
 
@@ -198,7 +198,7 @@ The web leaf re-issues from the online Web CA and reloads the web server.
 The Secure Boot leaf re-issues from the Secure Boot CA and needs no
 reload — nothing has to be re-enrolled in firmware, because it's the
 intermediate that's enrolled, not the leaf. See
-[[kb/how-tos/secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]]
+[[1.6/kb/how-tos/secure-boot-signing#rotating-or-removing-a-key|Rotating or removing a key]]
 for the fleet-wide implications of that.
 
 Either invocation refuses, and tells you the exact path to restore, if the
@@ -275,7 +275,7 @@ every fog-client has already pinned, so replacing it means re-deploying
 trust to every registered machine by some other means (GPO, client
 reinstall); there's no built-in path for it. Full detail, commands, and
 the flat-vs-CA distinction for Secure Boot: see
-[[kb/reference/bringing-your-own-ca|Bringing your own CA]].
+[[1.6/kb/reference/bringing-your-own-ca|Bringing your own CA]].
 
 **If your CA carries `pathlen:0`** — an ordinary thing for an enterprise to
 issue — it can't anchor an intermediate. The installer detects this, says
@@ -339,7 +339,7 @@ FOG's own CA the way fog-client is:
 | Your internal PKI | HTTPS once your root is trusted | HTTP by default; HTTPS with `embed-ca` |
 
 The full decision, including what each install mode sets and what `embed-ca`
-costs, is in [[kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
+costs, is in [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]].
 
 Stock iPXE ships an unconditional public-CA fallback
 (`ca.ipxe.org`) that cross-signs real-world public roots — Let's Encrypt
@@ -358,7 +358,7 @@ key, and upstream's signed shim will load it once that key has been enrolled
 as a MOK on the machine. So the trade is not "lose Secure Boot"; it is **enrol
 this server's key before the machine can netboot**, which reverses the usual
 order in which a machine netboots first and enrols afterwards. See
-[[kb/how-tos/secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
+[[1.6/kb/how-tos/secure-boot-mok-enrollment|Secure Boot MOK Enrollment]].
 
 Enrolling your CA directly into UEFI firmware (`db`/`KEK`/`PK`, "Setup Mode" —
 see [[secure-boot-setup-mode-enrollment|Secure Boot Setup Mode Enrollment]]) is
@@ -397,9 +397,9 @@ The point is rotation. Under the old flat model the enrolled certificate
 to every machine. Enrolling the issuer instead means leaves can be rotated
 or reissued while the fleet keeps booting.
 
-Start at [[kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]]
+Start at [[1.6/kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]]
 for the concepts and rotating/removing a key; enrollment itself is split
-into [[kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] (any release) and
+into [[1.6/kb/how-tos/secure-boot-mok-enrollment|MOK enrollment]] (any release) and
 [[secure-boot-setup-mode-enrollment|Setup Mode enrollment]] (FOG 1.6,
 unattended).
 
@@ -408,7 +408,7 @@ unattended).
 >onto the intermediate, and any machine that enrolled the old key must
 >enroll once more. This only affects very early testers of the redesign —
 >see
->[[kb/how-tos/secure-boot-signing#the-old-flat-mok|the note in the Secure Boot guide]].
+>[[1.6/kb/how-tos/secure-boot-signing#the-old-flat-mok|the note in the Secure Boot guide]].
 
 ## Still unverified
 

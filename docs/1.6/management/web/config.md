@@ -19,7 +19,7 @@ much more content is needed here
 
 ## Certificates
 
-The Certificates tab has its own page: [[1.6/management/web/certificates|The Certificates Page]].
+The Certificates tab has its own page: [[management/web/certificates|The Certificates Page]].
 
 ## Multicast Settings
 
@@ -271,7 +271,7 @@ the worker that handled your click.
 The same actions are available through the FOG API for scripting. Like any FOG
 API call, they need an authenticated request &mdash; an `Authorization: Bearer`
 API token, or the `fog-api-token` + `fog-user-token` pair. See
-[[kb/integrations/api#Authentication]]:
+[[1.6/kb/integrations/api#Authentication]]:
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
@@ -313,5 +313,5 @@ To do this perform the following steps:
 -   Click the download icon
 -   Select a file name for your kernel, to make it the default kernel leave the name as **bzImage**
        * *!!! tip
-	    If you set it to a different name, you can set a host to use t in the [[management/web/hosts#Kernel|Kernel]]
+	    If you set it to a different name, you can set a host to use t in the [[1.6/management/web/hosts#Kernel|Kernel]]
 -   Click the **Next** Button
