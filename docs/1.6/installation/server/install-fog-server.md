@@ -26,6 +26,50 @@ Before rushing into installing FOG you want to make sure you check the [[require
 The installation instructions here assume that you have a freshly installed server available that only contains the minimal set of packages.
 Updating fog is essentially the same process, just instead of creating a fresh clone of the repo, you do a `git pull` and run the installer again — or let [`bin/updatefog.sh`](#updating-an-existing-install) do both steps for you.
 
+## The quick way
+
+If you just want FOG on a fresh server and do not need to inspect anything
+first, one command does the whole of this page's *Prerequisite* and *Run the
+installer* sections. It installs `git`, clones the repository, checks out the
+branch for the channel you asked for, and starts the installer:
+
+    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh | bash -s -- --channel beta
+
+The installer then runs **interactively**, exactly as it does when you start it
+by hand, so you still answer every prompt yourself.
+
+> [!warning]
+> That runs a script from the internet as root, and the URL points at a
+> *branch*, so its content changes whenever we push. If you would rather read
+> it first — and on a server you care about, you should — do it in two steps:
+>
+>     curl -fsSL -o bootstrap.sh https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh
+>     less bootstrap.sh
+>     sudo bash bootstrap.sh --channel beta
+
+Options:
+
+    --channel stable|patches|beta|rc   which line to install (default stable)
+    --branch <name>                    a literal branch or tag instead of a channel
+    --git-path /path                   where to clone (default /root/fogproject)
+    -y, --yes                          run the installer unattended
+
+`--yes` is for Ansible, cloud-init and similar. Without it, and with no
+terminal available to answer prompts on, the script stops and tells you to pass
+`--yes` — rather than quietly starting an unattended install of imaging
+software on a machine nobody is watching.
+
+Which copy of `bootstrap.sh` you fetched has nothing to do with what it
+installs. The URL above is simply where the file lives; `--channel` decides the
+rest.
+
+If the path already contains a git checkout, the script leaves it completely
+alone and points you at `bin/updatefog.sh`. It will not clone over, reset, or
+pull a working tree that is already there.
+
+Everything below is the same thing done by hand, which is still the right
+choice if you want to see each step.
+
 ## Prerequisite
 
 The preferred method of getting FOG is via Git.
@@ -121,31 +165,73 @@ as described, and give you the most control — useful if you want to inspect
 changes before pulling them, update to a specific commit or tag, or otherwise
 customize the process.
 
-If you'd rather not do that by hand every time, `bin/updatefog.sh` wraps the
-same steps into one command:
+If you'd rather not do that by hand every time, `bin/updatefog.sh` does the one
+thing the installer cannot do for itself — move the working copy to another
+commit — and then runs the installer:
 
     cd /root/fogproject/bin
     ./updatefog.sh
 
-It fetches and checks out the branch mapped from the update channel this
-server is configured to track (`stable`, `dev`, or `beta` — mapping to the
-`stable`, `dev-branch`, and `working-1.6` branches respectively), backs up the
-PXE background, kernel set, and rEFInd files that the installer's asset sync
-can overwrite, re-runs `installfog.sh` for you, and automatically reverts the
-git checkout and those backed-up files (then re-installs) if anything fails
-partway through.
+It fetches and checks out the branch mapped from the update channel this server
+tracks, then runs `installfog.sh` **interactively**. Pass `-y` for unattended.
 
 Options:
 
     ./updatefog.sh --help
-    Usage: ./updatefog.sh [-h?y] [--channel stable|dev|beta] [--git-path </path>] [--no-revert]
+    Usage: ./updatefog.sh [-h?y] [--channel stable|patches|beta|rc] [--branch <name>] [--git-path </path>]
         -h -? --help       Display this info
-              --channel    Update channel to track: stable, dev, or beta
+              --channel    Update channel to track: stable, patches, beta or rc
                             defaults to whatever this server already tracks
+              --branch     Check out an arbitrary branch instead of a channel,
+                            e.g. to test a PR. One-off: does not change the
+                            tracked channel for future runs
               --git-path   Override the git checkout path this server records
-              --no-revert  On failure, leave the system as-is instead of
-                            automatically reverting to the previous commit
-        -y    --yes        Skip the confirmation prompt (for cron/GUI use)
+        -y    --yes        Skip the confirmation prompt AND run the installer
+                            unattended (-Y). Pass it from cron and the GUI
+
+The channels map to branches like this:
+
+| Channel | Branch | What it is |
+|---|---|---|
+| `stable` | `stable` | the last release |
+| `patches` | `dev-branch` | the 1.5.x patches line |
+| `beta` | `working-1.6` | the 1.6 development line |
+| `rc` | the newest `rc-*` | the current release candidate, if one is published |
+
+`staging` and `dev` still work as names, and always will, because servers
+installed before the names changed have one of them recorded. Be careful with
+`dev`: it means **`beta`**, not `dev-branch`. Use `patches` if you want
+`dev-branch`.
+
+`rc` is the only channel that can resolve to nothing — between releases there
+is no release candidate published, and the script says so rather than failing
+in some less obvious way.
+
+> [!note]
+> **Nothing is reverted for you any more, and nothing needs to be.**
+>
+> `updatefog.sh` used to back up the files the installer overwrites, and
+> git-revert the checkout if an update failed. Both are gone, for good reasons.
+>
+> The backups moved *into* `installfog.sh`, so they now protect a plain
+> `./installfog.sh` upgrade too — which is how most people upgrade, and which
+> the wrapper could never have covered. What is preserved, what is deliberately
+> not, and where to put things so they survive is documented in
+> [docs/SUPPORTED_CUSTOMIZATIONS.md](https://github.com/FOGProject/fogproject/blob/working-1.6/docs/SUPPORTED_CUSTOMIZATIONS.md)
+> in the repository. It has not been mirrored here yet.
+>
+> The automatic revert became an *offer*. When an install fails and the
+> checkout has moved since the last one that succeeded, the installer prints
+> the exact command to go back:
+>
+>     git -C /root/fogproject reset --hard <commit>
+>     cd /root/fogproject/bin && ./installfog.sh
+>
+> It does not run it. Reverting means running the installer a second time on a
+> server that has just failed running it once, which is the least predictable
+> moment to do the most invasive thing — so the decision is yours. The part you
+> could not easily work out for yourself, which commit last installed cleanly,
+> is the part it tells you.
 
 The channel you choose is remembered for next time, the same way `.fogsettings`
 already remembers your other install choices — see
