@@ -15,11 +15,16 @@ tags:
 
 Documentation related to how to use the web management ui.
 
->[!info] Site Scoping, LDAP, Host Management, Image Management, Storage Node
->Management, Multicast Sessions, Report Management, Fog Configuration and
->Plugins differ between FOG 1.5 and 1.6 and are covered separately — see
->[[1.5/management/web/index|the 1.5 pages]] or
+>[!info] Site Scoping, LDAP, Host Management, **Group Management**, Image
+>Management, Storage Node Management, Multicast Sessions, Report Management,
+>Fog Configuration and Plugins differ between FOG 1.5 and 1.6 and are covered
+>separately — see [[1.5/management/web/index|the 1.5 pages]] or
 >[[1.6/management/web/index|the 1.6 pages]].
+>
+>Group Management is the newest of those and the difference is the largest: on
+>1.6 a group **owns** its snapins and printers and hands them to every member,
+>including hosts added later, where 1.5 copied rows onto whichever hosts were
+>members at the time.
 
 **Using the Interface**
 
@@ -39,7 +44,6 @@ Documentation related to how to use the web management ui.
 
 **Imaging Objects**
 
-- [[groups|Group Management]]
 - [[snapins|Snapin Management]]
 - [[printers|Printer Management]]
 

@@ -139,6 +139,13 @@ For a Snapin Pack, use the `[FOG_SNAPIN_PATH]` token in the argument fields to p
 
 The optional **Template** drop-down on the create form is a convenience only: pick a type (MSI, PowerShell, etc.) to pre-fill the command fields with a sensible starting point, then edit them as needed. It does not change what is stored — only what the fields are seeded with.
 
+>[!info] FOG 1.6: Chocolatey templates
+>1.6 adds two [Chocolatey](https://chocolatey.org/) entries to the template
+>lists — one for each snapin type — so you can hand package installs to
+>Chocolatey instead of packaging installers yourself. They need a little
+>setting up to be useful, so they have their own page:
+>[[chocolatey-snapins|Install software with Chocolatey snapins]].
+
 ## Linking the Snapin to Hosts
 
 In order for a snapin to be deployed it must be linked with a host. To do this perform the following:

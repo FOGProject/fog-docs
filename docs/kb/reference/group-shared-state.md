@@ -1,10 +1,11 @@
 ---
 title: Group Shared State
-description: Describes new Fog 1.6 group state changes
+description: How FOG 1.6 works out what a host actually gets from its groups, and what the group page's remaining push-to-all controls do
 context_id: group-shared-state
 aliases:
     - Group Shared State
     - Group State
+    - Group Resolution
 tags:
     - 1_6-changes
     - groups
@@ -15,94 +16,162 @@ tags:
 
 # Group Shared State
 
-A **group** owns no settings of its own — it is a lens over its **member hosts**.
-The group edit page therefore *derives* what it shows from the union of its
-members, so an admin can see what hosts already have in common before changing
-anything.
+>[!info] FOG 1.6
+>This page describes FOG 1.6, where a group **owns** its snapins, printers and
+>modules. On FOG 1.5 a group owned nothing at all and every group action wrote
+>onto its members — see [[1.5/management/web/groups|Group Management (1.5)]].
 
-> **Two kinds of shared state:**
-> 1. **Associations** (snapins, printers, modules) — a host either *has* the
->    item or not, shown as a tri-state checkbox: **All / Some / None** member
->    hosts have it.
-> 2. **Configuration values** (Active Directory, auto-logout, kernel/general
->    fields, default printer) — a host holds a *value*, shown as a muted
->    **`Hosts: …`** hint: the shared value when every member agrees, or
->    `(varies)` when they differ.
->
-> Acting on a group still pushes to **all** member hosts — but config fields are
-> **no-clobber**: a blank field leaves each host's value alone, so you only
-> change what you intend to.
+[[1.6/management/web/groups|Group Management]] is the page to start on. This
+one is the detail behind it: exactly how FOG decides what a host gets, and
+what the group page's remaining push-to-all controls do.
+
+> **Two kinds of state on a group page, and they behave differently:**
+> 1. **Grants** — snapins, printers and modules. The group **owns** these. A
+>    ticked box is a row about the group, and every member gets the item,
+>    including hosts added later. Nothing is written onto a host.
+> 2. **Pushed values** — Active Directory, auto-logout, kernel and general
+>    fields, screen resolution, image, product key. These are **not** group
+>    properties. Pressing *Update* writes the value onto the hosts that are
+>    members at that instant, once. They are **deprecated** in 1.6 and removed
+>    in a later release; use *Edit selected hosts* on the Hosts list instead.
 
 ---
 
 ## Table of contents
 
-- [Associations (tri-state)](#associations-tri-state)
-  - [What "has it" means](#what-has-it-means)
-  - [The badge and Has/Missing drill-down](#the-badge-and-hasmissing-drill-down)
-  - [Toggling](#toggling)
-- [Configuration values (shared hints)](#configuration-values-shared-hints)
+- [What a host actually gets](#what-a-host-actually-gets)
+  - [Precedence](#precedence)
+  - [The default printer](#the-default-printer)
+  - [Modules: the third state](#modules-the-third-state)
+- [When it is worked out](#when-it-is-worked-out)
+- [Pushed values (deprecated)](#pushed-values-deprecated)
+  - [The shared-value hints](#the-shared-value-hints)
   - [The no-clobber convention](#the-no-clobber-convention)
   - [Active Directory](#active-directory)
   - [Auto-logout](#auto-logout)
   - [General fields](#general-fields)
-  - [Default printer](#default-printer)
+  - [Enforce hostname / AD-join reboots](#enforce-hostname--ad-join-reboots)
 - [Out of scope](#out-of-scope)
 
 ---
 
-## Associations (tri-state)
+## What a host actually gets
 
-The **Snapins**, **Printers**, and **Modules** tabs each render every item with a
-coverage checkbox:
+A host's effective list is its **own** assignments unioned with the grants of
+**every** group it belongs to. Nothing is copied: the union is computed each
+time FOG needs it, so membership changes take effect on their own.
 
-| State | Checkbox | Meaning |
-|-------|----------|---------|
-| **All** | checked | every member host has the item |
-| **Some** | indeterminate | at least one, but not all, hosts have it |
-| **None** | unchecked | no host has it |
+That gives you two properties the 1.5 model could not offer:
 
-A **`n / total`** badge sits next to each checkbox (e.g. `5 / 15`).
+- **adding a host to a group is enough** for it to gain that group's snapins
+  and printers; and
+- **removing it is enough** to lose them again.
 
-### What "has it" means
+A host's own assignments are untouched by either. A snapin given to one machine
+directly stays with that machine when the group revokes its grant, because a
+direct assignment and a grant are two separate facts.
 
-- **Snapins, printers** — a host "has it" when the association row exists. The
-  printer **default** flag (`paIsDefault`) is ignored here; it's a separate
-  shared *value* (see [Default printer](#default-printer)).
-- **Modules** — a host counts only when the module is **enabled**
-  (`moduleStatusByHost.msState = 1`). A disabled override pulls the item out of
-  *All* into *Some*. This asymmetry is deliberate (see `docs/adr/0001`): showing
-  a module as "All hosts have it" while some have it disabled would mislead.
+### Precedence
 
-### The badge and Has/Missing drill-down
+Order matters when the same item comes from more than one place.
 
-Clicking the badge expands an on-demand row listing, for that one item:
+1. **The host's own assignments come first**, in the order set on the host.
+2. **Then each group**, sorted by `groups.groupOrder`, then by group **name**,
+   then by internal id.
+3. Within a group, in the order set on that group's **Snapin Run Order** card.
 
-- **Hosts with this (n)** — the member hosts that have it, and
-- **Hosts without it (n)** — the member hosts that don't.
+An item present in more than one of those places is included **once**, at the
+earliest position it appears. So a snapin a host holds directly and also
+receives from two groups runs once, in the host's position.
 
-The *without* set is exactly what a push-to-all will change. The lists are
-fetched per item, so large groups stay responsive.
+`groupOrder` is the **Group Order** field on the group's General tab, and it
+defaults to `0` on every group — so an install that never touches it resolves
+groups alphabetically. Set it only where two groups genuinely disagree.
 
-### Toggling
+Falling back to name rather than to id is deliberate: it makes the resolved
+order a property of what you configured rather than of what you created first.
+The id tiebreak behind it is what stops two identically named groups — which
+the database does not allow, but which a hand-edited one could hold — from
+resolving unpredictably.
 
-Clicking the checkbox acts on **all** member hosts:
+### The default printer
 
-```
-None  --click-->  All        (add to every host)
-Some  --click-->  All        (add to the hosts that lack it; modules flip
-                              a disabled override back to enabled)
-All   --click-->  None       (remove from every host)
-```
+Same precedence, applied to one value:
 
-So an indeterminate item resolves to *All* first; the destructive
-remove-from-all only happens on a second click through the checked state.
+- a host that has set its own default printer keeps it;
+- otherwise the default is taken from the **first group in the resolved
+  order** that names one — the lowest **Group Order**, and alphabetically
+  first among groups sharing one;
+- if no group names one, the host has no default.
+
+A group's default is set on **Associations → Printer Associations → Group
+Default Printer**, and the hint there reads `Group default: <printer>` or
+`Group default: (none)` — it is the group's own answer, not a summary of what
+its members happen to have.
+
+### Modules: the third state
+
+A snapin or printer is a thing a host either has or does not. A module is a
+**switch**, so it takes a third answer.
+
+| Tier | What it means | Beats |
+|---|---|---|
+| Host says **Off** | The module does not run on this host | everything |
+| Host says **On** | The module runs on this host | group grants |
+| A group **grants** it | The module runs on this host | nothing below |
+| Nothing anywhere | The module does not run | — |
+
+**Lowest tier wins, and only a host may say Off.** A group grant is
+presence-only — a group either grants a module or says nothing about it — so
+two groups can only ever union and can never contradict each other. That
+absence of a "disabled" grant is the whole reason there is no conflict to
+resolve.
+
+The host's **Modules** tab is therefore a dropdown, not a checkbox: *On*,
+*Off*, *Not set*. *Not set* is the absence of an opinion, and it is what
+unticking the old checkbox actually meant — which is why a checkbox could not
+express this and had to go.
 
 ---
 
-## Configuration values (shared hints)
+## When it is worked out
 
-Per-host configuration fields show a muted hint beneath the control:
+| | Resolved | Editing the group afterwards |
+|---|---|---|
+| **Snapins** | at task creation | does **not** change a queued task — re-task to pick it up |
+| **Printers** | live, on every client check-in | reaches machines on their next check-in |
+| **Modules** | live, on every client check-in | reaches machines on their next check-in |
+
+A task is a promise about a specific moment: you queued *that* set of snapins
+for *that* machine, and a machine that reboots into the job three hours later
+should get the job you queued. Printers and modules have no task to hang a
+snapshot on — the FOG client reconciles them on a schedule — so a removal has
+to be able to reach the machine on its own.
+
+>[!warning] Printer level "FOG Handles all printers"
+>On that level the list FOG sends is authoritative in **both** directions: the
+>client removes every installed printer that is not on it, including printers
+>FOG did not install. That has always been true of that mode, and is worth
+>re-reading now that a group can add to the list.
+
+---
+
+## Pushed values (deprecated)
+
+Everything in this section applies a value **once**, to the hosts that are
+members at the moment you press *Update*. A host added afterwards does not get
+it; a host removed keeps it. Nothing records that the write happened, so
+nothing can replay it.
+
+These controls carry a deprecation notice on the group page and are removed in
+a later release. **Use Hosts → tick → Edit selected hosts instead** — it does
+the same job over any selection, with an explicit *No change* / *Set on all* /
+*Clear on all* per field.
+
+### The shared-value hints
+
+Because these fields are per-host, the group page shows a muted hint beneath
+each control saying what the members currently hold:
 
 | Hint | Meaning |
 |------|---------|
@@ -114,57 +183,54 @@ The hint is **information only** — it never prefills the input.
 
 ### The no-clobber convention
 
-Saving a group config tab pushes to all member hosts, but:
+Saving one of these tabs pushes to all current members, but:
 
-- **Blank field** → leave each host's value **unchanged** (no clobber).
-- Literal **`NULL`** (case-insensitive) → **clear** the field on every host.
-- **Any other value** → push that value to every host.
+- **blank field** → leave each host's value **unchanged**;
+- literal **`NULL`** (case-insensitive) → **clear** the field on every host;
+- **any other value** → push that value to every host.
 
-This is what lets you, say, set one kernel argument across a group without
-wiping every other per-host field.
+That is what lets you set one kernel argument across a group without wiping
+every other per-host field. It is also the convention *Edit selected hosts*
+replaces with something explicit, because "blank means leave alone" is
+undiscoverable and gives you no way to store the literal string `NULL`.
 
 ### Active Directory
 
-- **Domain joining** is a tri-state select: **No change** (leave each host's
-  join state alone), **Enable on all**, or **Disable on all**.
-- Domain / OU / username follow the no-clobber convention above. The password's
-  32-asterisk placeholder means "unchanged".
-- Selecting **Enable on all** populates the blank fields from the FOG AD
-  defaults (same as the host page) — only when you choose it, never just from
-  existing state.
+- **Domain joining** is a tri-state select: **No change**, **Enable on all**,
+  **Disable on all**.
+- Domain, OU and username follow the no-clobber convention above. The
+  password's 32-asterisk placeholder means "unchanged".
+- Choosing **Enable on all** populates the blank fields from the FOG AD
+  defaults — only when you choose it, never just from existing state.
 - A **Current member-host AD state** summary shows join/domain/OU/username
   uniformity above the form.
 
 ### Auto-logout
 
-Blank by default (the global minimum is shown only as a placeholder). A blank
-save leaves each host's auto-logout alone; a number pushes to all (under five
-minutes disables it). The hint reads `Hosts: N min (all)`, `(varies)`, or
+Blank by default, with the global minimum shown only as a placeholder. A blank
+save leaves each host alone; a number pushes to all, and under five minutes
+disables it. The hint reads `Hosts: N min (all)`, `(varies)` or
 `(default on all)`.
 
 ### General fields
 
-Kernel, kernel arguments, init, primary disk, BIOS/EFI exit, and product key
-each carry a `Hosts: …` hint. The kernel/args/init/disk inputs prefill from the
-**group's own template** (the group stores these); the hint reports the
-*members'* state independently. Push still honors the no-clobber convention.
-
-### Default printer
-
-The printer **Default** selector shows a `Hosts default: <printer> (all)`,
-`(varies)`, or `(none on all)` hint. Setting a default is an explicit action
-that only touches member hosts which have that printer associated.
+Kernel, kernel arguments, init, primary disk, BIOS/EFI exit and product key
+each carry a `Hosts: …` hint. The kernel, args, init and disk inputs prefill
+from the **group's own template** — a group does store those four for itself —
+while the hint reports the *members'* state independently. Pushing still
+honors the no-clobber convention.
 
 ### Enforce hostname / AD-join reboots
 
 A tri-state select — **No change / Enable on all / Disable on all** — with a
-`Hosts: enabled (all) / disabled (all) / (varies)` hint. *No change* leaves each
-host alone. (Stored in the `hostEnforce` `enum('0','1')` column, written as a
-string — passing an int would index the enum rather than match its value.)
+`Hosts: enabled (all) / disabled (all) / (varies)` hint.
 
 ---
 
 ## Out of scope
 
-- **Force reboot** is a global setting (`FOG_TASK_FORCE_REBOOT`) and a per-task
-  option, not per-host configuration, so it has no group shared-state control.
+- **Force reboot** is a global setting (`FOG_TASK_FORCE_REBOOT`) and a
+  per-task option, not per-host configuration, so it has no group control.
+- **Tasking** is not shared state. A task acts on the membership at the moment
+  you start it, which is what a task should do, and is unaffected by
+  everything on this page.

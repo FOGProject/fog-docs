@@ -59,6 +59,18 @@ three different levels, applied in order of most to least specific:
 -   **Individual host** — Web UI: Host Management → select a host →
     Active Directory. See below for the field-by-field walkthrough.
 
+>[!warning] FOG 1.6: use the Hosts list, not the group page
+>The group-level batch apply above is **deprecated in FOG 1.6** and is
+>removed in a later release. It still works and still behaves exactly as
+>described — one-time, to current members only — but the supported way to set
+>AD across many hosts is now **Hosts → tick the hosts → Edit selected
+>hosts**, where each field carries an explicit *No change* / *Set on all* /
+>*Clear on all*. That works on any selection, not only on a group, and can be
+>repeated whenever you like.
+>
+>Nothing changes on FOG 1.5, where the group page is the only way to do this.
+>See [[1.6/management/web/groups#Settings that are no longer on the group page|Group Management]].
+
 To set up a single host to use AD:
 
 -   Navigate to the hosts section of the FOG management portal and

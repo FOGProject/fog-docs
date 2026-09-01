@@ -177,10 +177,10 @@ plugins:
           const explicitOrder = {
             "installation/server": ["requirements", "virtualization"],
             "kb/how-tos": ["capture-an-image", "deploy-an-image", "fog-client-example-tasks", "change-fog-server-ip-address", "bios-and-uefi-co-existence", "uefi-boot-entries", "deploy-dual-boot-multi-disk-image", "add-extend-a-2nd-virtual-hdd", "post-download-scripts"],
-            "management/web": ["users", "roles", "oidc", "ad-integration", "groups", "snapins", "printers", "tasks", "dashboard", "service"],
-            "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "reports", "storage-node", "config", "images", "multicast"],
+            "management/web": ["users", "roles", "oidc", "ad-integration", "snapins", "printers", "tasks", "dashboard", "service"],
+            "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
             "1.5/kb/reference": ["pki-zones", "netboot-transport-and-pki", "pki-glossary", "bringing-your-own-ca", "secure-boot-trust-stores", "secure-boot-technical-details", "csv_import_export", "ping-hosts-service", "referential-integrity"],
-            "1.6/management/web": ["plugins", "ldap", "site-scoping", "hosts", "reports", "storage-node", "config", "images", "multicast"],
+            "1.6/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
             "1.6/kb/reference": ["pki-zones", "netboot-transport-and-pki", "pki-glossary", "bringing-your-own-ca", "secure-boot-trust-stores", "secure-boot-technical-details", "csv_import_export", "ping-hosts-service", "referential-integrity"],
           }
 

@@ -238,6 +238,15 @@ A printer shared through a linux CUPS setup
 
 -   Linking printers to hosts can be done from either the hosts section
     or the groups section.
+
+>[!info] FOG 1.6: the two are not the same operation
+>On FOG 1.5 both write the same thing — a printer row on each host. On 1.6 the
+>**group** side is a grant: the printer belongs to the group and reaches every
+>member, including hosts added later, and revoking it takes the printer off
+>those machines again. The **host** side is still a direct assignment that
+>belongs to that machine and is unaffected by any group. A host that gets the
+>same printer both ways installs it once. See
+>[[1.6/management/web/groups|Group Management]].
 -   In the hosts section find the host you would like to add a printer
     to, click on the edit button associated with that host.
 -   In the host menu, click on the **Printers** button.
