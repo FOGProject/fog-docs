@@ -28,3 +28,7 @@ tags:
 **Database**
 
 - [[1.6/kb/reference/referential-integrity|Referential Integrity]]
+
+**Removed in 1.6**
+
+- [[1.6/kb/reference/virus-scan-removed|The virus scan is gone in 1.6]]

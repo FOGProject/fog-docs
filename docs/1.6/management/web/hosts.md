@@ -261,7 +261,7 @@ $subnets | ForEach-Object { # loop through each subnet
     button or on the Host Name itself. Clicking on the edit button will
     display all the properties that were shown during host creation with
     the addition of snapin, printers, active directory, service
-    settings, hardware, virus history, and login information.
+    settings, hardware, and login information.
 -   The entire host object can be removed from the FOG system by
     clicking on the delete option at the bottom of the Host Menu.
 
