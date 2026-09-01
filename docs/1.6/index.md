@@ -56,6 +56,7 @@ apply to you as written — [[index|start there]].
 - [[1.6/kb/reference/netboot-transport-and-pki|Netboot Transport and PKI]]
 - [[1.6/kb/reference/csv_import_export|CSV Import / Export]]
 - [[1.6/kb/reference/referential-integrity|Referential Integrity]]
+- [[1.6/kb/reference/virus-scan-removed|The virus scan is gone in 1.6]]
 - [[1.6/kb/reference/bringing-your-own-ca|Bringing Your Own CA]]
 - [[1.6/kb/reference/secure-boot-trust-stores|Secure Boot: The Two Trust Stores]]
 - [[1.6/kb/reference/secure-boot-technical-details|Secure Boot Technical Details]]

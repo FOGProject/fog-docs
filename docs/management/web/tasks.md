@@ -37,8 +37,8 @@ tags:
 	-   Fast Wipe
 	-   Normal Wipe
 	-   Full Wipe
-	-   Virus Scan
-	-   Virus Scan - Quarantine
+	-   Virus Scan *(FOG 1.5 only)*
+	-   Virus Scan - Quarantine *(FOG 1.5 only)*
 	-   Donate
 	-   Torrent-Cast
 
@@ -122,6 +122,14 @@ This task will look for bad blocks on the hard disk and report them back to the 
 This task will load an application that can be used to recover lost files from the hard disk.
 
 ### Virus Scan
+
+>[!warning] Removed in FOG 1.6
+>Both virus-scan task types are gone in 1.6, and the upgrade drops the table
+>behind them. On 1.6 the scan had no working endpoint to report to, so it
+>scanned and discarded every result. See
+>[[1.6/kb/reference/virus-scan-removed|The virus scan is gone in 1.6]] for
+>what the upgrade removes and what to do instead. The description below
+>applies to **FOG 1.5**.
 
 This task will update and load ClamAV and scan the partition for viruses. It will either scan and report or scan and quarantine files, it will also report back to the management portal with the results of the scan.
 
