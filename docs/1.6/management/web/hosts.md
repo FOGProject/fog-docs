@@ -458,10 +458,16 @@ the selection a minute later is not affected, and nothing is scheduled.
 The same three are on a single host's own page, on the same **Queue Task**
 button, so you do not have to go back to the list to restart one machine.
 
+That is now the *only* place to ask for one. A host's **Power Management**
+tab used to carry a *Create New Immediate* button beside its schedules; it
+does not any more, and the tab is schedules only. Two things that behave
+completely differently were sharing one card, and the immediate one belongs
+with the other tasks.
+
 >[!tip] For a *repeating* shutdown, use a schedule
->These three are one-offs. "Every weeknight at 22:00" is a power schedule —
->set it on the host's own **Power Management** tab, or grant it from a group
->so every member gets it. See
+>These three are one-offs — nothing is written down and nothing repeats.
+>"Every weeknight at 22:00" is a power schedule: set it on the host's own
+>**Power Management** tab, or grant it from a group so every member gets it. See
 >[[1.6/management/web/groups#What a group gives its members|Group Management]].
 
 >[!info] FOG 1.6
@@ -470,7 +476,8 @@ button, so you do not have to go back to the list to restart one machine.
 >through a form built for scheduling. Wake could, but it was filed under
 >*Advanced Tasks* beside Memtest and the disk wipes. All three are together
 >now, and Wake has moved rather than been duplicated, so it is no longer
->under Advanced.
+>under Advanced. *Create New Immediate* has gone from the host's Power
+>Management tab in the same change — the tab is schedules only.
 
 ### Creating Host Groups
 
