@@ -27,6 +27,7 @@ More advanced/situational guides:
 - [[add-extend-a-2nd-virtual-hdd|Add & Extend a 2nd Virtual HDD]]
 - [[chocolatey-snapins|Install software with Chocolatey snapins]]
 - [[post-download-scripts|Post Download Scripts]]
+- [[tpm-bitlocker-windows-hello|TPM, BitLocker and Windows Hello after imaging]]
 - [[unify-certificates-across-fog-servers|Unify Certificates Across FOG Servers]]
 - [[lets-encrypt-setup|Set up Let's Encrypt on a FOG server]]
 - [[firewall|Firewall Ports]]
