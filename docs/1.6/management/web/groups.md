@@ -361,7 +361,13 @@ plugin's files never removed the trigger: it would otherwise have kept copying
 settings onto every new group member, silently, long after the plugin that
 created it was gone.
 
-You do not need to do anything. If you had it installed, check afterwards that
+One thing you may need to do. The trigger copied `hostADPass` — the Active
+Directory join password — from the template host onto hosts that joined the
+group. If you are rotating a join account, read the warning on
+[[1.6/management/web/plugins#persistentgroups is gone, because the defect it worked around is fixed|the Plugins page]]
+before you assume the old credential is gone.
+
+If you had it installed, check afterward that
 the groups which relied on it now grant the snapins and printers you expect —
 the grants are the replacement, and they are more capable than what they
 replace, because they also apply to hosts that were already members.
