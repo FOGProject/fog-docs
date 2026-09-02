@@ -76,10 +76,82 @@ updating — `/etc/letsencrypt/live/fog.example.com/` for certbot, or wherever
 tree; the point of the next step is to tell FOG they live elsewhere and are not
 FOG's to manage.
 
->[!note] Cloudflare DNS-01 recipe — to be filled in
->@darksidemilk has a working Cloudflare DNS-challenge recipe to contribute
->here. Until then, use your provider's DNS-01 plugin as above; nothing on the
->rest of this page depends on which provider you use.
+### Example of acme.sh with cloudflare dns
+
+>[!note] This Cloudflare DNS-01 recipe works for users that have their local domain in a public `.tld`
+> and that have control over the DNS in that domain with cloudflare as their provider.
+> i.e. you have an external website on a domain like company.com or school.edu and your internal domain matches
+> so internal only sites are also reachable like fog.company.com or fog.school.edu.
+> To be clear, in 99.999999999999% of cases You should not be making your fog server publicly available.
+> (Basic DNS managment and everything you need for this is available in the Free version of cloudflare DNS)
+
+#### Install acme.sh
+
+- RHEL based
+```
+#install pre-reqs to be prepared for special cases
+sudo dnf -y install socat libidn
+sudo dnf -y update ca-certificates
+#download and install acme.sh
+curl https://get.acme.sh | sh -s email=yourCloudflareAccountEmail@yourdomain.tld
+#refresh bash aliases so it can be run from anywhere
+source ~/.bashrc
+```
+  - Debian based
+```
+#install pre-reqs
+sudo apt-get install socat
+sudo update-ca-certificates
+ 
+#download and install acme.sh
+curl https://get.acme.sh | sh -s email=yourCloudflareAccountEmail@yourdomain.tld
+#refresh bash aliases so it can be run from anywhere
+source ~/.bashrc
+```
+
+#### Obtain clouflare api keys with dns zone edit scope
+
+Login to your cloudflare account you want to bind your api tokens for let's encrypt to, and go to:
+https://dash.cloudflare.com/profile/api-tokens (you may also be able to use account api tokens: https://dash.cloudflare.com/?to=/:account/api-tokens)
+
+Create a token for your fog server to use that has Zone.Zone Edit and Zone.DNS Edit rights 
+(scope to all zones or a specific dns zone per your environments security requirements)
+
+Copy the token and save it somewhere secure. 
+
+Obtain your account ID, one way to find it is in the URL when you go to edit DNS records i.e. 
+`https://dash.cloudflare.com/{accountID}/{yourdomain.tld}/dns/records`
+
+#### Obtain the certs and Configure auto renewal
+
+- Adjust the exported CF_variable values at the top of the script
+- Adjust the subjectname and aliases lies
+- Adjust the reloadcmd to use httpd or nginix depending on your server's config
+- Then run this (as sudo, example has you in an interactive sudo session with sudo -i) 
+It will put the certs at /etc/fog/pki/web/leaf
+
+```
+sudo -i
+#use the letsencrypt cloudflare user api key
+#set the dns api key and email
+export CF_Token="TOKEN_CREATED_ABOVE"
+export CF_Account_ID="ACCOUNT_ID_CREATED_ABOVE"
+export CF_Email="emailUsedForTokenAbove@yourdomain.tld"
+#update acme
+acme.sh --upgrade --auto-upgrade
+
+#issue a cert, comments should be removed, put here for documentation. Install locations should match configuration of where the service in question looks for them
+# the example install locations
+acme.sh --issue \ #issue and or install a certificate
+	-d subjectname.domain.tld \ #the main subject name of your cert i.e. fogserver.domain.tld
+	--dns dns_cf \ # use dns verification
+	--server letsencrypt \ #defaults to zerossl, we want letsencrypt to be the ca
+ 	-d alias.domain.tld \ # alias domain to include as SAN (subject alternative name), you can list additional ones with more -d lines
+    --cert-file /etc/fog/pki/web/leaf/fogLE.cer \ #the location to install the cert file, you can also give it a .pem, .cer or .crt extension
+    --fullchain-file /etc/fog/pki/web/leaf/fogLEfullchain.pem \ #the location to install the fullchain version of the cert that includes the ca chain, can have any name
+    --key-file /etc/fog/pki/web/leaf/fogLE.key \ # the location for the private key, can have any name
+    --reloadcmd "service httpd restart && service nginix restart" # the command or path to a script used to reload the service or services that use the cert. Will be run when cert is renewed
+```
 
 ## Step 2 — tell FOG the certificate is not its to manage
 
