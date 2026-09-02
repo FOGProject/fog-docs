@@ -4,7 +4,7 @@ aliases:
     - Group Management
     - Fog Group Management
     - Group Grants
-description: "How FOG 1.6 groups work: a group owns its snapins and printers and applies them to every member, including hosts added later"
+description: "How FOG 1.6 groups work: a group owns its snapins, printers, modules and power schedules and applies them to every member, including hosts added later"
 context_id: groups
 tags:
     - 1_6-changes
@@ -20,8 +20,8 @@ tags:
 >Groups themselves are not new, but what a group **is** changed in 1.6. On
 >1.5 a group owned nothing: pressing a button on the group page wrote rows
 >onto whichever hosts were members at that instant. In 1.6 a group owns its
->snapins and printers, and every member gets them — including hosts you add
->tomorrow. See the [[1.5/management/web/groups|1.5 version]] of this page for
+>snapins, printers, client modules and power schedules, and every member gets
+>them — including hosts you add tomorrow. See the [[1.5/management/web/groups|1.5 version]] of this page for
 >the old behavior.
 
 A **group** is a label you put on hosts. A host can be in as many groups as
@@ -30,20 +30,21 @@ at once, and each of those groups can hand it something.
 
 ## What a group gives its members
 
-A group holds three kinds of thing, and hands all of them to every member:
+A group holds four kinds of thing, and hands all of them to every member:
 
 | The group holds | Where you set it | What the member gets |
 |---|---|---|
 | **Snapins** | Associations → Snapin Associations | Included when you deploy snapins to that host |
 | **Printers** | Associations → Printer Associations | Installed by the FOG client on its next check-in |
 | **Client modules** | Service Settings → Client Settings | The module is switched on |
+| **Power schedules** | Service Settings → Power Management | The machine shuts down, reboots or wakes on that schedule |
 
-Tick an item and the group grants it. Untick it and the grant is gone. Neither
-click touches a host record, so nothing you do here can overwrite something an
-admin set on a machine directly.
+Grant an item and the group grants it; revoke it and the grant is gone.
+Neither action touches a host record, so nothing you do here can overwrite
+something an admin set on a machine directly.
 
 >[!important] This is the change people notice first
->**A host added to the group later gets the group's snapins and printers.** On
+>**A host added to the group later gets everything in that table.** On
 >1.5 it got nothing — silently — which is why so many sites ended up with a
 >plugin, a script, or a habit of re-pressing the group's buttons after adding
 >a machine. None of that is needed now.
@@ -54,7 +55,8 @@ admin set on a machine directly.
 ## What a host ends up with
 
 A host's real list is **its own assignments plus every grant from every group
-it belongs to**, worked out fresh each time FOG needs it. Two rules cover
+it belongs to**, worked out fresh each time FOG needs it. That is one rule for
+all four kinds of grant, not four rules that happen to agree. Two things cover
 almost every question about it:
 
 1. **The host's own assignments come first.** A snapin you gave a machine
@@ -84,6 +86,29 @@ first group in that order which names one.
 >The host's own Printers and Snapins tabs show what that host was assigned
 >directly. To see what it will actually *get*, look at the groups it is in —
 >the Groups column on the Hosts list names them, in the order above.
+
+### Reading the group list
+
+The Group Management list has a **Grants** column saying what each row hands
+out — *"3 snapins, 1 printer, 2 power schedules"* — and it is worth a look
+before you touch anything, because a group is now two quite different things
+wearing the same name.
+
+A row with an empty Grants column is a **label**: it names a set of machines
+and gives them nothing, so adding a host to it changes nothing about that
+host. A row with entries in that column is machinery, and adding a host to it
+hands that host software, printers, or a shutdown time.
+
+It shows counts rather than names on purpose. The question the column answers
+is *is this row consequential*, and a group with twenty snapins would bury
+that answer under twenty names. Open the group to see which ones.
+
+>[!note] Why the column does not sort
+>It is worked out with one extra query per page of the list rather than being
+>a column of the groups table, which is what keeps a group with five hundred
+>members from costing anything to display. Nothing to sort by means nothing
+>to sort — and if what you want is "groups that grant nothing", reading down
+>the column is quicker than sorting anyway.
 
 ## Snapins are a snapshot; printers are live
 
@@ -121,7 +146,12 @@ host once — so they moved to where that operation belongs: the **Hosts** list.
 **Hosts → tick the hosts you want → Edit selected hosts.**
 
 That does the same job on any selection you can build, not only on a group,
-and you can repeat it whenever you like. Each field has its own action:
+and you can repeat it whenever you like.
+
+The fields are split across the same four tabs a single host's own page uses
+— **General**, **Active Directory**, **FOG Client** and **Plugins** — so a
+field is where you already look for it rather than somewhere in one long
+list. Each field has its own action:
 
 | Action | What it does |
 |---|---|
@@ -132,20 +162,32 @@ and you can repeat it whenever you like. Each field has its own action:
 Fields that only make sense as on/off (joining the domain, hostname
 enforcement) offer *No change*, *Enable on all* and *Disable on all* instead.
 
+>[!tip] Nothing happens on a tab you did not touch
+>Every field on every tab starts on *No change*, so opening a tab and leaving
+>it alone is the same as never opening it. You can set an image on General
+>and a printer level on FOG Client in one pass; you do not have to do one tab
+>at a time.
+
 >[!note] Where each setting went
->| Was on the group page | Now |
->|---|---|
->| Image | Edit selected hosts → **Image** |
->| Kernel, kernel arguments, primary disk, init | Edit selected hosts → **Host Kernel** / **Host Kernel Arguments** / **Host Primary Disk** / **Host Init** |
->| Product key | Edit selected hosts → **Product Key** |
->| BIOS / EFI exit type | Edit selected hosts → **Host BIOS Exit Type** / **Host EFI Exit Type** |
->| Printer management level | Edit selected hosts → **Host Printer Management Level** |
->| Active Directory (join, domain, OU, username, password) | Edit selected hosts → the **Active Directory** fields |
->| Enforce hostname changes | Edit selected hosts → **Host Enforce Hostname Changes** |
->| Screen resolution | Edit selected hosts → **Host Screen Resolution** |
->| Auto log out time | Edit selected hosts → **Auto Log Out Time (in minutes)** |
->| Building | **Removed.** Nothing read it and nothing wrote it — it was a leftover column, not a setting. |
->| Location, OU *(plugins)* | Edit selected hosts → **Host Location** / **Host OU** |
+>Every row is *Hosts → Edit selected hosts*, then the tab and field named.
+>
+>| Was on the group page | Tab | Field |
+>|---|---|---|
+>| Image | General | **Image** |
+>| Kernel, kernel arguments, primary disk, init | General | **Host Kernel** / **Host Kernel Arguments** / **Host Primary Disk** / **Host Init** |
+>| Product key | General | **Product Key** |
+>| BIOS / EFI exit type | General | **Host BIOS Exit Type** / **Host EFI Exit Type** |
+>| Enforce hostname changes | General | **Host Enforce Hostname Changes** |
+>| Printer management level | FOG Client | **Host Printer Management Level** |
+>| Screen resolution | FOG Client | **Host Screen Resolution** |
+>| Auto log out time | FOG Client | **Auto Log Out Time (in minutes)** |
+>| Active Directory (join, domain, OU, username, password) | Active Directory | the **Active Directory** fields |
+>| Location, OU *(plugins)* | Plugins | **Host Location** / **Host OU** |
+>| Building | — | **Removed.** Nothing read it and nothing wrote it — it was a leftover column, not a setting. |
+>
+>Printer management level, screen resolution and auto log out are on **FOG
+>Client** rather than General because they are settings the FOG client acts
+>on, which is where a single host's own page has always kept them.
 
 >[!important] These controls are gone from the group page, not hidden
 >If you are looking for one of them on a group and cannot find it, that is
@@ -194,41 +236,55 @@ there is no second step, and no button to press afterwards.
   anything when *Abort snapin sequence on failure* is enabled for the task.
 - **Service Settings → Client Settings** — the group's modules. Just the
   grant: screen resolution and auto-logout are set from the Hosts list.
-- **Service Settings → Power Management** — schedules power tasks across
-  members. **This one still behaves the 1.5 way**, and knowingly so: see the
-  warning below.
+- **Service Settings → Power Management** — the group's power **grants**.
+  Every member runs these schedules, including hosts added later. Immediate
+  actions on the same tab are still a one-time push, because they are a task;
+  see below.
 - **Inventory**, **Login History**, **History Items** — reporting across the
   group's members.
 - **Site** — which site the group belongs to, if you use site scoping.
 
->[!warning] Power Management is still a one-time push
->Saving a power schedule on a group writes **one row per host that is a
->member at that instant**, exactly as the removed controls above did. It is
->the last control on the group page that still works this way.
+>[!note] Power Management: a schedule is a grant, an immediate action is a task
+>The tab holds both, and they are different kinds of thing on purpose.
 >
->What that means in practice:
+>**Create New Scheduled** writes one row **about the group**. Every host in
+>the group runs it, hosts added later included, and nothing is written onto a
+>host. Revoking it with *Delete selected* takes it away from every member at
+>once. A host's own schedules are untouched either way — what a machine
+>actually runs is its own schedules plus every grant from every group it is
+>in, worked out fresh each time, with the same schedule reached twice counted
+>once.
 >
->- a host **added** to the group afterward gets **no** schedule;
->- a host **removed** from the group **keeps** the schedule it was given, and
->  nothing on the group page will take it away — *Delete all* on the group's
->  Power Management tab only reaches current members;
->- saving **adds** a schedule rather than replacing the one that is there, so
->  a host accumulates every schedule any of its groups ever gave it. Saving
->  the *same* schedule twice is harmless — the row is keyed on the host plus
->  the cron expression plus the action, so an identical save lands on the row
->  that already exists — but changing the time and saving again leaves the old
->  time in place alongside the new one.
+>**Create New Immediate** is a task. It shuts down, reboots or wakes the hosts
+>that are in the group **right now**, and a host added a minute later is not
+>affected. That is what a task should do, and it is why it is not a grant: a
+>standing grant of "shut down immediately" would fire again for every machine
+>that ever joined the group.
 >
->It was left alone in 1.6 rather than moved, because a schedule is a cron
->expression plus an action rather than a single value — it does not fit the
->*No change / Set on all / Clear on all* shape that *Edit selected hosts*
->uses, and forcing it into that shape would have been worse than leaving it
->honest. Making it a grant like snapins and printers is the right fix and is
->a change to the schema, so it is not in this release.
+>Two schedules that differ only in time are two grants — saving a new time
+>does not replace the old one, so revoke the one you are replacing. Saving the
+>*same* schedule twice is a no-op.
 >
->Until then, treat the group's Power Management tab as **"apply to whoever is
->in the group right now"**, and check a host's own Power Management tab when
->you want to know what it is actually scheduled to do.
+>**Clear schedules from member hosts** is the odd one out, and it is not an
+>undo for the grants above. It reaches into the member hosts and deletes the
+>schedules **they** hold — which, on a server upgraded from 1.5 or from an
+>early 1.6, is where every schedule this tab ever created ended up. It also
+>removes schedules those hosts were given individually, so read it as "reset
+>the members", not "clear this group".
+>
+>A host's own Power Management tab remains the answer to *what is this machine
+>actually scheduled to do*, because it is the only place the host's own rows
+>and its groups' grants are not the same thing.
+
+>[!warning] Daily schedules were running on Sundays only, on PHP 8
+>Fixed in 1.6. A schedule whose weekday was `*` — which is every daily
+>schedule — was sent to the FOG client as `... 7`, meaning Sunday. The
+>comparison that normalizes FOG's `-1` for Sunday treated `*` as negative on
+>PHP 8, where it had not on PHP 7.4, so a working schedule stopped running
+>when the server's PHP was upgraded and nothing about FOG changed. If you have
+>power schedules that quietly stopped happening, this is why. Wake schedules
+>were never affected — those are sent by the server, which never ran that
+>comparison.
 
 ## Modules have one extra rule: only a host can turn one off
 
@@ -305,7 +361,13 @@ plugin's files never removed the trigger: it would otherwise have kept copying
 settings onto every new group member, silently, long after the plugin that
 created it was gone.
 
-You do not need to do anything. If you had it installed, check afterwards that
+One thing you may need to do. The trigger copied `hostADPass` — the Active
+Directory join password — from the template host onto hosts that joined the
+group. If you are rotating a join account, read the warning on
+[[1.6/management/web/plugins#persistentgroups is gone, because the defect it worked around is fixed|the Plugins page]]
+before you assume the old credential is gone.
+
+If you had it installed, check afterward that
 the groups which relied on it now grant the snapins and printers you expect —
 the grants are the replacement, and they are more capable than what they
 replace, because they also apply to hosts that were already members.

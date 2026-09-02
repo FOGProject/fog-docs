@@ -251,8 +251,33 @@ this page for how it differs on the older line.
 >database trigger, and deleting the plugin's files never removed that: it
 >would have kept copying settings onto every new group member, silently, long
 >after the plugin that created it was gone. The upgrade drops the trigger and
->retires the plugin's row. See
+>retires the plugin's row, and 1.6 refuses to install or activate the plugin
+>again — including a copy kept in the external plugin root, which the upgrade
+>does not touch. See
 >[[1.6/management/web/groups#persistentgroups is retired|Group Management]].
+
+>[!warning] If you ran persistentgroups: it copied Active Directory join passwords between hosts
+>The plugin's trigger copied a fixed list of columns from a group's template
+>host onto each host that joined the group, and that list included
+>`hostADPass` — the AD join password. So adding a host to a group could copy
+>the template's domain join credential onto it, in the database, below the web
+>application, with no entry in the history log, for as long as the plugin
+>existed.
+>
+>The credential never left your FOG server's own database and was already
+>readable there to anything that could read the `hosts` table, so this is a
+>notification, not a security advisory. It is here because if you rotate a
+>domain join account you need to know the old one may be sitting on hosts you
+>never edited by hand, and nothing in the interface would have shown you that.
+>The copy happened only on "clean" adds — hosts sharing no printer or module
+>setting with the template — so the affected set is not "every host in the
+>group" and cannot be worked out after the fact.
+>
+>**What to do:** if you used the plugin and have rotated, or intend to rotate,
+>an AD join account, treat every host that was ever in a
+>persistentgroups-managed group as possibly carrying the template's old
+>credential and reset it. **Hosts → select them → Edit selected hosts →
+>Active Directory** does this across a selection in one action.
 
 >[!note] Site is gone too, and for the same reason
 >Sites and per-site host visibility moved into 1.6 core, so there is no

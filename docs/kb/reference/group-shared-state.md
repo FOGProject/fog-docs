@@ -25,18 +25,22 @@ tags:
 one is the detail behind it: exactly how FOG decides what a host gets, and
 what the group page's remaining push-to-all controls do.
 
-> **Two kinds of state on a group page, and they behave differently:**
-> 1. **Grants** — snapins, printers and modules. The group **owns** these. A
->    ticked box is a row about the group, and every member gets the item,
->    including hosts added later. Nothing is written onto a host.
+> **What the group page holds, and how each kind behaves:**
+> 1. **Grants** — snapins, printers, modules and power schedules. The group
+>    **owns** these. A ticked box is a row about the group, and every member
+>    gets the item, including hosts added later. Nothing is written onto a
+>    host.
 > 2. **Pushed values** — Active Directory, auto-logout, kernel and general
 >    fields, screen resolution, image, product key. These were **not** group
 >    properties: pressing *Update* wrote the value onto the hosts that were
 >    members at that instant, once. **They are gone from the group page in
 >    1.6.** Use *Edit selected hosts* on the Hosts list instead. The section
 >    below is kept as the record of what they did and why they went.
-> 3. **Power Management** — the one push that is **still there** in 1.6, and
->    still a push. See [Power Management](#power-management) below.
+> 3. **Tasks** — deploy, capture, and an *immediate* shutdown, reboot or wake
+>    from the Power Management tab. A task acts on the membership at the
+>    moment you start it, which is what a task should do. See
+>    [Power Management](#power-management) below for the one tab that holds a
+>    grant and a task side by side.
 
 ---
 
@@ -55,6 +59,9 @@ what the group page's remaining push-to-all controls do.
   - [General fields](#general-fields)
   - [Enforce hostname / AD-join reboots](#enforce-hostname--ad-join-reboots)
 - [Power Management](#power-management)
+  - [Immediate actions are tasks, not grants](#immediate-actions-are-tasks-not-grants)
+  - [Who carries out which action](#who-carries-out-which-action)
+  - [Clearing the pre-1.6 rows](#clearing-the-pre-16-rows)
 - [Out of scope](#out-of-scope)
 
 ---
@@ -145,6 +152,7 @@ express this and had to go.
 | **Snapins** | at task creation | does **not** change a queued task — re-task to pick it up |
 | **Printers** | live, on every client check-in | reaches machines on their next check-in |
 | **Modules** | live, on every client check-in | reaches machines on their next check-in |
+| **Power schedules** | live — by the client on check-in, by the server at fire time for wake | reaches machines on their next check-in; a wake grant reads membership when it fires |
 
 A task is a promise about a specific moment: you queued *that* set of snapins
 for *that* machine, and a machine that reboots into the job three hours later
@@ -245,32 +253,80 @@ A tri-state select — **No change / Enable on all / Disable on all** — with a
 
 ## Power Management
 
-The one control on the group page that is **still** a push in 1.6, and the only
-reason the "pushed values" model above is worth understanding as current
-behavior rather than as history.
+A **grant** since 1.6, with one deliberate exception.
 
-Saving a schedule on a group's **Service Settings → Power Management** tab
-writes one `powerManagement` row per host that is a member at that instant. It
-is not a group property and nothing records that the write came from a group.
+A schedule saved on a group's **Service Settings → Power Management** tab is
+one row in `groupPowerManagement`, about the group. Every member runs it,
+including hosts added later, and nothing is written onto a host. What a given
+machine actually runs is resolved at read time, exactly like snapins and
+printers: its own `powerManagement` schedules first, then the grants of every
+group it belongs to, in the [precedence](#precedence) order above.
+
+**The identity of a schedule is its cron expression plus its action.** That is
+what deduplication keys on, and it is the only key that means anything: two
+groups both saying "reboot at 03:00" is one instruction, and running it twice
+would reboot a machine that had just come back up. It is also the unique key on
+both tables, so saving an identical schedule twice is a no-op rather than a
+second row.
 
 | | Behavior |
 |---|---|
-| Host added to the group afterward | gets **no** schedule |
-| Host removed from the group | **keeps** the schedule |
-| *Delete all* on the group tab | reaches **current members only** |
-| Saving a second, different schedule | **adds** it; the first stays |
-| Saving the same schedule twice | no-op — the row is keyed on host + cron expression + action |
+| Host added to the group afterward | **runs** the schedule |
+| Host removed from the group | **stops** running it; its own schedules stay |
+| *Delete selected* on the group tab | revokes the grant for **every** member |
+| Saving a second, different schedule | **adds** it; revoke the old one to replace it |
+| Saving the same schedule twice | no-op — keyed on group + cron + action |
+| The same schedule from two groups | runs **once** |
+| The same schedule direct and granted | runs **once**, at the host's position |
 
-It was not moved into *Edit selected hosts* with the rest, because a schedule
-is a cron expression plus an action rather than a single value: it has no
-meaningful *Clear on all*, a host may legitimately hold several at once, and
-squeezing it into the three-state shape would have made the form lie about what
-it does. The correct fix is to make it a **grant**, resolved at read time like
-snapins and printers, which needs a group-owned table — a schema change, and so
-not part of this release.
+### Immediate actions are tasks, not grants
 
-Reading a host's own Power Management tab is the only reliable answer to "what
-is this machine actually scheduled to do".
+**Create New Immediate** on the same tab is a fan-out and stays one. It shuts
+down, reboots or wakes the hosts that are members at that instant, and a host
+added afterward is unaffected — which is what a task should do. A standing
+grant of "shut down immediately" would fire again for every machine that ever
+joined the group, so there is no on-demand column on the grant table for it to
+live in.
+
+### Who carries out which action
+
+| Action | Carried out by | Why |
+|---|---|---|
+| `shutdown`, `reboot` | the **FOG client**, on its own cron | the machine is running, so it can do it itself |
+| `wol` | the **server**, from `TaskScheduler` | a sleeping machine cannot ask for anything |
+
+The resolver returns every action and each consumer filters: the client is
+never handed `wol` (it would schedule the machine to wake itself), and the
+scheduler expands only the wake grants, reading membership at **fire** time.
+That is what makes a host added last week get woken by a grant set last month.
+
+### Clearing the pre-1.6 rows
+
+**Clear schedules from member hosts** is not an undo for the grants — it
+reaches into the member hosts and deletes the schedules *they* hold. On a
+server upgraded from 1.5, or from a 1.6 before this change, that is where every
+schedule the group tab ever created ended up, and there is otherwise no way to
+undo a fan-out short of opening each host in turn. It also removes schedules
+those hosts were given individually, so read it as "reset the members".
+
+Nothing was migrated into the grant table. The rows sitting on hosts today are
+indistinguishable from ones an admin set per-host — that is the whole defect —
+so there was nothing to migrate *from*. Every host keeps precisely the
+schedules it has, and a group gains a grant when someone sets one.
+
+>[!warning] Daily schedules were running on Sundays only, on PHP 8
+>Fixed alongside this change. A schedule whose weekday was `*` — every daily
+>schedule — was handed to the FOG client as `... 7`, meaning Sunday. The
+>comparison that normalizes FOG's `-1` for Sunday read `$dow < 0`, and on
+>PHP 8 `'*' < 0` is true: comparing a non-numeric string with a number casts
+>the *number* to string, and `*` sorts below `0`. On PHP 7.4 the same
+>expression is false. So a working schedule stopped running when the server's
+>PHP was upgraded, with nothing about FOG having changed. Wake schedules were
+>never affected — the server sends those and never ran the comparison.
+
+Reading a host's own Power Management tab remains the only reliable answer to
+"what is this machine actually scheduled to do", because it is the one place
+the host's own rows and its groups' grants are not the same thing.
 
 ---
 
