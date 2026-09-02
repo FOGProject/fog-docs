@@ -315,17 +315,65 @@ ln -sf /etc/pki/fog/server.key /opt/fog/pki/web/leaf/.webLeaf.key
 ln -sf /etc/pki/fog/server.pem /opt/fog/pki/web/leaf/.webLeaf.pem
 ```
 
-Relocating a certificate then never means editing the vhost — or
-`.fogsettings`. The canonical path is what FOG recomputes and refers to every
-run, so pointing the *path* somewhere else does nothing; make the path
-**resolve** to your file instead. FOG reads the target, sees it is outside this
-zone, and leaves it alone.
+Relocating a certificate then never means editing the vhost. Two of these paths
+work either way round: leave `PKI_web_vhost_cert`/`PKI_web_vhost_key` alone and
+make each **resolve** to your file, as above, or set them in `.fogsettings` to
+where your files really are. The installer resets one only while it still holds
+a default of its own, so a path of your own survives every later run.
+`PKI_web_trust_chain` behaves the same way. The other keys under the
+`## Derived` marker genuinely are recomputed each run, and editing those does
+nothing.
+
+Either way FOG reads the target, sees it is outside this zone, and leaves it
+alone.
 
 >[!note]
 >SELinux labels follow the symlink **target**, so a certificate outside the
 >expected directories may need `restorecon` or `semanage fcontext` on the
 >real path. And a private key relocated into a world-readable directory
 >silently defeats the separation the Secure Boot signing helper depends on.
+
+### Where to put a certificate you brought
+
+>[!info] FOG 1.6
+>The customizations tree is a FOG 1.6 addition.
+
+`/etc/fog/customizations/pki/`, recorded as `PKI_custom_dir`. It is a
+**sibling** of `/etc/fog/pki/`, not a directory inside it, and that is the whole
+mechanism rather than a filing preference: FOG asks whether the canonical path
+resolves inside the web zone, so anything here answers "the administrator's"
+with no flag to set and nothing that can go stale. A `custom/` directory *under*
+`/etc/fog/pki` would answer the opposite and be regenerated over.
+
+The installer creates it and applies the right SELinux label, which is also the
+fix for the labelling problem noted above — a directory FOG creates carries the
+correct label instead of whatever an arbitrary location happened to have.
+
+**Drop a pair in and re-run the installer.** Two names:
+
+```
+/etc/fog/customizations/pki/web-leaf.pem
+/etc/fog/customizations/pki/web-leaf.key
+```
+
+FOG detects them, points the canonical paths at them, and stops re-issuing that
+leaf. There is nothing to edit.
+
+Both files are required, and they have to be a genuine pair — compared by
+subject public key rather than RSA modulus, so an EC key is judged correctly. A
+missing or mismatched key is **not** adopted: FOG's own leaf still serves,
+whereas adopting one would point the vhost at a certificate the web server
+cannot start with. Other filenames are not guessed at; record the path
+explicitly instead.
+
+`/etc/fog/customizations` is not `/opt/fog/customizations`, and the two run in
+opposite directions — FOG *writes* the `/opt` one (copies of your files, made
+before a run rebuilds the tree they lived in) and only *reads* the `/etc` one.
+There is a `readme.txt` in each saying so. Certificates and keys are on the
+`/etc` side for the same reason the PKI tree itself lives there; kernels and boot
+images stay under `/opt`, because the filesystem standard does not put binaries
+in `/etc`. See
+[[management/server/supported-customizations|Supported customizations]].
 
 ## HTTPS and netboot
 

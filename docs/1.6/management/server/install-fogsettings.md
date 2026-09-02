@@ -180,12 +180,22 @@ PKI_internal_subnets=''
 PKI_san_ip_addresses='10.0.0.39'
 PKI_san_dns_names=''
 PKI_client_cert_dir='/opt/fog/snapins/ssl'
+PKI_custom_dir='/etc/fog/customizations/pki'
 
 ## Derived -- do not edit
-## Canonical certificate paths. The installer recomputes these every
-## run, so editing a path here moves nothing. To use a certificate FOG
-## did not issue, leave the path alone and make it resolve to your file
-## (a symlink is enough) -- FOG then reads the target and leaves it be.
+## Canonical certificate paths. The installer recomputes most of these
+## every run, so editing one here moves nothing.
+##
+## The exceptions are PKI_web_vhost_cert, PKI_web_vhost_key and
+## PKI_web_trust_chain. To serve a certificate FOG did not issue you may
+## either leave those alone and make each path resolve to your file (a
+## symlink is enough), or set them to where your files really are -- the
+## installer only resets one of them while it still holds a default of
+## its own. Either way FOG stops re-issuing that leaf.
+##
+## Simplest of all: drop web-leaf.pem and web-leaf.key into
+## PKI_custom_dir above and re-run the installer, which finds the pair
+## and points these at it for you.
 PKI_root_ca_cert='/opt/fog/snapins/ssl/CA/.fogCA.pem'
 PKI_root_ca_key='/opt/fog/snapins/ssl/CA/.fogCA.key'
 PKI_web_ca_cert='/opt/fog/pki/web/ca/.fogWebCA.pem'
@@ -495,6 +505,7 @@ it belongs to; [[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]] explains th
 | `PKI_san_ip_addresses` | Preference | Every address this server answers on. Used for certificate names, `server_name`/`ServerAlias`, and the nginx maintenance allow list |
 | `PKI_san_dns_names` | Preference | Extra names this server answers to, set with `--extra-server-name`. Mirrored into `FOG_EXTRA_SERVER_NAMES` in the web UI |
 | `PKI_client_cert_dir` | Preference | Holds uploaded snapin SSL material and the client communication certificate. **Not** where FOG's own authorities live any more |
+| `PKI_custom_dir` | Preference | Where **you** put certificates you brought yourself. Defaults to `/etc/fog/customizations/pki`, a sibling of FOG's own tree rather than a directory inside it — which is what makes FOG treat what you put there as yours. A `web-leaf.pem`/`web-leaf.key` pair here is adopted automatically |
 | `PKI_sb_enabled` | Preference | `1`/`0`. On by default. See [[1.6/management/server/install-fogsettings#Secure Boot\|Secure Boot]] |
 
 **Canonical paths** — these are records, under the `## Derived — do not edit`
@@ -523,22 +534,53 @@ marker in the file:
 This is the inverse of how it worked before 1.6, and it is worth reading before
 you touch a certificate path.
 
-**A `PKI_*` path is canonical.** FOG always refers to the vhost certificate as
-`PKI_web_vhost_cert`, and recomputes that path every run — so editing it moves
-nothing. To use a certificate FOG did not issue, leave the path alone and make it
-**resolve** to your file. A symlink is enough:
+**The simplest route: drop the pair in and re-run.** Put your certificate and
+its key in `PKI_custom_dir` under these two names:
 
 ```bash
-ln -sf /etc/letsencrypt/live/fog.example.com/fullchain.pem \
+install -d -m 0700 /etc/fog/customizations/pki
+cp fog.crt /etc/fog/customizations/pki/web-leaf.pem
+cp fog.key /etc/fog/customizations/pki/web-leaf.key
+./installfog.sh -Y
+```
+
+FOG finds the pair, points `PKI_web_vhost_cert` and `PKI_web_vhost_key` at it,
+and stops re-issuing that certificate. Nothing to edit. Both files are required
+and they must be a genuine pair — a missing or mismatched key is not adopted,
+and FOG carries on with its own certificate rather than leaving you with a web
+server that cannot start.
+
+**Or say where your files are.** Two ways, and either works:
+
+```bash
+# Record the real path.
+sed -i "s|^PKI_web_vhost_cert=.*|PKI_web_vhost_cert='/etc/pki/fog/web.crt'|" /opt/fog/.fogsettings
+
+# Or leave the path alone and make it resolve to your file.
+ln -sf /etc/letsencrypt/live/fog.example.com/cert.pem \
        /opt/fog/pki/web/leaf/.webLeaf.pem
 ln -sf /etc/letsencrypt/live/fog.example.com/privkey.pem \
        /opt/fog/pki/web/leaf/.webLeaf.key
 ```
 
-FOG then reads the target and leaves it alone. That is the whole mechanism: when
-the canonical path resolves *outside* FOG's own web zone directory, the leaf is
-somebody else's, so FOG will neither re-issue it nor lock its private key away
-from whatever renews it.
+`PKI_web_vhost_cert`, `PKI_web_vhost_key` and `PKI_web_trust_chain` are the
+three canonical paths you may set directly: the installer resets one only while
+it still holds a default of its own, and leaves any other value alone on every
+later run. The rest of the keys under the `## Derived` marker genuinely are
+recomputed, and editing those moves nothing.
+
+That is the whole mechanism: when the canonical path resolves *outside* FOG's
+own web zone directory, the leaf is somebody else's, so FOG will neither
+re-issue it nor lock its private key away from whatever renews it.
+
+>[!warning] Do not write your certificate *into* FOG's PKI tree
+>A real file at `/opt/fog/pki/web/leaf/.webLeaf.pem` is inside FOG's own web
+>zone, so FOG concludes the leaf is its, re-issues it, and overwrites yours.
+>`/opt/fog/pki` is a symlink to `/etc/fog/pki`, so both names are the same
+>directory and neither is safe.
+>
+>`/etc/fog/customizations/pki` is a **sibling** of that tree, not a
+>subdirectory, which is exactly why a certificate there is read as yours.
 
 >[!important] This replaces `acmeLeaf`, and you no longer set anything by hand
 >`acmeLeaf` had to be typed in, and forgetting it was expensive: FOG re-issued
