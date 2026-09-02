@@ -43,14 +43,34 @@ to updates driven through `bin/updatefog.sh`.
 **Supported, but yours to place** means FOG will not overwrite it and provides
 a defined place for it, but does not create or manage it.
 
+**Adopted** means you put a file in a defined place and FOG wires it up on the
+next `installfog.sh` run, with nothing to configure. Certificates you bring
+work this way.
+
 **Not preserved** means exactly that. Those cases are listed at the end
 rather than left for you to discover.
 
-Everything preserved automatically is copied to
-`/opt/fog/customizations/` (strictly, `$fogprogramdir/customizations`) before
-the web tree is rebuilt, and copied back afterward. That directory is
-outside the web root, which is why it survives — the installer rebuilds
-`/var/www/html/fog` wholesale on every run.
+## The two customizations directories
+
+There are two. They are not interchangeable, and they run in **opposite
+directions**. Each carries a `readme.txt` saying which is which.
+
+| | `/opt/fog/customizations/` | `/etc/fog/customizations/` |
+|---|---|---|
+| Written by | **FOG** | **you** |
+| What it is | copies FOG makes of your files before it rebuilds the tree they live in, and restores from afterward | an input FOG only ever reads |
+| Holds | `ipxe-bg/`, `ipxe-legacy/`, `kernel-backups/` | `pki/` |
+
+Strictly the first is `$fogprogramdir/customizations`. It sits outside the web
+root, which is why what it holds survives — the installer rebuilds
+`/var/www/html/fog` wholesale on every run. Everything listed as *automatic*
+below is copied there and back.
+
+**Why two rather than one.** Certificates and private keys are small, secret
+and irreplaceable, so they belong under `/etc` — what a backup policy and a
+config-management run already capture. Kernels and boot images are large,
+rebuildable binaries, and the filesystem standard does not put binaries under
+`/etc`. FOG's own PKI moved to `/etc/fog/pki` for the same reason.
 
 ---
 
@@ -138,6 +158,66 @@ kept by default; change that with `installfog.sh --kernel-backup-count N`.
 
 Restoring re-signs the kernels if Secure Boot is configured, since a restored
 kernel carries its old signature and the signing key may have rotated.
+
+---
+
+## Web certificates you bring
+
+**Adopted.** Put the pair in `/etc/fog/customizations/pki/` under these two
+names and re-run the installer:
+
+```
+/etc/fog/customizations/pki/web-leaf.pem
+/etc/fog/customizations/pki/web-leaf.key
+```
+
+That is the whole procedure. FOG finds them, points its own canonical paths at
+them, and stops re-issuing that certificate — there is nothing to set in
+`.fogsettings` and no symlink to make. The installer says so when it happens:
+
+```
+ * Detected a web certificate managed outside FOG:
+     /etc/fog/customizations/pki/web-leaf.pem is a certificate you supplied, with a matching key
+ * FOG will keep managing this vhost, but will not re-issue or
+   re-key that certificate.
+```
+
+FOG goes on managing the rest of the vhost — the HTTPS redirect, the iPXE
+exclusions, HSTS — because nobody wants to hand-maintain those. Only the
+certificate becomes yours.
+
+>[!important] It has to be *beside* FOG's PKI tree, not inside it
+>`/etc/fog/customizations/pki/` is a **sibling** of `/etc/fog/pki/`, and that is
+>what makes the whole thing work rather than being a tidiness preference. FOG
+>decides "is this leaf mine or the admin's" by asking whether the path resolves
+>inside its own web zone. A certificate written *into* `/etc/fog/pki/web/leaf/`
+>is read as one FOG issued, and the next run regenerates over it.
+>
+>Note that `/opt/fog/pki` is a symlink to `/etc/fog/pki`, so those two are the
+>same directory — writing to either is writing inside FOG's tree.
+
+**Both files are required, and they have to be a genuine pair.** FOG compares
+the certificate's public key against the private key. If the key is missing or
+does not match, the pair is **not** adopted and FOG carries on with its own
+certificate — which is deliberate: adopting a mismatched pair would point the
+web server at a certificate it cannot start with, whereas declining leaves a
+server that still serves.
+
+Only those two filenames are looked for. FOG does not guess among other names,
+because guessing wrong would repoint your vhost without telling you. If your
+files are named something else, or live somewhere else entirely, record the
+paths instead — see
+[[1.6/management/server/install-fogsettings|.fogsettings]] and the
+[[kb/reference/pki-zones|PKI zones reference]].
+
+**Renewal is yours.** FOG never renews a certificate it did not issue. Point
+your ACME client's install hook or reload command at these paths and let it
+rewrite them in place; FOG re-reads them on each run and leaves them alone. A
+worked example, including Cloudflare DNS-01, is in
+[[kb/how-tos/lets-encrypt-setup|Set up Let's Encrypt on a FOG server]].
+
+FOG also leaves the permissions on your private key alone, so a renewal hook
+running as something other than root keeps working.
 
 ---
 
