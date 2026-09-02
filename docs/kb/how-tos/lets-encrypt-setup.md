@@ -70,16 +70,173 @@ certbot certonly --preferred-challenges dns \
     --manual -d fog.example.com
 ```
 
-Install the result somewhere stable that your renewal process will keep
-updating — `/etc/letsencrypt/live/fog.example.com/` for certbot, or wherever
-`acme.sh --install-cert` puts it. **Do not** copy the files into FOG's own PKI
-tree; the point of the next step is to tell FOG they live elsewhere and are not
-FOG's to manage.
+Install the result into FOG's customizations tree —
+**`/etc/fog/customizations/pki/`** — or leave it wherever your renewal process
+already keeps it, such as `/etc/letsencrypt/live/fog.example.com/` for certbot.
+Either works, and Step 2 is where you tell FOG which you chose.
 
->[!note] Cloudflare DNS-01 recipe — to be filled in
->@darksidemilk has a working Cloudflare DNS-challenge recipe to contribute
->here. Until then, use your provider's DNS-01 plugin as above; nothing on the
->rest of this page depends on which provider you use.
+What must **not** happen is the files landing inside FOG's *own* PKI tree at
+`/etc/fog/pki/`. Anything under there is read as a certificate FOG issued and
+manages, so FOG would regenerate over it.
+
+>[!tip] `/etc/fog/customizations/` is the blessed place for files you bring
+>It is the `/etc` counterpart of `/opt/fog/customizations/`, and it sits
+>*beside* `/etc/fog/pki/` rather than inside it — which is precisely what makes
+>FOG treat what you put there as yours rather than its own. Certificates and
+>keys belong on the `/etc` side because they are small, secret, irreplaceable
+>configuration that a backup policy ought to capture.
+
+### Worked example — acme.sh with Cloudflare DNS
+
+>[!note] When this recipe applies
+>You need a domain you manage in **public** DNS with Cloudflare as its
+>provider, and a name for the FOG server under it — `fog.company.com`,
+>`fog.school.edu`. Basic DNS management, and everything else this needs, is in
+>Cloudflare's free tier.
+>
+>The FOG server itself does **not** have to be publicly reachable, and its
+>address does not have to be public either: DNS-01 is proved entirely by a TXT
+>record on your authoritative nameservers, which the CA reads without ever
+>contacting your server. Split-horizon DNS works, and so does a public record
+>pointing at an RFC1918 address. In almost every case a FOG server should not be
+>exposed to the internet at all.
+
+#### Install acme.sh
+
+Run this whole section as **root** — `sudo -i` first, and stay there.
+
+acme.sh installs into the invoking user's home directory and puts its renewal
+cron in that user's crontab. Install it as yourself and then issue as root and
+you get `acme.sh: command not found`; install it as yourself and leave it there
+and the renewal cron cannot write root-owned certificates or reload the web
+server. Either way the certificate expires silently at around 60 days, which is
+the single most common way this setup fails.
+
+##### RHEL based — Rocky, Alma, RHEL
+
+```bash
+dnf -y update ca-certificates
+curl https://get.acme.sh | sh -s email=you@example.com
+source ~/.bashrc
+```
+
+##### Debian based — Debian, Ubuntu
+
+```bash
+apt-get update
+apt-get -y install ca-certificates
+update-ca-certificates
+curl https://get.acme.sh | sh -s email=you@example.com
+source ~/.bashrc
+```
+
+>[!note] Two things worth knowing about that snippet
+>The `email=` is your **Let's Encrypt account** address — where expiry warnings
+>are sent. It is not your Cloudflare login, and the two do not have to match.
+>
+>`socat` and `libidn` are often listed as acme.sh prerequisites. Neither is
+>needed here: `socat` is only for acme.sh's standalone HTTP-01 listener, which a
+>DNS-01 recipe never starts, and `libidn` only for internationalised domain
+>names. On EL9 there is no `libidn` package at all — it is `libidn2` — so
+>`dnf install libidn` fails outright and stops the paste on its first line.
+
+#### Create a Cloudflare API token
+
+Log in to the Cloudflare account holding the DNS zone and go to
+<https://dash.cloudflare.com/profile/api-tokens>. Account-scoped tokens at
+<https://dash.cloudflare.com/?to=/:account/api-tokens> work as well.
+
+The token needs exactly two permissions:
+
+| Permission | Why acme.sh needs it |
+|---|---|
+| **Zone → Zone → Read** | to list your zones and resolve the zone id |
+| **Zone → DNS → Edit** | to write, then remove, the `_acme-challenge` TXT record |
+
+Scope it to all zones or to one specific zone, per your own security
+requirements. Note it is Zone **Read**, not Zone *Edit* — nothing here changes
+the zone itself, so granting that is more than the recipe uses.
+
+Copy the token somewhere secure; Cloudflare will not show it to you again.
+
+You also need your account ID. One way to find it is in the dashboard URL while
+editing DNS records:
+
+```
+https://dash.cloudflare.com/{accountID}/{yourdomain.tld}/dns/records
+```
+
+#### Issue the certificate and configure renewal
+
+Adjust the five values in the first block. Everything after it can be pasted
+unchanged.
+
+```bash
+# ---- adjust these five, then paste the rest as-is ----
+FOG_FQDN='fog.example.com'        # the name the certificate is issued to
+FOG_ALIAS=''                      # one extra SAN, or leave empty for none
+CF_Token='TOKEN_CREATED_ABOVE'
+CF_Account_ID='ACCOUNT_ID_FROM_ABOVE'
+WEB_SVC='httpd'                   # apache2 on Debian/Ubuntu; nginx if you run nginx
+# ------------------------------------------------------
+
+CUSTOM_PKI='/etc/fog/customizations/pki'
+export CF_Token CF_Account_ID
+
+install -d -m 0700 "$CUSTOM_PKI"
+
+acme.sh --upgrade --auto-upgrade
+
+# Main name first, then the optional alias. Add more -d pairs for more SANs.
+domains=(-d "$FOG_FQDN")
+[ -n "$FOG_ALIAS" ] && domains+=(-d "$FOG_ALIAS")
+
+# --server letsencrypt because acme.sh otherwise defaults to ZeroSSL.
+acme.sh --issue --dns dns_cf --server letsencrypt "${domains[@]}"
+
+# --cert-file is the leaf alone and --ca-file the intermediate alone. That split
+# is what FOG's vhost expects. Do NOT use --fullchain-file for the leaf, or the
+# vhost ends up listing the intermediate twice.
+acme.sh --install-cert -d "$FOG_FQDN" \
+    --cert-file "$CUSTOM_PKI/web-leaf.pem" \
+    --key-file  "$CUSTOM_PKI/web-leaf.key" \
+    --ca-file   "$CUSTOM_PKI/web-chain.pem" \
+    --reloadcmd "chmod 0600 $CUSTOM_PKI/web-leaf.key && systemctl reload $WEB_SVC"
+
+chmod 0600 "$CUSTOM_PKI/web-leaf.key"
+```
+
+Issuance and installation are two separate acme.sh commands on purpose: you can
+re-run the install half, or change where the files land, without going back to
+the CA for a new certificate.
+
+Now point FOG's canonical paths at those three files. The keys already exist in
+`.fogsettings`, so replacing the values in place is enough:
+
+```bash
+sed -i \
+    -e "s|^PKI_web_vhost_cert=.*|PKI_web_vhost_cert='$CUSTOM_PKI/web-leaf.pem'|" \
+    -e "s|^PKI_web_vhost_key=.*|PKI_web_vhost_key='$CUSTOM_PKI/web-leaf.key'|" \
+    -e "s|^PKI_web_trust_chain=.*|PKI_web_trust_chain='$CUSTOM_PKI/web-chain.pem'|" \
+    /opt/fog/.fogsettings
+```
+
+The vhost is generated from those three keys, so the change takes effect on the
+next installer run — [Step 4](#step-4--run-the-installer) below. You can skip
+this `sed` entirely if you would rather use the symlink form in Step 2; the two
+are alternatives, not both required.
+
+>[!warning] The Cloudflare token is stored in cleartext
+>acme.sh writes `CF_Token` and `CF_Account_ID` into `~/.acme.sh/account.conf`,
+>because unattended renewal has to be able to read them back. Since you ran the
+>above as root, that is root's home. Treat the file as a secret, and scope the
+>token narrowly enough that its disclosure would not matter much.
+
+**Renewal** is acme.sh's own cron entry, installed for root by the steps above.
+The `--reloadcmd` is what picks each renewed certificate up. Use a single
+`systemctl reload` of the one web server you actually run — chaining a reload of
+both Apache and nginx with `&&` makes the whole command fail on every renewal,
+and a `restart` rather than a `reload` drops in-flight imaging and API requests.
 
 ## Step 2 — tell FOG the certificate is not its to manage
 
@@ -105,12 +262,20 @@ signing request while your ACME client owns the key — a certificate/key
 mismatch that stops the web server — and what stops FOG locking the private key
 to `root:root 0600`, which would break a renewal hook running as anyone else.
 
->[!important] Point the path at your file; do not write your file at the path
->Editing the path in `.fogsettings` moves nothing: FOG recomputes canonical
->paths on every run. And having your ACME client write a *real file* to
->`/opt/fog/pki/web/leaf/.webLeaf.pem` is worse than doing nothing — that file
->is inside FOG's own web zone, so FOG concludes the leaf is its and re-issues
->it. A symlink out of the zone cannot be misread that way.
+>[!important] Two ways to say it; one way to get it wrong
+>Either of these works, and you need only one:
+>
+>- **Symlink**, as above — leave `PKI_web_vhost_cert` at its default and make
+>  that path resolve to your file.
+>- **Record the path** — set `PKI_web_vhost_cert` in `.fogsettings` to your
+>  file's real location, as the Cloudflare example above does. FOG only resets
+>  that key when it holds one of its own known defaults, so a path of your own
+>  survives every later run.
+>
+>What does not work is having your ACME client write a *real file* to
+>`/opt/fog/pki/web/leaf/.webLeaf.pem`. That is inside FOG's own web zone, so FOG
+>concludes the leaf is its, re-issues it, and overwrites yours. Neither a
+>symlink out of the zone nor a recorded path outside it can be misread that way.
 >
 >This replaces FOG 1.5's `acmeLeaf='yes'`, which had to be typed in by hand and
 >failed in exactly this manner when it was forgotten — silently, under `-y`.
