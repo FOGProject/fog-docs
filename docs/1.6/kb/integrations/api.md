@@ -213,7 +213,9 @@ Here are some core GET calls:
 | `/fog/task/active` | Returns a list of pending and active tasks. |
 | `/fog/multicastsession/current` | Returns a list of active multicast sessions. |
 | `/fog/host` | Returns a list of all the registered hosts. |
-| `/fog/<class>/search/<term>` | Returns the records of `<class>` that match the search term, e.g. `/fog/host/search/<term>` for hosts or `/fog/image/search/<term>` for images. |
+| `/fog/<class>/search/<term>` | Returns the records of `<class>` whose name contains the term (hosts also match on MAC address, storage nodes on node hostname, settings on value), e.g. `/fog/host/search/<term>` for hosts or `/fog/image/search/<term>` for images. The term is matched literally: `%` and `_` are not wildcards. A whole-number term also matches the id exactly. |
+| `/fog/unisearch?q=<term>&limit=<n>` | Searches every class at once and returns the matches grouped by class, each as `id` and `name`. `limit` caps the rows **per class**, not overall; omit it or pass `0` for no cap. Within a class, names that start with the term sort first. Both fields may be sent as POST body fields instead. Also reachable as `/fog/search?q=`. This is what the sidebar search box in the web UI calls. |
+| `/fog/unisearch/<term>/<n>` | The older path form of the call above. A term containing `/`, `?`, `#` or `%` cannot travel in a path segment, so prefer `?q=`. |
 
 ### POST
 
