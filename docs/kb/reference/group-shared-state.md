@@ -35,6 +35,8 @@ what the group page's remaining push-to-all controls do.
 >    members at that instant, once. **They are gone from the group page in
 >    1.6.** Use *Edit selected hosts* on the Hosts list instead. The section
 >    below is kept as the record of what they did and why they went.
+> 3. **Power Management** — the one push that is **still there** in 1.6, and
+>    still a push. See [Power Management](#power-management) below.
 
 ---
 
@@ -52,6 +54,7 @@ what the group page's remaining push-to-all controls do.
   - [Auto-logout](#auto-logout)
   - [General fields](#general-fields)
   - [Enforce hostname / AD-join reboots](#enforce-hostname--ad-join-reboots)
+- [Power Management](#power-management)
 - [Out of scope](#out-of-scope)
 
 ---
@@ -237,6 +240,37 @@ honors the no-clobber convention.
 
 A tri-state select — **No change / Enable on all / Disable on all** — with a
 `Hosts: enabled (all) / disabled (all) / (varies)` hint.
+
+---
+
+## Power Management
+
+The one control on the group page that is **still** a push in 1.6, and the only
+reason the "pushed values" model above is worth understanding as current
+behavior rather than as history.
+
+Saving a schedule on a group's **Service Settings → Power Management** tab
+writes one `powerManagement` row per host that is a member at that instant. It
+is not a group property and nothing records that the write came from a group.
+
+| | Behavior |
+|---|---|
+| Host added to the group afterward | gets **no** schedule |
+| Host removed from the group | **keeps** the schedule |
+| *Delete all* on the group tab | reaches **current members only** |
+| Saving a second, different schedule | **adds** it; the first stays |
+| Saving the same schedule twice | no-op — the row is keyed on host + cron expression + action |
+
+It was not moved into *Edit selected hosts* with the rest, because a schedule
+is a cron expression plus an action rather than a single value: it has no
+meaningful *Clear on all*, a host may legitimately hold several at once, and
+squeezing it into the three-state shape would have made the form lie about what
+it does. The correct fix is to make it a **grant**, resolved at read time like
+snapins and printers, which needs a group-owned table — a schema change, and so
+not part of this release.
+
+Reading a host's own Power Management tab is the only reliable answer to "what
+is this machine actually scheduled to do".
 
 ---
 

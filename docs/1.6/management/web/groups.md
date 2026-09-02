@@ -195,12 +195,40 @@ there is no second step, and no button to press afterwards.
 - **Service Settings → Client Settings** — the group's modules. Just the
   grant: screen resolution and auto-logout are set from the Hosts list.
 - **Service Settings → Power Management** — schedules power tasks across
-  members. This one stays, because it creates tasks rather than copying a
-  value: a scheduled task is a real thing the group owns, not a value stamped
-  onto whoever happened to be a member.
+  members. **This one still behaves the 1.5 way**, and knowingly so: see the
+  warning below.
 - **Inventory**, **Login History**, **History Items** — reporting across the
   group's members.
 - **Site** — which site the group belongs to, if you use site scoping.
+
+>[!warning] Power Management is still a one-time push
+>Saving a power schedule on a group writes **one row per host that is a
+>member at that instant**, exactly as the removed controls above did. It is
+>the last control on the group page that still works this way.
+>
+>What that means in practice:
+>
+>- a host **added** to the group afterward gets **no** schedule;
+>- a host **removed** from the group **keeps** the schedule it was given, and
+>  nothing on the group page will take it away — *Delete all* on the group's
+>  Power Management tab only reaches current members;
+>- saving **adds** a schedule rather than replacing the one that is there, so
+>  a host accumulates every schedule any of its groups ever gave it. Saving
+>  the *same* schedule twice is harmless — the row is keyed on the host plus
+>  the cron expression plus the action, so an identical save lands on the row
+>  that already exists — but changing the time and saving again leaves the old
+>  time in place alongside the new one.
+>
+>It was left alone in 1.6 rather than moved, because a schedule is a cron
+>expression plus an action rather than a single value — it does not fit the
+>*No change / Set on all / Clear on all* shape that *Edit selected hosts*
+>uses, and forcing it into that shape would have been worse than leaving it
+>honest. Making it a grant like snapins and printers is the right fix and is
+>a change to the schema, so it is not in this release.
+>
+>Until then, treat the group's Power Management tab as **"apply to whoever is
+>in the group right now"**, and check a host's own Power Management tab when
+>you want to know what it is actually scheduled to do.
 
 ## Modules have one extra rule: only a host can turn one off
 
