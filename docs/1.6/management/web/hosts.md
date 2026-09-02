@@ -375,6 +375,20 @@ image, kernel, kernel arguments, primary disk, init, product key, BIOS and EFI
 exit type, printer management level, Active Directory, hostname enforcement,
 screen resolution and auto-logout.
 
+The form is split into tabs the same way a single host's own page is —
+**General**, **Active Directory** and **FOG Client**, plus a **Plugins** tab
+when a plugin has added a field — so a setting is in the same place here as it
+is on the host you would otherwise open. The tabs are only a layout: every
+field is submitted whichever tab is on top, so you never have to visit a tab
+to "confirm" the fields you left alone.
+
+**Host Printer Management Level** is the one field whose tab may surprise you.
+On a host's own page it sits on *Printer Associations*, and there is no such
+tab here — you cannot assign printers in bulk, because printers are granted by
+a group rather than copied onto hosts. What is left is the setting that decides
+how hard the FOG client works on printers at each check-in, so it is on **FOG
+Client** alongside screen resolution and auto-logout.
+
 Every field carries its own action, and the default is always to do nothing:
 
 | Action | What it does |
@@ -409,9 +423,14 @@ rather than picking one of them to show you.
 >in a group and press *Update* on the group page. That wrote the value onto
 >whichever hosts were members at that moment. *Edit selected hosts* works on
 >any selection you can build — a search, a filter, a handful of ticks — and
->can be repeated. The group-page controls still exist on 1.6, marked
->deprecated, and are removed in a later release. See
->[[1.6/management/web/groups#Settings that are no longer on the group page|Group Management]].
+>can be repeated. Those group-page controls are **gone** in 1.6 — not hidden,
+>and there is no compatibility mode. See
+>[[1.6/management/web/groups#Settings that are no longer on the group page|Group Management]]
+>for the complete map of where each one went.
+>
+>One control on the group page still behaves the 1.5 way: **Power Management**.
+>It is unchanged in 1.6 and still writes to whoever is a member when you press
+>save.
 
 ### Creating Host Groups
 
