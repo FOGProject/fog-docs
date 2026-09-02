@@ -38,6 +38,8 @@ const makeRepo = (opts = {}) => {
     linkIn16 = "[[1.6/management/web/hosts|Host Management]]",
     navOrder = NAV_ORDER,
     topOrder = TOP_ORDER,
+    filterTags = true,
+    versionTrees = ["1.5", "1.6"],
   } = opts
 
   const fm = (o) =>
@@ -93,6 +95,14 @@ const makeRepo = (opts = {}) => {
       "plugins:",
       "  - source: explorer",
       "    options:",
+      "      filterFn: |",
+      "        (node) => {",
+      ...(filterTags ? ['          if (node.slugSegment === "tags") return false'] : []),
+      "          if (node.slugSegments.length === 1) {",
+      `            if (${["1.5", "1.6"].map((v) => `node.slugSegment === "${v}"`).join(" || ")}) return false`,
+      "          }",
+      "          return true",
+      "        }",
       "      sortFn: |",
       "        (a, b) => {",
       `          const topOrder = ${JSON.stringify(topOrder)}`,
@@ -105,6 +115,7 @@ const makeRepo = (opts = {}) => {
     root,
     "quartz/local-plugins/prev-next-nav/dist/components/index.js",
     [
+      `const VERSION_TREES = ${JSON.stringify(versionTrees)}`,
       `const TOP_ORDER = ${JSON.stringify(topOrder)}`,
       `const EXPLICIT_ORDER = ${JSON.stringify(navOrder)}`,
       "",
@@ -196,6 +207,22 @@ test("fails when only one table lists a directory", () => {
   const { code, out } = run(root)
   assert.equal(code, 1)
   assert.match(out, /"kb\/reference" is only in prev-next-nav/)
+  cleanup(root)
+})
+
+test("fails when prev-next-nav does not hide a tree the Explorer hides", () => {
+  const root = makeRepo({ versionTrees: ["1.6"] })
+  const { code, out } = run(root)
+  assert.equal(code, 1)
+  assert.match(out, /Explorer hides the 1\.5 tree .* but prev-next-nav does not exclude it/)
+  cleanup(root)
+})
+
+test("fails when the Explorer filterFn drops the tags exclusion", () => {
+  const root = makeRepo({ filterTags: false })
+  const { code, out } = run(root)
+  assert.equal(code, 1)
+  assert.match(out, /no longer excludes "tags"/)
   cleanup(root)
 })
 

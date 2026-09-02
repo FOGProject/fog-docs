@@ -179,6 +179,12 @@ The rules that must not be broken:
   — including a page linking its own headings. An unversioned link there
   resolves to the chooser and silently drops the `#anchor`. From outside the
   trees, an unversioned link is correct: it lands on the chooser.
+- **The version trees are hidden from the sidebar** by the Explorer's
+  `filterFn`, so each forked topic appears in the nav exactly once — as its
+  chooser, in its own section. The 1.5/1.6 pages are reached through the
+  chooser, the pinned pills, and search. Supplying a `filterFn` replaces the
+  plugin default, so the `tags` exclusion must be repeated in it, and
+  `prev-next-nav` must exclude the same trees.
 - **Reading order is encoded twice and both copies must be edited together**:
   `quartz.config.yaml`'s Explorer `sortFn` and `prev-next-nav`'s
   `TOP_ORDER`/`EXPLICIT_ORDER`. The `sortFn` is a string inside YAML, so they

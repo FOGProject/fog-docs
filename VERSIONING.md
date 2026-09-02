@@ -129,6 +129,34 @@ it cannot be justified to a reader. List it in `docs/1.5/index.md` under
 - Any wikilink carrying an `#anchor` must be path-qualified. See `CLAUDE.md`
   for why a bare one loses the fragment.
 
+## The version trees are not in the sidebar
+
+The Explorer's `filterFn` hides `docs/1.5/` and `docs/1.6/` from the tree. Their
+pages are reached three ways: the chooser that sits at each forked topic's
+normal place in the tree, the pinned **FOG 1.5** / **FOG 1.6** pills above the
+tree, and search.
+
+This is deliberate. When the trees were shown, the sidebar had six top-level
+sections instead of four, and every forked page appeared in it three times —
+once as its chooser and once inside each version tree. That is more navigation,
+not less, and it buries the topic tree the choosers exist to restore. The
+choosers put each forked topic in exactly one place; showing the trees as well
+undoes that.
+
+Two things follow, and both are enforced by `check-version-split.mjs`:
+
+- **Supplying a `filterFn` replaces the plugin default**, which was
+  `node.slugSegment !== "tags"`. That exclusion has to be repeated, or the tag
+  tree reappears in the sidebar.
+- **`prev-next-nav` applies the same exclusion** (`VERSION_TREES`). Without it,
+  "Next" on the last Development page steps into a tree the reader cannot see.
+  Pages inside a version tree therefore get no Previous/Next of their own, which
+  is correct: they are reached deliberately from a chooser, not by reading the
+  site in order.
+
+The pills stay. The two landing pages list every difference in one place, which
+is the right entry point for "what changed overall" as opposed to one topic.
+
 ## The two nav-order tables
 
 Reading order is encoded **twice**, and the copies must agree:

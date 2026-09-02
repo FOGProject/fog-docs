@@ -190,6 +190,59 @@ if (!existsSync(cfgPath) || !existsSync(pnnPath)) {
   const cfgOrder = literalAfter(cfg, "const explicitOrder = ")
   const pnnOrder = literalAfter(pnn, "const EXPLICIT_ORDER = ")
 
+  // The version trees are hidden from the sidebar by the Explorer's filterFn.
+  // prev-next-nav must hide them too, or "Next" walks into a tree the reader
+  // cannot see in the nav.
+  const blockScalar = (key) => {
+    const at = cfg.indexOf(`${key}: |`)
+    if (at === -1) return null
+    const out = []
+    for (const line of cfg.slice(at + `${key}: |`.length).split("\n")) {
+      if (line.trim() === "") {
+        out.push("")
+        continue
+      }
+      if (line.match(/^ */)[0].length < 8) break
+      out.push(line.slice(8))
+    }
+    try {
+      return Function(`"use strict";return (${out.join("\n")})`)()
+    } catch {
+      return null
+    }
+  }
+  const explorerFilter = blockScalar("filterFn")
+  const pnnTrees = literalAfter(pnn, "const VERSION_TREES = ")
+
+  if (explorerFilter) {
+    const hiddenByExplorer = VERSIONS.filter(
+      (v) => !explorerFilter({ slugSegment: v, slugSegments: [v], isFolder: true, data: null, children: [] }),
+    )
+    const hiddenByPrevNext = Array.isArray(pnnTrees) ? pnnTrees : []
+    for (const v of hiddenByExplorer) {
+      if (!hiddenByPrevNext.includes(v)) {
+        note(
+          "nav-tables",
+          `the Explorer hides the ${v} tree from the sidebar, but prev-next-nav does not exclude it (VERSION_TREES)`,
+        )
+      }
+    }
+    for (const v of hiddenByPrevNext) {
+      if (!hiddenByExplorer.includes(v)) {
+        note(
+          "nav-tables",
+          `prev-next-nav excludes the ${v} tree, but the Explorer still shows it in the sidebar (filterFn)`,
+        )
+      }
+    }
+    if (explorerFilter({ slugSegment: "tags", slugSegments: ["tags"], isFolder: true, data: null, children: [] })) {
+      note(
+        "nav-tables",
+        'the Explorer filterFn no longer excludes "tags" -- supplying a filterFn replaces the plugin default, so that exclusion has to be repeated',
+      )
+    }
+  }
+
   if (!cfgTop || !pnnTop || !cfgOrder || !pnnOrder) {
     note(
       "nav-tables",

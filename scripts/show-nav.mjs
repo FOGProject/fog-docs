@@ -19,8 +19,7 @@
 //   node scripts/show-nav.mjs installation/server management/web
 //   node scripts/show-nav.mjs ""          # top level
 
-import { existsSync } from "node:fs"
-import { readFileSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 
 const INDEX = "quartz/public/static/contentIndex.json"
 if (!existsSync(INDEX)) {
@@ -30,17 +29,29 @@ if (!existsSync(INDEX)) {
 const index = JSON.parse(readFileSync(INDEX, "utf8"))
 const yaml = readFileSync("quartz/quartz.config.yaml", "utf8")
 
-// pull the sortFn body out of the YAML block scalar
-const at = yaml.indexOf("sortFn: |")
-const rest = yaml.slice(at + "sortFn: |".length)
-const lines = []
-for (const line of rest.split("\n")) {
-  if (line.trim() === "") { lines.push(""); continue }
-  const indent = line.match(/^ */)[0].length
-  if (indent < 8) break
-  lines.push(line.slice(8))
+// Pull a YAML block scalar ("<key>: |") out of the config and evaluate it. Both
+// sortFn and filterFn are shipped to the browser as strings, so reading them
+// back the same way is what keeps this honest -- the config is the only source.
+const blockScalar = (key) => {
+  const at = yaml.indexOf(`${key}: |`)
+  if (at === -1) return null
+  const rest = yaml.slice(at + `${key}: |`.length)
+  const lines = []
+  for (const line of rest.split("\n")) {
+    if (line.trim() === "") {
+      lines.push("")
+      continue
+    }
+    const indent = line.match(/^ */)[0].length
+    if (indent < 8) break
+    lines.push(line.slice(8))
+  }
+  return Function(`"use strict";return (${lines.join("\n")})`)()
 }
-const sortFn = Function(`"use strict";return (${lines.join("\n")})`)()
+
+const sortFn = blockScalar("sortFn")
+// The plugin's own default when no filterFn is configured.
+const filterFn = blockScalar("filterFn") ?? ((node) => node.slugSegment !== "tags")
 
 class FileTrieNode {
   constructor(slugSegments, data) {
@@ -83,7 +94,7 @@ class FileTrieNode {
 
 const root = new FileTrieNode([], null)
 for (const [slug, data] of Object.entries(index)) root.add({ ...data, slug })
-root.filter((n) => n.slugSegment !== "tags")
+root.filter(filterFn)
 root.sort(sortFn)
 
 const find = (path) => {
