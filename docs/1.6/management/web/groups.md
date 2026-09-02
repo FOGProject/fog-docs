@@ -4,7 +4,7 @@ aliases:
     - Group Management
     - Fog Group Management
     - Group Grants
-description: "How FOG 1.6 groups work: a group owns its snapins and printers and applies them to every member, including hosts added later"
+description: "How FOG 1.6 groups work: a group owns its snapins, printers, modules and power schedules and applies them to every member, including hosts added later"
 context_id: groups
 tags:
     - 1_6-changes
@@ -20,8 +20,8 @@ tags:
 >Groups themselves are not new, but what a group **is** changed in 1.6. On
 >1.5 a group owned nothing: pressing a button on the group page wrote rows
 >onto whichever hosts were members at that instant. In 1.6 a group owns its
->snapins and printers, and every member gets them — including hosts you add
->tomorrow. See the [[1.5/management/web/groups|1.5 version]] of this page for
+>snapins, printers, client modules and power schedules, and every member gets
+>them — including hosts you add tomorrow. See the [[1.5/management/web/groups|1.5 version]] of this page for
 >the old behavior.
 
 A **group** is a label you put on hosts. A host can be in as many groups as
@@ -30,20 +30,21 @@ at once, and each of those groups can hand it something.
 
 ## What a group gives its members
 
-A group holds three kinds of thing, and hands all of them to every member:
+A group holds four kinds of thing, and hands all of them to every member:
 
 | The group holds | Where you set it | What the member gets |
 |---|---|---|
 | **Snapins** | Associations → Snapin Associations | Included when you deploy snapins to that host |
 | **Printers** | Associations → Printer Associations | Installed by the FOG client on its next check-in |
 | **Client modules** | Service Settings → Client Settings | The module is switched on |
+| **Power schedules** | Service Settings → Power Management | The machine shuts down, reboots or wakes on that schedule |
 
-Tick an item and the group grants it. Untick it and the grant is gone. Neither
-click touches a host record, so nothing you do here can overwrite something an
-admin set on a machine directly.
+Grant an item and the group grants it; revoke it and the grant is gone.
+Neither action touches a host record, so nothing you do here can overwrite
+something an admin set on a machine directly.
 
 >[!important] This is the change people notice first
->**A host added to the group later gets the group's snapins and printers.** On
+>**A host added to the group later gets everything in that table.** On
 >1.5 it got nothing — silently — which is why so many sites ended up with a
 >plugin, a script, or a habit of re-pressing the group's buttons after adding
 >a machine. None of that is needed now.
@@ -54,7 +55,8 @@ admin set on a machine directly.
 ## What a host ends up with
 
 A host's real list is **its own assignments plus every grant from every group
-it belongs to**, worked out fresh each time FOG needs it. Two rules cover
+it belongs to**, worked out fresh each time FOG needs it. That is one rule for
+all four kinds of grant, not four rules that happen to agree. Two things cover
 almost every question about it:
 
 1. **The host's own assignments come first.** A snapin you gave a machine
@@ -84,6 +86,29 @@ first group in that order which names one.
 >The host's own Printers and Snapins tabs show what that host was assigned
 >directly. To see what it will actually *get*, look at the groups it is in —
 >the Groups column on the Hosts list names them, in the order above.
+
+### Reading the group list
+
+The Group Management list has a **Grants** column saying what each row hands
+out — *"3 snapins, 1 printer, 2 power schedules"* — and it is worth a look
+before you touch anything, because a group is now two quite different things
+wearing the same name.
+
+A row with an empty Grants column is a **label**: it names a set of machines
+and gives them nothing, so adding a host to it changes nothing about that
+host. A row with entries in that column is machinery, and adding a host to it
+hands that host software, printers, or a shutdown time.
+
+It shows counts rather than names on purpose. The question the column answers
+is *is this row consequential*, and a group with twenty snapins would bury
+that answer under twenty names. Open the group to see which ones.
+
+>[!note] Why the column does not sort
+>It is worked out with one extra query per page of the list rather than being
+>a column of the groups table, which is what keeps a group with five hundred
+>members from costing anything to display. Nothing to sort by means nothing
+>to sort — and if what you want is "groups that grant nothing", reading down
+>the column is quicker than sorting anyway.
 
 ## Snapins are a snapshot; printers are live
 
@@ -121,7 +146,12 @@ host once — so they moved to where that operation belongs: the **Hosts** list.
 **Hosts → tick the hosts you want → Edit selected hosts.**
 
 That does the same job on any selection you can build, not only on a group,
-and you can repeat it whenever you like. Each field has its own action:
+and you can repeat it whenever you like.
+
+The fields are split across the same four tabs a single host's own page uses
+— **General**, **Active Directory**, **FOG Client** and **Plugins** — so a
+field is where you already look for it rather than somewhere in one long
+list. Each field has its own action:
 
 | Action | What it does |
 |---|---|
@@ -132,20 +162,32 @@ and you can repeat it whenever you like. Each field has its own action:
 Fields that only make sense as on/off (joining the domain, hostname
 enforcement) offer *No change*, *Enable on all* and *Disable on all* instead.
 
+>[!tip] Nothing happens on a tab you did not touch
+>Every field on every tab starts on *No change*, so opening a tab and leaving
+>it alone is the same as never opening it. You can set an image on General
+>and a printer level on FOG Client in one pass; you do not have to do one tab
+>at a time.
+
 >[!note] Where each setting went
->| Was on the group page | Now |
->|---|---|
->| Image | Edit selected hosts → **Image** |
->| Kernel, kernel arguments, primary disk, init | Edit selected hosts → **Host Kernel** / **Host Kernel Arguments** / **Host Primary Disk** / **Host Init** |
->| Product key | Edit selected hosts → **Product Key** |
->| BIOS / EFI exit type | Edit selected hosts → **Host BIOS Exit Type** / **Host EFI Exit Type** |
->| Printer management level | Edit selected hosts → **Host Printer Management Level** |
->| Active Directory (join, domain, OU, username, password) | Edit selected hosts → the **Active Directory** fields |
->| Enforce hostname changes | Edit selected hosts → **Host Enforce Hostname Changes** |
->| Screen resolution | Edit selected hosts → **Host Screen Resolution** |
->| Auto log out time | Edit selected hosts → **Auto Log Out Time (in minutes)** |
->| Building | **Removed.** Nothing read it and nothing wrote it — it was a leftover column, not a setting. |
->| Location, OU *(plugins)* | Edit selected hosts → **Host Location** / **Host OU** |
+>Every row is *Hosts → Edit selected hosts*, then the tab and field named.
+>
+>| Was on the group page | Tab | Field |
+>|---|---|---|
+>| Image | General | **Image** |
+>| Kernel, kernel arguments, primary disk, init | General | **Host Kernel** / **Host Kernel Arguments** / **Host Primary Disk** / **Host Init** |
+>| Product key | General | **Product Key** |
+>| BIOS / EFI exit type | General | **Host BIOS Exit Type** / **Host EFI Exit Type** |
+>| Enforce hostname changes | General | **Host Enforce Hostname Changes** |
+>| Printer management level | FOG Client | **Host Printer Management Level** |
+>| Screen resolution | FOG Client | **Host Screen Resolution** |
+>| Auto log out time | FOG Client | **Auto Log Out Time (in minutes)** |
+>| Active Directory (join, domain, OU, username, password) | Active Directory | the **Active Directory** fields |
+>| Location, OU *(plugins)* | Plugins | **Host Location** / **Host OU** |
+>| Building | — | **Removed.** Nothing read it and nothing wrote it — it was a leftover column, not a setting. |
+>
+>Printer management level, screen resolution and auto log out are on **FOG
+>Client** rather than General because they are settings the FOG client acts
+>on, which is where a single host's own page has always kept them.
 
 >[!important] These controls are gone from the group page, not hidden
 >If you are looking for one of them on a group and cannot find it, that is

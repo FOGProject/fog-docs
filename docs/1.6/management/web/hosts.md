@@ -428,9 +428,49 @@ rather than picking one of them to show you.
 >[[1.6/management/web/groups#Settings that are no longer on the group page|Group Management]]
 >for the complete map of where each one went.
 >
->One control on the group page still behaves the 1.5 way: **Power Management**.
->It is unchanged in 1.6 and still writes to whoever is a member when you press
->save.
+>**Power Management** used to be the exception here, and is not any more. A
+>group's power *schedules* are grants like everything else in that table; only
+>an immediate shut down, restart or wake is still a one-time push, because
+>that is a task and a task acts on who is a member right now.
+
+### Shutting down, restarting and waking hosts
+
+Shut down, restart and wake are on the **Queue Task** list, in a **Power**
+pane between *Basic Tasks* and *Advanced Tasks*. Tick the hosts, press *Queue
+Task*, open **Power**, pick one.
+
+They are there because they are tasks: each acts on whatever is selected the
+moment you press it and leaves nothing standing behind it. A host that joins
+the selection a minute later is not affected, and nothing is scheduled.
+
+| Action | How it reaches the machine |
+|---|---|
+| **Wake** | The server sends a wake packet over the network. Nothing has to be installed on the machine, but the network in between has to carry it. |
+| **Shut Down** | The FOG client carries it out at its next check-in. |
+| **Restart** | Same as Shut Down — the FOG client, next check-in. |
+
+>[!note] Shut Down and Restart need the FOG client
+>They are handed to the machine rather than pushed at it, so a machine that
+>is already off, or has no FOG client installed, is simply unaffected — you
+>will not get an error saying so. Wake is the other way round: it is the
+>server that sends it, so it works on a machine with nothing installed at all.
+
+The same three are on a single host's own page, on the same **Queue Task**
+button, so you do not have to go back to the list to restart one machine.
+
+>[!tip] For a *repeating* shutdown, use a schedule
+>These three are one-offs. "Every weeknight at 22:00" is a power schedule —
+>set it on the host's own **Power Management** tab, or grant it from a group
+>so every member gets it. See
+>[[1.6/management/web/groups#What a group gives its members|Group Management]].
+
+>[!info] FOG 1.6
+>Shutting down or restarting a *selection* could not be asked for before —
+>the only route was one host's Power Management tab, one machine at a time,
+>through a form built for scheduling. Wake could, but it was filed under
+>*Advanced Tasks* beside Memtest and the disk wipes. All three are together
+>now, and Wake has moved rather than been duplicated, so it is no longer
+>under Advanced.
 
 ### Creating Host Groups
 
@@ -450,8 +490,8 @@ Typing a name that is not a group yet **creates it** when you add. *Remove*
 only works on groups that already exist.
 
 >[!important] On FOG 1.6 that is the whole job
->A group **grants** its snapins and printers to its members rather than
->copying them, so adding forty machines to a group is all it takes for those
->machines to receive what the group holds — there is no second step and no
->button to press afterwards. Removing a host takes them away again. See
+>A group **grants** its snapins, printers, client modules and power schedules
+>to its members rather than copying them, so adding forty machines to a group
+>is all it takes for those machines to receive what the group holds — there is
+>no second step and no button to press afterwards. Removing a host takes them away again. See
 >[[1.6/management/web/groups|Group Management]].
