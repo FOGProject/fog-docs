@@ -176,11 +176,29 @@ Hosts can also include, but are not required:
 
 > This allows you to add additional kernel arguments for booting the
 > host (ie: vga=6, or irqpoll).
+>
+> Two arguments change which disk FOG images when **Primary Disk** is
+> empty and the image is a single-disk type:
+>
+> - `largesize=1` picks the largest disk by capacity.
+> - `smallsize=1` picks the smallest disk by capacity.
+>
+> Without either, FOG takes the first disk the kernel enumerates. USB and
+> removable devices are only considered when no internal disk is present,
+> so a USB stick or a USB device that exposes its driver files as a small
+> disk is never chosen over an internal drive. Both arguments can be set
+> on a group to apply to every host in it.
 
 ##### Primary Disk
 
 > This option allows you to force a device to use during imaging if fog
 > fails to detect the correct device node.
+>
+> The value can be a device path such as `/dev/nvme0n1`, or, because
+> device paths can change between boots, the disk's serial number, WWN,
+> filesystem UUID, or exact size in bytes. Naming a USB or removable
+> device here works: the automatic rules above only apply when this field
+> is empty.
 
 ------------------------------------------------------------------------
 
