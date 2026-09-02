@@ -194,41 +194,55 @@ there is no second step, and no button to press afterwards.
   anything when *Abort snapin sequence on failure* is enabled for the task.
 - **Service Settings → Client Settings** — the group's modules. Just the
   grant: screen resolution and auto-logout are set from the Hosts list.
-- **Service Settings → Power Management** — schedules power tasks across
-  members. **This one still behaves the 1.5 way**, and knowingly so: see the
-  warning below.
+- **Service Settings → Power Management** — the group's power **grants**.
+  Every member runs these schedules, including hosts added later. Immediate
+  actions on the same tab are still a one-time push, because they are a task;
+  see below.
 - **Inventory**, **Login History**, **History Items** — reporting across the
   group's members.
 - **Site** — which site the group belongs to, if you use site scoping.
 
->[!warning] Power Management is still a one-time push
->Saving a power schedule on a group writes **one row per host that is a
->member at that instant**, exactly as the removed controls above did. It is
->the last control on the group page that still works this way.
+>[!note] Power Management: a schedule is a grant, an immediate action is a task
+>The tab holds both, and they are different kinds of thing on purpose.
 >
->What that means in practice:
+>**Create New Scheduled** writes one row **about the group**. Every host in
+>the group runs it, hosts added later included, and nothing is written onto a
+>host. Revoking it with *Delete selected* takes it away from every member at
+>once. A host's own schedules are untouched either way — what a machine
+>actually runs is its own schedules plus every grant from every group it is
+>in, worked out fresh each time, with the same schedule reached twice counted
+>once.
 >
->- a host **added** to the group afterward gets **no** schedule;
->- a host **removed** from the group **keeps** the schedule it was given, and
->  nothing on the group page will take it away — *Delete all* on the group's
->  Power Management tab only reaches current members;
->- saving **adds** a schedule rather than replacing the one that is there, so
->  a host accumulates every schedule any of its groups ever gave it. Saving
->  the *same* schedule twice is harmless — the row is keyed on the host plus
->  the cron expression plus the action, so an identical save lands on the row
->  that already exists — but changing the time and saving again leaves the old
->  time in place alongside the new one.
+>**Create New Immediate** is a task. It shuts down, reboots or wakes the hosts
+>that are in the group **right now**, and a host added a minute later is not
+>affected. That is what a task should do, and it is why it is not a grant: a
+>standing grant of "shut down immediately" would fire again for every machine
+>that ever joined the group.
 >
->It was left alone in 1.6 rather than moved, because a schedule is a cron
->expression plus an action rather than a single value — it does not fit the
->*No change / Set on all / Clear on all* shape that *Edit selected hosts*
->uses, and forcing it into that shape would have been worse than leaving it
->honest. Making it a grant like snapins and printers is the right fix and is
->a change to the schema, so it is not in this release.
+>Two schedules that differ only in time are two grants — saving a new time
+>does not replace the old one, so revoke the one you are replacing. Saving the
+>*same* schedule twice is a no-op.
 >
->Until then, treat the group's Power Management tab as **"apply to whoever is
->in the group right now"**, and check a host's own Power Management tab when
->you want to know what it is actually scheduled to do.
+>**Clear schedules from member hosts** is the odd one out, and it is not an
+>undo for the grants above. It reaches into the member hosts and deletes the
+>schedules **they** hold — which, on a server upgraded from 1.5 or from an
+>early 1.6, is where every schedule this tab ever created ended up. It also
+>removes schedules those hosts were given individually, so read it as "reset
+>the members", not "clear this group".
+>
+>A host's own Power Management tab remains the answer to *what is this machine
+>actually scheduled to do*, because it is the only place the host's own rows
+>and its groups' grants are not the same thing.
+
+>[!warning] Daily schedules were running on Sundays only, on PHP 8
+>Fixed in 1.6. A schedule whose weekday was `*` — which is every daily
+>schedule — was sent to the FOG client as `... 7`, meaning Sunday. The
+>comparison that normalizes FOG's `-1` for Sunday treated `*` as negative on
+>PHP 8, where it had not on PHP 7.4, so a working schedule stopped running
+>when the server's PHP was upgraded and nothing about FOG changed. If you have
+>power schedules that quietly stopped happening, this is why. Wake schedules
+>were never affected — those are sent by the server, which never ran that
+>comparison.
 
 ## Modules have one extra rule: only a host can turn one off
 
