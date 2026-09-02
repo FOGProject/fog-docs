@@ -166,9 +166,30 @@ function flatten(node, out) {
   for (const child of children) flatten(child, out)
 }
 
+// Mirrors the Explorer's filterFn in quartz.config.yaml. The 1.5/1.6 trees are
+// not in the sidebar, so Previous/Next must not walk into them either --
+// otherwise "Next" from the last Development page steps into a tree the reader
+// cannot see in the nav. Pages inside those trees get no Previous/Next of their
+// own, which is right: they are reached deliberately from a chooser, not by
+// reading the site in order.
+const VERSION_TREES = ["1.5", "1.6"]
+const inVersionTree = (slug) =>
+  VERSION_TREES.some((v) => slug === v || slug.startsWith(v + "/"))
+
+// allFiles carries Quartz's generated 404 page, which is not in the content
+// index and must never be a Previous/Next target. It only surfaced once the
+// version trees stopped being the last thing in reading order, at which point
+// "Next" on the final Development page read "Not Found".
+const NOT_A_DESTINATION = new Set(["404", "tags"])
+
 function buildOrderedList(allFiles) {
   const visible = allFiles.filter(
-    (f) => f.slug && !f.unlisted && f.slug !== "tags" && !f.slug.startsWith("tags/"),
+    (f) =>
+      f.slug &&
+      !f.unlisted &&
+      !NOT_A_DESTINATION.has(f.slug) &&
+      !f.slug.startsWith("tags/") &&
+      !inVersionTree(f.slug),
   )
   const root = new TrieNode([])
   for (const file of visible) root.insert(file.slug.split("/"), file)

@@ -160,6 +160,27 @@ plugins:
   - source: "@quartz-community/explorer"
     enabled: true
     options:
+      # Keep the 1.5/1.6 version trees out of the sidebar. Their pages are
+      # reached through the version chooser that sits at each forked topic's
+      # normal place in the tree, through the pinned FOG 1.5 / FOG 1.6 pills
+      # above it, and through search. Showing the trees here as well listed
+      # every forked page three times -- once as its chooser and once inside
+      # each version tree -- which is more nav, not less, and buries the topic
+      # tree the choosers exist to restore.
+      #
+      # Supplying filterFn REPLACES the plugin default, so the "tags" exclusion
+      # has to be repeated here or the tag tree comes back.
+      #
+      # prev-next-nav applies the same exclusion, so Previous/Next cannot walk
+      # into a tree the sidebar does not show.
+      filterFn: |
+        (node) => {
+          if (node.slugSegment === "tags") return false
+          if (node.slugSegments.length === 1) {
+            if (node.slugSegment === "1.5" || node.slugSegment === "1.6") return false
+          }
+          return true
+        }
       # Order top-level folders (installation, management, kb, development,
       # then the 1.5/1.6 version trees); alphabetical otherwise. Also applies
       # an explicit per-directory order for sections where plain alphabetical
