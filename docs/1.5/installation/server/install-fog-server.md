@@ -146,7 +146,11 @@ directory — there is no branch to move, so use the bootstrap installer instead
 It clones a checkout and runs the installer over your existing install, which
 it finds through `/etc/fog/fog.conf`:
 
-    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh | bash -s -- --channel rc
+    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh | sudo bash -s -- --channel rc
+
+`sudo` goes before `bash`, not before `curl`. It is safe to run on a server
+that already has FOG: the script finds the existing install through
+`/etc/fog/fog.conf` and upgrades it in place rather than installing beside it.
 
 > [!note]
 > `utils/FOGUpdater/fogupdater.sh` is **retired** and no longer updates

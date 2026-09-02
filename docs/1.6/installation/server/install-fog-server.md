@@ -33,10 +33,20 @@ first, one command does the whole of this page's *Prerequisite* and *Run the
 installer* sections. It installs `git`, clones the repository, checks out the
 branch for the channel you asked for, and starts the installer:
 
-    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh | bash -s -- --channel beta
+    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh | sudo bash -s -- --channel beta
 
 The installer then runs **interactively**, exactly as it does when you start it
 by hand, so you still answer every prompt yourself.
+
+> [!tip]
+> Put `sudo` where it is above — before `bash`, not before `curl`. `sudo` asks
+> for your password on the terminal rather than on standard input, so the pipe
+> is unaffected.
+>
+> If you leave it out, the script notices it is not root and re-runs itself
+> under `sudo` — but from a pipe it has no file to hand `sudo`, so it has to
+> download itself a second time to do it. Including `sudo` yourself avoids
+> that.
 
 > [!warning]
 > That runs a script from the internet as root, and the URL points at a
@@ -66,6 +76,22 @@ rest.
 If the path already contains a git checkout, the script leaves it completely
 alone and points you at `bin/updatefog.sh`. It will not clone over, reset, or
 pull a working tree that is already there.
+
+**If FOG is already installed on the machine, this is safe to run.** The script
+reads `/etc/fog/fog.conf` to find the existing server:
+
+- If that install has a git checkout recorded, the script hands over to *that*
+  checkout's `bin/updatefog.sh`, passing your `--channel` and `--yes` through.
+  Nothing is cloned, and the checkout your server was installed from is the one
+  that gets updated.
+- If it has no checkout — a tarball install — the script clones one and says
+  plainly that it is **upgrading the running server in place**. Your database
+  and settings are kept.
+
+> [!note]
+> The clone is large. The repository holds roughly 200,000 objects, so expect
+> several minutes on a first install, and longer on a slow connection. The
+> receive phase can look like nothing is happening.
 
 Everything below is the same thing done by hand, which is still the right
 choice if you want to see each step.
