@@ -179,7 +179,8 @@ firmware UI instead.
 >Microsoft's certificates from `db` and Windows stops booting.
 >
 >**Changing `db` is measured into TPM PCR 7**, so it can trigger BitLocker
->recovery. Suspend BitLocker first on machines that use it.
+>recovery. Suspend BitLocker first on machines that use it; see
+>[[tpm-bitlocker-windows-hello|TPM, BitLocker and Windows Hello after imaging]].
 >
 >**`db` is a firmware-level, machine-wide, effectively permanent trust anchor.**
 >Anything your server's key signs will boot before any OS — a broader grant than a

@@ -41,6 +41,9 @@ have done the following:
 -   Install the FOG client on it: after deployment, the FOG client takes
     care of additional tasks, like changing the host name, install
     additional applications, install printers, etc..
+-   Decrypt BitLocker fully and do not enroll a Windows Hello PIN; FOS
+    refuses an encrypted partition and a PIN cannot survive imaging. See
+    [[tpm-bitlocker-windows-hello|TPM, BitLocker and Windows Hello after imaging]]
 -   Sysprep the machine and shut it down
 
 We're assuming here that you have a running FOG server, that you are
