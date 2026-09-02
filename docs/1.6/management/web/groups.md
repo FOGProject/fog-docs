@@ -145,11 +145,16 @@ enforcement) offer *No change*, *Enable on all* and *Disable on all* instead.
 >| Screen resolution | Edit selected hosts → **Host Screen Resolution** |
 >| Auto log out time | Edit selected hosts → **Auto Log Out Time (in minutes)** |
 >| Building | **Removed.** Nothing read it and nothing wrote it — it was a leftover column, not a setting. |
+>| Location, OU *(plugins)* | Edit selected hosts → **Host Location** / **Host OU** |
 
-The old controls are **still on the group page in 1.6**, marked deprecated, so
-nobody loses a workflow in the middle of an upgrade. They are removed in a
-later release. Where they remain, they still behave the old way: the value is
-applied **once**, to the hosts that are members at that moment.
+>[!important] These controls are gone from the group page, not hidden
+>If you are looking for one of them on a group and cannot find it, that is
+>why. There is no setting to bring them back and no compatibility mode. The
+>table above is the complete map of where each one went.
+>
+>The `location` and `ou` plugins each had a group tab doing the same thing.
+>Those are gone too, and both settings appear in **Edit selected hosts**
+>alongside the built-in fields.
 
 ## Groups as labels: doing it from the Hosts list
 
@@ -173,9 +178,9 @@ there is no second step, and no button to press afterwards.
 
 ## The rest of the group page
 
-- **General** — the group's own name and description, plus the deprecated
-  push-to-all fields described above.
-- **Image** — the deprecated one-time image push.
+- **General** — the group's own name, description and *Group Order*. That is
+  all it holds now; everything else that used to be on this card is in the
+  table above.
 - **Tasks** — deploy, capture, multicast, wake, and the rest, run across every
   current member. Tasking is unchanged: it acts on the membership at the
   moment you start the task, which is what you want from a task.
@@ -187,11 +192,12 @@ there is no second step, and no button to press afterwards.
   **Snapin Run Order** card, which orders the group's own snapins. A host runs
   its own snapins first, then these, in this order. Order only changes
   anything when *Abort snapin sequence on failure* is enabled for the task.
-- **Service Settings → Client Settings** — the group's modules, plus the
-  deprecated screen-resolution and auto-logout pushes.
-- **Service Settings → Active Directory** — deprecated; see the table above.
+- **Service Settings → Client Settings** — the group's modules. Just the
+  grant: screen resolution and auto-logout are set from the Hosts list.
 - **Service Settings → Power Management** — schedules power tasks across
-  members. Not deprecated: it creates tasks rather than copying a value.
+  members. This one stays, because it creates tasks rather than copying a
+  value: a scheduled task is a real thing the group owns, not a value stamped
+  onto whoever happened to be a member.
 - **Inventory**, **Login History**, **History Items** — reporting across the
   group's members.
 - **Site** — which site the group belongs to, if you use site scoping.
@@ -279,7 +285,7 @@ replace, because they also apply to hosts that were already members.
 ## See also
 
 - [[group-shared-state|Group Shared State]] — the detail behind resolution
-  order, precedence, and the deprecated push-to-all controls.
+  order and precedence.
 - [[1.6/management/web/hosts|Host Management]] — the Hosts list, mass edit and
   bulk group membership.
 - [[management/web/snapins|Snapin Management]] and

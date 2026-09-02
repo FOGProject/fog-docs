@@ -59,14 +59,16 @@ three different levels, applied in order of most to least specific:
 -   **Individual host** — Web UI: Host Management → select a host →
     Active Directory. See below for the field-by-field walkthrough.
 
->[!warning] FOG 1.6: use the Hosts list, not the group page
->The group-level batch apply above is **deprecated in FOG 1.6** and is
->removed in a later release. It still works and still behaves exactly as
->described — one-time, to current members only — but the supported way to set
->AD across many hosts is now **Hosts → tick the hosts → Edit selected
->hosts**, where each field carries an explicit *No change* / *Set on all* /
->*Clear on all*. That works on any selection, not only on a group, and can be
->repeated whenever you like.
+>[!warning] FOG 1.6: the group page has no Active Directory tab
+>The group-level batch apply described above is **FOG 1.5 only**. It was
+>removed in 1.6, where AD across many hosts is set from **Hosts → tick the
+>hosts → Edit selected hosts**, with each field carrying an explicit
+>*No change* / *Set on all* / *Clear on all*. That works on any selection,
+>not only on a group, and can be repeated whenever you like.
+>
+>The old behavior is why it went: it wrote the AD details onto whichever
+>hosts were members at that instant, so a host added to the group afterward
+>never got them.
 >
 >Nothing changes on FOG 1.5, where the group page is the only way to do this.
 >See [[1.6/management/web/groups#Settings that are no longer on the group page|Group Management]].
