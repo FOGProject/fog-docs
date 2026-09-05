@@ -77,6 +77,7 @@ page itself: [[oidc|OpenID Connect Sign-in]], [[local-login|The Local Login Page
 [[certificates|The Certificates Page]],
 [[supported-customizations|Supported customizations]],
 [[group-shared-state|Group Shared State]],
+[[host-identity|Host Identity]],
 [[storage-node-selection-hooks|Storage Node Selection Hooks]],
 [[plugin-schema-migrations|Plugin Schema Migrations]], and
 [[roles|Roles & Permissions]] (1.5's equivalent is the accesscontrol plugin,

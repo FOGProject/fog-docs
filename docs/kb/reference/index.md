@@ -39,6 +39,7 @@ These all differ between FOG 1.5 and 1.6; each page links to both versions.
 **1.6-only features**
 
 - [[group-shared-state|Group Shared State]]
+- [[host-identity|Host Identity]]
 - [[SFTP|SFTP]]
 
 **Building FOS components**

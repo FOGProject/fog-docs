@@ -162,7 +162,7 @@ Add-FogHostMac -hostid 123 -macaddress "12:34:56:78:90" -primary -forceupdate
 >[!tip]
 >You can set the description field on Windows hosts with the API so that this
 >output is more helpful in these scenarios. See also
->[[1.5/management/web/hosts#MAC address|MAC address]].
+>[[1.5/management/web/hosts#Multiple MAC Address Support|Multiple MAC Address Support]].
 
 ### Fix no Primary Mac in the database
 

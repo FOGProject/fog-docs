@@ -132,7 +132,7 @@ Add-FogHostMac -hostid 123 -macaddress "12:34:56:78:90" -primary -forceupdate
 
 >[!tip]
 >You can set the description field on Windows hosts with the API so that this output is more helpful in these scenarios. See also
->[[1.6/management/web/hosts#MAC address|MAC address]]
+>[[1.6/management/web/hosts#Multiple MAC Address Support|Multiple MAC Address Support]]
 
 ### Fix no Primary Mac in the database
 
@@ -182,3 +182,10 @@ In the database you would update the row in the `hostMAC` table to have `hmPendi
 ## Host has no macs assigned
 
 Use [[https://fogapi.readthedocs.io/en/latest/commands/Add-FogHostMac/|Add-FogHostMac]] to add a new mac to the host using the `-primary` and `-forceupdate` switches to ensure it gets added.
+
+>[!note]
+>A host in this state can still be *recognised* at boot if `FOG_HOST_IDENTIFY_SMBIOS`
+>is set to Enforce and the host has an inventory row - but it cannot be tasked,
+>because every imaging task hands FOS the host's stored primary MAC on its
+>kernel command line. Add the MAC back. See
+>[[kb/reference/host-identity#What the firmware identity does not do|Host Identity]].
