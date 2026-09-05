@@ -29,18 +29,18 @@ into the database, so changing it did not re-present the times already
 recorded, it changed what those recorded times were taken to *mean*. FOG now
 writes **UTC**, and `FOG_TZ_INFO` no longer has any bearing on what is stored.
 
-!!! warning "Changing FOG_TZ_INFO still re-labels the older records"
-    Dates written *before* your server moved to UTC were written in whichever
-    zone `FOG_TZ_INFO` named at the time, and that is still how they are read.
-    Changing the setting therefore changes how those older dates are
-    interpreted, though not how anything written since is. Nothing is
-    rewritten, and nothing warns you.
-
-    Those older dates are marked on screen — see
-    [[unadjusted-timestamps|Timestamps Before the UTC Change]].
-
-    If you only want people to *see* a different timezone, that is the per-user
-    setting below, and it is the one you almost certainly want.
+>[!warning] Changing FOG_TZ_INFO still re-labels the older records
+>Dates written *before* your server moved to UTC were written in whichever
+>zone `FOG_TZ_INFO` named at the time, and that is still how they are read.
+>Changing the setting therefore changes how those older dates are
+>interpreted, though not how anything written since is. Nothing is
+>rewritten, and nothing warns you.
+>
+>Those older dates are marked on screen — see
+>[[unadjusted-timestamps|Timestamps Before the UTC Change]].
+>
+>If you only want people to *see* a different timezone, that is the per-user
+>setting below, and it is the one you almost certainly want.
 
 ## Your own timezone
 

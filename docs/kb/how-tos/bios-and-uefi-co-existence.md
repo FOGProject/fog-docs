@@ -209,7 +209,7 @@ DNS Server. The range for this configuration is set to 10.0.0.20 through
     }
 
 When you have Mac OS clients as well you might want to check out this:
-[FOG_on_a_MAC#architecture](FOG_on_a_MAC#architecture "wikilink")
+[FOG on a MAC](https://wiki.fogproject.org/wiki/index.php?title=FOG_on_a_MAC "FOG on a MAC")
 
 Restart the DHCP service and you are good to go!
 

@@ -364,7 +364,7 @@ created it was gone.
 One thing you may need to do. The trigger copied `hostADPass` — the Active
 Directory join password — from the template host onto hosts that joined the
 group. If you are rotating a join account, read the warning on
-[[1.6/management/web/plugins#persistentgroups is gone, because the defect it worked around is fixed|the Plugins page]]
+[[1.6/management/web/plugins#The bundled plugins|the Plugins page]]
 before you assume the old credential is gone.
 
 If you had it installed, check afterward that
