@@ -297,6 +297,13 @@ $subnets | ForEach-Object { # loop through each subnet
     1.  **Host Management** → **\[Selected Host\]** → *Additional MAC*
     2.  **Fog Configuration** → **MAC Address List** → *Approve Pending Addresses*
 
+>[!note] A MAC is not the only way FOG can recognise a machine
+>FOG 1.6 can also identify a booting host by what its firmware reports - the
+>system UUID, serials and chassis asset tag - which covers shared USB NICs,
+>docking stations and replaced network cards. It is a second opinion, not a
+>replacement, and it changes nothing until you turn it up. See
+>[[host-identity|Host Identity]].
+
 -   **Fog Configuration** → **MAC Address List** At this location
     you can also *"Update Current Listings"* giving updated
     information on the MAC Addresses and their manufactures, listing it

@@ -64,6 +64,39 @@ browser or workflow.
 >A few tables — such as the FOG Settings table itself — always use paging
 >regardless of this setting, because they are grouped and search-driven.
 
+## Host identity (MAC address vs. firmware)
+
+>[!info] FOG 1.6
+>This setting does not exist on FOG 1.5, which identifies a host by its MAC
+>address alone.
+
+FOG identifies a booting machine by its MAC address. Because a MAC belongs to
+a network interface rather than to a machine, that breaks wherever the
+interface is shared or replaced - a USB NIC carried around a bench, a docking
+station, a laptop with no onboard Ethernet, a swapped network card. FOG 1.6
+can additionally read the machine's SMBIOS identity (system UUID, system
+serial, baseboard serial and chassis asset tag) and use it as a second
+opinion.
+
+> Other Settings → FOG Settings → General Settings → FOG_HOST_IDENTIFY_SMBIOS
+
+- **Off - MAC address only** - the firmware values are ignored entirely.
+- **Log - MAC decides, log disagreements** *(default)* - the MAC still decides
+  every question. Whenever the firmware would have answered differently, one
+  line is written to the web server error log naming both answers. This mode
+  changes no behaviour; it exists so you can find out what your own hardware
+  reports before trusting any of it.
+- **Enforce - firmware identity wins** - a unique firmware match overrides the
+  MAC at boot, and at registration a machine with an unknown MAC whose
+  firmware names exactly one host is attached to that host rather than
+  registering as a duplicate. Overrides are still logged.
+
+Leave it on **Log** until your own error log tells you your hardware is
+trustworthy, then switch. Going back is the same single change.
+
+[[host-identity|Host Identity]] covers the matching rules, the log lines and
+how to read them, and a step-by-step procedure for moving from Log to Enforce.
+
 ## Boot Image Key Map
 
 It is possible to change the keymap or keyboard layout of the linux boot
