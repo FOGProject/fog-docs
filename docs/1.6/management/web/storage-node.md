@@ -26,7 +26,7 @@ tags:
     1. Increased throughput 
     2. Redundant Storage 
     3. Scalability 
-- Also see [ Storage Nodes](Knowledge_Base#Storage_Nodes "wikilink") for tutorials.
+- Also see the [[kb/index|Knowledge Base]] for tutorials.
  
 ## Adding a Storage Node
 
