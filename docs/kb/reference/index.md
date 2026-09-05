@@ -40,6 +40,7 @@ These all differ between FOG 1.5 and 1.6; each page links to both versions.
 
 - [[group-shared-state|Group Shared State]]
 - [[host-identity|Host Identity]]
+- [[fog-agent-reference|FOG Agent Reference]]
 - [[SFTP|SFTP]]
 
 **Building FOS components**

@@ -15,6 +15,11 @@ tags:
 
 # Install the FOG client
 
+>[!info] FOG 1.6 has a new agent
+>On a FOG 1.6 server, install the [[install-fog-agent|FOG Agent]] instead.
+>The client on this page is the legacy client; it keeps working against 1.6
+>during a migration, but new capabilities land only in the agent.
+
 The FOG client is an agent running on the machines you are managing with
 Fog. With the FOG client you can perform various tasks such as managing
 printers, change the host name and join Active Directory (for Windows

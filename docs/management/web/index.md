@@ -40,6 +40,7 @@ Documentation related to how to use the web management ui.
 - [[images|Image Management]] — differs between FOG 1.5 and 1.6
 - [[storage-node|Storage Node Management]] — differs between FOG 1.5 and 1.6
 - [[snapins|Snapin Management]]
+- [[software|Software Management]] — FOG 1.6 and later
 - [[printers|Printer Management]]
 
 **Operations**
@@ -51,7 +52,8 @@ Documentation related to how to use the web management ui.
 **System**
 
 - [[dashboard|Dashboard]]
-- [[service|Fog Service (aka Client) Management]]
+- [[fog-agent|The FOG Agent]] — FOG 1.6 and later
+- [[service|Fog Service (aka Client) Management]] — the legacy client
 - [[config|Fog Configuration]] — differs between FOG 1.5 and 1.6
 - [[certificates|The Certificates Page]] — FOG 1.6 and later
 - [[plugins|Plugins]] — differs between FOG 1.5 and 1.6
