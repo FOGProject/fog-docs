@@ -21,6 +21,12 @@ tags:
 >described under [Why you no longer need a placeholder .bat](#why-you-no-longer-need-a-placeholder-bat)
 >still applies there.
 
+>[!tip] Prefer Software on 1.6 with the FOG Agent
+>If your hosts run the [[install-fog-agent|FOG Agent]], assign packages
+>through [[software|Software Management]] instead. It uses the same
+>Chocolatey, but knows what is installed, corrects drift, and reports the
+>installed version per host. The templates below run once and cannot.
+
 [Chocolatey](https://chocolatey.org/) is a package manager for Windows. If
 your hosts already have it, you can let it do the fetching and installing and
 keep FOG doing what it is good at — deciding *which* machines get *what*, and

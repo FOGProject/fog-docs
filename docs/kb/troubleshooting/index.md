@@ -16,6 +16,7 @@ issues. If you have an issue not listed here use forums.fogproject.org
 or github issues to report the problem and get help.
 
 - [[troubleshoot-tftp|Troubleshooting TFTP]]
+- [[fog-agent-troubleshooting|Troubleshooting the FOG Agent]] — FOG 1.6 and later
 - [[troubleshoot-ftp|Troubleshooting FTP]]
 - [[sector-size-mismatch|Deploy Refused — Sector Size Mismatch]]
 - [[database-schema-update|Database Schema Updates]] — differs between FOG 1.5 and 1.6
