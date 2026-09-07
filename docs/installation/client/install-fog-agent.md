@@ -285,12 +285,19 @@ has done.
 
 ## Upgrading
 
-The agent does not update itself. On Windows, run the newer MSI; on Linux,
-replace the binary and restart the unit. Enrollment survives both because
-the state directory is untouched. The agent is released more often than
-FOG, and a newer agent against an older 1.6 server is the expected case:
-the server tells the agent which capabilities it has, and the agent leaves
-the rest idle.
+An enrolled agent can update itself once you name a version on the server —
+see [[management/web/agent-self-update|Agent Self-Update]]. That is the
+normal way to move a fleet, and it is off until you set a version, so
+nothing starts moving on its own.
+
+By hand, which is how you get to a version that can self-update and how you
+fix a machine you are standing at: on Windows run the newer MSI, on Linux
+replace the binary and restart the unit. Enrollment survives both, because
+the state directory is untouched.
+
+The agent is released more often than FOG, and a newer agent against an
+older 1.6 server is the expected case: the server tells the agent which
+capabilities it has, and the agent leaves the rest idle.
 
 ## Moving from the legacy client
 
