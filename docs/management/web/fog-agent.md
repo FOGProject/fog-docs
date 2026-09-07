@@ -60,6 +60,12 @@ agent stays idle on it and logs one line saying so.
 | Task reboot | Task Reboot | Reboots the machine into a queued imaging task, arming a one-time network boot first where the firmware allows |
 | User sessions | User Tracker | Reports who is logged in, as sessions with a start and an end |
 | Facts | `FOG_AGENT_INVENTORY_ENABLED` | Hardware inventory, installed software, Secure Boot posture, printers present, directory membership, network interfaces |
+| Self-update | *none — a version, not a switch* | Replaces its own binary with a version you name, after verifying it against a signing certificate compiled into itself. See [[agent-self-update\|Agent Self-Update]] |
+
+Self-update is the one row with no module behind it, because there was no
+legacy module to inherit. It is gated on `FOG_AGENT_DESIRED_VERSION` being
+set, and that ships empty — so no host starts updating itself because you
+upgraded a server.
 
 Display Manager, GreenFOG and the auto log out background image are gone.
 The agent does not implement them and their settings were removed from 1.6.
@@ -87,6 +93,11 @@ approving anything further; enrollments it already approved are unaffected.
 
 Three places on a host's page belong to the agent:
 
+- **General → Desired Agent Version.** The version this host should be
+  running, overriding the fleet-wide setting. Empty means it follows the
+  fleet. The host list carries both this and **Agent Version**, what the
+  machine is actually running, so a rollout is a matter of watching the two
+  agree — see [[agent-self-update|Agent Self-Update]].
 - **General → Last Agent Check-In.** When the agent last polled. It sits
   beside Last Client Check-In and Last Successful Ping, and the same "ping
   recent, check-in old" reading described on
@@ -332,6 +343,8 @@ All under **FOG Configuration → FOG Settings**, in the category named.
 | Setting | Category | Default | Meaning |
 |---|---|---|---|
 | `FOG_AGENT_ENROLL_DEPLOY_WINDOW` | General Settings | 24 | Hours after a deploy during which the deployed host's agent enrolls without approval. 0 turns the shortcut off |
+| `FOG_AGENT_DESIRED_VERSION` | General Settings | empty | The agent version every enrolled host should run. Empty means no host ever updates itself. A host's own Desired Agent Version overrides it |
+| `FOG_AGENT_UPDATE_MANIFEST_URL` | General Settings | empty | Where agents look for the signed release manifest. Empty means the location built into the agent |
 | `FOG_AGENT_INVENTORY_ENABLED` | FOG Client | 1 | Whether agents collect and report facts at all |
 | `FOG_AGENT_WAKE_RELAY_ENABLED` | FOG Agent | 0 | Whether the server may ask an agent to wake a neighbour |
 | `FOG_SOFTWARE_DRIFT_INTERVAL` | FOG Client | 21600 | Seconds between software re-checks when the set has not changed. Shown as *Re-check Interval* on the Software module's settings |

@@ -75,6 +75,8 @@ const EXPLICIT_ORDER = {
     "config",
     "certificates",
     "plugins",
+    "fog-agent",
+    "agent-self-update",
   ],
   "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
   "1.5/kb/reference": [

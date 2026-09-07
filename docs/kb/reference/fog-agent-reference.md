@@ -36,6 +36,8 @@ platform's state directory below.
 | `fog-agent status` | Prints the state directory, server URL, host id, whether a key exists and whether the machine is enrolled |
 | `fog-agent renew` | Renews the certificate now for the same key, regardless of expiry |
 | `fog-agent version` | Prints the version, OS and architecture |
+| `fog-agent update --to VERSION [--manifest URL]` | Verifies and installs a version now, instead of waiting for a poll. Takes the same path the server-driven update takes — same signature check, same rollback arming, same swap. There is deliberately no `latest` |
+| `fog-agent update-revert` | Puts back the binary an update replaced. A separate command on purpose: the code that reverts must not live inside a process too broken to run |
 | `fog-agent setup --server URL --ca FILE [--token T]` | Windows. Prepares the state directory, its permissions and the first enrollment request without registering a service. The MSI runs this |
 | `fog-agent service install --server URL --ca FILE [--token T]` | Windows. `setup`, then copies the binary to Program Files, registers and starts the service |
 | `fog-agent service uninstall`, `start`, `stop`, `status` | Windows service control. On Linux and macOS the agent is run by systemd or launchd and this command refuses |
@@ -56,7 +58,14 @@ The state directory holds the private key, the issued certificate, the CA
 bundle the agent trusts, the server URL, the host id, the firmware identity
 the key was generated for, and a small amount of bookkeeping (which desired
 state revision was applied, hashes of the facts last sent, the minute a
-schedule last fired). The log records what the agent did. It never contains
+schedule last fired).
+
+Self-update adds three things beside the binary: a record of what an update
+replaced and by when the replacement must prove itself, the highest release
+manifest sequence this agent has accepted, and the previous binary itself
+with a `.prev` suffix. The previous binary is kept after probation passes,
+so `fog-agent update-revert` still works hours later — see
+[[management/web/agent-self-update#Rollback|Agent Self-Update]]. The log records what the agent did. It never contains
 the key, the certificate, a token, or a credential the server sent.
 
 ## Identity and trust
@@ -93,6 +102,15 @@ The agent trusts only the CA bundle it was given at install, never the
 operating system trust store, and it talks to exactly one server. A
 different server with a valid public certificate is still not its server.
 
+Self-update is the one narrow exception, and it costs nothing. Fetching a
+release manifest and its artifact consults the system trust store plus the
+FOG server's own CA, because that fetch may go to a mirror rather than to
+FOG — but TLS is not what is trusted there. The manifest carries its own
+signature and the artifact carries its own hash, both checked against a
+code-signing certificate compiled into the agent binary. That is why the
+server is allowed to nominate a mirror at all: the transport is bandwidth
+and privacy, not a trust decision.
+
 Where the FOG certificate authorities sit relative to each other is on
 [[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]].
 
@@ -117,6 +135,12 @@ idle, with one informative log line, never an error. This is why a current
 agent runs against an older 1.6 server without complaint, and why the
 project releases the agent independently of FOG.
 
+Self-update needed no route of its own. The desired version is a value in
+the poll answer's existing state, alongside every other capability, and an
+older agent that does not understand it ignores it — the agent discards
+fields it does not know. The agent's own version rides up on every poll,
+which is what the host list's Agent Version column shows.
+
 Credentials never ride a routine poll. The domain-join credential appears
 only inside a poll answer for a host that is not joined and should be, and
 is not sent again once the host reports it is joined.
@@ -136,6 +160,7 @@ is not sent again once the host reports it is joined.
 | Software re-check | `FOG_SOFTWARE_DRIFT_INTERVAL`, default 21600 seconds, plus at every change of the assigned set, plus every poll while Chocolatey is missing |
 | Printer set re-check | Hourly, plus at every change of the assigned set |
 | Power schedules | On their own cron minute, on the machine's clock |
+| Update probation | 15 minutes from the swap. One successful authenticated poll clears it; the deadline passing without one puts the previous binary back |
 
 ## What the agent sends
 

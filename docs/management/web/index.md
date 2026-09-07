@@ -53,6 +53,7 @@ Documentation related to how to use the web management ui.
 
 - [[dashboard|Dashboard]]
 - [[fog-agent|The FOG Agent]] — FOG 1.6 and later
+- [[agent-self-update|Agent Self-Update]] — FOG 1.6 and later
 - [[service|Fog Service (aka Client) Management]] — the legacy client
 - [[config|Fog Configuration]] — differs between FOG 1.5 and 1.6
 - [[certificates|The Certificates Page]] — FOG 1.6 and later
