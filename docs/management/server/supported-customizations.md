@@ -50,6 +50,16 @@ work this way.
 **Not preserved** means exactly that. Those cases are listed at the end
 rather than left for you to discover.
 
+**"Yours to place" is about names, not locations.** A file survives because
+what FOG saves is *everything in the live directory that the shipped source
+tree does not contain* — so it is the **name** that earns the protection, not
+where you put it.
+
+>[!warning]
+>If you give your file the same name as one FOG ships, FOG wins. Your
+>`bzImage` is not yours; that is the name of the kernel FOG installs, and it
+>is replaced on every run. Use a name of your own, or mark the file to keep.
+
 ## The two customizations directories
 
 There are two. They are not interchangeable, and they run in **opposite
@@ -59,6 +69,7 @@ directions**. Each carries a `readme.txt` saying which is which.
 |---|---|---|
 | Written by | **FOG** | **you** |
 | What it is | copies FOG makes of your files before it rebuilds the tree they live in, and restores from afterward | an input FOG only ever reads |
+| Conflict rule | restores by **absence** — a saved file is put back only when the rebuilt tree no longer has it | adopts by **presence** — what you put there overrides what FOG would otherwise generate |
 | Holds | `ipxe-bg/`, `ipxe-legacy/`, `kernel-backups/` | `pki/` |
 
 Strictly the first is `$fogprogramdir/customizations`. It sits outside the web
@@ -71,6 +82,17 @@ and irreplaceable, so they belong under `/etc` — what a backup policy and a
 config-management run already capture. Kernels and boot images are large,
 rebuildable binaries, and the filesystem standard does not put binaries under
 `/etc`. FOG's own PKI moved to `/etc/fog/pki` for the same reason.
+
+The conflict rules are the deeper reason, and they are why one directory could
+not do both jobs. Adopting by presence would let a backup FOG made for itself
+outrank a freshly shipped file; restoring by absence would let a certificate you
+deliberately placed be ignored the moment FOG shipped one of the same name. One
+rule each is what keeps "FOG's copy" and "yours" distinguishable.
+
+>[!note]
+>Each `readme.txt` is FOG's own note and a later version may rewrite it, so
+>that it can correct itself when something changes. **Edit one and FOG leaves
+>it alone from then on**, permanently.
 
 ---
 
@@ -158,6 +180,31 @@ kept by default; change that with `installfog.sh --kernel-backup-count N`.
 
 Restoring re-signs the kernels if Secure Boot is configured, since a restored
 kernel carries its old signature and the signing key may have rotated.
+
+### Marking a boot file to keep
+
+The kernel and init update pages list what is actually on disk, with a **Keep**
+button on each row. Marking a file copies it into
+`/opt/fog/customizations/kernel-backups/keep/`, and a later run puts it back if
+it has gone missing from the live tree. Unmark it and the copy is removed.
+
+This is the one thing under `/opt/fog/customizations` written on *your*
+instruction rather than as part of a rebuild. FOG still does the writing, so it
+stays a directory you never need to touch by hand.
+
+It exists because two reasonable-sounding expectations do not hold on their own:
+
+- A **per-release sibling** such as `bzImage.5.15.0` is deliberately not part of
+  a numbered generation — a generation would multiply the same bytes by the
+  generation count — so without a mark it survives only until the next upgrade.
+- Marking one of the **six default names** achieves close to nothing, since
+  picking up the new kernel is the point of an update. Mark the sibling, or a
+  file under a name of your own.
+
+FOG decides what a boot file is by reading its header rather than its name, so a
+hand-compiled kernel under any name appears in the **Host Kernel** dropdown with
+nothing to configure. Being *found* and being *kept* are separate questions:
+that answers the first, and the naming rule or a mark answers the second.
 
 ---
 
