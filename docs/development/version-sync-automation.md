@@ -14,7 +14,7 @@ tags:
 # Version Sync Automation
 
 `FOG_VERSION` and `FOG_CHANNEL` are computed from git state — the branch
-name, distance from the last tag, and commit counts — rather than being
+name, the newest release tag, and commit counts — rather than being
 bumped by hand. See the main repo's README ("Versioning and branches") for
 the version format itself (`{CodeBaseMajor}.{Major}.{Minor}.{Patch}`) and
 what each branch represents. This page covers how the version *string*
@@ -46,6 +46,16 @@ channel, and whether that differs from the value it's comparing against
 | `working` (`working-1.6`) | Beta | Beta | `{branch suffix}.0-beta.{commits since master}` |
 | `feature` (`feature-*`) | Feature | Feature | `{branch suffix}.0-feature.{commits since master}` |
 | `rc` (`rc-*`) | Release Candidate | Release Candidate | `{branch suffix}.0-RC-{n}`, incrementing off whatever's currently committed |
+
+`{tag base}` is the newest **release** tag with its last field removed:
+`1.5.10.2253` gives `1.5.10`. Only a tag that starts with a digit counts.
+Before [fogproject#1756](https://github.com/FOGProject/fogproject/pull/1756)
+and [#1757](https://github.com/FOGProject/fogproject/pull/1757), the newest
+tag of any name counted. The tag `archive/feature-fog2-gui` was pushed on
+2026-09-06. After that, `dev-branch` computed
+`archive/feature-fog2-gui.2479`, and the slash broke the `sed` in
+`apply-fog-version.sh`. The sweep failed on `dev-branch` every day until
+2026-09-10.
 
 **One vocabulary, shared with `FOG_update_channel`.** Since
 [fogproject#1279](https://github.com/FOGProject/fogproject/issues/1279) the
@@ -155,6 +165,26 @@ makes the identical check for the same reason
 Neither has a branch listed anywhere for this — a branch flips itself the
 moment its own port of GH-1513 lands, with no workflow edit needed.
 
+**The sweep also publishes the version badges.** It writes
+`badges/dev-branch.json` and `badges/working-1.6.json` in fog-workflows.
+The fogproject README shows them through shields.io, and
+`stable-releases.yml` reads them: the release tag comes from
+`dev-branch.json`, and the release notes name the Beta version from
+`working-1.6.json`.
+
+- On a branch that stamps its version, the badge takes the version that
+  the sweep just computed.
+- On a branch that generates its version, the sweep skips that computation.
+  So the badge step runs the branch's own `write-version-file.sh`, the same
+  generator `bin/installfog.sh` runs. It then reads `FOG_VERSION` from
+  `packages/web/commons/version.php`.
+- An empty version fails the step. shields.io rejects an empty message and
+  shows "custom badge: invalid properties: message". The Beta badge showed
+  that from 2026-08-31 until
+  [fog-workflows#41](https://github.com/FOGProject/fog-workflows/pull/41)
+  on 2026-09-10, because the badge step read the output of the skipped
+  computation.
+
 >[!warning] `dev-branch` is mid-migration as of this writing
 >`dev-branch`'s pre-commit hook no longer stamps a version — that removal
 >ported cleanly — but it has **not yet** received `write-version-file.sh`,
@@ -175,6 +205,11 @@ tracked file. Each assertion was proven to fail before being kept —
 removing the `.gitignore` entry, force-adding the generated file, breaking
 the generator's `define()` shape, unguarding the `include`, and making a
 hook call the old tracked-file writer all fail their respective checks.
+
+`tests/fog-version-release-tag.test.sh` pins the tag base on both
+`working-1.6` and `dev-branch`. It builds a fixture repo with a release tag
+and a newer annotated archive tag, and checks the `dev` and `stable` arms.
+With the old tag lookup it fails with `archive/feature-x.2`.
 
 ## stable-releases.yml
 
