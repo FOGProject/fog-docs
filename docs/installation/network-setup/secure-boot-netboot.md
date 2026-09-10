@@ -77,6 +77,12 @@ server.
 
 ### Windows Server DHCP
 
+>[!warning] Option 060 stops UEFI network boot
+>If your DHCP server sets option 060 to `PXEClient`, UEFI clients get an address
+>and then never download a boot file — the signed chain included. BIOS clients
+>keep working, so it looks like a UEFI or Secure Boot fault. Remove option 060
+>unless WDS runs on the DHCP server. See [[kb/how-tos/bios-and-uefi-co-existence#remove-option-060-from-windows-dhcp|Remove option 060 from Windows DHCP]].
+
 For an estate that is entirely 64-bit UEFI, set both options across every scope:
 
 ```powershell

@@ -267,6 +267,67 @@ and UEFI. **Note: This will NOT work in proxy mode!!**
 `dhcp-match=set:efi64,60,PXEClient:Arch:00009`\
 `dhcp-boot=`[`tag:efi64,secureboot/snponly-shimx64.efi,x.x.x.x,x.x.x.x`](tag:efi64,secureboot/snponly-shimx64.efi,x.x.x.x,x.x.x.x)`            # x.x.x.x = TFTP/FOG server IP`
 
+## Remove option 060 from Windows DHCP
+
+> [!warning] Symptom
+> BIOS clients network boot. UEFI clients get an IP address, show a line such
+> as `Start PXE over IPv4`, and then stop. They never download a boot file,
+> whatever option 067 names, and with Secure Boot on or off. A packet capture on
+> the FOG server shows the DHCP exchange and no TFTP request.
+
+Look at the DHCP offer. If it carries option 060 with the value `PXEClient`,
+that option is the cause. In a `tcpdump -vv` capture it looks like this:
+
+    Vendor-Class (60), length 10: "PXEClient^@"
+
+**Why it stops UEFI clients.** Option 060 = `PXEClient` in an offer says that a
+PXE boot service also runs here and answers on UDP port 4011. That is true when
+WDS runs on the DHCP server. It is not true for FOG. UEFI firmware built on the
+EDK2 reference PXE code acts on it: an offer with `PXEClient` and no option 043
+makes the client send a second request to UDP port 4011, at the next-server
+address (or at the DHCP server when next-server is empty). Nothing on a FOG
+server answers on port 4011. The request times out, and the firmware gives up
+before it uses option 066 or 067. Legacy BIOS PXE ROMs take the boot file from
+the offer, so BIOS clients keep working and the fault looks UEFI-specific.
+
+**The fix.** If WDS does not run on this DHCP server, remove option 060. It can
+be set at the server level, on a scope, or in a policy, so check all of them:
+
+```powershell
+$dhcpSvr = 'dhcp.yourDomain.tld'
+
+# Server level, including policies and classes
+Get-DhcpServerv4OptionValue -ComputerName $dhcpSvr -OptionId 60 -All -ErrorAction SilentlyContinue
+
+# Every scope, including policies and classes
+Get-DhcpServerv4Scope -ComputerName $dhcpSvr | ForEach-Object {
+    $found = Get-DhcpServerv4OptionValue -ComputerName $dhcpSvr -ScopeId $_.ScopeId -OptionId 60 -All -ErrorAction SilentlyContinue
+    if ($found) { "Scope $($_.ScopeId)"; $found }
+}
+```
+
+Remove each value you find:
+
+```powershell
+# Server level
+Remove-DhcpServerv4OptionValue -ComputerName $dhcpSvr -OptionId 60
+
+# One scope
+Remove-DhcpServerv4OptionValue -ComputerName $dhcpSvr -ScopeId 192.168.1.0 -OptionId 60
+```
+
+If a value belongs to a policy or a vendor class, add the same `-PolicyName` or
+`-VendorClass` to `Remove-DhcpServerv4OptionValue`. In the DHCP console
+(`dhcpmgmt.msc`), the option is option `060` under **IPv4 → Server Options** or
+under **Scope → Scope Options**.
+
+> [!important] If WDS does run on the DHCP server
+> Keep option 060. WDS needs it, and removing it stops WDS network boot. Decide
+> which service owns network boot on that DHCP server before you change it.
+
+After the change, the offer has no `Vendor-Class (60)` line, and a UEFI client
+sends a TFTP read request for the file that option 067 names.
+
 ## Using Windows Server 2012 (R1 and later) DHCP Policy
 
 The below method assumes that your normal Scope options 066 and 067 are

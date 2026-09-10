@@ -261,6 +261,9 @@ kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
 
 ### Windows Server DHCP
 
+> [!warning] Option 060 stops UEFI network boot
+> If your DHCP server sets option 060 to `PXEClient`, UEFI clients get an address and then never download a boot file. BIOS clients keep working, so it looks like a UEFI fault. Remove option 060 unless WDS runs on the DHCP server. See [[kb/how-tos/bios-and-uefi-co-existence#remove-option-060-from-windows-dhcp|Remove option 060 from Windows DHCP]].
+
 #### Setting the options with powershell
 
 This little powershell snippet will get all your dhcp server scopes and set option 66 and option 67 to the values you input into the script.
