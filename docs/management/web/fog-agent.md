@@ -60,12 +60,12 @@ agent stays idle on it and logs one line saying so.
 | Task reboot | Task Reboot | Reboots the machine into a queued imaging task, arming a one-time network boot first where the firmware allows |
 | User sessions | User Tracker | Reports who is logged in, as sessions with a start and an end |
 | Facts | `FOG_AGENT_INVENTORY_ENABLED` | Hardware inventory, installed software, Secure Boot posture, printers present, directory membership, network interfaces |
-| Self-update | *none — a version, not a switch* | Replaces its own binary with a version you name, after verifying it against a signing certificate compiled into itself. See [[agent-self-update\|Agent Self-Update]] |
+| Self-update | *none — an update mode, not a module* | Replaces its own binary with the version the server names, after verifying it against a signing certificate compiled into itself. See [[agent-self-update\|Agent Self-Update]] |
 
 Self-update is the one row with no module behind it, because there was no
-legacy module to inherit. It is gated on `FOG_AGENT_DESIRED_VERSION` being
-set, and that ships empty — so no host starts updating itself because you
-upgraded a server.
+legacy module to inherit. It is gated on `FOG_AGENT_UPDATE_MODE`, and that
+ships as Off — so no host starts updating itself because you upgraded a
+server.
 
 Display Manager, GreenFOG and the auto log out background image are gone.
 The agent does not implement them and their settings were removed from 1.6.
@@ -91,13 +91,17 @@ approving anything further; enrollments it already approved are unaffected.
 
 ## The host page
 
-Three places on a host's page belong to the agent:
+These places on a host's page belong to the agent:
 
 - **General → Desired Agent Version.** The version this host should be
-  running, overriding the fleet-wide setting. Empty means it follows the
-  fleet. The host list carries both this and **Agent Version**, what the
-  machine is actually running, so a rollout is a matter of watching the two
-  agree — see [[agent-self-update|Agent Self-Update]].
+  running, overriding the update mode. Empty means it follows the mode. The
+  host list carries both this and **Agent Version**, what the machine is
+  actually running, so a rollout is a matter of watching the two agree —
+  see [[agent-self-update|Agent Self-Update]].
+- **General → Agent Update Ring.** The host's ring when the update mode is
+  Latest. Ring 0 updates first, and a blank ring is the last ring. Mass edit
+  sets it for many hosts — see
+  [[management/web/agent-self-update#Update rings|Update rings]].
 - **General → Last Agent Check-In.** When the agent last polled. It sits
   beside Last Client Check-In and Last Successful Ping, and the same "ping
   recent, check-in old" reading described on
@@ -189,7 +193,7 @@ domain, OU and join credential you already fill in, seeded from the
   computer object itself with one LDAP rename, no reboot, no re-join. That
   writes to your directory, so it is off until you set
   `FOG_DIRECTORY_PLACEMENT_ENABLED` and give FOG a bind account under the
-  **FOG Directory** settings (`FOG_DIRECTORY_LDAP_URI`, `FOG_DIRECTORY_BIND_DN`,
+  **FOG Agent - Directory Placement** settings (`FOG_DIRECTORY_LDAP_URI`, `FOG_DIRECTORY_BIND_DN`,
   `FOG_DIRECTORY_BIND_PASSWORD`, `FOG_DIRECTORY_BASE_DN`,
   `FOG_DIRECTORY_CA_CERT`). Delegate that account only *create and delete
   computer objects* on the OU subtree FOG should manage. An account refused
@@ -342,21 +346,30 @@ All under **FOG Configuration → FOG Settings**, in the category named.
 
 | Setting | Category | Default | Meaning |
 |---|---|---|---|
-| `FOG_AGENT_ENROLL_DEPLOY_WINDOW` | General Settings | 24 | Hours after a deploy during which the deployed host's agent enrolls without approval. 0 turns the shortcut off |
-| `FOG_AGENT_DESIRED_VERSION` | General Settings | empty | The agent version every enrolled host should run. Empty means no host ever updates itself. A host's own Desired Agent Version overrides it |
-| `FOG_AGENT_UPDATE_MANIFEST_URL` | General Settings | empty | Where agents look for the signed release manifest. Empty means the location built into the agent |
-| `FOG_AGENT_INVENTORY_ENABLED` | FOG Client | 1 | Whether agents collect and report facts at all |
+| `FOG_AGENT_ENROLL_DEPLOY_WINDOW` | FOG Agent | 24 | Hours after a deploy during which the deployed host's agent enrolls without approval. 0 turns the shortcut off |
+| `FOG_AGENT_UPDATE_MODE` | FOG Agent | Off | How enrolled hosts update: Off, Pinned or Latest. See [[agent-self-update\|Agent Self-Update]] |
+| `FOG_AGENT_DESIRED_VERSION` | FOG Agent | empty | The exact version every host runs in Pinned mode. A host's own Desired Agent Version overrides it |
+| `FOG_AGENT_UPDATE_RINGS` | FOG Agent | `0,3,7` | The update ring delays in days, for Latest mode |
+| `FOG_AGENT_MIN_VERSION` | FOG Agent | empty | The lowest version any host may run, in every mode |
+| `FOG_AGENT_KEEP_VERSIONS` | FOG Agent | 3 | How many of the newest releases the server keeps after hosts stop needing them |
+| `FOG_AGENT_UPDATE_MANIFEST_URL` | FOG Agent | empty | Where the server downloads the signed release manifest. Empty means `fogproject.org` |
+| `FOG_AGENT_INVENTORY_ENABLED` | FOG Agent | 1 | Whether agents collect and report facts at all |
 | `FOG_AGENT_WAKE_RELAY_ENABLED` | FOG Agent | 0 | Whether the server may ask an agent to wake a neighbour |
-| `FOG_SOFTWARE_DRIFT_INTERVAL` | FOG Client | 21600 | Seconds between software re-checks when the set has not changed. Shown as *Re-check Interval* on the Software module's settings |
-| `FOG_SOFTWARE_CHOCO_BOOTSTRAP_URL` | FOG Client | empty | Chocolatey install script for hosts with software assigned but no Chocolatey. Empty means never install it |
-| `FOG_SOFTWARE_CHOCO_NUPKG_URL` | FOG Client | empty | A `.nupkg` the bootstrap script installs Chocolatey from, for hosts with no route to the community feed |
+| `FOG_SOFTWARE_DRIFT_INTERVAL` | FOG Agent | 21600 | Seconds between software re-checks when the set has not changed. Shown as *Re-check Interval* on the Software module's settings |
+| `FOG_SOFTWARE_CHOCO_BOOTSTRAP_URL` | FOG Agent | empty | Chocolatey install script for hosts with software assigned but no Chocolatey. Empty means never install it |
+| `FOG_SOFTWARE_CHOCO_NUPKG_URL` | FOG Agent | empty | A `.nupkg` the bootstrap script installs Chocolatey from, for hosts with no route to the community feed |
 | `FOG_CLIENT_AUTOLOGOFF_WARN` | FOG Client - Auto Log Off | 60 | Seconds of warning before an automatic log out |
-| `FOG_USERTRACKING_COMPAT_WRITE` | FOG Client | 1 | Also write agent sessions to the legacy user tracking table |
+| `FOG_USERTRACKING_COMPAT_WRITE` | FOG Agent | 1 | Also write agent sessions to the legacy user tracking table |
 | `FOG_HOSTUSERSESSION_RETENTION_DAYS` | FOG Audit | 365 | Days of agent-reported sessions to keep. 0 keeps them forever |
-| `FOG_DIRECTORY_PLACEMENT_ENABLED` and the `FOG_DIRECTORY_*` account settings | FOG Directory | off, empty | Server-side OU placement, described above |
+| `FOG_DIRECTORY_PLACEMENT_ENABLED` and the `FOG_DIRECTORY_*` account settings | FOG Agent - Directory Placement | off, empty | Server-side OU placement, described above |
+
+The release sync service has four more settings, in the service
+categories. They are listed on [[agent-self-update|Agent Self-Update]].
 
 `FOG_GRACE_TIMEOUT` and `FOG_TASK_FORCE_REBOOT` are existing settings the
-agent's reboot coordinator now honours.
+agent's reboot coordinator now honours. Both clients read them, so they
+stay in their own categories, and their descriptions say that the agent
+reads them too.
 
 ## Reports
 

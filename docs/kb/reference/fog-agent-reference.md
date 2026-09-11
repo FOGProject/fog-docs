@@ -36,7 +36,7 @@ platform's state directory below.
 | `fog-agent status` | Prints the state directory, server URL, host id, whether a key exists and whether the machine is enrolled |
 | `fog-agent renew` | Renews the certificate now for the same key, regardless of expiry |
 | `fog-agent version` | Prints the version, OS and architecture |
-| `fog-agent update --to VERSION [--manifest URL]` | Verifies and installs a version now, instead of waiting for a poll. Takes the same path the server-driven update takes — same signature check, same rollback arming, same swap. There is deliberately no `latest` |
+| `fog-agent update --to VERSION [--manifest URL]` | Verifies and installs a version now, instead of waiting for a poll. Takes the same path the server-driven update takes — same signature check, same rollback arming, same swap. It takes an exact version only. The server resolves Latest mode, see [[management/web/agent-self-update#Update modes\|Agent Self-Update]] |
 | `fog-agent update-revert` | Puts back the binary an update replaced. A separate command on purpose: the code that reverts must not live inside a process too broken to run |
 | `fog-agent setup --server URL --ca FILE [--token T]` | Windows. Prepares the state directory, its permissions and the first enrollment request without registering a service. The MSI runs this |
 | `fog-agent service install --server URL --ca FILE [--token T]` | Windows. `setup`, then copies the binary to Program Files, registers and starts the service |
@@ -102,14 +102,17 @@ The agent trusts only the CA bundle it was given at install, never the
 operating system trust store, and it talks to exactly one server. A
 different server with a valid public certificate is still not its server.
 
-Self-update is the one narrow exception, and it costs nothing. Fetching a
-release manifest and its artifact consults the system trust store plus the
-FOG server's own CA, because that fetch may go to a mirror rather than to
-FOG — but TLS is not what is trusted there. The manifest carries its own
-signature and the artifact carries its own hash, both checked against a
-code-signing certificate compiled into the agent binary. That is why the
-server is allowed to nominate a mirror at all: the transport is bandwidth
-and privacy, not a trust decision.
+Self-update is the one narrow exception, and it costs nothing. From 0.1.8,
+the agent first takes the release manifest and the file from its own FOG
+server, over its client certificate. When that copy fails a check, or the
+server has none, the agent fetches from the origin: the manifest URL and
+the download address in the manifest. That fetch consults the system trust
+store plus the FOG server's own CA, because it goes to `fogproject.org`,
+GitHub or a mirror rather than to FOG — but TLS is not what is trusted
+there. The manifest carries its own signature and the artifact carries its
+own hash, both checked against a code-signing certificate compiled into the
+agent binary. That is why the server may hand over the bytes or nominate a
+mirror at all: the transport is bandwidth and privacy, not a trust decision.
 
 Where the FOG certificate authorities sit relative to each other is on
 [[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]].
@@ -124,7 +127,7 @@ document, see [[api-openapi-reference|the API reference]].
 |---|---|
 | `POST /agent/v1/enroll` | Server-authenticated TLS only; the agent has no certificate yet. Idempotent: the agent repeats the identical request until it gets `issued` or `denied` |
 | `POST /agent/v1/poll` | The heartbeat. Carries the agent version, the desired-state revision it applied, and any facts or sessions that changed. The answer carries the poll interval, and the full desired state only when the revision the agent applied is not current |
-| `GET /agent/v1/payload/{capability}/{id}` | Fetches a snapin payload over the authenticated session, checked against the SHA-512 the desired state declared |
+| `GET /agent/v1/payload/{capability}/{id}` | Fetches a payload over the authenticated session: a snapin, checked against the SHA-512 the desired state declared, or the server's copy of an agent release (`update`), checked against the SHA-256 in the signed manifest |
 | `POST /agent/v1/result` | What the agent did with one capability at one revision. The server answers with the outcome, which is what the agent acts on |
 | `POST /agent/v1/renew` | A new certificate for the same key |
 
@@ -135,10 +138,11 @@ idle, with one informative log line, never an error. This is why a current
 agent runs against an older 1.6 server without complaint, and why the
 project releases the agent independently of FOG.
 
-Self-update needed no route of its own. The desired version is a value in
-the poll answer's existing state, alongside every other capability, and an
-older agent that does not understand it ignores it — the agent discards
-fields it does not know. The agent's own version rides up on every poll,
+Self-update needed no route of its own. The desired version, the server's
+copy of the manifest and the id of its copy of the file are values in the
+poll answer's existing state, alongside every other capability, and the file
+comes through the payload route above. An older agent that does not
+understand a field ignores it — the agent discards fields it does not know. The agent's own version rides up on every poll,
 which is what the host list's Agent Version column shows.
 
 Credentials never ride a routine poll. The domain-join credential appears
@@ -161,6 +165,7 @@ is not sent again once the host reports it is joined.
 | Printer set re-check | Hourly, plus at every change of the assigned set |
 | Power schedules | On their own cron minute, on the machine's clock |
 | Update probation | 15 minutes from the swap. One successful authenticated poll clears it; the deadline passing without one puts the previous binary back |
+| Release sync, on the server | `AGENTRELEASESYNCSLEEPTIME`, default 3600 seconds. A new release reaches a host at the first poll after the sync that sees it and the host's ring delay |
 
 ## What the agent sends
 

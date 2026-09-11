@@ -285,10 +285,10 @@ has done.
 
 ## Upgrading
 
-An enrolled agent can update itself once you name a version on the server —
-see [[management/web/agent-self-update|Agent Self-Update]]. That is the
-normal way to move a fleet, and it is off until you set a version, so
-nothing starts moving on its own.
+An enrolled agent can update itself once you choose an update mode on the
+server — see [[management/web/agent-self-update|Agent Self-Update]]. That is
+the normal way to move a fleet, and it is off until you choose Pinned or
+Latest, so nothing starts moving on its own.
 
 By hand, which is how you get to a version that can self-update and how you
 fix a machine you are standing at: on Windows run the newer MSI, on Linux
