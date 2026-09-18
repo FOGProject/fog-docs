@@ -77,6 +77,7 @@ const EXPLICIT_ORDER = {
     "plugins",
     "fog-agent",
     "agent-self-update",
+    "agent-wake-relay",
   ],
   "1.5/management/web": ["plugins", "ldap", "site-scoping", "hosts", "groups", "reports", "storage-node", "config", "images", "multicast"],
   "1.5/kb/reference": [
