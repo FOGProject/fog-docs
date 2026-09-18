@@ -290,6 +290,9 @@ neighbour learns of the request at its next poll, a relayed wake can take up
 to five minutes, which is fine for the scheduled overnight window it exists
 for.
 
+[[management/web/agent-wake-relay|Agent Wake Relay]] explains how FOG finds
+the hosts on one subnet, which agents it asks, and why a wake can fail.
+
 ## Auto log out
 
 The host's auto log out time, and the global default under FOG Configuration
