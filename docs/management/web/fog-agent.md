@@ -172,6 +172,43 @@ The hostname comes from the host's name in FOG, compared
 case-insensitively. Windows needs a reboot to finish a rename, which goes
 through the coordinator above.
 
+### Renaming a machine that is already in a domain
+
+A domain member has a computer object in Active Directory, and the object
+carries the machine's name. Renaming the machine alone breaks it: after the
+reboot, the machine looks for an account that no longer matches, and Windows
+reports "The trust relationship between this workstation and the primary
+domain failed". So the agent never renames a Windows domain member on its
+own. It renames the machine and its computer object together, with the
+native `NetRenameMachineInDomain` call, the same way `Rename-Computer
+-DomainCredential` does. The object keeps its SID, its group memberships and
+everything stored on it.
+
+The machine cannot rename its own object, so the rename needs the join
+credential from the host's **Active Directory** tab. The server sends it
+to a joined host only while a rename is outstanding, and only to a Windows
+host. What you need:
+
+- FOG 1.6.0-RC-8 or later, and FOG Agent 0.1.12 or later.
+- The host's AD domain, username and password filled in.
+- An account that may rename computer objects in that OU. Renaming needs
+  more than joining: write access to `sAMAccountName`, `dNSHostName` and
+  `servicePrincipalName`, and the right to rename the object.
+
+>[!note] One hour between attempts
+>After any join or rename attempt, successful or not, the server waits **one
+>hour** before it sends the credential to that host again. A bad password
+>is a failed sign-in against your domain controller, and without the wait a
+>fleet could lock the join account out. So a host renamed twice within an
+>hour waits for the second rename. With FOG Agent 0.1.13 and FOG 1.6.0-RC-9
+>or later, the agent log says so and gives the time:
+>`hostname: pending (... this one runs after 14:20 CDT)`. Nothing is wrong;
+>leave it, and the rename runs on the first poll after that time.
+
+A Linux host keeps its local rename only. Its keytab still holds the old
+machine account, so it keeps working, and the **Directory Membership**
+report shows the object's old name.
+
 The directory join uses the host's existing **Active Directory** tab: the
 domain, OU and join credential you already fill in, seeded from the
 `FOG_AD_DEFAULT_*` settings. What changes is how the agent treats them:
