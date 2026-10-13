@@ -141,9 +141,12 @@ and SSH often do not. The agent is fine, because its traffic is outbound.
 Scope your inbound rules to the Domain profile.
 
 **Hostname: `pending ... this one runs after <time>`.** A domain rename
-waits for the server's one-hour gap between join and rename attempts. This
-is normal after a join, or after a second rename within the hour. Leave
-it: the rename runs on the first poll after that time. See
+waits for the server's gap between join and rename attempts. The gap is
+one hour, or `FOG_AGENT_JOIN_COOLDOWN` on FOG 1.6.0-RC-11 and later. This
+is normal after a join, or after a second rename within the gap. Leave
+it: the rename runs on the first poll after that time. To skip the wait on
+FOG 1.6.0-RC-11 and later, reimage the host: a completed deploy task
+clears it. See
 [[management/web/fog-agent#renaming-a-machine-that-is-already-in-a-domain|Renaming a machine that is already in a domain]].
 
 **Hostname: `failed ... this machine is in a domain ... the server sent no
@@ -154,9 +157,9 @@ did not send the rename. Check these in order:
   rename to a joined host.
 - The host's **Active Directory** tab has the domain, username and
   password, and the domain matches the one the machine is in.
-- An agent older than 0.1.13 cannot tell you about the one-hour wait, and
-  reports it as this failure. Look at the time of the last join or rename.
-  If it was within the hour, wait.
+- An agent older than 0.1.13 cannot tell you about the wait, and reports
+  it as this failure. Look at the time of the last join or rename. If it
+  was within the wait (one hour, or `FOG_AGENT_JOIN_COOLDOWN`), wait.
 
 **Directory: `failed (access denied; the AD account may not rename computer
 objects in this OU ...)`.** The join account may create computer objects
