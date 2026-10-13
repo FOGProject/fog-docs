@@ -161,6 +161,7 @@ is not sent again once the host reports it is joined.
 | Network interfaces | Every poll; sent only when changed |
 | Session sampling, idle check for auto log out | Every 30 seconds |
 | Full session set resync | Hourly, even when unchanged |
+| Domain join or rename credential, after an attempt | Not again for `FOG_AGENT_JOIN_COOLDOWN`, default 3600 seconds, range 60 to 86400 (FOG 1.6.0-RC-11 and later; one hour before). A completed deploy task clears the wait |
 | Software re-check | `FOG_SOFTWARE_DRIFT_INTERVAL`, default 21600 seconds, plus at every change of the assigned set, plus every poll while Chocolatey is missing |
 | Printer set re-check | Hourly, plus at every change of the assigned set |
 | Power schedules | On their own cron minute, on the machine's clock |

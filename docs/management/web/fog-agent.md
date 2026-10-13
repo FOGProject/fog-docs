@@ -195,15 +195,25 @@ host. What you need:
   more than joining: write access to `sAMAccountName`, `dNSHostName` and
   `servicePrincipalName`, and the right to rename the object.
 
->[!note] One hour between attempts
->After any join or rename attempt, successful or not, the server waits **one
->hour** before it sends the credential to that host again. A bad password
->is a failed sign-in against your domain controller, and without the wait a
->fleet could lock the join account out. So a host renamed twice within an
->hour waits for the second rename. With FOG Agent 0.1.13 and FOG 1.6.0-RC-9
+>[!note] A wait between attempts
+>After any join or rename attempt, successful or not, the server waits
+>before it sends the credential to that host again. A bad password is a
+>failed sign-in against your domain controller, and without the wait a
+>fleet could lock the join account out. So a host renamed twice within the
+>wait holds the second rename. With FOG Agent 0.1.13 and FOG 1.6.0-RC-9
 >or later, the agent log says so and gives the time:
 >`hostname: pending (... this one runs after 14:20 CDT)`. Nothing is wrong;
 >leave it, and the rename runs on the first poll after that time.
+>
+>The wait is one hour. From FOG 1.6.0-RC-11 you can change it: go to
+>**FOG Configuration → FOG Settings → FOG Agent** and set
+>`FOG_AGENT_JOIN_COOLDOWN` in seconds, from 60 to 86400. A shorter wait
+>means more failed sign-ins per hour if the join password is wrong, so
+>check your domain's account lockout policy first.
+>
+>From FOG 1.6.0-RC-11 a completed deploy task also clears the wait for that
+>host. The last attempt was made by the machine the deploy replaced, so a
+>host renamed and then reimaged joins on its first poll.
 
 A Linux host keeps its local rename only. Its keytab still holds the old
 machine account, so it keeps working, and the **Directory Membership**
