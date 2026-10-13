@@ -226,13 +226,27 @@ situation.
 
 ## Database setup
 
-While most of the installation runs without intervention, there is one
-step you need to do manually. The installer will prepare the database
-for you and then ask you to open your web browser and visit the FOG web
-UI to build the initial database schema or promote an existing database
-with new schema updates. Make sure you follow this step and only proceed
-with the installer (hit ENTER) after the schema update/setup has
-finished, or the installer will fail.
+Near the end, the installer asks one question:
+
+    * Install/update the FOG database schema now? (Y/n)
+
+Press ENTER (or answer `y`). The installer then builds the database
+schema, or applies the new schema updates to an existing database, by
+itself. It checks that the schema reached the version this release
+needs, and stops with an error if it did not. With `-y`, or with no
+terminal attached, the installer answers yes for you.
+
+If you answer `n`, the installer prints the address of the schema page
+and waits:
+
+- **New install (no FOG users yet):** the address ends in
+  `&fogtoken=...`. Use that exact address. The schema page without the
+  token shows "Denied".
+- **Existing install:** log in to the web UI as a FOG administrator and
+  click **Install/Update Now**.
+
+Press ENTER in the installer only after the schema update has finished,
+or the installer will fail.
 
 ## Final steps
 
