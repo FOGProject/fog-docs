@@ -95,6 +95,8 @@ menu.
     - **Permissions** — a grid of areas and actions. Tick the boxes the
       role should grant, or tick **Administrator (full access)** to
       grant everything, then click **Update**.
+    - **Task Types** — the task types this role may start. See
+      [Task type permissions](#task-type-permissions).
     - **Users** — add or remove the user accounts that hold this role.
 
 ### Assigning roles to users
@@ -141,6 +143,89 @@ their dashboard, the client-facing pages, and log out.
 - A restricted user's own name in the sidebar is no longer a link to
   their user record (editing users requires the Users **Edit**
   permission — and would otherwise let a user change their own roles).
+
+## Task type permissions
+
+>[!info] FOG 1.6
+>Task type permissions exist in FOG 1.6 only.
+
+The **Task** action lets a role start tasks. By itself, it allows every task
+type. A role that can deploy can also capture, wipe, and open a debug shell.
+A task type permission limits a role to the task types you choose.
+
+### What a task type permission is
+
+Each task type has one permission, named `tasktype.<id>`. The `<id>` is the
+task type ID. FOG stores the ID and not the name. The **Task Types** tab shows
+the current name of each type. If you rename a task type with the
+**tasktypeedit** plugin, the role keeps its grants.
+
+The permission `tasktype.*` grants every task type, including types added
+later.
+
+### The Task Types tab
+
+Open **Roles**, select a role, and click the **Task Types** tab. The tab shows
+one row for each task type, with a tick box, the task type name, and its ID.
+
+- Tick the task types the role may start.
+- Tick **All task types, including types added later** to grant `tasktype.*`.
+- Click **Update**.
+
+A grant for a task type that no longer exists shows as **Removed task type**.
+Untick it to clear it. A role with **Administrator (full access)** can start
+every task type. The tab shows its tick boxes as disabled.
+
+The **Permissions** tab does not show task types. When you click **Update** on
+that tab, FOG keeps the task type grants of the role.
+
+### A role needs both permissions
+
+A role must hold two permissions to start a task:
+
+- The **Task** action of the area, such as **Hosts → Task**, **Groups → Task**,
+  or **Images → Task**.
+- The task type permission for that task type.
+
+For example, a role with **Hosts → Task** and only the **Deploy** task type
+can deploy hosts. It gets a 403 error for every other task type. FOG records
+each refusal in the audit log. The web UI hides the quick task buttons and
+the task accordion entries for task types the role may not start.
+
+### Where FOG checks the task type
+
+FOG checks the task type everywhere a task starts:
+
+- Deploy of a host, of a group, and of multiple selected hosts, instant or
+  scheduled.
+- Multicast sessions started from an image.
+- The REST API route `POST /{class}/{id}/task`.
+- Creating or editing a task or a scheduled task through the REST API. An edit
+  checks the old task type and the new task type. A user cannot edit a
+  scheduled Deploy into a wipe.
+- The iPXE menu: quick image (Deploy), joining a multicast session
+  (Multi-Cast), and the debug shell (Debug).
+- Full registration with a deploy (Deploy).
+
+FOG checks a scheduled task when a user schedules it. The scheduler service
+does not check it again when the task runs.
+
+>[!warning] The iPXE menu and full registration now check the role
+>In earlier builds, the iPXE quick image and full registration with a deploy
+>needed only a valid sign-in. They now need the Deploy task type. The iPXE
+>debug shell needs the Debug task type.
+
+### What the upgrade does
+
+The database upgrade gives `tasktype.*` to every role that held a task
+permission: **Hosts**, **Groups**, **Images**, or **Tasks** **Task**, or the
+matching full-area permission. Nothing changes for these roles until an
+administrator narrows the grant.
+
+To narrow a role, untick **All task types, including types added later** on the
+**Task Types** tab, tick the task types you want, and click **Update**. A role
+with a list of single task types cannot start a task type added later until you
+tick it. A role with no task permission has no task type permission.
 
 ## Narrowing a role to specific sites
 
