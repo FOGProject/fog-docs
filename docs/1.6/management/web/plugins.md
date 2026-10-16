@@ -221,12 +221,13 @@ this page for how it differs on the older line.
 | Plugin | What it does |
 |---|---|
 | **capone** | Match a machine's DMI value against a key you define and deploy the associated image, without registering the host first |
+| **directorygroups** | Keep a list of Active Directory domains, browse their OUs, and group hosts by OU. Replaces **ou**. See [[directory-groups\|Directory Groups]] |
 | **helloworld** | A skeleton example plugin — the reference for people writing their own |
 | **ldap** | Authenticate FOG users against an LDAP or Active Directory server. Needs your distribution's `php-ldap` package. See [[1.6/management/web/ldap\|LDAP Authentication]] |
 | **location** | Point hosts at the storage node local to their site, for sites with more than one place to fetch an image from |
 | **ntfy** | Notifications via ntfy.sh or your own ntfy server |
 | **oidc** | Sign in to FOG with an OpenID Connect identity provider (Entra ID, Keycloak, Okta, ...). See [[oidc\|OpenID Connect Sign-in]] |
-| **ou** | Predefine Active Directory OUs and associate them with hosts |
+| **ou** | Predefine Active Directory OUs and associate them with hosts. Directory Groups replaces it. See [[directory-groups\|Directory Groups]] |
 | **pushbullet** | Pushbullet notifications |
 | **slack** | Slack notifications |
 | **subnetgroup** | Assign hosts to groups automatically based on their IP subnet |
