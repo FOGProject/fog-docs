@@ -123,6 +123,38 @@ Go to **Directory Groups** to see the groups and the hosts in each group.
 A host also gets a **Directory Group** tab. Use the tab to set the group of
 that host.
 
+### Each directory group is a core group
+
+FOG creates a core group for each directory group. The core group has the
+same name and holds the hosts. Assign snapins, printers, modules and power
+schedules to that core group on the **Groups** page. Each host in the
+directory group then gets them, the same as for any other group.
+
+If another group already has the name, or the name is longer than 50
+characters, the core group name ends in ` #<id>`. Example: `Sales #12`.
+
+You can add a host on any page that changes group membership: the
+**Directory Group** tab, the **Groups** tab of the host, the **Groups**
+page, mass edit, CSV import, registration or the API. The rules are the
+same on each page:
+
+- **A host is in one directory group at a time.** When a host joins a
+  directory group, FOG removes it from its other directory group. Other
+  groups are not changed.
+- **Joining writes the OU onto the host.** FOG sets **Organizational Unit**
+  on the **Active Directory** tab of the host to the OU of the group. If the
+  group belongs to a directory domain, FOG also sets **Domain Name**.
+- **Leaving changes nothing on the host.** The host keeps its OU and domain
+  until you change them.
+
+Deleting a directory group deletes its core group. Deleting the core group
+on the **Groups** page deletes the directory group.
+
+>[!note] The join account is not set by the group
+>Joining a directory group does not set **Domain Username** or **Domain
+>Password**. A join account per domain is tracked in
+>[#1887](https://github.com/FOGProject/fogproject/issues/1887).
+
 ### Browse Directory on the host page
 
 The **Active Directory** tab of a host has a **Browse Directory** button.
@@ -145,6 +177,10 @@ When you install Directory Groups, FOG migrates your existing setup:
 - If the **ou** plugin is installed, FOG copies its OUs and host links into
   Directory Groups. FOG keeps the IDs. A second install run copies nothing
   twice.
+- FOG creates the core group for each directory group, and writes its OU,
+  and its domain when it has one, onto each of its hosts. Before, the plugin
+  set the OU only when the legacy client checked in. The host now holds the
+  same value itself.
 
 The **ou** plugin stays installed. Uninstall it when you are ready.
 
@@ -167,7 +203,9 @@ bind accounts. To add OUs as groups, a role needs `directorygroups` **Create**,
 
 ## Uninstalling
 
-**Uninstall selected** on the **Plugins** page drops the three tables of the
-plugin. These tables hold the directory domains, the directory groups, and the
-host links. The **ou** plugin is not changed. The five `FOG_DIRECTORY_*`
+**Uninstall selected** on the **Plugins** page drops the tables of the
+plugin. These tables hold the directory domains and the directory groups. The
+core groups stay, with their hosts and grants, as ordinary groups. Delete
+them on the **Groups** page if you do not need them. The **ou** plugin is not
+changed. The five `FOG_DIRECTORY_*`
 connection settings show again on the **FOG Settings** page.
