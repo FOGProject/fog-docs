@@ -50,7 +50,7 @@ domain. Go to **Directory Domains → Create New Domain** to add one.
 | **Domain Name** | The DNS name of the domain, for example `example.com` |
 | **Description** | A note for your own use |
 | **Server URI** | The directory server, for example `ldaps://dc1.example.com:636` |
-| **Bind DN** | The account FOG uses to read the directory, for example `CN=fog-read,CN=Users,DC=example,DC=com` |
+| **Bind DN** | The account FOG uses to read the directory and to move computer accounts, for example `CN=fog-placement,CN=Users,DC=example,DC=com`. See [What the bind account needs](#what-the-bind-account-needs) |
 | **Bind Password** | The password of the bind account |
 | **CA Certificate Path** | The path on the FOG server to the CA certificate file, for example `/etc/ssl/certs/example-ca.pem` |
 | **Computer Search Base** | The base DN where FOG looks for computer accounts, for example `DC=example,DC=com` |
@@ -59,6 +59,35 @@ domain. Go to **Directory Domains → Create New Domain** to add one.
 FOG never shows the **Bind Password** again after you save it. When you edit
 a domain, leave the field blank to keep the stored password. The password is
 not part of any export.
+
+### What the bind account needs
+
+The bind account does two jobs. Each job needs different rights.
+
+| Job | When it runs | Rights it needs |
+|---|---|---|
+| Browse OUs | **Organizational Units** tab, **Browse Directory** button | Read access to the OUs under the **OU Browse Base** |
+| Placement | Each agent check-in, when `FOG_DIRECTORY_PLACEMENT_ENABLED` is on | Read access to computer accounts under the **Computer Search Base**, and the right to move them |
+
+Placement moves a computer account from one OU to another. A move is a
+write to Active Directory. In each OU that a host can leave, delegate
+**Delete Computer objects** to the bind account. In each OU that a host can
+go to, delegate **Create Computer objects**. Delegate both on a parent OU to
+cover all the OUs below it.
+
+>[!warning] A read-only account can browse but cannot place
+>With a read-only bind account, the OU tree and **Browse Directory** work.
+>You can pick an OU and save it on the host. Placement then fails, and the
+>computer account stays in its old OU. The **Directory Membership** report
+>shows the error for each host, for example "Insufficient access". FOG tries
+>again later, and fails the same way until the account gets the rights.
+
+If you use FOG only to browse OUs, and `FOG_DIRECTORY_PLACEMENT_ENABLED` is
+off, a read-only account is enough.
+
+The bind account is not the domain join account. The agent joins a host with
+the **Domain Username** on the host's **Active Directory** tab. That account
+needs its own rights to create and rename computer accounts.
 
 ### How FOG picks the domain for a host
 
