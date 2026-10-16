@@ -55,10 +55,12 @@ domain. Go to **Directory Domains → Create New Domain** to add one.
 | **CA Certificate Path** | The path on the FOG server to the CA certificate file, for example `/etc/ssl/certs/example-ca.pem` |
 | **Computer Search Base** | The base DN where FOG looks for computer accounts, for example `DC=example,DC=com` |
 | **OU Browse Base** | The DN where the OU tree starts. If you leave it blank, the tree starts at the domain root |
+| **Join Username** | The account that joins hosts to this domain, for example `svc-join`. See [The join account](#the-join-account) |
+| **Join Password** | The password of the join account |
 
-FOG never shows the **Bind Password** again after you save it. When you edit
-a domain, leave the field blank to keep the stored password. The password is
-not part of any export.
+FOG never shows the **Bind Password** or the **Join Password** again after
+you save it. When you edit a domain, leave the field blank to keep the stored
+password. Neither password is part of any export or any API reply.
 
 ### What the bind account needs
 
@@ -85,9 +87,39 @@ cover all the OUs below it.
 If you use FOG only to browse OUs, and `FOG_DIRECTORY_PLACEMENT_ENABLED` is
 off, a read-only account is enough.
 
-The bind account is not the domain join account. The agent joins a host with
-the **Domain Username** on the host's **Active Directory** tab. That account
-needs its own rights to create and rename computer accounts.
+The bind account is not the domain join account. See
+[The join account](#the-join-account).
+
+### The join account
+
+The join account joins a host to the domain. The host uses it, not the FOG
+server. The FOG Agent, the legacy FOG Client, and the imaging environment
+(FOS) all get the same account.
+
+FOG picks the join account for a host in this order:
+
+- The domain has a **Join Username** and a **Join Password**: FOG sends the
+  domain's account. The **Domain Username** and **Domain Password** on the
+  host's **Active Directory** tab are ignored.
+- The domain has no join account, or only one of the two fields: FOG sends
+  the host's own **Domain Username** and **Domain Password**.
+
+FOG sends a join account only to a host with **Join Domain after image task** on.
+A host with it off gets no account.
+
+The FOG Agent and the FOG Client get a bare **Join Username** such as
+`svc-join` with the domain in front of it, for example `example.com\svc-join`.
+A name that already has a domain or an `@` is sent as it is. FOS gets the
+name as you typed it, in `hostaduser`, with the domain in `hostaddomain`.
+
+Give the join account **Create Computer objects** in each OU where a new
+computer account can go, and the rights to rename and reset the computer
+accounts it creates. It needs no rights to move accounts. Placement uses the
+bind account for that.
+
+>[!tip] One account per domain
+>Set the join account on the domain, and leave the host fields blank. A
+>password change is then one edit, not one edit per host.
 
 ### How FOG picks the domain for a host
 
