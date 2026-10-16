@@ -107,9 +107,10 @@ FOG picks the join account for a host in this order:
 FOG sends a join account only to a host with **Join Domain after image task** on.
 A host with it off gets no account.
 
-A bare **Join Username** such as `svc-join` gets the domain in front of it,
-for example `example.com\svc-join`. A name that already has a domain or an
-`@` is sent as it is.
+The FOG Agent and the FOG Client get a bare **Join Username** such as
+`svc-join` with the domain in front of it, for example `example.com\svc-join`.
+A name that already has a domain or an `@` is sent as it is. FOS gets the
+name as you typed it, in `hostaduser`, with the domain in `hostaddomain`.
 
 Give the join account **Create Computer objects** in each OU where a new
 computer account can go, and the rights to rename and reset the computer
