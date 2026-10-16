@@ -18,8 +18,8 @@ tags:
 
 The **Directory Groups** plugin connects FOG to your Active Directory
 domains. It keeps a list of domains, shows the OUs of each domain as a tree,
-and groups hosts by OU. FOG uses the connection to place a host in the right
-OU when it joins the domain.
+and groups hosts by OU. FOG uses the connection of a domain to move the computer
+account of a host into the OU set on that host.
 
 Directory Groups replaces the **ou** plugin. The **ou** plugin supports one
 domain. Directory Groups supports many.
@@ -35,8 +35,7 @@ Directory Groups is a bundled plugin. Turn the plugin system on first. See
 
 1. Go to **Plugins**.
 2. Tick **directorygroups** in the list.
-3. Click **Install selected**.
-4. Tick **directorygroups** again and click **Activate selected**.
+3. Click **Install selected**. Install also activates the plugin.
 
 Two entries appear in the main menu: **Directory Domains** and
 **Directory Groups**.
@@ -134,8 +133,8 @@ Directory Groups adds two permission areas. See [[roles|Roles & Permissions]].
 | `directorydomain` | Directory domains and their bind accounts: **View**, **Create**, **Edit**, **Delete** |
 
 The areas are separate. A role that groups hosts does not get access to the
-bind accounts. To add OUs as groups, a role needs `directorygroups` **Create**
-and a `directorydomain` permission to open the domain.
+bind accounts. To add OUs as groups, a role needs `directorygroups` **Create**,
+`directorydomain` **View**, and `directorydomain` **Edit**.
 
 ## Uninstalling
 
