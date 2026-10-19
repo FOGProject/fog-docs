@@ -186,8 +186,12 @@ Hosts can also include, but are not required:
 > Without either, FOG takes the first disk the kernel enumerates. USB and
 > removable devices are only considered when no internal disk is present,
 > so a USB stick or a USB device that exposes its driver files as a small
-> disk is never chosen over an internal drive. Both arguments can be set
-> on a group to apply to every host in it.
+> disk is never chosen over an internal drive.
+>
+> To apply either argument to many hosts, add it to every host at once in
+> **FOG Configuration → FOG Settings → General Settings → FOG_KERNEL_ARGS**,
+> or tick the hosts on the Hosts list and use **Edit selected hosts**.
+> Groups do not set host kernel arguments in 1.6.
 
 ##### Primary Disk
 
