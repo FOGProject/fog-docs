@@ -161,6 +161,7 @@ BOOT_rebuild_ipxe_with_my_ca='no'
 BOOT_external_tftp_server=''
 BOOT_tftp_options=''
 BOOT_dhcp_delay_seconds='0'
+BOOT_uefi_bootfile=''
 BOOT_kernel_backups_kept='3'
 
 ## STORAGE -- image storage and its NFS export
@@ -473,6 +474,7 @@ continues and tells you what to fix.
 | `BOOT_external_tftp_server` | Preference | Your TFTP server is elsewhere, so leave the TFTP configuration alone. Also keeps `69/udp` closed in the firewall |
 | `BOOT_tftp_options` | Hand-set | Extra options for `in.tftpd` |
 | `BOOT_dhcp_delay_seconds` | Preference | Seconds (0–120) a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. `0` writes no delay. See [[1.6/installation/network-setup/dhcp-server-settings\|DHCP server settings]] |
+| `BOOT_uefi_bootfile` | Preference | The UEFI loader in the generated DHCP config: `snponly` or `ipxe`, set by `--uefi-bootfile`. Empty, or any other value, means `snponly`. Kept here because the installer rewrites the DHCP config on every run, so a hand edit to it does not last. See [[1.6/installation/server/command-line-options\|installer options]] |
 | `BOOT_kernel_backups_kept` | Preference | How many previous kernel and init sets to keep. Default 3 |
 
 ### `STORAGE_` — image storage

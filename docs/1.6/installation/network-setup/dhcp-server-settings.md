@@ -284,9 +284,25 @@ The `boot-file-name` values are files FOG ships in `/tftpboot` — leave them as
 
 Two fallbacks worth knowing about, both a DHCP-only change with nothing renamed
 server-side: swap `snponly-` for `ipxe-` (`secureboot/ipxe-shimx64.efi`) if the
-chain loads but the network never comes up, which points at the firmware's own
-UEFI SNP driver; or drop back to the plain `snponly.efi` / `arm64-efi/snponly.efi`
-if you want FOG's own builds instead of upstream's signed pair.
+chain loads but the network never comes up, or the client hangs at the handoff to
+the FOS kernel, which points at the firmware's own UEFI SNP driver; or drop back
+to the plain `snponly.efi` / `arm64-efi/snponly.efi` if you want FOG's own builds
+instead of upstream's signed pair.
+
+> [!important] FOG's own DHCP server: use the installer option, not a hand edit
+> When FOG runs your DHCP server, the installer rewrites the whole DHCP config on
+> every install and upgrade. An edited boot file is lost on the next run. To move
+> every UEFI client to iPXE's own drivers for good, re-run the installer once with:
+>
+> ```
+> sudo ./installfog.sh --uefi-bootfile ipxe
+> ```
+>
+> The choice is saved in `.fogsettings` and kept by later upgrades. Every UEFI
+> architecture follows it: 64-bit gets `secureboot/ipxe-shimx64.efi`, ARM64
+> gets `secureboot/arm64-efi/ipxe-shimaa64.efi`, and 32-bit gets
+> `i386-efi/ipxe.efi`. `--uefi-bootfile snponly` puts it back.
+> To change only some machines, edit a class in your own DHCP server instead.
 
 > [!note]
 > Apple Intel netboot (BSDP) is **not** supported by Kea. If you must netboot Intel Macs, keep those on an ISC-DHCP server (FOG's ISC config still includes the BSDP class).

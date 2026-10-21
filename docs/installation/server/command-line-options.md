@@ -14,7 +14,8 @@ tags:
 # Fog installer command line options
 
 FOG 1.5 accepts a shorter list of installer options. It has no
-`--install-mode`, no `--netboot-proto` and no `--boot-delay`, and
+`--install-mode`, no `--netboot-proto`, no `--boot-delay` and no
+`--uefi-bootfile`, and
 `-S`/`--force-https` still carries its pre-1.6 meaning there. 1.6 also records
 more of what you pass into `.fogsettings`.
 

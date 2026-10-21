@@ -303,7 +303,7 @@ has to enable it in each machine's firmware settings.
 | Symptom | Cause | Fix |
 | --- | --- | --- |
 | Client never fetches anything | DHCP still handing out the old name, or `pxe-service` overriding `dhcp-boot` | Check the TFTP log for the filename actually requested |
-| Shim loads, iPXE starts, then no link or no DHCP | The firmware's own UEFI SNP driver | Change the DHCP boot file to `secureboot/ipxe-shimx64.efi` (arm64: `secureboot/arm64-efi/ipxe-shimaa64.efi`). DHCP-only change, nothing renamed server-side |
+| Shim loads, iPXE starts, then no link or no DHCP; or the client hangs at the handoff to the FOS kernel | The firmware's own UEFI SNP driver | Change the DHCP boot file to `secureboot/ipxe-shimx64.efi` (arm64: `secureboot/arm64-efi/ipxe-shimaa64.efi`). DHCP-only change, nothing renamed server-side. If FOG runs your DHCP server, re-run the installer with `--uefi-bootfile ipxe` instead, because the installer rewrites a hand-edited config on the next upgrade |
 | Signed iPXE loads, then the kernel is refused | Certificate not enrolled on that machine | Step 2 |
 | `secureboot/...` not found over TFTP | The binaries were never staged | Re-run the installer; see the note at the top of this page |
 | Boot worked before this change, fails now | The old name was FOG's own build, which your clients' firmware trusted via an enrolled MOK; the `secureboot/` chain starts from Microsoft's signature instead | Nothing to undo — this is the chain that needs *no* enrollment to load. If it still fails, the failure is at the kernel, which is Step 2 |
