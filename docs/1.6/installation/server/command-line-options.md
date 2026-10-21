@@ -18,7 +18,8 @@ tags:
 
 >[!info] FOG 1.6
 >This page describes FOG 1.6's installer options. FOG 1.5 takes a shorter
->list — no `--install-mode`, no `--netboot-proto`, no `--boot-delay`, and
+>list — no `--install-mode`, no `--netboot-proto`, no `--boot-delay`, no
+>`--uefi-bootfile`, and
 >`-S`/`--force-https` still carries its pre-1.6 meaning. See the
 >[[1.5/installation/server/command-line-options|1.5 version]] of this page.
 
@@ -86,6 +87,7 @@ them can be given on its own.
 | `-S`, `--force-https`, `--https-redirect` | Redirect HTTP to HTTPS, **and send HSTS**. All three spellings are the same option |
 | `--no-force-https`, `--no-https-redirect` | Serve both HTTP and HTTPS without redirecting. This is the default |
 | `--boot-delay <0-120>` | Seconds a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. `0` writes no delay. Any non-zero value gives BIOS clients exactly ten seconds, because that is the only pre-built BIOS binary |
+| `--uefi-bootfile <snponly\|ipxe>` | The UEFI loader that FOG's DHCP config hands out. `snponly` (the default) uses the firmware's own NIC driver. `ipxe` uses iPXE's built-in drivers. Use `ipxe` when clients load iPXE but never get a link, or hang at the handoff to the FOS kernel. The signed chain and the per-architecture names do not change: 64-bit UEFI gets `secureboot/ipxe-shimx64.efi` instead of `secureboot/snponly-shimx64.efi`. Remembered in `.fogsettings`. See [[1.6/installation/network-setup/dhcp-server-settings\|DHCP server settings]] |
 | `--no-public-web-cert`, `--no-rebuild-ipxe-with-my-ca` | Undo the corresponding option |
 
 >[!important] `-S` no longer means what it used to
@@ -137,12 +139,17 @@ Usage: ./installfog.sh [-h?odEUHSCKYyXTFl] [-f <filename>] [-N <databasename>]
                                                 enrolled before a client netboots
               --no-rebuild-ipxe-with-my-ca      Undo the above
               --netboot-proto           http or https: the protocol iPXE uses to
-              --boot-delay              seconds to sleep before the first DHCP
-                                        attempt, for switches slow out of STP or
-                                        powersave. 0 (default) writes no sleep.
                                                 fetch boot.php. Defaults to http, and
                                                 to https when the certificate is public
                                                 or iPXE was rebuilt with your CA
+              --boot-delay              seconds to sleep before the first DHCP
+                                        attempt, for switches slow out of STP or
+                                        powersave. 0 (default) writes no sleep.
+              --uefi-bootfile           snponly or ipxe: the UEFI loader DHCP
+                                        hands out. snponly (default) uses the
+                                        firmware's NIC driver; ipxe uses iPXE's
+                                        own, for firmware that hangs at the
+                                        handoff to FOS. Kept across upgrades
         -C    --recreate-CA             Recreate the CA Keys
                                                 Implies --recreate-keys below, and
                                                 re-anchors what fog-client pins
