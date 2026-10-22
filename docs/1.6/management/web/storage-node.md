@@ -69,9 +69,9 @@ tags:
 
 ## A node that is its own FOG server (1.6)
 
->[!info] FOG 1.6
->1.5 does not sign server-to-server requests, and its storage node page has
->no **Node API Signing Key** field.
+>[!info] FOG 1.5
+>1.5.10.2482 and later have the same key and the same steps. See
+>[[1.5/management/web/storage-node#A node that is its own FOG server|the 1.5 page]].
 
 FOG servers sign the requests they send to each other with a shared key,
 `FOG_NODE_API_KEY`. A true storage node, installed with mode **S**, reads the

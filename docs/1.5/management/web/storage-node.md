@@ -100,6 +100,53 @@ images are **not** instantly duplicated. View status on the node itself
 with `ctl+alt+f3`, in `/opt/fog/log`, or in the web UI under **Fog
 Configuration → Log Viewer → FILE: [Select Image Replicator]**.
 
+## A node that is its own FOG server
+
+>[!info] Version
+>This needs 1.5.10.2482 or later. Earlier releases do not sign
+>server-to-server requests, and they have no **Node API Signing Key** field.
+
+FOG servers sign the requests they send to each other with a shared key,
+`FOG_NODE_API_KEY`. A true storage node, installed with mode **S**, reads the
+master's database. It already has the same key, so it needs no setup. Leave
+**Node API Signing Key** empty for it.
+
+A node that is a full FOG server has its own database. It makes its own key,
+and that key does not match the master's. So it rejects every request the
+master signs. On the master you see these symptoms:
+
+- The dashboard shows **Access Denied** or **Unauthorized** for the node's
+  disk usage and server information.
+- The node's image, snapin, and log file listings fail.
+
+To fix this, give the master and the node the same key:
+
+1. Make a random key of 32 characters or more, for example with
+   `openssl rand -hex 32`.
+2. On the master, go to **Storage Management**, and open the node's entry.
+3. Put the key in **Node API Signing Key**, and click **Update**.
+4. On the node, open a shell in the FOG source directory that you installed
+   from.
+5. Run `sudo php bin/fog-node-key.php --set <key>` with the same key. If the
+   web root is not `/var/www/html/fog` or `/var/www/fog`, add
+   `--web <web root>`.
+6. Run `sudo php bin/fog-node-key.php --show` to check the key on the node.
+
+FOG services cache settings for up to five minutes. A running service on the
+node can reject requests for that time after the change.
+
+>[!note]
+>Nothing copies this key between the two servers. It is the same as the
+>username and password fields: if you change the key on one server, change
+>it on the other.
+
+>[!note]
+>Before 1.5.10.2527, the dashboard disk usage and server information check
+>only the IP address of the caller, not the key. A node that is its own FOG
+>server shows **Access Denied** there even with the key set. The image,
+>snapin, and log file listings use the key in those releases. The node is
+>the server that checks the key, so the node needs the newer release.
+
 ## Master Node Status
 
 The **Master Node** (the server or a particular node) in a storage group is
