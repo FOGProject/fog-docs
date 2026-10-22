@@ -66,6 +66,51 @@ tags:
  - On all storage nodes there is a new service (as of version 0.24) called FOGImageReplicator which is a very basic script which, if the node is the master, copies all of its images to all other nodes in the storage group. The coping is done every ten minutes by default, which means your images are NOT instantly duplicated to all nodes. 
  - If you would like to view the status of the image replication, you can do so on the storage node by switching to tty3, by typing ctl + alt + f3. Output is also logged to a file in the **/opt/fog/log** directory. 
  - FOGImageReplicator logs are also located in ![[Config.png]] **Fog Configuration** -> **Log Viewer** -> **FILE: \[Select Image Replicator\]** 
+
+## A node that is its own FOG server (1.6)
+
+>[!info] FOG 1.6
+>1.5 does not sign server-to-server requests, and its storage node page has
+>no **Node API Signing Key** field.
+
+FOG servers sign the requests they send to each other with a shared key,
+`FOG_NODE_API_KEY`. A true storage node, installed with mode **S**, reads the
+master's database. It already has the same key, so it needs no setup. Leave
+**Node API Signing Key** empty for it.
+
+A node that is a full FOG server has its own database. It makes its own key,
+and that key does not match the master's. So it rejects every request the
+master signs. On the master you see these symptoms:
+
+- The dashboard shows **Access Denied** or **Unauthorized** for the node's
+  disk usage and server information.
+- The node's image, snapin, and log file listings fail.
+
+To fix this, give the master and the node the same key:
+
+1. Make a random key of 32 characters or more, for example with
+   `openssl rand -hex 32`.
+2. On the master, go to **Storage Management**, and open the node's entry.
+3. Put the key in **Node API Signing Key**, and click **Update**.
+4. On the node, open a shell in the FOG source directory that you installed
+   from.
+5. Run `sudo php bin/fog-node-key.php --set <key>` with the same key. If the
+   web root is not `/var/www/html/fog`, add `--web <web root>`.
+6. Run `sudo php bin/fog-node-key.php --show` to check the key on the node.
+
+FOG services cache settings for up to five minutes. A running service on the
+node can reject requests for that time after the change.
+
+>[!note]
+>Nothing copies this key between the two servers. It is the same as the
+>**Node Service Account** and **Node Service Account Password** fields: if
+>you change the key on one server, change it on the other.
+
+>[!note]
+>In 1.6.0-RC-14 and earlier, the dashboard disk usage and server information
+>check only the IP address of the caller, not the key. A node that is its own
+>FOG server shows **Access Denied** there even with the key set. The image,
+>snapin, and log file listings use the key in those releases.
  
 ## Master Node Status 
  
