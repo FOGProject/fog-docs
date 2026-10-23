@@ -277,8 +277,9 @@ this page for how it differs on the older line.
 >**What to do:** if you used the plugin and have rotated, or intend to rotate,
 >an AD join account, treat every host that was ever in a
 >persistentgroups-managed group as possibly carrying the template's old
->credential and reset it. **Hosts → select them → Edit selected hosts →
->Active Directory** does this across a selection in one action.
+>credential and reset it. **Hosts → select them → Mass edit → Active
+>Directory** does this across a selection in one action. For one group, use
+>**Mass edit** on the group's **Host Associations** tab.
 
 >[!note] Site is gone too, and for the same reason
 >Sites and per-site host visibility moved into 1.6 core, so there is no
