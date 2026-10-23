@@ -141,12 +141,26 @@ Image, kernel, kernel arguments, primary disk, init, AD details, product key,
 printer management level, BIOS/EFI exit type, screen resolution, auto-logout
 and hostname enforcement are **not** set from a group any more. They were
 never group properties — pressing *Update* wrote the value onto each member
-host once — so they moved to where that operation belongs: the **Hosts** list.
+host once — so they moved to the host **mass edit** form. You reach that form
+two ways:
 
-**Hosts → tick the hosts you want → Edit selected hosts.**
+- **From the group:** open the group → **Host Associations** tab → **Mass
+  edit** in the *Mass Edit Member Hosts* card. The form opens over every
+  current member of the group.
+- **From the Hosts list:** tick the hosts you want → **Mass edit**. This works
+  on any selection you can build, not only on a group.
 
-That does the same job on any selection you can build, not only on a group,
-and you can repeat it whenever you like.
+Both open the same form, and you can repeat either whenever you like.
+
+>[!note] It writes once; the group keeps nothing
+>Mass edit writes onto the hosts that are members **now**. A host you add to
+>the group later does not get those values. Run the mass edit again, or edit
+>that one host. This is different from snapins and printers, which a group
+>grants to every member, including later ones.
+
+>[!note] Hosts outside your sites
+>If your role is limited to some sites, the group-page mass edit leaves out
+>any member host outside them. The form says how many it left out.
 
 The fields are split across the same four tabs a single host's own page uses
 — **General**, **Active Directory**, **FOG Client** and **Plugins** — so a
@@ -160,7 +174,8 @@ list. Each field has its own action:
 | **Clear on all** | Empty the field on every selected host. |
 
 Fields that only make sense as on/off (joining the domain, hostname
-enforcement) offer *No change*, *Enable on all* and *Disable on all* instead.
+enforcement) offer *No change* and *Set on all*, with a yes/no value beside
+them. *Set on all* with *No* turns the setting off.
 
 >[!tip] Nothing happens on a tab you did not touch
 >Every field on every tab starts on *No change*, so opening a tab and leaving
@@ -169,7 +184,8 @@ enforcement) offer *No change*, *Enable on all* and *Disable on all* instead.
 >at a time.
 
 >[!note] Where each setting went
->Every row is *Hosts → Edit selected hosts*, then the tab and field named.
+>Every row is *Mass edit* (from the group or from the Hosts list), then the
+>tab and field named.
 >
 >| Was on the group page | Tab | Field |
 >|---|---|---|
@@ -191,12 +207,12 @@ enforcement) offer *No change*, *Enable on all* and *Disable on all* instead.
 
 >[!important] These controls are gone from the group page, not hidden
 >If you are looking for one of them on a group and cannot find it, that is
->why. There is no setting to bring them back and no compatibility mode. The
+>why. Use **Mass edit** on the group's **Host Associations** tab instead. The
 >table above is the complete map of where each one went.
 >
 >The `location` and `ou` plugins each had a group tab doing the same thing.
->Those are gone too, and both settings appear in **Edit selected hosts**
->alongside the built-in fields.
+>Those are gone too, and both settings appear in **Mass edit** alongside
+>the built-in fields.
 
 ## Groups as labels: doing it from the Hosts list
 
@@ -205,8 +221,8 @@ faster way round. Labelling forty machines is one action rather than three
 trips through Group Management:
 
 1. **Hosts** → filter or search until you have the machines on screen. The
-   **Groups** column shows each host's groups and can be searched and filtered
-   like any other column, so "everything in *Third Floor* that is not in
+   **Groups** column shows each host's groups. Filter on it with **Filter** or
+   **Column search**. The search box above the list does not look at it, so "everything in *Third Floor* that is not in
    *Dell PCs*" is a filter rather than a cross-referencing exercise.
 2. Tick the hosts you want.
 3. **Edit groups** → pick one or more groups → **Add** or **Remove**.

@@ -190,8 +190,9 @@ Hosts can also include, but are not required:
 >
 > To apply either argument to many hosts, add it to every host at once in
 > **FOG Configuration → FOG Settings → General Settings → FOG_KERNEL_ARGS**,
-> or tick the hosts on the Hosts list and use **Edit selected hosts**.
-> Groups do not set host kernel arguments in 1.6.
+> or tick the hosts on the Hosts list and use **Mass edit**. For a whole
+> group, use **Mass edit** on the group's **Host Associations** tab. A group
+> does not keep kernel arguments for later members in 1.6.
 
 ##### Primary Disk
 
@@ -398,7 +399,13 @@ port for a mixed fleet: [[1.6/kb/reference/ping-hosts-service|The Ping Hosts Ser
 
 ### Editing many hosts at once
 
-Tick the hosts you want on the Hosts list and use **Edit selected hosts**.
+Tick the hosts you want on the Hosts list and click **Mass edit**. The form
+opens as *Edit selected hosts*. To edit every host in a group, open the group
+and use **Mass edit** on its **Host Associations** tab instead. It opens the
+same form over the group's current members, so you do not have to filter and
+select them here. See
+[[1.6/management/web/groups#Settings that are no longer on the group page|Group Management]].
+
 This is where the settings that used to be pushed from a group page now live —
 image, kernel, kernel arguments, primary disk, init, product key, BIOS and EFI
 exit type, printer management level, Active Directory, hostname enforcement,
@@ -427,7 +434,8 @@ Every field carries its own action, and the default is always to do nothing:
 | **Clear on all** | Empty the field on every selected host |
 
 Fields that are only on or off — joining the domain, hostname enforcement —
-offer *No change*, *Enable on all* and *Disable on all* instead.
+offer *No change* and *Set on all*, with a yes/no value beside them. *Set on
+all* with *No* turns the setting off.
 
 >[!note] Plugins can add fields here
 >If you run the **Location** or **OU** plugins, their settings appear in this
@@ -450,10 +458,11 @@ rather than picking one of them to show you.
 >[!info] Coming from FOG 1.5?
 >On 1.5 the only way to change a setting across many machines was to put them
 >in a group and press *Update* on the group page. That wrote the value onto
->whichever hosts were members at that moment. *Edit selected hosts* works on
+>whichever hosts were members at that moment. *Mass edit* works on
 >any selection you can build — a search, a filter, a handful of ticks — and
->can be repeated. Those group-page controls are **gone** in 1.6 — not hidden,
->and there is no compatibility mode. See
+>can be repeated. Those group-page controls are **gone** in 1.6. The group
+>page has a **Mass edit** button instead, which opens this same form over the
+>group's members. See
 >[[1.6/management/web/groups#Settings that are no longer on the group page|Group Management]]
 >for the complete map of where each one went.
 >

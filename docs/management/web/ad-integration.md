@@ -62,7 +62,8 @@ three different levels, applied in order of most to least specific:
 >[!warning] FOG 1.6: the group page has no Active Directory tab
 >The group-level batch apply described above is **FOG 1.5 only**. It was
 >removed in 1.6, where AD across many hosts is set from **Hosts → tick the
->hosts → Edit selected hosts**, with each field carrying an explicit
+>hosts → Mass edit**, or from **Mass edit** on a group's **Host
+>Associations** tab, with each field carrying an explicit
 >*No change* / *Set on all* / *Clear on all*. That works on any selection,
 >not only on a group, and can be repeated whenever you like.
 >

@@ -34,7 +34,8 @@ what the group page's remaining push-to-all controls do.
 >    fields, screen resolution, image, product key. These were **not** group
 >    properties: pressing *Update* wrote the value onto the hosts that were
 >    members at that instant, once. **They are gone from the group page in
->    1.6.** Use *Edit selected hosts* on the Hosts list instead. The section
+>    1.6.** Use *Mass edit* on the group's Host Associations tab, or on the
+>    Hosts list, instead. The section
 >    below is kept as the record of what they did and why they went.
 > 3. **Tasks** — deploy, capture, and an *immediate* shutdown, reboot or wake
 >    from the Power Management tab. A task acts on the membership at the
@@ -173,8 +174,9 @@ to be able to reach the machine on its own.
 >[!warning] Removed from the group page in FOG 1.6
 >Everything in this section describes how these controls behaved **on FOG
 >1.5**, and on 1.6 before they were removed. They are no longer on the group
->page. **Use Hosts → tick → Edit selected hosts instead** — it does the same
->job over any selection, with an explicit *No change* / *Set on all* /
+>page. **Use Mass edit instead**, from the group's Host Associations tab or
+>from Hosts → tick → Mass edit. It does the same job over the members once,
+>or over any selection, with an explicit *No change* / *Set on all* /
 >*Clear on all* per field.
 >
 >It is kept because the behavior explains a class of question that will keep
@@ -214,7 +216,7 @@ Saving one of these tabs pushes to all current members, but:
 - **any other value** → push that value to every host.
 
 That is what lets you set one kernel argument across a group without wiping
-every other per-host field. It is also the convention *Edit selected hosts*
+every other per-host field. It is also the convention the 1.6 mass edit form
 replaces with something explicit, because "blank means leave alone" is
 undiscoverable and gives you no way to store the literal string `NULL`.
 
