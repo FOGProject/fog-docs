@@ -310,6 +310,80 @@ Edit a host: `/fog/host/<id>/edit`. Example body:
 
 A successful edit returns the full JSON of the updated host object.
 
+## Fields you leave out of a create
+
+When you create an object, a field that the request leaves out takes the
+default value of its database column. The database decides the default, not
+FOG. For example, a `POST /fog/image/create` without `isEnabled` creates an
+enabled image. This matches the default that the API Documentation page shows
+for the field.
+
+A field that you send is stored as you sent it, even when the value is `0` or
+an empty string. An edit of an existing object keeps the stored value of each
+field that the request leaves out.
+
+>[!note] User create and `api`
+>A user that you create over the API without the `api` field still gets `0`.
+>The API access of the new user stays off until you send `api`.
+
+## Cancelling a task
+
+A cancel always names one object. Use `DELETE /fog/<class>/<id>/cancel`, for
+example `DELETE /fog/task/<id>/cancel`. An id that does not exist answers
+`404`.
+
+>[!warning] Bulk cancel is removed
+>`DELETE /fog/<class>/cancel` without an id is no longer a route. It does not
+>cancel every active object of the class. A script that sends it must cancel
+>each object by id. This includes the FogApi command
+>`Remove-FogObject -type objectactivetasktype`, which sends that request.
+
+## Bulk edit and permissions
+
+`PUT /fog/<class>/join` edits many existing objects with one request. It needs
+the `<class>.edit` permission. A role that has `<class>.create` and not
+`<class>.edit` gets `403 Forbidden`.
+
+`POST /fog/group/join` adds hosts to a group. When the name is a new group, the
+request needs `group.create`. When the name is a group that exists, the request
+also needs `group.edit`.
+
+Each object in a bulk edit passes the same checks as a single edit. A field that
+the body does not name keeps its stored value.
+
+## Status codes and errors
+
+An error answers with a JSON body of the form `{"error": "<message>"}`.
+
+| Status | When |
+| --- | --- |
+| `400 Bad Request` | The body of a create or an edit is not a JSON object. |
+| `400 Bad Request` | A required field is null or blank. |
+| `400 Bad Request` | An edit sets an empty name. |
+| `403 Forbidden` | The user does not have the permission that the route needs. |
+| `404 Not Found` | The id in the URL does not exist, including a cancel for that id. |
+| `404 Not Found` | No route matches the path, for example `GET /fog/host/abc`. |
+| `405 Method Not Allowed` | The path exists, but not for this HTTP verb. The `Allow` header lists the verbs that work. |
+| `409 Conflict` | A create or an edit uses a name that exists. |
+| `409 Conflict` | A delete is refused because another record still refers to the object. See [[1.6/kb/reference/referential-integrity\|Referential Integrity]]. |
+
+An unrouted path answered `501 Not Implemented` in earlier 1.6 builds. It now
+answers `404`, or `405` for a wrong verb.
+
+## Null in list responses
+
+A list endpoint sends JSON `null` for a column that is `NULL` in the database.
+It sent an empty string before. For example, a host with no image now lists
+`"imageID": null`. This matches the response for a single object.
+
+>[!warning] Scripts that test for an empty string
+>A script that tests `-eq ''` or `== ""` to find an unset value must also accept
+>`null`.
+
+The `pxemenuoptions` list sends `regMenu` as an integer, the same as the
+response for a single object. The text label is in a separate `regMenuText`
+key.
+
 ## Pagination, expansion & plugin items
 
 FOG 1.6 adds opt-in query features for working with the API: paging large list

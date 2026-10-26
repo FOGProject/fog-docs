@@ -130,8 +130,8 @@ A snapin or printer is a thing a host either has or does not. A module is a
 |---|---|---|
 | Host says **Off** | The module does not run on this host | everything |
 | Host says **On** | The module runs on this host | group grants |
-| A group **grants** it | The module runs on this host | nothing below |
-| Nothing anywhere | The module does not run | — |
+| A group **grants** it | The module runs on this host | the module default |
+| The module's **default** | The module runs on this host when its default is on | — |
 
 **Lowest tier wins, and only a host may say Off.** A group grant is
 presence-only — a group either grants a module or says nothing about it — so
@@ -139,10 +139,25 @@ two groups can only ever union and can never contradict each other. That
 absence of a "disabled" grant is the whole reason there is no conflict to
 resolve.
 
+The module default is the **default** setting of the module in Module
+Management. A host that has no row for a module and no group grant follows it.
+A change to the default reaches every host left *Not set*.
+
 The host's **Modules** tab is therefore a dropdown, not a checkbox: *On*,
 *Off*, *Not set*. *Not set* is the absence of an opinion, and it is what
 unticking the old checkbox actually meant — which is why a checkbox could not
 express this and had to go.
+
+A new host has no module rows. This includes a host that you add in the web
+UI, import from CSV, register, or enroll with the agent. The host follows the
+module defaults until you set a module to *On* or *Off*.
+
+>[!note] Upgrading from 1.5
+>On 1.5, a host that had no row for a module did not run it. Schema step 443
+>keeps every upgraded host in its current state. For each host and each default
+>module, with no row and no group grant, the step writes an explicit *Off* row.
+>The step only adds rows. It does not change or delete a row, and it does
+>nothing on a new install.
 
 ---
 
