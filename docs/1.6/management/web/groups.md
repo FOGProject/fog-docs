@@ -319,12 +319,17 @@ rather than a checkbox:
 |---|---|
 | **On** | The module runs on this host. |
 | **Off** | The module does not run, no matter how many groups grant it. |
-| **Not set** | The host has no opinion; a group grant switches it on, and nothing else does. |
+| **Not set** | The host has no opinion. The module follows the module default in Module Management. A group grant also switches it on. |
 
-*Off* is the host's own answer and beats every grant. Note that this is the
+*Off* is the host's own answer and beats every grant and the module default. Note that this is the
 one place where unticking used to mean something different: on the old
 checkbox, unticking deleted the row, which under these rules means *Not set* —
 so a group granting the module would have switched it straight back on.
+
+A new host has no module rows, so every module is *Not set* and follows its
+default. When you change a module default, the change reaches every host that
+is *Not set*. The upgrade writes an explicit *Off* row for each upgraded host
+that had a default module turned off. No host changes state at the upgrade.
 
 ## Hosts that already carry copies
 
