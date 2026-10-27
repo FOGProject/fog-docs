@@ -21,9 +21,9 @@ recreating UEFI boot entries, renaming partitions, writing host-specific config,
 and so on.
 
 > [!note]
-> These run **after a deploy (download)**. If you need to run something *before*
-> imaging (for example, custom partitioning), use a post-init script instead —
-> see [Post-init scripts](#post-init-scripts-before-imaging) below.
+> These run **after a deploy (download)** only. To run something before any
+> task, or to change FOS itself without building a custom init, use a
+> [[post-init-scripts|post-init script]].
 
 ## How it works
 
@@ -33,7 +33,12 @@ The installer creates a scripts directory and a master script on your FOG server
 /images/postdownloadscripts/fog.postdownload
 ```
 
-`fog.postdownload` is the entry point that FOS runs. It is **sourced** (with the
+`fog.postdownload` is the entry point that FOS runs. FOS runs it after the
+last partition is written, and before it renames the Windows computer and
+tells the server that the task is complete. The installer writes this file
+only when it is missing, so an update does not change it.
+
+The file is **sourced** (with the
 `.` / `source` builtin), so any script you call from it runs in the same shell
 and inherits all of the imaging environment's variables. The file ships with the
 calling syntax in its comments:
@@ -112,21 +117,16 @@ case "$img" in
 esac
 ```
 
-## Post-init scripts (before imaging)
+## Rules that prevent a failed task
 
-There is a matching hook that runs **before** imaging begins (right after FOS
-loads), useful for custom partitioning or disk prep. It mirrors the
-post-download layout:
+- **Use `return`, not `exit`.** FOS sources your script, so `exit` stops FOS
+  before it tells the server that the task is complete. The host then shows
+  the task as still running.
+- **Unmount what you mount.** Unmount each partition before your script ends.
 
-```
-/images/dev/postinitscripts/fog.postinit
-```
+## Post-init scripts
 
-Call your scripts from `fog.postinit` with:
-
-```bash
-. ${postinitpath}<SCRIPTNAME>
-```
+To run a script before every task, see [[post-init-scripts|Post-init scripts]].
 
 ## More examples and discussion
 
