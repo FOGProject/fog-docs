@@ -169,6 +169,9 @@ always replaced with the release being installed.
 | Per-host custom kernel/init (a host's **Host Kernel** / **Host Init** fields) | Restored automatically — FOG never re-downloads a file it did not ship |
 | Previously working kernel set | Kept as a numbered generation; restore with `bin/restorekernel.sh` in your FOG checkout |
 
+To change files inside an init and serve it through **Host Init**, see
+[[customize-the-fos-init|Customize the FOS init]].
+
 ```bash
 ./restorekernel.sh --list             # what is stored, and which release each came from
 ./restorekernel.sh --generation 1     # roll back to the set from before the last update
