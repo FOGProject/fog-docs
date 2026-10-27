@@ -27,6 +27,7 @@ More advanced/situational guides:
 - [[add-extend-a-2nd-virtual-hdd|Add & Extend a 2nd Virtual HDD]]
 - [[chocolatey-snapins|Install software with Chocolatey snapins]]
 - [[post-download-scripts|Post Download Scripts]]
+- [[post-init-scripts|Post-init Scripts]]
 - [[customize-the-fos-init|Customize the FOS init]]
 - [[tpm-bitlocker-windows-hello|TPM, BitLocker and Windows Hello after imaging]]
 - [[unify-certificates-across-fog-servers|Unify Certificates Across FOG Servers]]

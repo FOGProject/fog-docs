@@ -19,7 +19,7 @@ system FOS runs from. Sometimes you need a file inside it changed: a tool, a
 script, a configuration file.
 
 > [!tip] Try a postinit script first
-> A [[post-download-scripts#post-init-scripts-before-imaging|post-init script]]
+> A [[post-init-scripts|post-init script]]
 > runs inside FOS on every boot, from your storage node. It needs no change to
 > the init, and it survives every FOS update. Change the init only when a
 > script cannot do the job.
