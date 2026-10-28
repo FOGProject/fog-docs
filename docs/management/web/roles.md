@@ -73,6 +73,23 @@ and `GET /api/system/export` answers 403.
 >unaffected. Deny-by-default is deliberate: a new permission that quietly
 >arrives already granted is not a permission.
 
+**Users** also has an **Export** action. It does not control the user export
+itself: **Users → View** is enough to download the user list, because that
+file holds nothing a viewer cannot already see. **Users → Export** adds an
+**Include password hashes** box to the export page. When it is ticked,
+**CSV (All)** includes each user's password hash, so the file can move the
+accounts to another FOG server with their passwords intact.
+
+A hash is not the password. But anyone who holds the file can try to crack
+the hashes offline, so treat the file like a password list. API tokens are
+never exported. Each hash export is recorded in the audit log. Like
+**System → Export**, nothing grants **Users → Export** automatically: only
+full-access roles have it until you tick it on a role.
+
+A user export without the hashes still imports. Each imported user gets a
+random password that nobody knows, and the import tells you to set a real
+one before that user can sign in.
+
 For example, a help-desk role might have full Host and Printer access
 plus the ability to view Images and start imaging tasks, but no access
 to Users, Roles, or FOG Settings.
