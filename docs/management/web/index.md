@@ -30,6 +30,7 @@ Documentation related to how to use the web management ui.
 - [[oidc|OpenID Connect Sign-in]]
 - [[local-login|The Local Login Page]]
 - [[ad-integration|Active Directory Integration]]
+- [[ad-rejoin-placement|AD Rejoin and OU Placement]] — FOG 1.6.0.N and later
 - [[ldap|LDAP Authentication]] — differs between FOG 1.5 and 1.6
 - [[site-scoping|Site Scoping]] — differs between FOG 1.5 and 1.6
 

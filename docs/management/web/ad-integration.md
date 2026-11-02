@@ -27,6 +27,11 @@ following:
     domain, regardless of what's configured below.
 -   Before capturing your image, the computer is NOT a member of any
     domain
+
+>[!tip] FOG 1.6.0.N and later: deploying a domain-joined image
+>With the FOG Agent, FOG can give a deployed computer its own computer
+>account after a Deploy task, and move the account to the host's OU. See
+>[[ad-rejoin-placement|AD Rejoin and OU Placement]].
 -   In order to add a computer to a domain, FOG requires a username and
     password of an account that has rights to the OU where the computer
     objects are stored in the domain tree. This user account should have
