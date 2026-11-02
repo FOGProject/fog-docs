@@ -33,7 +33,7 @@ first, one command does the whole of this page's *Prerequisite* and *Run the
 installer* sections. It installs `git`, clones the repository, checks out the
 branch for the channel you asked for, and starts the installer:
 
-    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh | sudo bash -s -- --channel beta
+    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/stable/bin/bootstrap.sh | sudo bash -s -- --channel stable
 
 The installer then runs **interactively**, exactly as it does when you start it
 by hand, so you still answer every prompt yourself.
@@ -53,9 +53,9 @@ by hand, so you still answer every prompt yourself.
 > *branch*, so its content changes whenever we push. If you would rather read
 > it first — and on a server you care about, you should — do it in two steps:
 >
->     curl -fsSL -o bootstrap.sh https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh
+>     curl -fsSL -o bootstrap.sh https://raw.githubusercontent.com/FOGProject/fogproject/stable/bin/bootstrap.sh
 >     less bootstrap.sh
->     sudo bash bootstrap.sh --channel beta
+>     sudo bash bootstrap.sh --channel stable
 
 Options:
 
@@ -125,10 +125,10 @@ Here's how you clone the FOG repository/code to your local machine:
 ### Choosing a FOG version
 
 A plain clone gets you the `stable` branch — the default branch, and FOG's
-longer-term-tested line. **FOG 1.6 lives in `working-1.6`** — this is the
-branch to check out if you're following this page: a bigger jump than a
-point release, with a restructured PKI layout, Secure Boot support by
-default, and more.
+longer-term-tested line. **Since the 1.6.0 release, `stable` carries FOG
+1.6**, then the monthly 1.6.0.N releases. `dev-branch` carries the 1.6
+patches between those releases. 1.6 is a bigger jump than a point release,
+with a restructured PKI layout, Secure Boot support by default, and more.
 
 > [!note]
 > See [[tags/1_6-changes|1.6 changes]] for pages related to config changes
@@ -148,33 +148,32 @@ default, and more.
 > risk)
 
 > [!info] Just want FOG 1.5.x?
-> `dev-branch` is FOG's actively-patched 1.5.x line, separate from `stable`
-> and from `working-1.6` — for example `dev-branch` may already be on
-> 1.5.10.53 while `stable` is still on an older 1.5.x point release. See the
+> 1.5 is end of life. Its last release is the tag `1.5.10.2534`, and no
+> branch carries 1.5 any more. See the
 > [[1.5/installation/server/install-fog-server|1.5 version of this page]] for
-> the branch choice, installer prompts, and update process specific to that
-> line.
+> the installer prompts and update process specific to that line.
 
-To install 1.6, `git checkout` the working-1.6 branch like so (just ignore
+To install 1.6, `git checkout` the stable branch like so (just ignore
 the comment lines starting with '#'):
 
     #cd into where you cloned the git repo, e.g. /root/fogproject
     cd /root/fogproject
     #update all branches
     git fetch --all
-    #switch to the 1.6 branch
-    git checkout working-1.6
+    #switch to the 1.6 release line
+    git checkout stable
     #if updating run make sure to pull the latest changes
     git pull
 
 Then you can run the installer to perform an upgrade or new install as
 shown in the next section.
 
-You can switch back to the stable branch with:
+To track the 1.6 patches line between releases instead, check out
+`dev-branch`:
 
     cd /root/fogproject
     git fetch --all
-    git checkout stable
+    git checkout dev-branch
 
 You can see a list of current branches here:
 <https://github.com/FOGProject/fogproject/branches>
@@ -219,10 +218,15 @@ The channels map to branches like this:
 
 | Channel | Branch | What it is |
 |---|---|---|
-| `stable` | `stable` | the last release |
-| `patches` | `dev-branch` | the 1.5.x patches line |
-| `beta` | `working-1.6` | the 1.6 development line |
+| `stable` | `stable` | the last release: 1.6.0, then the monthly 1.6.0.N releases |
+| `patches` | `dev-branch` | the 1.6 patches line |
+| `beta` | the newest `working-*` | a development line, when one is open |
 | `rc` | the newest `rc-*` | the current release candidate, if one is published |
+
+> [!note]
+> If you tested a 1.6.0 release candidate (`--channel rc`) or the 1.6 beta
+> (`--channel beta`), move to `--channel stable`. `rc-1.6.0` and
+> `working-1.6` are retired.
 
 `staging` and `dev` still work as names, and always will, because servers
 installed before the names changed have one of them recorded. Be careful with
