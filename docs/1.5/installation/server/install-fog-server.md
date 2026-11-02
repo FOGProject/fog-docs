@@ -125,6 +125,13 @@ It exists mainly for one job: **moving a 1.5 server onto 1.6.**
 
     ./updatefog.sh --channel stable  # FOG 1.6.0, then its monthly releases
 
+> [!important]
+> Always pass `--channel stable`. With no `--channel`, the 1.5 `updatefog.sh`
+> uses the `rc` channel. 1.6.0 is released, so no release candidate is
+> published, and the script stops with "No release candidate is currently
+> published". Do not follow its hint to use `--channel beta`. That channel is
+> for development work, not for an upgrade.
+
 It runs the installer **interactively**, which matters here more than for an
 ordinary update: the 1.6 installer asks about settings your 1.5
 `.fogsettings` has never held, and running it unattended would take a default
