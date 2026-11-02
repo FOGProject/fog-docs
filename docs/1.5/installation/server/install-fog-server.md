@@ -67,12 +67,13 @@ release.
 > But if you want to switch back to the stable branch, it's possible that the schema changes will cause issues when you revert and you may need to wait until the next official stable release to revert to the stable branch version.
 > Doing otherwise is at your own risk! (Though to be fair, these types of issues have been rare, this is just a disclaimer, there's also a database change that can be made to force a revert of the schema, though there's still some potential risk, we haven't seen such issues, but there's still risk)
 
-> [!note]
-> FOG also has a newer major version, 1.6, developed in the `working-1.6`
-> branch. It's a bigger jump than stable → dev-branch — a restructured PKI
-> layout, Secure Boot support by default, and more — and like dev-branch it's
-> a one-way move: once a server's database has the 1.6 schema applied it
-> cannot go back to 1.5. See [[1.6/installation/server/install-fog-server|the 1.6 install page]] if that's what you're after.
+> [!warning] FOG 1.6.0 is released, and 1.5 is end of life
+> Since the 1.6.0 release, `stable` and `dev-branch` both carry **1.6**. A
+> `git checkout stable` or `dev-branch` on this page, or `updatefog.sh
+> --channel stable` or `patches`, now moves a server to 1.6. That is a one-way
+> move: once a server's database has the 1.6 schema applied it cannot go back
+> to 1.5. The last 1.5 release is the tag `1.5.10.2534`; to stay on it, run
+> `git checkout 1.5.10.2534`. See [[1.6/installation/server/install-fog-server|the 1.6 install page]] for 1.6.
 
 If you want the latest and greatest for 1.5.x, would like to contribute to
 testing new features, or were instructed to install the dev-branch version to
@@ -122,8 +123,7 @@ command:
 
 It exists mainly for one job: **moving a 1.5 server onto 1.6.**
 
-    ./updatefog.sh --channel rc      # the current 1.6 release candidate
-    ./updatefog.sh --channel beta    # the 1.6 development line
+    ./updatefog.sh --channel stable  # FOG 1.6.0, then its monthly releases
 
 It runs the installer **interactively**, which matters here more than for an
 ordinary update: the 1.6 installer asks about settings your 1.5
@@ -146,7 +146,7 @@ directory — there is no branch to move, so use the bootstrap installer instead
 It clones a checkout and runs the installer over your existing install, which
 it finds through `/etc/fog/fog.conf`:
 
-    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/working-1.6/bin/bootstrap.sh | sudo bash -s -- --channel rc
+    curl -fsSL https://raw.githubusercontent.com/FOGProject/fogproject/stable/bin/bootstrap.sh | sudo bash -s -- --channel stable
 
 `sudo` goes before `bash`, not before `curl`. It is safe to run on a server
 that already has FOG: the script finds the existing install through
