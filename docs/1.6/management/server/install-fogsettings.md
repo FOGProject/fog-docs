@@ -482,7 +482,7 @@ continues and tells you what to fix.
 | Setting | Kind | Meaning |
 |---|---|---|
 | `STORAGE_image_share_path` | Preference | Where images are kept, normally `/images` |
-| `STORAGE_rebuild_nfs_exports` | Preference | Whether to rebuild `/etc/exports` for NFS |
+| `STORAGE_rebuild_nfs_exports` | Preference | Whether the installer writes FOG's NFS exports. They are in `/etc/exports.d/fog.exports`. See [[1.6/installation/server/command-line-options#NFS exports\|NFS exports]] |
 
 ### `SVC_` — FOG's system account and host services
 

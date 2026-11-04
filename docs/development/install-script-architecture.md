@@ -236,7 +236,7 @@ other functions in the library do.
 |---|---|
 | `configureTFTPandPXE()` | Rebuilds iPXE (trusting the site CA if HTTPS is on), deploys the TFTP tree, and sets up the TFTP service — `tftpd-hpa` on Debian-family, or a hand-written `fog-tftp.service`/`.socket` pair elsewhere. |
 | `configureDefaultiPXEfile()` | *Internal.* Writes the iPXE boot script that chains to `service/ipxe/boot.php`. |
-| `configureNFS()` | Rewrites `/etc/exports` (unless `-E`/`--no-exportbuild`) mapping to the FOG user, and warns explicitly if an existing export still has `no_root_squash`. |
+| `configureNFS()` | Writes FOG's exports to the drop-in `/etc/exports.d/fog.exports` (unless `-E`/`--no-exportbuild`) and strips FOG's old entries from `/etc/exports` without rewriting the rest of it, mapping to the FOG user, and warns explicitly if an existing export still has `no_root_squash`. |
 | `configureFTP()` | Writes `vsftpd.conf`, adding `seccomp_sandbox=NO` on vsftpd ≥3.2. |
 | `configureUDPCast()` | Extracts the vendored UDPCast source and builds/installs it, with a Broadcom-CPU-specific `config.guess`/`config.sub` refresh. |
 

@@ -67,6 +67,162 @@ tags:
  - If you would like to view the status of the image replication, you can do so on the storage node by switching to tty3, by typing ctl + alt + f3. Output is also logged to a file in the **/opt/fog/log** directory. 
  - FOGImageReplicator logs are also located in ![[Config.png]] **Fog Configuration** -> **Log Viewer** -> **FILE: \[Select Image Replicator\]** 
 
+## SSH access to storage nodes (1.6)
+
+>[!info] FOG 1.5
+>1.5 moves a finished capture with FTP. 1.6 moves it with SSH. The 1.5 page
+>does not have this section.
+
+The FOG web tier and the FOG services open an SSH connection from the master
+to each storage node. They sign in as the storage user. The storage user is
+the **Node Service Account** of the node, normally `fogproject`. FOG uses
+SSH for these jobs:
+
+- The move of a finished capture from `/images/dev` to the image folder.
+  When this connection fails, the capture ends with the error
+  `Unable to connect to ssh during move upload`.
+- The node reachability check.
+- Snapin uploads and the log file listing.
+
+The storage user must be able to sign in over SSH from the master. This applies
+to the master itself, because the master is a storage node of itself.
+
+### The SSH port
+
+FOG connects to the port in the setting `FOG_SSH_PORT`. The default is 22.
+Change it in **FOG Configuration → FOG Settings** when your sshd listens on
+another port. The setting is global. All storage nodes use the same port.
+
+When you upgrade from 1.5, the upgrade adds `FOG_SSH_PORT` if the setting is
+missing. The value is 22. A 1.5 server can lack this setting, because some 1.5
+releases never added it.
+
+FTP replication with `lftp` uses the port in `FOG_FTP_PORT`. If the setting is
+empty or not a valid port, `lftp` uses port 21.
+
+### The FOG SSH key
+
+FOG signs in with an SSH key first. When the node refuses the key, FOG signs in
+with the storage user password. With the key, you do not need to allow
+password logins in sshd for the storage user.
+
+The installer on the master makes the key pair. The files are in
+`/etc/fog/ssh`:
+
+| File | Owner and mode | Content |
+|---|---|---|
+| `/etc/fog/ssh` | `root`, web server group, `0750` | The folder |
+| `/etc/fog/ssh/fog_ssh_key` | `root`, web server group, `0640` | The private key (RSA, 4096 bits, PEM format) |
+| `/etc/fog/ssh/fog_ssh_key.pub` | `root`, web server group, `0644` | The public key |
+
+The installer applies these modes at each install. The installer never makes a
+new key when one exists, because every node that trusts the key would lose
+access. Keep `/etc/fog/ssh` in your backups. If the installer cannot make the
+key, it prints `Failed`, and FOG uses the password.
+
+The master authorizes its own key for its own storage user. The installer adds
+the public key to `~/.ssh/authorized_keys` of that user. It adds the line only
+when the line is not there yet.
+
+### How a storage node gets the key
+
+A storage node installer fetches the public key from the master. It does this
+after the node is registered, as the last step of the node install.
+
+1. The node sends a random value and a signature to
+   `service/nodesshkey.php` on the master. The node makes the signature with
+   the storage node database password (the `fogstorage` password).
+2. The master checks the signature. It refuses the request when the signature
+   is wrong.
+3. The master checks that a storage node is registered with the IP address
+   of the caller. It refuses the request when no node is registered at that
+   address.
+4. The master answers with the public key and a signature over the key.
+5. The node checks the signature of the answer. Then the node adds the key to
+   `~/.ssh/authorized_keys` of its storage user.
+
+The node never trusts a key with a wrong signature. The private key stays on
+the master.
+
+The master answers only a registered node. So add the node in **Storage
+Management** before you finish the node install, or re-run the installer on the
+node after you add it.
+
+### The check when you save a node
+
+When you add a node, FOG tries one SSH login. If it fails, the page shows
+`Unable to connect using ip, user, and/or password provided!` and still creates
+the node.
+
+When you update a node, FOG checks the node over SSH in two steps. FOG checks
+the password first, with the key switched off. Then it checks the key alone.
+The page saves the node and shows one of these messages as a warning:
+
+| Message | Meaning |
+|---|---|
+| `The node did not answer on the network: <ip>` | The node does not answer. Check the IP address and the network. |
+| `The node refused the SSH login for: <user>@<ip>` | sshd is reachable, but the user name or password is wrong. |
+| `Could not open an SSH connection to: <ip>.` followed by `This is a transport failure -- no credentials were sent -- so check sshd on the node.` | The SSH handshake failed. Check that sshd runs, and check the SSH port. |
+| `The node accepted the password but not the FOG SSH key: <ip>.` followed by `Re-run the installer on that node to install the key. After that, you can disable password logins.` | The password works. The node does not have the key. |
+
+The key message does not appear when the master has no key pair.
+
+### Disable password logins for the storage user
+
+Do this only after the save check shows no key warning for every node. Do this
+on each node, including the master.
+
+1. In `sshd_config`, add a block for the storage user:
+
+        Match User fogproject
+            PasswordAuthentication no
+
+2. Reload sshd.
+3. Save the node again in **Storage Management**. The password check then
+   reports a refused login. This is expected, because the node does not
+   accept a password. Open a capture task to confirm that the move works.
+
+>[!note]
+>This setting stops only the SSH password login. FOG still uses the storage
+>user password for FTP replication and for the node credentials. Keep the
+>password correct.
+
+### Troubleshooting SSH access
+
+**The key is missing on the master.** The node install prints `The master
+declined to send its SSH key` and the message `this server has no FOG SSH key;
+re-run the installer on it`. Run the installer on the master again. The
+installer makes the key pair. Then run the installer on the node.
+
+**The node cannot reach the master during the install.** The install does not
+stop. It prints `Skipped` or `Failed` and keeps the password login. The node
+installer then prints:
+
+    FOG keeps using the password for this node. Update the master
+    and re-run the installer here to switch to the SSH key.
+
+Fix the network path from the node to the master web server. Then re-run the
+installer on the node. The installer also skips the key for a node that has no
+database host in its settings, and for a node that lacks `curl`, `jq`,
+`openssl` or `php`.
+
+**The master says that no storage node is registered at the address.** The
+master matches the caller by IP address. Add the node in **Storage
+Management** with its IP address. Do not use a host name. Then re-run the
+installer on the node.
+
+**The node refuses the key and the password.** Check that sshd allows the
+storage user. On a hardened sshd, the installer prints a warning when sshd
+refuses password logins for the storage user. Without the key on the node,
+every capture ends with `Unable to connect to ssh during move upload`. Install
+the key, or allow password logins for the storage user.
+
+**sshd ignores the key.** sshd refuses an `authorized_keys` file when the
+`.ssh` folder or the file is writable by another user. The installer sets
+the modes `0700` for the folder and `0600` for the file. It also sets the owner
+to the storage user. On a system with SELinux, the installer runs `restorecon`
+on the folder.
+
 ## A node that is its own FOG server (1.6)
 
 >[!info] FOG 1.5

@@ -74,9 +74,16 @@ Your data is kept by default:
 
 ## Configuration files FOG replaced
 
-FOG does not add lines to `/etc/exports`, `vsftpd.conf`, `dhcpd.conf` or (on
-some distributions) the web server config. It moves the existing file aside as
+FOG does not add lines to `vsftpd.conf`, `dhcpd.conf` or (on some
+distributions) the web server config. It moves the existing file aside as
 `<file>.<timestamp>` and writes its own version.
+
+>[!info] NFS exports in the current installer
+>The current installer does not rewrite `/etc/exports`. FOG writes its exports
+>to `/etc/exports.d/fog.exports`, and uninstall removes that file. Uninstall
+>does not restore the `/etc/exports.fog-migrate.<timestamp>` backup. That
+>backup is not a pre-FOG original. See
+>[[1.6/installation/server/command-line-options#NFS exports|NFS exports]].
 
 On uninstall these are restored from the **oldest** such backup, which is the
 genuine pre-FOG original — newer ones are just FOG's own earlier versions. The

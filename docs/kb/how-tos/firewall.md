@@ -35,6 +35,7 @@ shorter than this one.
 | 443 | tcp | The same, over TLS | HTTPS install |
 | 69 | udp | TFTP — the initial PXE bootloader | TFTP installed |
 | 21 | tcp | FTP control — image/snapin replication, node operations | always |
+| 22 | tcp | SSH from the master to the storage nodes (FOG 1.6) — the capture move and node checks. The port is the `FOG_SSH_PORT` setting | FOG 1.6; the installer does not open it |
 | 65000–65100 | tcp | FTP passive data | always |
 | 2049 | tcp | NFS — image capture and deploy | always |
 | 111 | tcp+udp | rpcbind, for NFS | always |
@@ -48,8 +49,17 @@ Two entries usually raise questions.
 
 A storage node exists to serve images over NFS, so it needs these just as much
 as the main server does. If you told the installer not to manage your exports
-file, that only means FOG left `/etc/exports` alone — NFS is still running and
-still needs to be reachable.
+file, that only means FOG did not write its exports (on 1.6, the file
+`/etc/exports.d/fog.exports`) — NFS is still running and still needs to be
+reachable.
+
+### Why SSH is not opened
+
+The FOG 1.6 installer opens no SSH port. On 1.6, the master signs in over SSH
+to each storage node, and also to itself, as the storage user. Open the SSH
+port on every storage node to the master. If sshd listens on a port other than
+22, set `FOG_SSH_PORT` in **FOG Configuration → FOG Settings** and open that
+port. See [[1.6/management/web/storage-node#SSH access to storage nodes (1.6)|SSH access to storage nodes]].
 
 ### Why 3306 is *not* opened
 
@@ -303,6 +313,7 @@ from FOG's point of view the client simply never arrived.
 | Replication never completes; directory listing works | FTP passive range not open, or not matching `vsftpd.conf` |
 | Multicast task starts but no client receives data | 63100–63228/udp |
 | Storage node shows offline in the UI | 21/tcp, or 3306/tcp from the node to the master |
+| 1.6 capture copies its data, then fails with `Unable to connect to ssh during move upload` | The SSH port from the master to the node, or sshd settings |
 
 The fastest way to confirm a firewall is responsible is to test from a client:
 
