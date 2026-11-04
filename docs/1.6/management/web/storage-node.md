@@ -73,6 +73,10 @@ tags:
 >1.5 moves a finished capture with FTP. 1.6 moves it with SSH. The 1.5 page
 >does not have this section.
 
+>[!note] Available in the next 1.6 update (dev-branch now)
+>The SSH key, the SSH port setting, the per-node ports and the installer
+>warning in this section are on dev-branch. No tagged release has them yet.
+
 The FOG web tier and the FOG services open an SSH connection from the master
 to each storage node. They sign in as the storage user. The storage user is
 the **Node Service Account** of the node, normally `fogproject`. FOG uses
@@ -91,7 +95,8 @@ to the master itself, because the master is a storage node of itself.
 
 FOG connects to the port in the setting `FOG_SSH_PORT`. The default is 22.
 Change it in **FOG Configuration → FOG Settings** when your sshd listens on
-another port. The setting is global. All storage nodes use the same port.
+another port. The setting is global. A node uses it unless the node has its
+own port. See [[#Ports for one node]].
 
 When you upgrade from 1.5, the upgrade adds `FOG_SSH_PORT` if the setting is
 missing. The value is 22. A 1.5 server can lack this setting, because some 1.5
@@ -211,17 +216,66 @@ master matches the caller by IP address. Add the node in **Storage
 Management** with its IP address. Do not use a host name. Then re-run the
 installer on the node.
 
-**The node refuses the key and the password.** Check that sshd allows the
-storage user. On a hardened sshd, the installer prints a warning when sshd
-refuses password logins for the storage user. Without the key on the node,
-every capture ends with `Unable to connect to ssh during move upload`. Install
-the key, or allow password logins for the storage user.
+**The installer warns that sshd does not allow password login.** The
+installer checks this at the end of the node or master setup, after the SSH
+key step. The warning appears only when sshd refuses password login for the
+storage user (`PasswordAuthentication no`). The installer stays silent when
+FOG's key is authorized for the storage user and sshd will read it. Password
+login is then only the fallback. When the warning appears, it names one reason:
+
+| Reason in the warning | Cause and fix |
+|---|---|
+| `FOG's SSH key is not authorized for <user>` | The key step printed `Skipped` or `Failed`. The error log has the details. Fix that and run the installer again. A node must reach its master, and the master must have this update. |
+| `public key login is off for <user>` | The key is authorized, but sshd has `PubkeyAuthentication no` for the storage user. Turn it on in `sshd_config`, or allow password login for the user. |
+| `AuthorizedKeysFile does not include ~/.ssh/authorized_keys` | The key is authorized, but sshd reads other files. Add `.ssh/authorized_keys` to `AuthorizedKeysFile`, or allow password login for the user. |
+
+In each case, without a working login every capture ends with
+`Unable to connect to ssh during move upload`. The installer does not change
+`sshd_config`. The password fallback is this block, followed by an sshd reload:
+
+    Match User fogproject
+        PasswordAuthentication yes
 
 **sshd ignores the key.** sshd refuses an `authorized_keys` file when the
 `.ssh` folder or the file is writable by another user. The installer sets
 the modes `0700` for the folder and `0600` for the file. It also sets the owner
 to the storage user. On a system with SELinux, the installer runs `restorecon`
 on the folder.
+
+### Ports for one node
+
+A node can have its own SSH port and FTP port. Use this when the nodes of a
+site listen on different ports. The **Add Storage Node** form and the
+**General** tab of a node have these fields:
+
+- **SSH Port** (blank uses the global `FOG_SSH_PORT`)
+- **FTP Port** (blank uses the global `FOG_FTP_PORT`)
+
+The rules for each field:
+
+- Blank or 0 means "use the global setting". If the global setting is empty
+  or not a valid port, FOG uses 22 for SSH and 21 for FTP.
+- A port must be a whole number from 1 to 65535. FOG refuses any other value
+  with `Port must be a whole number from 1 to 65535`.
+- An existing node keeps the value 0. It keeps using the global settings.
+
+Every SSH or FTP connection to that node uses its port:
+
+- the move of a finished capture
+- replication: the FTP connection, `lftp`, and the file existence and hash
+  checks
+- snapin uploads and snapin downloads by the client
+- the file deleter
+- the log viewer
+- the check when you save the node
+- the online check of the node
+- the dashboard probe of the node
+
+The TFTP host is not a storage node. It keeps the global `FOG_SSH_PORT`.
+
+FTP stays in passive mode. The node setting changes only the FTP control port.
+The passive data ports do not change. See
+[[firewall|Firewall configuration for a FOG server]].
 
 ## A node that is its own FOG server (1.6)
 

@@ -59,7 +59,10 @@ The FOG 1.6 installer opens no SSH port. On 1.6, the master signs in over SSH
 to each storage node, and also to itself, as the storage user. Open the SSH
 port on every storage node to the master. If sshd listens on a port other than
 22, set `FOG_SSH_PORT` in **FOG Configuration → FOG Settings** and open that
-port. See [[1.6/management/web/storage-node#SSH access to storage nodes (1.6)|SSH access to storage nodes]].
+port. This setting is the default for all nodes. In the next 1.6 update
+(dev-branch now), a node can have its own **SSH Port** and **FTP Port**. Open
+the port of each node, not the global port. The FTP port is the control port
+only. The passive data range stays as it is. See [[1.6/management/web/storage-node#SSH access to storage nodes (1.6)|SSH access to storage nodes]].
 
 ### Why 3306 is *not* opened
 

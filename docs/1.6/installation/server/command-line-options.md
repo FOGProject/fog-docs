@@ -257,9 +257,9 @@ covered in detail in [[uninstall-fog-server|Uninstalling the Fog server]].
 
 ## NFS exports
 
->[!info] Pending release
->This section describes the NFS exports change in fogproject pull request
->#2061. It applies to releases that include that change.
+>[!note] Available in the next 1.6 update (dev-branch now)
+>This section describes the NFS exports change. It is on dev-branch. No
+>tagged release has it yet.
 
 FOG keeps its own NFS exports in the file `/etc/exports.d/fog.exports`. The
 installer does not rewrite `/etc/exports`. The NFS server reads

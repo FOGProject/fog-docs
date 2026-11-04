@@ -33,7 +33,7 @@ what's used for image replication in multi-server setups.
 FTP should be able to read, write, and delete in /images/dev and
 /images.
 
->[!info] FOG 1.6
+>[!info] FOG 1.6 (available in the next 1.6 update; dev-branch now)
 >In 1.6, the move of a finished capture from /images/dev to /images uses SSH,
 >not FTP. The storage user must be able to sign in over SSH from the master.
 >If a capture copies its data and then fails with `Unable to connect to ssh
@@ -41,7 +41,9 @@ FTP should be able to read, write, and delete in /images/dev and
 >[[1.6/management/web/storage-node#SSH access to storage nodes (1.6)|SSH access to storage nodes]].
 >
 >Image replication with `lftp` uses the port in the `FOG_FTP_PORT` setting.
->If the setting is empty or not a valid port, it uses port 21.
+>If the setting is empty or not a valid port, it uses port 21. A node can have
+>its own **FTP Port**, which replaces the setting for that node. See
+>[[1.6/management/web/storage-node#Ports for one node|Ports for one node]].
 
 ## Testing FTP
 

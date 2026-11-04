@@ -78,8 +78,8 @@ FOG does not add lines to `vsftpd.conf`, `dhcpd.conf` or (on some
 distributions) the web server config. It moves the existing file aside as
 `<file>.<timestamp>` and writes its own version.
 
->[!info] NFS exports in the current installer
->The current installer does not rewrite `/etc/exports`. FOG writes its exports
+>[!info] NFS exports (available in the next 1.6 update; dev-branch now)
+>The installer on dev-branch does not rewrite `/etc/exports`. FOG writes its exports
 >to `/etc/exports.d/fog.exports`, and uninstall removes that file. Uninstall
 >does not restore the `/etc/exports.fog-migrate.<timestamp>` backup. That
 >backup is not a pre-FOG original. See
