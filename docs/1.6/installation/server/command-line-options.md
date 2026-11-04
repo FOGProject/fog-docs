@@ -255,6 +255,43 @@ covered in detail in [[uninstall-fog-server|Uninstalling the Fog server]].
 >[[1.6/installation/server/command-line-options#Name constraints|Name constraints]]. Passing either is
 >now an unrecognized option.
 
+## NFS exports
+
+>[!note] Available in the next 1.6 update (dev-branch now)
+>This section describes the NFS exports change. It is on dev-branch. No
+>tagged release has it yet.
+
+FOG keeps its own NFS exports in the file `/etc/exports.d/fog.exports`. The
+installer does not rewrite `/etc/exports`. The NFS server reads
+`/etc/exports` first, and then every `/etc/exports.d/*.exports` file.
+
+The file `/etc/exports.d/fog.exports` holds two entries, for the image folder
+(`/images` by default) and the `dev` folder in it (`/images/dev`). The
+installer replaces this file at each install. Edits you make in it are lost.
+
+Add your own exports in `/etc/exports`, or in your own file such as
+`/etc/exports.d/site.exports`. The installer does not touch these.
+
+On the first install after you update, the installer removes the old FOG
+entries from `/etc/exports`. Old installers wrote them there, and the NFS
+server would see each path twice. The installer removes only the lines whose
+path is exactly the image folder or the `dev` folder in it. It keeps every other
+line, comment and blank line. Paths such as `/images2` and `/images/devices`
+stay. Before it changes the file, the installer saves the backup
+`/etc/exports.fog-migrate.<timestamp>`. If `/etc/exports` has no FOG entry, the
+installer does not change the file and does not make a backup.
+
+If the installer cannot remove the old entries, it leaves `/etc/exports` as it
+is. It does not write the new file, and it prints a warning. Remove the two
+lines by hand and run the installer again.
+
+The `-E` (`--no-exportbuild`) option keeps its meaning. The installer does not
+build exports, so it does not write `/etc/exports.d/fog.exports` and does not
+change `/etc/exports`. The warning about `no_root_squash` looks in both files.
+
+Uninstall removes `/etc/exports.d/fog.exports`.
+See [[uninstall-fog-server|Uninstalling the Fog server]].
+
 ## Certificate options
 
 FOG generates its own Certificate Authority at install time and uses it to sign
