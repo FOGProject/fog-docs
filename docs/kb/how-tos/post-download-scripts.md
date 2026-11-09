@@ -95,6 +95,44 @@ the deployed OS, mount the partition yourself (for example
 > that is available in your environment, temporarily add `printenv | sort` to
 > your script and watch the host's screen (or its imaging log) during a deploy.
 
+## Domain join password and product key
+
+FOS does not put the host's Active Directory join password or its Windows
+product key into the imaging environment. A script that writes them into an
+`unattend.xml` must ask the server for them. It first gets a one-time host
+token from `status/hostgetkey.php`. It then posts that token to
+`service/hostinfo.php`, and the reply sets `$hostadpass` and
+`$hostproductkey`.
+
+>[!warning] FOG 1.6 releases after 1.6.0.14
+>`service/hostinfo.php` sends `$hostadpass` and `$hostproductkey` only when
+>the **FOG_HOSTKEY_ALLOWED_SOURCES** setting lists your imaging networks, and
+>only to a caller inside them. While the setting is empty, which is the
+>default, both variables are empty. The other variables, such as
+>`$hostaddomain`, `$hostaduser` and `$hostadou`, are still sent.
+>
+>The reason: the host token needs no password. Any machine that knows a
+>host's MAC address can get it while that host has a task. Before this
+>change, that machine could then read the plaintext join password
+>(GHSA-666x-5fjv-v8j9).
+
+To keep a script that reads these two variables working, set the imaging
+networks:
+
+1.  In the web UI, open **FOG Configuration → FOG Settings**, and find
+    **FOG_HOSTKEY_ALLOWED_SOURCES** in the **Security** section.
+2.  Enter the networks your hosts image from, as a comma-separated list of
+    CIDR ranges or single addresses, for example `10.0.0.0/8,192.168.5.20`.
+3.  Save, and deploy one host to check that the script gets the values.
+
+A caller outside the listed networks gets no host token at all, so make sure
+the list includes every network that USB-booted hosts image from.
+
+The listed networks are the only protection left. Any machine inside them
+that knows a host's MAC address can still get the password while that host
+has a task. Use a join account that can only join computers to the domain,
+and keep the imaging networks separate from user networks where you can.
+
 ## Worked examples
 
 -   **Recreate UEFI boot entries** after a multi-disk or dual-boot deploy —
