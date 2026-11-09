@@ -39,11 +39,12 @@ version your machines run — and cannot publish one. That boundary is the
 reason it is safe to point an unattended update channel at every managed
 machine you have.
 
->[!warning] Nothing updates until you say so
->`FOG_AGENT_UPDATE_MODE` ships as **Off**. Upgrading your FOG server does
->not start moving agent versions. A server that already had
->`FOG_AGENT_DESIRED_VERSION` set is upgraded to **Pinned** on that version,
->so it continues to do what it did.
+>[!note] Hosts update themselves by default
+>`FOG_AGENT_UPDATE_MODE` ships as **Latest**, like the self-update of the
+>legacy FOG Client. Each host follows the newest release after the delay of
+>its update ring. To turn self-update off, set `FOG_AGENT_UPDATE_MODE` to
+>**Off**. An RC server that was set to Off moves to Latest when it upgrades.
+>A server that was set to **Pinned** stays Pinned.
 
 ## Update modes
 
@@ -176,6 +177,8 @@ Agents 0.1.8 and later get the manifest and the file from this server. The
 poll answer carries the manifest, and the file comes over the agent's
 client certificate. So the hosts do not need internet access. The FOG
 server needs access to `fogproject.org` and to GitHub, where the files are.
+A server with no internet access logs one failed sync each hour. Set
+`FOG_AGENT_UPDATE_MODE` to Off on that server to stop it.
 
 If the server's copy fails a check, or the server has no copy, the agent
 tries the origin once: the manifest URL, and the download address in the
@@ -318,7 +321,7 @@ All under **FOG Configuration → FOG Settings**.
 
 | Setting | Category | Default | Meaning |
 |---|---|---|---|
-| `FOG_AGENT_UPDATE_MODE` | FOG Agent | Off | Off, Pinned or Latest. See [[management/web/agent-self-update#Update modes\|Update modes]] |
+| `FOG_AGENT_UPDATE_MODE` | FOG Agent | Latest | Off, Pinned or Latest. See [[management/web/agent-self-update#Update modes\|Update modes]] |
 | `FOG_AGENT_DESIRED_VERSION` | FOG Agent | empty | The exact version that every host runs in Pinned mode |
 | `FOG_AGENT_UPDATE_RINGS` | FOG Agent | `0,3,7` | The ring delays in days for Latest mode |
 | `FOG_AGENT_MIN_VERSION` | FOG Agent | empty | The lowest version that any host may run, in every mode. Empty means no minimum |

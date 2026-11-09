@@ -64,8 +64,9 @@ agent stays idle on it and logs one line saying so.
 
 Self-update is the one row with no module behind it, because there was no
 legacy module to inherit. It is gated on `FOG_AGENT_UPDATE_MODE`, and that
-ships as Off — so no host starts updating itself because you upgraded a
-server.
+ships as Latest, like the self-update of the legacy FOG Client. Each host
+follows the newest release after the delay of its update ring. Set the mode
+to Off to turn it off.
 
 Display Manager, GreenFOG and the auto log out background image are gone.
 The agent does not implement them and their settings were removed from 1.6.
@@ -397,7 +398,7 @@ All under **FOG Configuration → FOG Settings**, in the category named.
 | Setting | Category | Default | Meaning |
 |---|---|---|---|
 | `FOG_AGENT_ENROLL_DEPLOY_WINDOW` | FOG Agent | 24 | Hours after a deploy during which the deployed host's agent enrolls without approval. 0 turns the shortcut off |
-| `FOG_AGENT_UPDATE_MODE` | FOG Agent | Off | How enrolled hosts update: Off, Pinned or Latest. See [[agent-self-update\|Agent Self-Update]] |
+| `FOG_AGENT_UPDATE_MODE` | FOG Agent | Latest | How enrolled hosts update: Off, Pinned or Latest. See [[agent-self-update\|Agent Self-Update]] |
 | `FOG_AGENT_DESIRED_VERSION` | FOG Agent | empty | The exact version every host runs in Pinned mode. A host's own Desired Agent Version overrides it |
 | `FOG_AGENT_UPDATE_RINGS` | FOG Agent | `0,3,7` | The update ring delays in days, for Latest mode |
 | `FOG_AGENT_MIN_VERSION` | FOG Agent | empty | The lowest version any host may run, in every mode |
