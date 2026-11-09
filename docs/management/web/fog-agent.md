@@ -52,7 +52,7 @@ agent stays idle on it and logs one line saying so.
 | Hostname | Hostname Changer | Renames the machine to the host's name. A rename that needs a reboot waits for the reboot coordinator |
 | Directory membership | Hostname Changer | Joins the machine to the Active Directory domain set on the host. Never unjoins |
 | Snapins | Snapin Client | Runs queued snapin tasks, verifying each payload's SHA-512 before it runs |
-| Software | Software | Keeps the host's assigned software set present, at the version policy each entry names. See [[software\|Software Management]] |
+| Software | Software | Keeps the host's assigned software set present, at the version policy each entry names, through Chocolatey on Windows and Flatpak or Snap on Linux. See [[software\|Software Management]] |
 | Printers | Printer Manager | Installs assigned printers, sets the default, and in exclusive mode removes the rest |
 | Power schedules and on-demand actions | Power Management | Fires scheduled shutdowns and reboots on the machine's own clock; carries out Shut Down and Restart from the host list |
 | Wake relay | Power Management | Sends a Wake-on-LAN packet for a neighbour when the server asks. Off until `FOG_AGENT_WAKE_RELAY_ENABLED` is set |

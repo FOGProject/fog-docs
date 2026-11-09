@@ -119,6 +119,18 @@ Install Script setting so the agent installs it, or ship it in the image.
 The agent checks for the binary every poll and converges as soon as it
 appears. See [[software|Software Management]].
 
+**Software: Flatpak or Snap entries are `cannot_run`.** The tool is not
+installed on the host. Install Flatpak or `snapd`. The agent checks again at
+every poll and converges after that. See
+[[software#Flatpak (Linux)|Flatpak]] and [[software#Snap (Linux)|Snap]].
+
+**Software: Snap reports "cannot communicate with server".** The `snapd`
+socket is not running. Run `sudo systemctl enable --now snapd.socket`.
+
+**Software: a Flatpak entry on a Windows host is `cannot_run`.** The details
+say "flatpak runs only on Linux". Put Windows and Linux hosts in separate
+groups.
+
 **Software: `retry` that never clears.** Another installer is holding the
 Windows Installer mutex on every check. Look for a stuck `msiexec` on the
 machine.
