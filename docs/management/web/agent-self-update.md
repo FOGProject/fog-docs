@@ -43,7 +43,8 @@ machine you have.
 >`FOG_AGENT_UPDATE_MODE` ships as **Latest**, like the self-update of the
 >legacy FOG Client. Each host follows the newest release after the delay of
 >its update ring. To turn self-update off, set `FOG_AGENT_UPDATE_MODE` to
->**Off**. An RC server that was set to Off moves to Latest when it upgrades.
+>**Off**. A server that was set to Off moves to Latest when it upgrades, so
+>set Off again after the upgrade if you want updates off.
 >A server that was set to **Pinned** stays Pinned.
 
 ## Update modes
