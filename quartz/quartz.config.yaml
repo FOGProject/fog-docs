@@ -415,6 +415,14 @@ plugins:
     layout:
       position: beforeBody
       priority: 26
+  # Renders nothing; ships a script that keeps location slash-terminated after
+  # SPA navigation, because rtd-fix-links.mjs writes every link for a
+  # slash-terminated URL. See local-plugins/README.md.
+  - source: "./local-plugins/trailing-slash"
+    enabled: true
+    layout:
+      position: footer
+      priority: 90
 layout:
   groups:
     brand:
