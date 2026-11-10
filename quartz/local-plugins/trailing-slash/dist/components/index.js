@@ -31,8 +31,12 @@ window.addEventListener(
   "click",
   (event) => {
     const a = event.target instanceof Element ? event.target.closest("a") : null
-    if (!a || !a.hasAttribute("href")) return
-    const url = new URL(a.href, location.href)
+    if (!a) return
+    // Leave new-tab and download links alone; they never go through the router.
+    if (a.hasAttribute("target") || a.hasAttribute("download")) return
+    const href = a.getAttribute("href")
+    if (href === null) return
+    const url = new URL(href, location.href)
     if (url.origin !== location.origin || !needsSlash(url.pathname)) return
     a.setAttribute("href", url.pathname + "/" + url.search + url.hash)
   },

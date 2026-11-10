@@ -177,6 +177,14 @@ function patchConfig() {
     sourceLink.options.contentDir = isEnglish ? "docs" : `translations/${lang}`
   }
 
+  // Only this build runs rtd-fix-links.mjs, so only this build serves
+  // slash-terminated links; the dev server uses slashless URLs and must not
+  // get the slash-adding script.
+  const trailingSlash = config.plugins.find((p) => p.source === "./local-plugins/trailing-slash")
+  if (trailingSlash) {
+    trailingSlash.enabled = true
+  }
+
   writeFileSync(configPath, YAML.stringify(config))
 }
 
