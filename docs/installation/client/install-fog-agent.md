@@ -299,6 +299,57 @@ The agent is released more often than FOG, and a newer agent against an
 older 1.6 server is the expected case: the server tells the agent which
 capabilities it has, and the agent leaves the rest idle.
 
+## Capturing an image with the agent installed
+
+Install the agent on the reference machine and capture it. You do not
+remove the agent's key or certificate first. The captured state directory
+holds the key and the firmware identity it was made for. Each deployed
+machine has a different firmware identity, so the agent discards the
+captured key and enrolls as itself. A deploy from this server approves
+that enrollment with no click, as [Enrollment and
+approval](#enrollment-and-approval) describes.
+
+One exception: firmware with no UUID or serial of its own (all blank, or
+one placeholder on every unit). The agent cannot tell those machines
+apart. On such hardware, stop the service and delete `key.pem` and
+`cert.pem` from `%ProgramData%\FOG\agent` immediately before capture.
+
+### Sysprep
+
+Disable the service before you run Sysprep, and start it again from
+`SetupComplete.cmd`. This is the same procedure as the legacy client, with
+the new service name. The reason is the reboot rule: with nobody logged
+in, the agent reboots at once for a rename or a domain join (see
+[[fog-agent#How and when it reboots|How and when it reboots]]). Windows
+setup runs its specialize and OOBE passes with nobody logged in. A reboot
+in those passes stops setup with "Windows could not complete the
+installation".
+
+On the reference machine, immediately before Sysprep:
+
+```
+sc stop fog-agent
+sc config fog-agent start= disabled
+```
+
+In `C:\Windows\Setup\Scripts\SetupComplete.cmd` in the image:
+
+```
+sc config fog-agent start= delayed-auto
+sc start fog-agent
+```
+
+Windows runs `SetupComplete.cmd` after setup finishes and before the first
+logon. The `sc start` line enrolls the agent at that point, not at the
+next reboot. The space after `start=` is required.
+
+### Firewall
+
+The agent needs no inbound firewall rule. It opens no listening port. It
+only connects out to the FOG server, on the port in the server URL (443
+for `https://`). Add an outbound rule only if your site blocks outbound
+traffic by default.
+
 ## Moving from the legacy client
 
 Nothing on the server has to change first. Hosts, groups, printers, snapins,
