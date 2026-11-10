@@ -99,7 +99,7 @@
     "isomorphic-git": "^1.36.3",
     "lightningcss": "^1.31.1",
     "micromorph": "^0.4.5",
-    "minimatch": "^10.1.1",
+    "minimatch": "^11.0.1",
     "preact": "^10.28.2",
     "preact-render-to-string": "^6.6.5",
     "pretty-bytes": "^7.1.0",
