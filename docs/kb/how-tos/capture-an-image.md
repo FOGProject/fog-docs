@@ -44,6 +44,9 @@ have done the following:
 -   Decrypt BitLocker fully and do not enroll a Windows Hello PIN; FOS
     refuses an encrypted partition and a PIN cannot survive imaging. See
     [[tpm-bitlocker-windows-hello|TPM, BitLocker and Windows Hello after imaging]]
+-   On FOG 1.6, install the FOG Agent instead of the FOG client. Leave
+    its service running through Sysprep. See
+    [[install-fog-agent#Capturing an image with the agent installed|Capturing an image with the agent installed]]
 -   Sysprep the machine and shut it down
 
 We're assuming here that you have a running FOG server, that you are

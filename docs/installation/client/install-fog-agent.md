@@ -299,6 +299,50 @@ The agent is released more often than FOG, and a newer agent against an
 older 1.6 server is the expected case: the server tells the agent which
 capabilities it has, and the agent leaves the rest idle.
 
+## Capturing an image with the agent installed
+
+Install the agent on the reference machine and capture it. You do not
+remove the agent's key or certificate first. The captured state directory
+holds the key and the firmware identity it was made for. Each deployed
+machine has a different firmware identity, so the agent discards the
+captured key and enrolls as itself. A deploy from this server approves
+that enrollment with no click, as [Enrollment and
+approval](#enrollment-and-approval) describes.
+
+One exception: firmware with no UUID or serial of its own (all blank, or
+one placeholder on every unit). The agent cannot tell those machines
+apart. On such hardware, stop the service and delete `key.pem` and
+`cert.pem` from `%ProgramData%\FOG\agent` immediately before capture.
+
+### Sysprep
+
+Run Sysprep with the agent installed and its service left as it is. You
+do not disable it, and you do not need `SetupComplete.cmd` for it. The
+legacy client needed both. The agent does nothing until Windows setup has
+finished. It does not enroll, check in, or reboot during the specialize
+and OOBE passes. It starts when setup reports itself complete, before the
+first logon. A reference machine in audit mode never enrolls.
+
+This matters because of the reboot rule: with nobody logged in, the agent
+reboots at once for a rename or a domain join (see
+[[fog-agent#How and when it reboots|How and when it reboots]]). A reboot
+during OOBE stops setup with "Windows could not complete the
+installation".
+
+>[!note] Agents older than 0.1.23
+>An older agent does not wait for setup. Update the reference machine's
+>agent, or disable the service before Sysprep
+>(`sc config fog-agent start= disabled`) and turn it back on in
+>`C:\Windows\Setup\Scripts\SetupComplete.cmd` with
+>`sc config fog-agent start= delayed-auto` and `sc start fog-agent`.
+
+### Firewall
+
+The agent needs no inbound firewall rule. It opens no listening port. It
+only connects out to the FOG server, on the port in the server URL (443
+for `https://`). Add an outbound rule only if your site blocks outbound
+traffic by default.
+
 ## Moving from the legacy client
 
 Nothing on the server has to change first. Hosts, groups, printers, snapins,
