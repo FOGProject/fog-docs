@@ -88,12 +88,42 @@ These were read in a lab boot of a Performance Test task:
 | `$type` | `down` for a deploy, `up` for a capture, empty for other tasks | `down` |
 | `$mode` | the task for a non-imaging task, empty for a deploy or capture | `perftest`, `wipe`, `inventory` |
 | `$osid` | the OS ID of the host's image | `9` |
+| `$osfamily` | the OS family the server sends. Empty on a server that does not send it | `windows` |
 | `$img` | the image name. It can be empty for a non-imaging task | `win11-lab` |
 | `$storage` | the NFS share that FOS mounted | `10.255.20.1:/images/dev/` |
 | `$postinitpath` | the scripts folder as FOS sees it | `/imagesinit/postinitscripts/` |
 
 To see every variable in your FOS release, add `printenv | sort` to your
 script for one boot.
+
+## Branch on the operating system
+
+Do not test a list of OS IDs, such as `case $osid in 5|6|7|9|10|11)`. That
+list breaks each time FOG adds an OS. Test `$osClass` instead. The
+[[kb/how-tos/post-download-scripts#Branch on the operating system|post-download page]]
+lists each class and its OS IDs.
+
+A post-init script runs before FOS sets `$osClass`, so set it yourself first.
+Call `determineOS` only for a deploy or a capture:
+
+```bash
+if [[ $type == @(down|up) && -n $osid && $osid != 0 ]]; then
+    determineOS "$osid" "$osfamily"
+fi
+case $osClass in
+    win7|winmodern)
+        # Windows 7 and later
+        ;;
+esac
+```
+
+The guard matters. `determineOS` stops the task with an error for an OS ID
+that FOS does not know. A host with no image gets `osid=0`, so a wipe or an
+inventory task on that host would stop. A deploy or a capture already calls
+`determineOS` later in the task, so the guarded call adds no new failure.
+
+`$osClass` exists in FOS builds released after 2026-11-10 (fos#204). On an
+older FOS, `$osClass` stays empty.
 
 ## Example: replace a FOS file for one boot
 

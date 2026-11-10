@@ -83,6 +83,8 @@ include:
 | `$mac` | the host's primary MAC address |
 | `$img` | the name of the image that was deployed |
 | `$osid` | the numeric OS ID set on the image |
+| `$osfamily` | the OS family the server sends: `windows`, `linux`, `macos` or `other`. Empty on a server that does not send it |
+| `$osClass` | the OS class FOS resolved from `$osid` and `$osfamily`. See [Branch on the operating system](#branch-on-the-operating-system) |
 | `${postdownpath}` | path to the post-download scripts directory |
 
 The deployed partitions are present as the usual block devices, but FOS does not
@@ -94,6 +96,77 @@ the deployed OS, mount the partition yourself (for example
 > The exact set of variables can differ between FOS versions. To see everything
 > that is available in your environment, temporarily add `printenv | sort` to
 > your script and watch the host's screen (or its imaging log) during a deploy.
+
+## Branch on the operating system
+
+Do not test a list of OS IDs in your script. A list such as
+`case $osid in 5|6|7|9|10|11)` breaks each time FOG adds an OS. A new Windows
+release gets a new ID, and your list does not include it.
+
+Test `$osClass` instead. FOS sets it once, before your post-download script
+runs. Each OS ID maps to one class:
+
+| `$osClass` | OS IDs |
+| --- | --- |
+| `xp` | 1 (Windows 2000/XP) |
+| `vista` | 2 (Windows Vista) |
+| `win98` | 3 (Windows 98) |
+| `winother` | 4 (Windows Other) |
+| `win7` | 5, 6, 7 (Windows 7, 8, 8.1) |
+| `winmodern` | 9, 10, 11 (Windows 10, 11, Server), and every newer Windows ID |
+| `linux` | 50, 51 (Linux, Chromium OS), and every newer Linux ID |
+| `mac` | 8 (Apple Mac OS), and every newer macOS ID |
+| `other` | 99 (Other OS), and every newer ID in the Other family |
+
+IDs 1 to 7 are old Windows releases, so their classes never change. Every
+newer ID gets its class from the family that the FOG server stores for that
+OS. The server sends the family as `$osfamily`.
+
+Example: the old form of a script that runs only for Windows 7 and later:
+
+```bash
+case $osid in
+    5|6|7|9|10|11)
+        # Windows 7 and later
+        ;;
+esac
+```
+
+The same test with `$osClass`. It also matches a Windows ID that FOG adds later:
+
+```bash
+case $osClass in
+    win7|winmodern)
+        # Windows 7 and later
+        ;;
+esac
+```
+
+To test for any Windows, list every Windows class. Do not test `$osfamily`
+for this: it is empty when the server does not send it.
+
+```bash
+case $osClass in
+    xp|vista|win98|winother|win7|winmodern)
+        # any Windows
+        ;;
+esac
+```
+
+> [!note] Older FOS and older servers
+> `$osClass` exists in FOS builds released after 2026-11-10 (fos#204). An older
+> FOS leaves it empty. `$osfamily` comes from the FOG server. A server that
+> does not send it leaves it empty, and FOS then uses its own table for the
+> IDs it knows. A script that must run on an older FOS can test `$osClass`
+> first, and keep its old `$osid` test only for an empty `$osClass`:
+>
+> ```bash
+> if [[ -n $osClass ]]; then
+>     [[ $osClass == @(win7|winmodern) ]] && is_modern_windows=1
+> else
+>     [[ $osid == @(5|6|7|9|10|11) ]] && is_modern_windows=1
+> fi
+> ```
 
 ## Domain join password and product key
 
