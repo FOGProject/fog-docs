@@ -316,32 +316,25 @@ apart. On such hardware, stop the service and delete `key.pem` and
 
 ### Sysprep
 
-Disable the service before you run Sysprep, and start it again from
-`SetupComplete.cmd`. This is the same procedure as the legacy client, with
-the new service name. The reason is the reboot rule: with nobody logged
-in, the agent reboots at once for a rename or a domain join (see
-[[fog-agent#How and when it reboots|How and when it reboots]]). Windows
-setup runs its specialize and OOBE passes with nobody logged in. A reboot
-in those passes stops setup with "Windows could not complete the
+Run Sysprep with the agent installed and its service left as it is. You
+do not disable it, and you do not need `SetupComplete.cmd` for it. The
+legacy client needed both. The agent does nothing until Windows setup has
+finished. It does not enroll, check in, or reboot during the specialize
+and OOBE passes. It starts when setup reports itself complete, before the
+first logon. A reference machine in audit mode never enrolls.
+
+This matters because of the reboot rule: with nobody logged in, the agent
+reboots at once for a rename or a domain join (see
+[[fog-agent#How and when it reboots|How and when it reboots]]). A reboot
+during OOBE stops setup with "Windows could not complete the
 installation".
 
-On the reference machine, immediately before Sysprep:
-
-```
-sc stop fog-agent
-sc config fog-agent start= disabled
-```
-
-In `C:\Windows\Setup\Scripts\SetupComplete.cmd` in the image:
-
-```
-sc config fog-agent start= delayed-auto
-sc start fog-agent
-```
-
-Windows runs `SetupComplete.cmd` after setup finishes and before the first
-logon. The `sc start` line enrolls the agent at that point, not at the
-next reboot. The space after `start=` is required.
+>[!note] Agents older than 0.1.23
+>An older agent does not wait for setup. Update the reference machine's
+>agent, or disable the service before Sysprep
+>(`sc config fog-agent start= disabled`) and turn it back on in
+>`C:\Windows\Setup\Scripts\SetupComplete.cmd` with
+>`sc config fog-agent start= delayed-auto` and `sc start fog-agent`.
 
 ### Firewall
 
