@@ -204,8 +204,9 @@ build. Run it after touching anything in this area.
   `@quartz-community` equivalent: `context-id-aliases` /
   `context-id-permalink` (described above), `github-source-link`
   ("Edit this page" / "View source" links), `section-shortcuts` (pinned
-  top-level nav pills), `prev-next-nav` (Previous/Next page links), and
-  `site-logo`. See `quartz/local-plugins/README.md` for details on each.
+  top-level nav pills), `prev-next-nav` (Previous/Next page links),
+  `trailing-slash` (keeps SPA URLs slash-terminated; enabled only by the RTD
+  build), and `site-logo`. See `quartz/local-plugins/README.md` for details on each.
 - Branding (indigo palette, Roboto/Roboto Mono, favicon, card-grid CSS) lives
   in `quartz.config.yaml`'s `theme:` section and `quartz/styles/custom.scss`.
 - See `quartz/README.md` for the full picture, including known, accepted
