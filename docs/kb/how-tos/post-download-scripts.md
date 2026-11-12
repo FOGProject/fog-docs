@@ -211,7 +211,9 @@ and keep the imaging networks separate from user networks where you can.
 -   **Recreate UEFI boot entries** after a multi-disk or dual-boot deploy —
     [[uefi-boot-entries|Managing UEFI Boot Entries (efibootmgr)]] and
     [[deploy-dual-boot-multi-disk-image|Deploying a Dual-Boot Multi-Disk Image]].
--   **Windows driver injection** — see the forum write-up linked below.
+-   **Windows driver injection and `unattend.xml` changes** —
+    [[post-download-example-scripts|Post Download Example Scripts]]. These are
+    community examples, not scripts the FOG developers maintain.
 
 A minimal skeleton that only acts on one image looks like this:
 
