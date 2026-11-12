@@ -246,10 +246,13 @@ server for them. The server sends the join password only when
 When the password is empty, the script writes the computer name and skips the
 domain join.
 
->[!note] The FOG Client is the safer choice
+>[!note] The FOG Agent is the safer choice
 >This method writes the join password into the image's `unattend.xml` as
->plain text. The FOG Client joins the domain without writing the password to
->disk. Use this script only on hosts that do not run the FOG Client.
+>plain text. The [[fog-agent|FOG Agent]] joins the domain without writing the
+>password to disk, and it gets the password only while the host still needs
+>to join. The [[install-fog-client|FOG Client]] also joins without writing the
+>password to disk, but the FOG Agent replaces it. Use this script only on
+>hosts that run neither.
 
 ```bash
 #!/bin/bash
@@ -263,9 +266,9 @@ domain join.
 #   hostaddomain, hostadou        the domain and the OU
 #   hostaduser, hostadpass        the join account and its password
 # hostadpass is empty unless FOG Configuration > FOG Settings >
-# FOG_HOSTKEY_ALLOWED_SOURCES lists the imaging network. The FOG Client
-# joins the domain without writing the password to disk. Use this only
-# where the client is not installed.
+# FOG_HOSTKEY_ALLOWED_SOURCES lists the imaging network. The FOG Agent,
+# and the older FOG Client, join the domain without writing the password
+# to disk. Use this only where neither is installed.
 
 # Escape a value for XML text, then for the right side of a sed s|||.
 # The quoted replacements stop bash 5.2 from reading & as "the match".
