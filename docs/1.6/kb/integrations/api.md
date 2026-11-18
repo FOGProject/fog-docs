@@ -49,6 +49,12 @@ Every method carries the same permissions: the acting user's roles are applied
 either way, so a user without `user.view` gets `403 Forbidden` from `/fog/user`
 however they signed in.
 
+A role can also limit the networks its members use FOG from. A request from
+outside those networks gets `403 Forbidden` with
+`{"error": "Your role does not allow API access from this network."}`,
+whichever method it uses. See
+[[roles#Limiting where a role can sign in from|Roles & Permissions]].
+
 ### Bearer token (recommended)
 
 An **API token** is issued from the web UI, shown to you once, and sent in the
@@ -361,6 +367,7 @@ An error answers with a JSON body of the form `{"error": "<message>"}`.
 | `400 Bad Request` | A required field is null or blank. |
 | `400 Bad Request` | An edit sets an empty name. |
 | `403 Forbidden` | The user does not have the permission that the route needs. |
+| `403 Forbidden` | The user's roles do not allow API access from the network the request comes from. |
 | `404 Not Found` | The id in the URL does not exist, including a cancel for that id. |
 | `404 Not Found` | No route matches the path, for example `GET /fog/host/abc`. |
 | `405 Method Not Allowed` | The path exists, but not for this HTTP verb. The `Allow` header lists the verbs that work. |

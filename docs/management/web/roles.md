@@ -108,7 +108,8 @@ menu.
 2. Give the role a unique name (and optionally a description), then
    click **Create**.
 3. Open the new role and use its tabs:
-    - **General** — name and description.
+    - **General** — name, description, and **Allowed Networks**. See
+      [Limiting where a role can sign in from](#limiting-where-a-role-can-sign-in-from).
     - **Permissions** — a grid of areas and actions. Tick the boxes the
       role should grant, or tick **Administrator (full access)** to
       grant everything, then click **Update**.
@@ -258,6 +259,92 @@ the web UI and the API. Users holding a full-access role are never
 scoped.
 
 See [Site Scoping](site-scoping.md) for the full workflow.
+
+## Limiting where a role can sign in from
+
+A role can limit the networks its members use FOG from. Put the addresses
+in the **Allowed Networks** box on the role's **General** tab.
+
+Members of the role can then sign in to the web UI, and use the
+[REST API](../../kb/integrations/api.md), only from those networks. The
+iPXE boot menu is not limited. A technician can still sign in at the boot
+menu of a computer on any network and start a task.
+
+For example, a help-desk role with `10.20.0.0/16` in **Allowed Networks**
+lets its members use the web UI from the office network only. At a site
+on `172.16.5.0/24`, the same technician can still quick-image a computer
+from its boot menu.
+
+### What to type
+
+- One entry per address or range: `192.168.1.50`, `10.0.0.0/24`, or an
+  IPv6 range such as `fd00::/8`.
+- Separate the entries with commas, spaces, or new lines. FOG saves them
+  one per line.
+- Leave the box empty for no limit. Every role starts empty, so nothing
+  changes until you fill one in.
+- FOG refuses to save an entry that is not a valid address or range, and
+  names the bad entry.
+
+### Users with more than one role
+
+FOG combines the lists of all the roles a user holds, including roles that
+reach the user through a user group. The user can sign in from any network
+on any of those lists.
+
+A role with an empty list does not lift the limit. If one of a user's
+roles has a list, the user is limited to the lists, whatever other roles
+they hold. Otherwise any harmless role without a list would undo the limit.
+
+### What is limited, and what is not
+
+| Way in | Limited? |
+| --- | --- |
+| Web UI sign-in: the password form, or a single sign-on provider | Yes |
+| A web UI session that is already open | Yes, on its next page load |
+| **Remember me** | Yes |
+| REST API: Bearer token, token pair, or HTTP Basic | Yes. The API answers `403 Forbidden` |
+| iPXE boot menu sign-in, and the advanced menu | No |
+| Full registration and the FOS credential check | No |
+| The FOG Client and the FOG agent | No. They do not sign in as a user |
+
+A change to **Allowed Networks** takes effect for signed-in members on
+their next page load. A member outside the new list goes back to the
+sign-in page. The sign-in then says "Your role does not allow sign-in from
+this network."
+
+### Which address FOG checks
+
+FOG checks the address the connection comes from. It never reads
+`X-Forwarded-For`, because the caller writes that header and could name
+any address.
+
+>[!warning] Reverse proxies
+>
+>If a reverse proxy sits in front of FOG, every request arrives from the
+>proxy's address. FOG then cannot tell users apart, and the limit does not
+>work as intended:
+>
+>- If the proxy's address is on the list, every member passes, from
+>  anywhere.
+>- If it is not on the list, no member can sign in.
+>
+>This includes a proxy on the FOG server itself, where every request
+>arrives from `127.0.0.1`. FOG gives `127.0.0.1` no special treatment.
+>To allow sign-in from the server itself, add `127.0.0.1` to the list.
+
+### Lockout protection
+
+FOG refuses to save a change to **Allowed Networks** that would lock out
+the user who makes it. This applies in the web UI and through the API.
+
+Adding yourself to a limited role while you are outside its networks is
+not checked. If a limit locks everyone out:
+
+- sign in as an administrator whose roles have no list, and clear the
+  box, or
+- clear the `rAllowedNetworks` column of the `roles` table in the
+  database.
 
 ## API tokens follow roles
 
