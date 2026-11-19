@@ -315,6 +315,34 @@ every agent to run software first, and an agent that has it runs software
 first even with an older server. The **Stop snapins if this fails** field
 needs both: an older agent ignores it, and an older server does not send it.
 
+### Snapins that must run before software
+
+Some snapins must run before a package installs. For example, security
+software can block PowerShell once it is installed, so a PowerShell snapin
+must run first. Turn on **Run before software** on that snapin, under
+**Snapins → the snapin → General**. It is off by default.
+
+With it on, the agent works in three steps on each check-in:
+
+| Step | What runs |
+|---|---|
+| 1 | snapins marked **Run before software**, in their queue order |
+| 2 | the host's software set |
+| 3 | every other snapin, in its queue order |
+
+- The flag is on the snapin, so it applies on every host and in every group
+  that gets the snapin.
+- If a step 1 snapin has not finished, for example it got `retry`, the
+  software and the step 3 snapins wait until the next check-in.
+- If a step 1 snapin fails in a task with **Abort snapin sequence on
+  failure**, the step 3 snapins do not run. The software still runs, because
+  the abort is about snapins only.
+- **Stop snapins if this fails** holds only the step 3 snapins. A step 1
+  snapin has already run by then.
+
+**Run before software** needs both the FOG server and the FOG Agent to carry
+it. An older agent ignores the flag and runs the snapin after the software.
+
 ## Reports
 
 **Reports → Software Report** is the fleet view: every host and entry with

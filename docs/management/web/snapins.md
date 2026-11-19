@@ -159,7 +159,9 @@ On a host that runs the FOG Agent with [[software|Software Management]], the
 agent runs the host's software before its snapins. A software entry marked
 **Stop snapins if this fails** holds the snapins until that entry installs.
 **Abort snapin sequence on failure**, on the snapin task, stops the rest of
-the queue after one snapin fails. See
-[[software#Software runs before snapins|Software runs before snapins]].
+the queue after one snapin fails. A snapin marked **Run before software**
+runs before the host's software instead of after. See
+[[software#Software runs before snapins|Software runs before snapins]] and
+[[software#Snapins that must run before software|Snapins that must run before software]].
 
 The next time you image the computer the FOG Service will attempt to install that snapin. If you have problems, please see the fog log file located at c:\fog.log on the client PC.
