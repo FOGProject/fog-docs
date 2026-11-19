@@ -243,6 +243,7 @@ snap list
 | Timeout | Seconds before the agent gives up on one operation. 0 for none |
 | Return Codes | Which exit codes mean success, retry, reboot required, or failure, in the same `code=class` form as snapins. Chocolatey's `350` (pending reboot) and the MSI `1618` (another installer running) are handled by default |
 | Enabled | Disabled entries are not sent to any host |
+| Stop snapins if this fails | Off by default. When it is on and this entry fails, the host's snapins wait until the entry succeeds. See [[#Software runs before snapins]] |
 
 ## Assigning it
 
@@ -273,6 +274,46 @@ queue with snapins so two installers never run at once from FOG's side. A
 host that is converged and stays converged reports once per check, which is
 also the heartbeat the Software Status tab shows. Keep the interval in hours:
 every check runs the package manager against every entry.
+
+## Software runs before snapins
+
+When a host has both software and snapins to run, the agent always runs the
+software set first, then the snapin queue. So a snapin can rely on the
+packages that are assigned to the same host. The usual case is a final
+Sysprep snapin that shuts the machine down for capture: it must not run
+before Chocolatey has finished.
+
+By default, a failed software entry does not stop the snapins. The failure
+shows on the Software Status tab, and the entry is tried again at the next
+re-check. That suits a host where the snapins do not depend on the package.
+
+Turn on **Stop snapins if this fails** for an entry that a snapin depends on.
+Then, when that entry's result is `failed` or `retry`:
+
+- The agent does not run the snapin queue on that check-in. Its log says
+  `snapin: waiting; <package> did not install and is marked to stop snapins`.
+- The snapin tasks stay queued. Nothing is cancelled.
+- At the next check-in, the agent runs the software set again first. When
+  the entry succeeds, the snapins run in their usual order.
+
+A `reboot` result does not stop the snapins: the install finished and only
+wants a restart.
+
+The two failure controls are separate, and each one answers its own question:
+
+| Control | Where | What it stops |
+|---|---|---|
+| **Stop snapins if this fails** | on the software entry | every snapin for a host where that entry fails |
+| **Abort snapin sequence on failure** | on the snapin task, when you create it | the rest of that snapin queue, after one snapin fails |
+
+For an image-capture build, turn on the first one for each package the image
+needs. Then turn on the second one when you queue the snapins, so Sysprep does
+not run after a failed configuration snapin.
+
+Either side gives you the order. A FOG server that has this change tells
+every agent to run software first, and an agent that has it runs software
+first even with an older server. The **Stop snapins if this fails** field
+needs both: an older agent ignores it, and an older server does not send it.
 
 ## Reports
 

@@ -155,4 +155,11 @@ In order for a snapin to be deployed it must be linked with a host. To do this p
 3.  Scroll down to the snapin section.
 4.  Select the snapin you just created from the drop-down box and click the "Add Snapin" button.
 
+On a host that runs the FOG Agent with [[software|Software Management]], the
+agent runs the host's software before its snapins. A software entry marked
+**Stop snapins if this fails** holds the snapins until that entry installs.
+**Abort snapin sequence on failure**, on the snapin task, stops the rest of
+the queue after one snapin fails. See
+[[software#Software runs before snapins|Software runs before snapins]].
+
 The next time you image the computer the FOG Service will attempt to install that snapin. If you have problems, please see the fog log file located at c:\fog.log on the client PC.
