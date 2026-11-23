@@ -76,7 +76,7 @@ A Capture builds a base image, so it waits for the queued snapins of the host. I
 Host has queued snapins. Let them finish, or cancel them, before a capture.
 ```
 
-To capture anyway, tick **Cancel queued snapins first** on the Capture task. FOG cancels the queued snapins and starts the Capture. In the REST API, send `cancelSnapins` in the task body. A scheduled Capture cannot carry the option yet; a fix is in progress.
+To capture anyway, tick **Cancel queued snapins first** on the Capture task. FOG cancels the queued snapins and starts the Capture. In the REST API, send `cancelSnapins` in the task body. A scheduled Capture keeps the option, and the scheduler applies it when the task runs. Without the option, the scheduler skips the Capture at each run until the snapins finish.
 
 A task that any check refuses cancels nothing. The queued snapins stay queued.
 

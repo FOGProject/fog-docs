@@ -37,7 +37,9 @@ Pick one:
 - Tick **Cancel queued snapins first** on the Capture task. FOG cancels the queued snapins and starts the Capture. In the REST API, send `cancelSnapins` in the task body.
 - Cancel the snapin task under Tasks. Then start the Capture again.
 
-A scheduled Capture cannot carry the option yet; a fix is in progress.
+A scheduled Capture keeps the option. Tick it when you schedule the Capture, and the scheduler cancels the queued snapins when the task runs. Without the option, the scheduler skips the Capture at each run and tries again later. The scheduler log shows "Skipping scheduled task" with this message.
+
+A Capture scheduled before the upgrade to schema 467 has the option set, because a Capture canceled queued snapins on those versions.
 
 ## Older versions
 
