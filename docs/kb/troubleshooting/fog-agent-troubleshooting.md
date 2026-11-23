@@ -190,6 +190,17 @@ and the `FOG_DIRECTORY_*` bind account, delegated to move computer objects
 in the right subtree. The **Directory Membership** report shows the drift
 and the last placement error.
 
+**Directory Membership: the Join cell is blank for a host that joined after a
+Deploy.** Through FOG 1.6.0 stable, the report read only the agent's own join
+result. A join after a Deploy uses the rejoin protocol, which records its
+result elsewhere, so the cell stayed blank. The host is joined. On an install
+before the UTC storage change with a non-UTC time zone, the join wait could
+also end early or late by the zone offset. Both are fixed on `dev-branch`
+(fogproject#2125) and reach `stable` with the next stable release. Until then,
+check the host's **Active Directory** tab for the rejoin result. The
+[[1.6/management/web/reports#The Directory Membership Join column|Join column]]
+table lists every value.
+
 **Task reboot: "the firmware lists no network boot entry to arm".** The
 machine's UEFI has a boot manager with no network boot option, usually
 because PXE or network boot is disabled in firmware setup. The agent refuses
