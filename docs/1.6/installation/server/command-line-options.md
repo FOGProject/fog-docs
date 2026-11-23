@@ -276,7 +276,7 @@ before it changes anything:
 When the address changes, the installer also updates:
 
 - this server's record in **Storage Management**, without changing its ID, group, master flag, credentials or paths,
-- `FOG_TFTP_HOST`, only when it still holds the old address,
+- `FOG_TFTP_HOST` and `FOG_WEB_HOST`, each only when it still holds the old address. A host name you set there stays,
 - the web server configuration and the boot files, which it builds from the new address,
 - the web certificate, which it issues again for the new address. A storage
   node asks the master for a new certificate.
