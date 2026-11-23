@@ -36,7 +36,7 @@ policy*, and the agent keeps the machine that way and reports the truth.
 | Knows what is installed | no | yes, from the package manager |
 | Drift | invisible | corrected at the next check and reported |
 | Upgrade | queue another task | *Latest* upgrades at each check |
-| Remove | write a second snapin that uninstalls | set the state to *Absent* |
+| Remove | write a second snapin that uninstalls | set the state to *Absent*, for the entry or for one host or group |
 | Reporting | one exit code | installed version, status, when last checked, per host |
 
 Snapins are not going anywhere. They remain the escape hatch for anything a
@@ -259,8 +259,44 @@ for the same package from one of its groups. Builds before this rule sent
 both entries; see
 [[software-installs-and-uninstalls-repeatedly|Software Installs and Uninstalls on Every Check]].
 
+### Install or uninstall on one host or one group
+
+The entry's **State** applies everywhere the entry is assigned. A host or a
+group can override it for itself, without a second entry:
+
+- Open the host's or the group's **Software** tab.
+- In the **Software Order and State** card, set the entry's row to
+  **Install (Present)** or **Uninstall (Absent)**. On a host, **Inherit**
+  sets nothing. On a group, **Not set** sets nothing.
+- Click **Save order and states**.
+
+FOG uses the first state that is set, in this order:
+
+| Order | Where | Applies when |
+|---|---|---|
+| 1 | The host's own assignment | It is set to Install or Uninstall |
+| 2 | The host's groups, in group order | The first group that sets Install or Uninstall |
+| 3 | The entry | No host or group sets a state |
+
+An assignment that sets nothing does not hide a group. A host that has the
+entry assigned directly, left on **Inherit**, still follows its groups.
+
+Example: the *Classroom* group installs `everything` on every member. To
+remove it from one PC, set that PC's row to **Uninstall (Absent)**. If the PC
+does not have the entry yet, assign it first. The other PCs keep the package.
+To undo, set the PC's row back to **Inherit**, or remove the entry from the
+PC.
+
+The host's **Software** tab also has an **Effective Software** card. It lists
+what the agent is sent: each entry, its backend and package, the state, and
+where the state comes from (*This host* or the group's name). The card shows
+the saved state, so reload the page after you save.
+
 The host's **Software Status** tab shows, per entry, what the agent
-reported: the status, the installed version, and when it was checked.
+reported: the status, the installed version, and when it was checked. It
+lists only the entries the host gets now. A row for an entry the host no
+longer gets (removed, its group left, or replaced by another entry for the
+same package) stays in the database but is not shown.
 
 | Status | Meaning |
 |---|---|
