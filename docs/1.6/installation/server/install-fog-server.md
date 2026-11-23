@@ -407,3 +407,15 @@ ran the installer from (the `bin/` directory of the cloned repo).
 
 When asking for help on the [FOG forums](https://forums.fogproject.org/), include
 the relevant portion of those logs — it's the fastest way to get a useful answer.
+
+### `lsb_release: command not found`
+
+On a server without `lsb_release`, such as Oracle Linux 10, the FOG 1.6.0
+stable installer prints `lsb_release: command not found`. The install still
+finishes, and nothing is wrong with it. The installer reads the OS version
+from `/etc/os-release`, and no part of FOG needs `lsb_release`. You can
+ignore the message.
+
+The installer on `dev-branch` no longer runs that step, and it no longer
+installs the `lsb-release` package (fogproject#2124, 2026-11-23). The change
+reaches `stable` with the next stable release.
