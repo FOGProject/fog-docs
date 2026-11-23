@@ -19,5 +19,6 @@ or github issues to report the problem and get help.
 - [[fog-agent-troubleshooting|Troubleshooting the FOG Agent]] — FOG 1.6 and later
 - [[troubleshoot-ftp|Troubleshooting FTP]]
 - [[sector-size-mismatch|Deploy Refused — Sector Size Mismatch]]
+- [[snapin-queued-capture-refused|Capture Refused — Host Has Queued Snapins]] — FOG 1.6 and later
 - [[database-schema-update|Database Schema Updates]] — differs between FOG 1.5 and 1.6
 - [[primary-mac-address-issues|Primary Mac Address Issues]] — differs between FOG 1.5 and 1.6

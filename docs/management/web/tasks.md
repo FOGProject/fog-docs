@@ -61,6 +61,25 @@ A multicast image send transmits one image to many machines at once. It can be s
 
 See [Multicast Sessions](multicast.md) for how sessions are created and joined, and for the settings that control how many can run at once.
 
+### Queued snapins, Deploy and Capture
+
+>[!info] FOG 1.6 and later
+>This behavior applies to FOG 1.6 and later. It is in the FOG 1.6 dev-branch builds after 2026-11-23. Older versions behave differently. See [[snapin-queued-capture-refused|Capture Refused — Host Has Queued Snapins]].
+
+A Deploy erases the disk. A snapin that was queued for the old install cannot be right for the new one. So every Deploy cancels the leftover snapins of the host. This applies to a Deploy on a host, a Deploy on a group, and a multicast Deploy. It also applies to Deploy - Debug and Deploy - Without Snapins.
+
+The Deploy cancels the queued or in-progress snapin jobs of the host. It also cancels their snapin tasks. A Deploy with snapins then starts a new snapin job.
+
+A Capture builds a base image, so it waits for the queued snapins of the host. If the host has queued snapins, the Capture is refused with this message:
+
+```
+Host has queued snapins. Let them finish, or cancel them, before a capture.
+```
+
+To capture anyway, tick **Cancel queued snapins first** on the Capture task. FOG cancels the queued snapins and starts the Capture. In the REST API, send `cancelSnapins` in the task body. A scheduled Capture cannot carry the option yet; a fix is in progress.
+
+A task that any check refuses cancels nothing. The queued snapins stay queued.
+
 ## Advanced Tasks
 
 The advanced Tasks in FOG include everything that is not a simple capture, simple deploy or mutlicast deploy.
