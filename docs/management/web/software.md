@@ -252,6 +252,13 @@ set is its own entries followed by each group's, deduplicated by entry. If
 the same entry is assigned twice with different policies, the first
 assignment wins and the host's tab says so.
 
+A host gets one entry for each backend and package. When two enabled entries
+name the same package, the first one in that order applies and the other one
+is not sent. So an Absent entry assigned to a host overrides a Present entry
+for the same package from one of its groups. Builds before this rule sent
+both entries; see
+[[software-installs-and-uninstalls-repeatedly|Software Installs and Uninstalls on Every Check]].
+
 The host's **Software Status** tab shows, per entry, what the agent
 reported: the status, the installed version, and when it was checked.
 
