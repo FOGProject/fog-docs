@@ -75,6 +75,30 @@ and export.
 | **Host Product Keys** | Each host's stored Windows product key |
 | **Pending MAC Addresses** | MAC addresses awaiting approval |
 | **Files Deleted List** | What the File Deleter service has removed |
+| **Directory Membership** | Each agent host's desired and observed domain and OU, the drift between them, and the last placement and join results |
+
+### The Directory Membership Join column
+
+The **Join** column shows what the FOG Agent last did about joining the host
+to its domain. A host joins in two ways, and the cell says which way answered:
+
+| Join cell | Meaning |
+|---|---|
+| *(blank)* | No join was needed or attempted. The host is already joined, or it has not reported. |
+| `ok` | The agent's own join succeeded. |
+| an error text | The agent's own join failed. The text is the reason. |
+| `ok (rejoin)` | A join after a Deploy succeeded, through the [[management/web/ad-rejoin-placement\|AD rejoin]] protocol. |
+| `rejoin awaiting reboot` | The rejoin is done and waits for the machine to reboot. |
+| `rejoin failed` | The rejoin failed. The host's **Active Directory** tab shows the reason. |
+| `rejoin result unknown` | The agent could not tell whether the rejoin worked. |
+
+When both kinds of result exist, the cell shows the newer one.
+
+>[!note]
+>Before this change on `dev-branch` (2026-11-23, fogproject#2125), the Join
+>cell was blank for a host that joined through the rejoin protocol. A blank
+>cell there did not mean "never joined". The change reaches `stable` with the
+>next stable release.
 
 ## The date window
 
