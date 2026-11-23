@@ -316,16 +316,28 @@ token, so the page-walking loops above work unchanged against expanded lists.
 
 ### Sensitive fields are never exposed by expansion
 
-Decrypted secrets (Active Directory password, product key, client security
-tokens, and the like) are returned **only** on a direct single-entity GET of the
-owning object (for example `GET /fog/host/48`). They are always stripped from:
+The API never returns a host's secrets. These fields are absent from every
+response, a direct single-entity GET such as `GET /fog/host/48` included:
+
+* `ADPass` and `ADPassLegacy`, the Active Directory join password
+* `productKey`
+* `pub_key`, `sec_tok`, `prev_sec_tok` and `token`, the client credentials
+
+You can still **set** `ADPass` and `productKey` with a `PUT` or a `POST`. You
+cannot read them back. The host page's Active Directory tab works the same way.
+
+> [!note] Changed in FOG 1.6
+> Before the fix for GHSA-q38j-qx5x-w25v, a direct single-entity GET returned
+> the decrypted `ADPass` and `productKey`. That GET needs only `host.view`, so
+> any user with that permission could read the domain-join password. A script
+> that read these fields from `GET /fog/host/{id}` now gets no value.
+
+A few other fields are list-only: they are stripped from list rows but present
+on a direct single-entity GET. Every list-only field and every secret is also
+stripped from:
 
 * every row of a **list** response, including expanded list rows, and
 * any object inlined as a **related** object or through `pluginItems`.
-
-In other words, `GET /fog/host/48` may return the host's decrypted `ADPass`, but
-that host appearing inside `GET /fog/location/1?expand=hosts`, or as a row of
-`GET /fog/host?expand=all`, will not.
 
 ---
 
