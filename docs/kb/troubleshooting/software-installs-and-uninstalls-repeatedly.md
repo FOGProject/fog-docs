@@ -43,6 +43,14 @@ group order. A disabled entry does not count. So in the example, the host's
 Absent entry applies to that host, and the rest of the group keeps the
 package.
 
+The same release adds a state on each host and group assignment, so a second
+entry is no longer needed. See
+[[software#Install or uninstall on one host or one group|Install or uninstall on one host or one group]].
+
+After the update, the **Software Status** tab shows only the entries the host
+gets now. The old row for the dropped entry is no longer shown, so one row
+remains for the package.
+
 ## Workaround for older versions
 
 Do not let one host get two entries for the same package. To remove a package

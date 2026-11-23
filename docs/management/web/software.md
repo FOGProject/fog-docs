@@ -36,7 +36,7 @@ policy*, and the agent keeps the machine that way and reports the truth.
 | Knows what is installed | no | yes, from the package manager |
 | Drift | invisible | corrected at the next check and reported |
 | Upgrade | queue another task | *Latest* upgrades at each check |
-| Remove | write a second snapin that uninstalls | set the state to *Absent* |
+| Remove | write a second snapin that uninstalls | set the state to *Absent*, for the entry or for one host or group |
 | Reporting | one exit code | installed version, status, when last checked, per host |
 
 Snapins are not going anywhere. They remain the escape hatch for anything a
@@ -259,8 +259,38 @@ for the same package from one of its groups. Builds before this rule sent
 both entries; see
 [[software-installs-and-uninstalls-repeatedly|Software Installs and Uninstalls on Every Check]].
 
+### Install or uninstall on one host or one group
+
+The entry's **State** applies everywhere the entry is assigned. A host or a
+group can override it for itself, without a second entry:
+
+- Open the host's or the group's **Software** tab.
+- In the **Software Order and State** card, set the entry's row to
+  **Install (Present)**, **Uninstall (Absent)**, or **Entry default**.
+- Click **Save order and states**.
+
+The host's own assignment wins. If the host has no assignment of its own, the
+first group in group order that assigns the entry applies, with that group's
+state. If that row says **Entry default**, the entry's own State applies.
+
+To put a host back on its groups' state (inherit), remove the entry from the
+host's **Software** tab. The host then follows its groups again.
+
+Example: the *Classroom* group installs `everything` on every member. To
+remove it from one PC, assign the same entry to that PC and set it to
+**Uninstall (Absent)**. The other PCs keep it. To undo, remove the entry from
+that PC.
+
+The host's **Software** tab also has an **Effective Software** card. It lists
+what the agent is sent: each entry, its backend and package, the state, and
+where the state comes from (*This host* or the group's name). The card shows
+the saved state, so reload the page after you save.
+
 The host's **Software Status** tab shows, per entry, what the agent
-reported: the status, the installed version, and when it was checked.
+reported: the status, the installed version, and when it was checked. It
+lists only the entries the host gets now. A row for an entry the host no
+longer gets (removed, its group left, or replaced by another entry for the
+same package) stays in the database but is not shown.
 
 | Status | Meaning |
 |---|---|
