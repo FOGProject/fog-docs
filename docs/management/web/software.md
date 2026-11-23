@@ -266,20 +266,26 @@ group can override it for itself, without a second entry:
 
 - Open the host's or the group's **Software** tab.
 - In the **Software Order and State** card, set the entry's row to
-  **Install (Present)**, **Uninstall (Absent)**, or **Entry default**.
+  **Install (Present)** or **Uninstall (Absent)**. On a host, **Inherit**
+  sets nothing. On a group, **Not set** sets nothing.
 - Click **Save order and states**.
 
-The host's own assignment wins. If the host has no assignment of its own, the
-first group in group order that assigns the entry applies, with that group's
-state. If that row says **Entry default**, the entry's own State applies.
+FOG uses the first state that is set, in this order:
 
-To put a host back on its groups' state (inherit), remove the entry from the
-host's **Software** tab. The host then follows its groups again.
+| Order | Where | Applies when |
+|---|---|---|
+| 1 | The host's own assignment | It is set to Install or Uninstall |
+| 2 | The host's groups, in group order | The first group that sets Install or Uninstall |
+| 3 | The entry | No host or group sets a state |
+
+An assignment that sets nothing does not hide a group. A host that has the
+entry assigned directly, left on **Inherit**, still follows its groups.
 
 Example: the *Classroom* group installs `everything` on every member. To
-remove it from one PC, assign the same entry to that PC and set it to
-**Uninstall (Absent)**. The other PCs keep it. To undo, remove the entry from
-that PC.
+remove it from one PC, set that PC's row to **Uninstall (Absent)**. If the PC
+does not have the entry yet, assign it first. The other PCs keep the package.
+To undo, set the PC's row back to **Inherit**, or remove the entry from the
+PC.
 
 The host's **Software** tab also has an **Effective Software** card. It lists
 what the agent is sent: each entry, its backend and package, the state, and
