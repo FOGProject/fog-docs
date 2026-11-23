@@ -244,11 +244,19 @@ Management cannot read them through the Imaging Report either.
 | Storage Report | `storagenode.view` |
 | Audit Report | `audit.view` |
 | User Logins | `usertracking.view` |
+| Host Product Keys | `host.edit` |
+| Export Windows Keys (windowskey plugin) | `windowskey.edit` |
 | Everything else | `report.view` |
 
 The Audit Report's separation is the one to be deliberate about: an audit
 row necessarily discloses attempted usernames, so it has a permission of
 its own rather than riding on `report.view`.
+
+Host Product Keys needs `host.edit`, not a view permission. The screen
+masks each key, but the data behind the grid carries the full key. A user
+with `host.edit` can already set a host's key. A view-only role, such as
+Legacy Restricted, cannot open the report. Export Windows Keys shows
+every key unmasked, so it needs `windowskey.edit` for the same reason.
 
 ## Reports that come from plugins
 
