@@ -177,6 +177,55 @@ The setting is remembered across upgrades. `--boot-delay 0` removes it again.
 > there would hang the client, which is why the installer removes any left over
 > from an earlier beta.
 
+## When the FOG server's address changes
+
+This section applies only when the FOG server is also the DHCP server
+(`DHCP_enabled='yes'` in `.fogsettings`).
+
+The installer writes the DHCP configuration again on every run. It moves the
+old file aside with a timestamp, then writes a new one from `.fogsettings`:
+
+| DHCP engine | File |
+|---|---|
+| ISC dhcpd | `/etc/dhcp/dhcpd.conf` (or `/etc/dhcpd.conf`) |
+| Kea | `/etc/kea/kea-dhcp4.conf` |
+
+An upgrade does not ask the DHCP questions again. So when the server moves to
+a new address, the installer checks whether the new address is on the same
+subnet:
+
+- **Same subnet:** the saved pool, router and DNS are still correct. Nothing
+  changes.
+- **New subnet, or a new subnet mask:** the saved pool and router belong to
+  the old subnet. The installer shows them and asks
+  `Change the DHCP settings for the new subnet? [Y/n]`.
+    - **Yes:** it builds the pool from the new subnet (or uses `-s` and `-e`,
+      if you gave them). It then asks the router and DNS questions again. The
+      suggested router is the new interface's gateway. The suggested DNS is
+      the saved one.
+    - **No:** it keeps the saved settings and warns you.
+
+With `-y` there is nobody to answer, so the installer **does not change DHCP**.
+An unattended run must not start serving a new subnet nobody checked, because
+that subnet may already have its own DHCP server. The warning says that the
+server address and the storage node record **did** change, but DHCP still
+offers the old pool and router. PXE clients may get no address, or a wrong
+one, and the DHCP service may fail to start.
+
+To let an unattended upgrade change DHCP too, add `--update-dhcp-subnet`:
+
+```
+./installfog.sh -y --update-dhcp-subnet
+```
+
+With `--update-dhcp-subnet` and no `-y`, the installer skips the yes/no
+question and asks only the router and DNS questions.
+
+>[!note]
+>A router or DNS answer you declined before ("No router address added",
+>"No dns added") stays declined. A subnet move does not change that choice.
+>With `-y`, if the new interface has no default gateway, no router is added.
+
 ## Examples of DHCP server configurations
 
 The below are some examples with screen shots on how to configure these settings in some servers.

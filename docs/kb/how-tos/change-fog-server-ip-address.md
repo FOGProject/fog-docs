@@ -17,7 +17,51 @@ tags:
 
 # Change FOG Server IP Address
 
-## Procedural Steps
+## FOG 1.6 with `--server-ip`
+
+Use these steps when `./installfog.sh --help` lists `--server-ip`. That
+installer finds the new address itself. Otherwise, use
+[[#Older installers|the steps for older installers]].
+
+-   Follow appropriate steps for your Linux distribution to change the
+    OS's IP address.
+-   Rerun the installer from your FOG source directory:
+
+    ```
+    cd bin
+    ./installfog.sh
+    ```
+
+    The installer sees that the saved address is gone. It shows the old and
+    the new address, and asks before it uses the new one. If the server has
+    more than one address, choose one with `--server-ip <address>`.
+-   If this FOG server is also your DHCP server and the new address is on
+    another subnet, the installer asks whether to change the DHCP settings.
+    See
+    [[1.6/installation/network-setup/dhcp-server-settings#When the FOG server's address changes|DHCP when the address changes]].
+
+The installer then updates, by itself:
+
+-   `NET_fog_server_ip` and `NET_interface` in
+    [[1.6/management/server/install-fogsettings|.fogsettings]],
+-   this server's record in **Storage Management**, with its ID, group,
+    master flag, credentials and paths unchanged,
+-   `FOG_TFTP_HOST`, when it still holds the old address,
+-   the web server configuration, the certificates and the boot files.
+
+You still update these yourself:
+
+-   Your network's DHCP options 66 and 67, if another DHCP server serves PXE
+    clients. See [[1.6/installation/network-setup/dhcp-server-settings|DHCP Server Settings]].
+-   Any other FOG server that points at this one. For example, a storage
+    node's database host (`DB_host`) is the master's address.
+-   Your NFS exports and Apache configuration, if you edited them by hand.
+    The installer writes its own.
+
+For an unattended run, add `-y`. With `-y` the installer uses the new address,
+but it does not change DHCP unless you also add `--update-dhcp-subnet`.
+
+## Older installers
 
 -   Follow appropriate steps for your Linux distribution to change the
     OS's IP address.
