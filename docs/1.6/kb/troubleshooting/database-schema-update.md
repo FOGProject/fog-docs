@@ -3,6 +3,7 @@ title: Database Schema Updates
 aliases:
     - Database Schema Updates
     - Schema Updater
+    - "BLOB, TEXT, GEOMETRY or JSON column can't have a default value"
 description: Who is allowed to run the FOG database schema installer/updater, and what to do when it will not run
 context_id: database-schema-update
 tags:
@@ -162,6 +163,43 @@ a role with **Administrator (full access)** ticked.
 The page loaded but cannot reach MySQL. Check the credentials in
 `lib/fog/config.class.php` against your database, confirm the database service
 is running, and confirm the filesystem has free space.
+
+### The update fails on MySQL with error 1101
+
+>[!info] Fixed after FOG 1.6.0.158
+>The fix is in FOG 1.6 dev-branch builds after 2026-11-20. It ships in the
+>next FOG 1.6 patch release after 1.6.0.158.
+
+The schema update stops on a MySQL server with an error such as:
+
+```
+ERROR 1101 (42000): BLOB, TEXT, GEOMETRY or JSON column 'hostSecTokenPrev' can't have a default value
+```
+
+The column name can be different. The same upgrade can also stop with
+error 1305 (`FUNCTION ... MD5 does not exist`) or error 1292. MariaDB
+servers are not affected.
+
+**Cause:** FOG builds part of the schema from a structure captured on
+MariaDB. MariaDB accepts a literal default, such as `DEFAULT ''`, on a TEXT
+column. MySQL refuses it. The fixed version writes the default as an
+expression, `DEFAULT ('')`, which MySQL 8.0.13 and later accept. The fixed
+version also refuses a MySQL older than 8.0.13 with a clear message.
+
+**Workaround on 1.6.0.158:** run the installer from dev-branch. In your FOG
+git checkout:
+
+```
+git fetch origin
+git checkout dev-branch
+git pull
+cd bin
+sudo ./installfog.sh -y
+```
+
+The schema update adds only what is missing, so it continues from where the
+failed run stopped. After the next patch release, run `git checkout stable`
+to go back to the stable line.
 
 ### The installer says the schema is still at an old version
 
