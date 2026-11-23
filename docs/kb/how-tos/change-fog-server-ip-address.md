@@ -47,7 +47,15 @@ The installer then updates, by itself:
 -   this server's record in **Storage Management**, with its ID, group,
     master flag, credentials and paths unchanged,
 -   `FOG_TFTP_HOST`, when it still holds the old address,
--   the web server configuration, the certificates and the boot files.
+-   the web server configuration and the boot files,
+-   the web certificate, for the new address. A storage node asks the
+    master for a new one.
+
+If the new address is outside the ranges the Web CA permits (all private
+ranges, or your `--internal-subnet` list), the new certificate does not
+verify, and the installer shows a warning. Remove the Web CA directory that
+the warning names, then run the installer again. Do not use `--recreate-CA`
+for this: it replaces the root CA that your FOG clients trust.
 
 You still update these yourself:
 

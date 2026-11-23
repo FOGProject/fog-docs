@@ -277,7 +277,17 @@ When the address changes, the installer also updates:
 
 - this server's record in **Storage Management**, without changing its ID, group, master flag, credentials or paths,
 - `FOG_TFTP_HOST`, only when it still holds the old address,
-- the web server configuration, the certificates and the boot files, which it builds from the new address.
+- the web server configuration and the boot files, which it builds from the new address,
+- the web certificate, which it issues again for the new address. A storage
+  node asks the master for a new certificate.
+
+The Web CA permits only certain addresses: all private ranges by default, or
+the subnets you gave with `--internal-subnet`. If the new address is outside
+them, the new certificate does not verify. The installer then shows a warning
+that names the Web CA directory. Remove that directory and run the installer
+again, and it creates a Web CA that permits the new address. Do not use
+`--recreate-CA` for this. It replaces the root CA, and every registered FOG
+client trusts the old one.
 
 `--server-ip <address>` picks the address yourself, for a server with more
 than one. The address must already be on the server, or the installer stops.
