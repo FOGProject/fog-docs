@@ -179,6 +179,12 @@ Usage: ./installfog.sh [-h?odEUHSCKYyXTFl] [-f <filename>] [-N <databasename>]
                                                 only needs giving on a first install
               --hostname                Override the vhost/cert hostname
                                         defaults to `hostname -f`, remembered in .fogsettings
+              --server-ip               Use this IPv4 address for FOG. It must be on
+                                        this server. An upgrade moves the old address
+                                        to it, in Storage Management too
+              --update-dhcp-subnet      When the new address is on another subnet,
+                                        update the DHCP pool, router and DNS without
+                                        asking. Without it, -y keeps them and warns
               --extra-server-name       Add an extra vhost/cert name (repeatable)
                                         alongside the primary hostname and detected IPs
               --internal-domain         Permit this domain in the Web and Secure Boot
@@ -254,6 +260,44 @@ covered in detail in [[uninstall-fog-server|Uninstalling the Fog server]].
 >[[1.6/installation/server/command-line-options#Certificate options|Certificate options]] and
 >[[1.6/installation/server/command-line-options#Name constraints|Name constraints]]. Passing either is
 >now an unrecognized option.
+
+## Server address options
+
+An upgrade reads the server's address and network interface from
+`.fogsettings`. The installer now checks them against the server itself
+before it changes anything:
+
+| What the installer finds | What it does |
+|---|---|
+| The saved address is on the saved interface | Nothing changes. |
+| The saved address is on another interface (for example, `eth0` became `ens18`) | It uses the new interface name. The address stays. |
+| The saved address is on no interface | It shows the old and the new address, and asks before it uses the new one. With `-y`, it uses the new one. |
+
+When the address changes, the installer also updates:
+
+- this server's record in **Storage Management**, without changing its ID, group, master flag, credentials or paths,
+- `FOG_TFTP_HOST`, only when it still holds the old address,
+- the web server configuration and the boot files, which it builds from the new address,
+- the web certificate, which it issues again for the new address. A storage
+  node asks the master for a new certificate.
+
+The Web CA permits only certain addresses: all private ranges by default, or
+the subnets you gave with `--internal-subnet`. If the new address is outside
+them, the new certificate does not verify. The installer then shows a warning
+that names the Web CA directory. Remove that directory and run the installer
+again, and it creates a Web CA that permits the new address. Do not use
+`--recreate-CA` for this. It replaces the root CA, and every registered FOG
+client trusts the old one.
+
+`--server-ip <address>` picks the address yourself, for a server with more
+than one. The address must already be on the server, or the installer stops.
+The installer does not ask for confirmation, because the option is your answer.
+
+`--update-dhcp-subnet` is for a server that is also the DHCP server. See
+[[1.6/installation/network-setup/dhcp-server-settings#When the FOG server's address changes|DHCP when the address changes]].
+
+Step-by-step instructions are in
+[[change-fog-server-ip-address|Change FOG Server IP Address]].
 
 ## NFS exports
 

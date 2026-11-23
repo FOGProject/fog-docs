@@ -424,7 +424,7 @@ continues and tells you what to fix.
 
 | Setting | Kind | Meaning |
 |---|---|---|
-| `DHCP_enabled` | Preference | `1`/`0` — whether FOG runs DHCP. Replaces `dodhcp` and `bldhcp`, which were one answer in two encodings |
+| `DHCP_enabled` | Preference | `yes`/`no` — whether FOG runs DHCP. The installer reads `1`/`0` and `Y`/`N` too, and writes them back as `yes`/`no`. Replaces `dodhcp` and `bldhcp`, which were one answer in two encodings |
 | `DHCP_engine` | Preference | `isc` or `kea`. Leave blank to let FOG detect; it prefers Kea only where ISC is unavailable, and never switches an existing install |
 | `DHCP_service_name` | Record | The DHCP service name on your distribution |
 | `DHCP_router` | Preference | The router handed to DHCP clients, or empty. Holds the clean value only — the config writers emit the "no router" comment themselves |
