@@ -172,50 +172,91 @@ To schedule a single execution task, click on white text box below "Schedule Sin
 
 ### Cron Style Task Scheduling
 
-Cron style task execution allows you to do complex repetitive task scheduling. After a cron task executes, it is not removed, as single executions tasks are. Cron style tasks, as the name suggests are similar to the Linux cron task scheduler format. Cron style tasks are created as single execution tasks are, except when presented with scheduling options, select the option "Schedule Cron Style Task Execution". Below that check box are a series of text boxes including:
+A cron style task runs again and again on a schedule. It stays in the list after it runs. A single execution task does not. To make one, schedule the task as for a single execution task. Then select **Schedule Cron Style Task Execution**, and fill in the five fields:
 
-min    -> Minute [00-59]
-hour   -> Hour [00-23]
-dom    -> Day of Month [01-31]
-month  -> Month [01-12]
-dow    -> Day of Week [01-07] (Sunday ==> 0, Saturday ==> 6)
+| Field | Values |
+| --- | --- |
+| min | Minute, 0 to 59 |
+| hour | Hour, 0 to 23 |
+| dom | Day of the month, 1 to 31 |
+| month | Month, 1 to 12 |
+| dow | Day of the week, 0 to 7. Sunday is 0 or 7, Monday is 1, Saturday is 6. |
 
-To give an example of how this works, if you wanted a capture task to run at **10:00pm everyday** you would enter the following:
+The fields use the server's time zone, the **FOG_TZ_INFO** setting. They do not use the time zone of the user who made the schedule.
+
+This schedule runs a Capture at 10:00 PM every day:
 
 	0 22 * * *
 
-This basically says run the task a **0** minutes into the hour, on the **22nd hour (10:00pm)**, on **every day of the month**, on **every month of the year**, on **every day of the week**.
+The minute is **0** and the hour is **22**. The `*` in the last three fields means every day of the month, every month, and every day of the week.
 
-To take this example further, lets say you only wanted to capture the image **every other day**, we could do this by adding:
+This schedule runs on every second day of the month, the 1st, 3rd, 5th, and so on:
 
 	0 22 */2 * *
 
-The ***/2** now tells the scheduler to only run on **even days of the month**.
-
-We could even ask the scheduler to only do a backup on **even weekdays** by adding:
+This schedule runs on every second day of the month, but only on Monday to Friday:
 
 	0 22 */2 * 1-5
 
-The 1-5 we just added says only run on days 1 through 5, which relate to Monday - Friday.
-
-Now we will ask the scheduler to only backup in the month of February.
-
-	0 22 */2 2 1-5
-
-Another basic example could be if you wanted to run an inventory update on the first of every month you could use:
+This schedule runs at 1:30 AM on the 1st of every month:
 
 	30 1 1 * *
 
-This task would then run at **1:30** on the **1st of every month**.
+#### What a field can hold
 
-  
-The FOG scheduler doesn't support 100% of the operations that cron supports, below are the operations that are supported:
+| Form | Example | Meaning |
+| --- | --- | --- |
+| A number | `4` | 4 only |
+| A list | `4,5,6,7` | each number in the list |
+| A range | `4-7` | 4 to 7 |
+| Ranges and lists | `4-7,10` | 4 to 7, and 10 |
+| A step | `*/5` | every fifth value, from the first value of the field |
+| A range with a step | `0-30/10` | 0, 10, 20, and 30 |
+| A start with a step | `5/15` | 5, 20, 35, and 50 |
+| A wildcard | `*` | every value |
 
-	4       -       Listing a static number
-	4,5,6,7 -       Listing a group of numbers
-	4-7     -       ranges of numbers 
-	4-7,10  -       ranges and lists
-	*/5     -       * divided by a number
-	*       -       Wildcard
+A step counts from the first value of the field. So in the day of the month, `*/2` is the 1st, 3rd, 5th, and so on. In the month, `*/3` is January, April, July, and October.
 
-For more information on cron please see [http://en.wikipedia.org/wiki/Cron](http://en.wikipedia.org/wiki/Cron)
+FOG refuses a schedule that cannot run. Examples are a minute of 99, a range that goes down such as `30-10`, and a date that does not exist such as `0 0 30 2 *` (February 30).
+
+FOG does not support month names, day names, or the `@daily` style of shortcut. Use numbers.
+
+#### The day of the month and the day of the week
+
+These two fields work together, the same as in cron:
+
+- If both fields hold a restricted value, the task runs on a day that matches **either** field. `0 0 1 * 1` runs on the 1st of the month **and** on every Monday.
+- If one of the two fields starts with `*`, the task runs on a day that matches **both** fields. `0 22 */2 * 1-5` runs on odd days that are also weekdays.
+
+#### Daylight saving time
+
+On the day the clocks go forward, a time in the skipped hour runs one hour later. For example, a task at 2:30 AM runs at 3:30 AM. Standard cron runs it at 3:00 AM. On the day the clocks go back, a time in the repeated hour runs one time, at its first occurrence. A schedule with `*` in the minute or the hour, such as `*/15 * * * *`, does not run during the second occurrence of that hour. Standard cron runs it then. FOG does not.
+
+#### When a cron task runs
+
+The FOG Task Scheduler service checks the schedules on each pass. The **SCHEDULERSLEEPTIME** setting sets the time between passes. A pass runs each task that was due since the last pass, one time. A task does not run twice in one minute, and a late pass does not skip it.
+
+If a pass is late, the scheduler looks back at most 10 minutes, or two sleep intervals if that is longer. So a scheduler that was blocked does not run old schedules hours late. When the FOG Task Scheduler service starts, it checks only the current minute. A task that was due while the service was stopped does not run.
+
+#### The Next Run column
+
+Tasks > Scheduled Tasks shows a **Next Run** column. For a single execution task, it is the date and time that you selected. For a cron style task, it is the next time that the schedule matches. The page shows the time in your own time zone. The REST API gives the time in UTC, as it does for every other date.
+
+#### Changes from earlier versions
+
+FOG cron schedules now follow the rules of standard cron. Some saved schedules run at different times after the update. The reason is the same for each change: a schedule must mean in FOG what it means in cron. Then a schedule copied from a crontab, or from a cron guide, does what the guide says.
+
+| Schedule | Before | Now | Why |
+| --- | --- | --- | --- |
+| `*/2` in the day of the month | even days: 2nd, 4th, 6th | odd days: 1st, 3rd, 5th | Cron counts a step from the first value of the field. The day of the month starts at 1. FOG counted from 0. |
+| `*/3` in the month | March, June, September, December | January, April, July, October | The month starts at 1, so the same rule applies. |
+| `*/2` in the day of the month, with a day of the week such as `1-5` | a day that matches either field | a day that matches both fields | In cron, a field that starts with `*` does not restrict the day by itself. |
+| any schedule, on FOG 1.6.0 | the fields were read as UTC | the fields are read in FOG_TZ_INFO | The fields are local times. FOG 1.6.0 read them in the storage time zone, which is UTC. |
+| a minute or hour that the scheduler checked late, or twice | the task could be skipped, or run twice | the task runs one time | The scheduler now checks every minute since its last pass. |
+
+To keep the old days for a `*/2` day-of-month schedule, write the even days as a step from 2: `2-30/2`. To keep the old months for `*/3`, write `3-12/3`.
+
+>[!info] FOG 1.6 and later
+>The behavior in this section is in FOG 1.6 dev-branch builds after 2026-11-23. It will ship in the next FOG 1.6 patch release after 1.6.0. See [[cron-schedule-runs-at-the-wrong-time|Cron Schedule Runs at the Wrong Time]] for the symptoms on earlier versions.
+
+For more information on cron, see [https://en.wikipedia.org/wiki/Cron](https://en.wikipedia.org/wiki/Cron).

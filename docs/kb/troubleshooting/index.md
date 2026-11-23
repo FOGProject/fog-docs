@@ -23,3 +23,4 @@ or github issues to report the problem and get help.
 - [[database-schema-update|Database Schema Updates]] — differs between FOG 1.5 and 1.6
 - [[primary-mac-address-issues|Primary Mac Address Issues]] — differs between FOG 1.5 and 1.6
 - [[software-installs-and-uninstalls-repeatedly|Software Installs and Uninstalls on Every Check]] — FOG 1.6 and later
+- [[cron-schedule-runs-at-the-wrong-time|Cron Schedule Runs at the Wrong Time]] — FOG 1.6 and later
