@@ -201,6 +201,22 @@ check the host's **Active Directory** tab for the rejoin result. The
 [[1.6/management/web/reports#The Directory Membership Join column|Join column]]
 table lists every value.
 
+**Directory: "rejoin: blocked (directory_observation_unknown)" and the
+workgroup PC never joins.** The host's **Active Directory** tab can also show
+"Current directory observation does not match this host". That line is normal
+for a PC that has not joined yet. The server joins a workgroup PC only when it
+knows the PC is in a workgroup. The agent sends that report only when its
+membership changes. FOG 1.6.0.158 and earlier read the report only from the
+poll that carried it. A server upgraded from 1.6.0 or 1.6.0.14 never got the
+report again, so every workgroup PC stayed blocked. Fixed on `dev-branch`
+(fogproject#2142): the server reads the report it stored. The fix reaches
+`stable` with the next stable release. Until then, run this in the `fog`
+database to make each agent send the report again on its next poll:
+
+```sql
+DELETE FROM hostFactState WHERE hfsKind = 'directory';
+```
+
 **Task reboot: "the firmware lists no network boot entry to arm".** The
 machine's UEFI has a boot manager with no network boot option, usually
 because PXE or network boot is disabled in firmware setup. The agent refuses
