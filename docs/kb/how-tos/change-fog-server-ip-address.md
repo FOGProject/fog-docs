@@ -46,7 +46,8 @@ The installer then updates, by itself:
     [[1.6/management/server/install-fogsettings|.fogsettings]],
 -   this server's record in **Storage Management**, with its ID, group,
     master flag, credentials and paths unchanged,
--   `FOG_TFTP_HOST`, when it still holds the old address,
+-   `FOG_TFTP_HOST` and `FOG_WEB_HOST`, each only when it still holds the
+    old address. A host name you set there stays,
 -   the web server configuration and the boot files,
 -   the web certificate, for the new address. A storage node asks the
     master for a new one.
