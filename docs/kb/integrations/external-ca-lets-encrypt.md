@@ -30,6 +30,21 @@ netboot fetches (`boot.php`, kernel, initrd) are a **separate case, not tied
 to any of this** — see [How iPXE validates HTTPS](#how-ipxe-validates-https)
 below.
 
+>[!note] Terms used on this page
+>**ACME** (Automatic Certificate Management Environment) is the protocol a
+>certificate authority uses to issue and renew certificates automatically.
+>Let's Encrypt is the best-known public ACME authority. `certbot` and
+>`acme.sh` are ACME clients. **step-ca** is an ACME authority you run
+>yourself, on your own network.
+>
+>For a step-by-step setup with a public certificate, start with
+>[[kb/how-tos/lets-encrypt-setup|Set up Let's Encrypt on a FOG server]].
+>
+>You do not need any of this to stop the browser warning on a default
+>install. Import FOG's own CA instead: download it from
+>`http://<fog-server>/fog/management/other/ca.cert.der` and add it to the
+>trusted root authorities on each machine that opens the web UI.
+
 Because of fog-client's pinning, you cannot simply drop a Let's Encrypt
 certificate onto the Apache vhost and expect **clients** to keep working —
 fog-client validates the server's certificate chain against the CA it
