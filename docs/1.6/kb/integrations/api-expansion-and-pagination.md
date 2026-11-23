@@ -326,6 +326,9 @@ response, a direct single-entity GET such as `GET /fog/host/48` included:
 You can still **set** `ADPass` and `productKey` with a `PUT` or a `POST`. You
 cannot read them back. The host page's Active Directory tab works the same way.
 
+The **windowskey** plugin's `key` field follows the same rule:
+`GET /fog/windowskey/{id}` does not return it.
+
 > [!note] Changed in FOG 1.6
 > Before the fix for GHSA-q38j-qx5x-w25v, a direct single-entity GET returned
 > the decrypted `ADPass` and `productKey`. That GET needs only `host.view`, so
