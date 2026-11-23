@@ -230,17 +230,17 @@ These two fields work together, the same as in cron:
 
 #### Daylight saving time
 
-On the day the clocks go forward, a time in the skipped hour runs one hour later. For example, a task at 2:30 AM runs at 3:30 AM. On the day the clocks go back, a time in the repeated hour runs one time, at its first occurrence. A schedule with `*` in the minute or the hour, such as `*/15 * * * *`, does not run during the second occurrence of that hour. Standard cron runs it then. FOG does not.
+On the day the clocks go forward, a time in the skipped hour runs one hour later. For example, a task at 2:30 AM runs at 3:30 AM. Standard cron runs it at 3:00 AM. On the day the clocks go back, a time in the repeated hour runs one time, at its first occurrence. A schedule with `*` in the minute or the hour, such as `*/15 * * * *`, does not run during the second occurrence of that hour. Standard cron runs it then. FOG does not.
 
 #### When a cron task runs
 
 The FOG Task Scheduler service checks the schedules on each pass. The **SCHEDULERSLEEPTIME** setting sets the time between passes. A pass runs each task that was due since the last pass, one time. A task does not run twice in one minute, and a late pass does not skip it.
 
-If the scheduler was stopped, or was blocked, it does not run old schedules hours late. It looks back at most 10 minutes, or two sleep intervals if that is longer.
+If a pass is late, the scheduler looks back at most 10 minutes, or two sleep intervals if that is longer. So a scheduler that was blocked does not run old schedules hours late. When the FOG Task Scheduler service starts, it checks only the current minute. A task that was due while the service was stopped does not run.
 
 #### The Next Run column
 
-Tasks > Scheduled Tasks shows a **Next Run** column. For a single execution task, it is the date and time that you selected. For a cron style task, it is the next time that the schedule matches. The page shows the time in your own time zone. The REST API gives the time in the server's time zone.
+Tasks > Scheduled Tasks shows a **Next Run** column. For a single execution task, it is the date and time that you selected. For a cron style task, it is the next time that the schedule matches. The page shows the time in your own time zone. The REST API gives the time in UTC, as it does for every other date.
 
 #### Changes from earlier versions
 

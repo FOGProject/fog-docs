@@ -26,11 +26,13 @@ A cron style scheduled task, or a power-management schedule such as Wake on LAN,
 - It runs on a day that matches only one of the two day fields, for a schedule such as `0 22 */2 * 1-5`.
 - It does not run on some days, or it runs twice.
 
-The scheduler log (`/opt/fog/log/fogscheduler.log`) shows a run time with a `+0000` offset:
+The scheduler log (`/opt/fog/log/fogscheduler.log`) writes the run time in UTC (`+0000`). On an affected version, the UTC hour is the same as the hour in the schedule. For `0 23 * * *`:
 
 ```
  * Scheduled Task run time: Mon, 23 Nov 2026 23:00:00 +0000
 ```
+
+On a fixed version, the log shows the schedule's local time converted to UTC. On a server in America/Chicago, that is `05:00:00 +0000` on the next day.
 
 The **Start Time** column of Tasks > Scheduled Tasks shows a time that is not when the task runs.
 
