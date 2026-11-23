@@ -208,7 +208,7 @@ subnet:
 With `-y` there is nobody to answer, so the installer **does not change DHCP**.
 An unattended run must not start serving a new subnet nobody checked, because
 that subnet may already have its own DHCP server. The warning says that the
-server address and the storage node record **did** change, but DHCP still
+server address and the storage node record **will** change, but DHCP still
 offers the old pool and router. PXE clients may get no address, or a wrong
 one, and the DHCP service may fail to start.
 
@@ -217,6 +217,10 @@ To let an unattended upgrade change DHCP too, add `--update-dhcp-subnet`:
 ```
 ./installfog.sh -y --update-dhcp-subnet
 ```
+
+You can also add it on a later run, after a run that kept the old DHCP
+settings. The installer then compares the saved pool (or the saved router) to
+the server's current subnet, and updates DHCP if they do not match.
 
 With `--update-dhcp-subnet` and no `-y`, the installer skips the yes/no
 question and asks only the router and DNS questions.
