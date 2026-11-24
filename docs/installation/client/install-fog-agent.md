@@ -249,7 +249,8 @@ reason is shown:
 |---|---|
 | `unknown-host` | Nothing matched. A pending host record was created, so approving also registers the machine |
 | `known-host-no-agent` | The host exists and has never had an agent |
-| `rebind` | The host already has a different key bound to it. Either it was reimaged without a deploy FOG knows about, or something is claiming an enrolled machine's identity. Look before approving |
+| `new-seat` | Shown as "New OS on a host that already has an agent". The host has an agent on a different OS, as on a dual-boot machine. Approving adds an agent for this OS and keeps the other. See [[management/web/fog-agent#Dual-boot hosts: one agent per OS\|Dual-boot hosts]] |
+| `rebind` | The host already has a different key bound to it for this same OS. Either it was reimaged without a deploy FOG knows about, or something is claiming an enrolled machine's identity. Look before approving |
 | `identity-conflict` | The firmware identity matches more than one host. Fix the duplicate host records first |
 | `reissue` | The same key, asking again after its certificate was lost. The agent kept its key but not its certificate |
 | `no-mac` | The request carried no usable MAC address |
@@ -263,8 +264,8 @@ Once enrolled, every request is mutual TLS and the certificate maps to the
 host record. Renames, address changes and DHCP moves do not touch it. The
 certificate lasts one year and the agent renews it over its existing
 session inside the last 120 days. If the host is deleted from FOG, or a
-different key is approved for it, the old certificate stops working at once
-and the agent goes back to pending.
+different key is approved for the same OS of that host, the old certificate
+stops working at once and the agent goes back to pending.
 
 ## Check that it worked
 

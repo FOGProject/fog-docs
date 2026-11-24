@@ -164,4 +164,9 @@ runs before the host's software instead of after. See
 [[software#Software runs before snapins|Software runs before snapins]] and
 [[software#Snapins that must run before software|Snapins that must run before software]].
 
+On a dual-boot host with the FOG Agent in each OS, the snapin's **Run on**
+field picks the OS that runs it: Any, Windows, Linux or macOS. A snapin set
+to an OS with no agent on the host stays queued and never runs. See
+[[fog-agent#Snapins|The FOG Agent: Snapins]].
+
 The next time you image the computer the FOG Service will attempt to install that snapin. If you have problems, please see the fog log file located at c:\fog.log on the client PC.

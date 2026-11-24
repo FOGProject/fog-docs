@@ -90,6 +90,42 @@ unlimited, and an expiry, which is required. The token value is shown once,
 with a Copy button, and only its hash is stored. Revoking a token stops it
 approving anything further; enrollments it already approved are unaffected.
 
+## Dual-boot hosts: one agent per OS
+
+>[!info] New in FOG 1.6, November 2026
+>On the Patches channel since November 20, 2026, and in the stable release
+>of December 11, 2026. An older 1.6 server holds one agent key per host, so
+>a second OS replaces the first one's key.
+
+A dual-boot machine has one firmware identity, so both of its operating
+systems match the same FOG host. The host keeps one agent seat per OS. A
+seat is one agent key and its certificate, plus that agent's own version and
+check-in. Install the agent in each OS the usual way. No agent setting
+changes.
+
+- **Enrolling the second OS.** The first OS enrolls as usual. The second OS
+  arrives on **Pending Agents** with the reason "New OS on a host that
+  already has an agent" (`new-seat`). Approving it adds a seat and leaves the
+  first OS's key alone. A token or a recent deploy approves it automatically,
+  the same as any other enrollment. When the second OS first boots weeks or
+  months after imaging, the deploy window has closed, so approve it on
+  Pending Agents or give its install a token.
+- **Snapins.** A snapin's **Run on** field picks the OS it runs on. A
+  snapin set to Windows waits in the queue until the Windows install polls.
+  **Any** runs it on whichever OS polls first. See [[#Snapins]].
+- **Hostname.** Both OSes take the host's one name.
+- **Domain join and Windows activation.** One seat owns the directory: the
+  Windows seat, else the only seat. That seat alone joins the domain,
+  renames inside it, and reports directory membership. The other OS is left
+  out, so the two never fight over one computer account. The product key
+  goes to a Windows seat only. A host with two or more seats and no Windows
+  seat gets no join at all, and its page says so.
+- **Self-update.** Each seat updates to the build for its own platform, under
+  the host's update mode, ring and desired version.
+
+Two installs of the same OS on one disk share one seat. Each one's
+enrollment replaces the other's key, as a `rebind`.
+
 ## The host page
 
 These places on a host's page belong to the agent:
@@ -108,7 +144,12 @@ These places on a host's page belong to the agent:
   recent, check-in old" reading described on
   [[1.6/management/web/hosts#when-was-this-host-last-seen|Host Management]]
   applies: a machine that answers pings but has not checked in has an agent
-  that is stopped, broken, or not installed.
+  that is stopped, broken, or not installed. On a dual-boot host this field,
+  and **Agent Version** in the host list, show the OS that checked in last.
+- **General → Agent Seats.** One line per OS that has an agent: the OS, its
+  agent version, its last check-in, and when its certificate expires. This
+  is where you see when each OS of a dual-boot host last checked in. See
+  [[#Dual-boot hosts: one agent per OS]].
 - **History Items → Agent Activity.** Every capability result and every
   fact the agent reported for this host, newest first, with the outcome and
   detail. When a printer will not install or a join fails, the reason is
@@ -118,9 +159,9 @@ These places on a host's page belong to the agent:
   What the agent reports for the software you assigned, the software the
   machine actually has, and the sessions it has seen.
 
-Deleting a host, or approving a different agent key for it, revokes the
-certificate the old agent holds immediately. That agent drops back to
-pending on its next poll.
+Deleting a host revokes the certificate of every agent on it immediately.
+Approving a different agent key for one OS of a host revokes the old key
+for that OS only. A revoked agent drops back to pending on its next poll.
 
 ## How and when it reboots
 
@@ -305,6 +346,13 @@ shutdown flag is handed to the reboot coordinator rather than acted on
 directly. For software that a package manager can express, prefer
 [[software|Software Management]], which knows whether the thing is already
 there.
+
+A snapin's **Run on** field (Any, Windows, Linux or macOS) matters on a
+host with agents on more than one OS. The snapin runs only when an agent on
+that OS polls; the task stays queued until then. **Any**, the default, runs
+it on whichever OS polls first. A snapin set to an OS that has no agent on
+the host stays queued and never runs, so leave the field at Any unless the
+snapin needs one OS.
 
 ## Power
 
