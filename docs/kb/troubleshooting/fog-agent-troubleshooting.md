@@ -56,10 +56,15 @@ The reason tells you what the server saw; the table on
 [[installation/client/install-fog-agent#enrollment-and-approval|Install the FOG Agent]] explains
 each. Two are worth pausing on:
 
-- `rebind`: the host record already has a *different* agent key bound. If
-  you reimaged the machine outside FOG, or reinstalled the OS by hand, this
-  is expected: approve it. If you did neither, something else is presenting
-  this machine's firmware identity.
+- `rebind`: the host record already has a *different* agent key bound for
+  this same OS. If you reimaged the machine outside FOG, or reinstalled the
+  OS by hand, this is expected: approve it. If you did neither, something
+  else is presenting this machine's firmware identity. On a server without
+  dual-boot support (before the December 11, 2026 stable release), the other OS of a dual-boot machine also arrives as
+  `rebind`, and approving it retires the first OS's key.
+- `new-seat`: the host has an agent on a different OS, as on a dual-boot
+  machine. Approve it to add an agent for this OS. See
+  [[management/web/fog-agent#Dual-boot hosts: one agent per OS|Dual-boot hosts]].
 - `identity-conflict`: the firmware identity matches more than one host.
   Usually two host records for one machine, one registered by MAC years ago
   and one by a shared USB NIC. Merge or delete one, then the agent's next
