@@ -345,6 +345,11 @@ Windows registry or `dpkg` lists stay. The agent also keeps:
 - the dependencies of each assigned package, read from its nuspec
 - snap bases, `core`, `snapd`, and the content snaps an assigned snap uses
 - Flatpak runtimes (the agent lists apps only)
+- the apps the OS shipped with: the snaps in the snapd seed (on Ubuntu
+  Desktop, for example Firefox, App Center and Firmware Updater), and the
+  Flatpak apps named in `preinstall.d`. A distro that bakes Flatpak apps into
+  its image without a `preinstall.d` entry is not recognized, so check the
+  preview, and assign any such app the host should keep
 - the packages of **disabled** entries: disabling an entry stops FOG acting
   on it, it does not remove the package
 
@@ -358,7 +363,9 @@ To set the level:
 - In **Software Management Level**, select **Exclusive**.
 - Read the preview. It lists the packages Exclusive would remove, from the
   agent's last report and the saved assignments. The count is an upper
-  bound, because only the agent can see dependencies. The preview also names
+  bound, because only the agent can see dependencies and the apps the OS
+  shipped with. On Ubuntu, for example, Firefox can be listed but is kept.
+  The preview also names
   the backends that have not reported yet.
 - Click **Update**.
 
