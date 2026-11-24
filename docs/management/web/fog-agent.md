@@ -122,6 +122,13 @@ changes.
   seat gets no join at all, and its page says so.
 - **Self-update.** Each seat updates to the build for its own platform, under
   the host's update mode, ring and desired version.
+- **Installed software.** Each OS keeps its own list. The OS is the one the
+  seat enrolled with, not a value guessed from the package source. The
+  host's **Installed Software** tab and the Installed Software report show
+  an **OS** column, and you can filter on it. A report from one OS closes
+  only that OS's programs. A server before database schema 469 keeps one
+  list per host, so each OS's report replaced the other's. See
+  [[kb/troubleshooting/fog-agent-troubleshooting#Installed Software shows only one OS on a dual-boot host|Installed Software shows only one OS]].
 
 Two installs of the same OS on one disk share one seat. Each one's
 enrollment replaces the other's key, as a `rebind`.
