@@ -244,6 +244,34 @@ IdleHint`.
 **A user was logged off with no warning.** `FOG_CLIENT_AUTOLOGOFF_WARN` is
 0, or the session is a graphical Linux session, which the agent cannot warn.
 
+## Installed Software shows only one OS on a dual-boot host
+
+**Symptom.** On a host with two agent seats (a dual-boot machine), the
+**Installed Software** tab lists the programs of one OS only. The list
+switches to the other OS after that OS checks in. The host's history shows
+an entry like this at each switch:
+
+`agent reported 565 installed programs: 565 added, 17 removed`
+
+**Cause.** A server before database schema 469 keeps one installed-software
+list per host. Each OS reports its complete list, so each report closed the
+programs of the other OS.
+
+**Fixed in.** Database schema 469 on the FOG 1.6 Patches channel. The list
+is now kept per OS, and the tab and the Installed Software report show an
+**OS** column. After the update, each OS sends its list again at its next
+check-in. See
+[[management/web/fog-agent#Dual-boot hosts: one agent per OS|Dual-boot hosts]].
+
+**Workaround on an older server.** None that keeps both lists. Read the
+list right after the OS you care about checks in.
+
+**Not a dual-boot machine?** If the host should have one OS, check
+**General → Agent Seats**. A second seat means another machine with the
+same firmware identity enrolled as a new OS, for example a cloned virtual
+machine that kept the original's system UUID. Give the clone a new system
+UUID before its agent enrolls, so it registers as its own host.
+
 ## Two agents on one machine
 
 If the legacy FOG client and the agent are both installed, whichever polls
