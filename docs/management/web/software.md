@@ -319,6 +319,63 @@ To remove several entries, select their checkboxes and click
 **Remove selected**. The same choice applies to all of them. If a group still
 grants an entry, the row stays on the host as inherited after the save.
 
+On an **Exclusive** host, **Remove** does not offer **Stop managing**. An
+Exclusive host uninstalls a backend package it no longer gets. See
+[[#Software management level]].
+
+### Software management level
+
+> [!note]
+> Applies to FOG 1.6 and later, with a fog-agent that supports the Exclusive
+> level. An older agent treats an Exclusive host as Assigned.
+
+The level works like the printer management level. Each host has its own
+level. A group never sets it, but group mass edit can write it to every
+member.
+
+| Level | What the agent does |
+|---|---|
+| **Assigned** (default) | It installs and uninstalls only the entries the host gets. A package FOG never assigned is left alone |
+| **Exclusive** | It also uninstalls every package its backends (Chocolatey, Flatpak, Snap) installed that the host does not get |
+
+Exclusive never touches software outside the backends. Programs that the
+Windows registry or `dpkg` lists stay. The agent also keeps:
+
+- Chocolatey itself and its `chocolatey-*.extension` packages
+- the dependencies of each assigned package, read from its nuspec
+- snap bases, `core`, `snapd`, and the content snaps an assigned snap uses
+- Flatpak runtimes (the agent lists apps only)
+- the apps the OS shipped with: the snaps in the snapd seed (on Ubuntu
+  Desktop, for example Firefox, App Center and Firmware Updater), and the
+  Flatpak apps named in `preinstall.d`. A distro that bakes Flatpak apps into
+  its image without a `preinstall.d` entry is not recognized, so check the
+  preview, and assign any such app the host should keep
+- the packages of **disabled** entries: disabling an entry stops FOG acting
+  on it, it does not remove the package
+
+The agent removes nothing for a backend on a pass where something is wrong:
+an assigned package failed to install, the backend reported `cannot_run`, or
+a nuspec or snap command could not be read.
+
+To set the level:
+
+- Open the host's **Software** tab.
+- In **Software Management Level**, select **Exclusive**.
+- Read the preview. It lists the packages Exclusive would remove, from the
+  agent's last report and the saved assignments. The count is an upper
+  bound, because only the agent can see dependencies and the apps the OS
+  shipped with. On Ubuntu, for example, Firefox can be listed but is kept.
+  The preview also names
+  the backends that have not reported yet.
+- Click **Update**.
+
+Save or undo any grid change before you change the level. The page refuses
+the level change while the grid has unsaved edits.
+
+Example: a lab host gets `7zip` and `vlc` from Chocolatey. Someone installs
+`googlechrome` with `choco install` by hand. On an Exclusive host, the next
+check uninstalls `googlechrome`. On an Assigned host, it stays.
+
 The host's **Software Status** tab shows, per entry, what the agent
 reported: the status, the installed version, and when it was checked. It
 lists only the entries the host gets now. A row for an entry the host no
