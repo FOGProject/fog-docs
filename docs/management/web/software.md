@@ -247,10 +247,28 @@ snap list
 
 ## Assigning it
 
-Assign entries on a host's **Software** tab or a group's, in order. A host's
-set is its own entries followed by each group's, deduplicated by entry. If
-the same entry is assigned twice with different policies, the first
-assignment wins and the host's tab says so.
+Assign entries on a host's **Software** tab or a group's, in order. Each tab
+has one grid. A host's set is its own entries followed by each group's,
+deduplicated by entry. If the same entry is assigned twice with different
+policies, the first assignment wins and the host's tab says so.
+
+The grid has these columns:
+
+| Column | What it shows |
+|---|---|
+| **#** | The order. Drag the handle, or use the up and down arrows. Only entries linked here get a number |
+| **Software**, **Package**, **Backend** | The entry |
+| **Action** | **Inherit**, **Install** or **Uninstall**. On a host, the action the agent gets and where it comes from show beside it: *this host*, *group X*, or *package default* |
+| **Last result** | Host only. The agent's last status for the entry, and when it was checked |
+| **Remove** | Removes the link. See [[#Removing an entry from a host or a group]] |
+
+On a host, the grid also lists the entries that come only from its groups.
+Their **#** cell is empty. Set an action on one of them to link it to the
+host with that action.
+
+Use **Link software** to add entries, and **Create New Software** to make a
+new entry and link it. Nothing changes until you click **Save changes**. The
+**Unsaved changes** badge shows that an edit is waiting.
 
 A host gets one entry for each backend and package. When two enabled entries
 name the same package, the first one in that order applies and the other one
@@ -265,10 +283,9 @@ The entry's **State** applies everywhere the entry is assigned. A host or a
 group can override it for itself, without a second entry:
 
 - Open the host's or the group's **Software** tab.
-- In the **Software Order and State** card, set the entry's row to
-  **Install (Present)** or **Uninstall (Absent)**. On a host, **Inherit**
-  sets nothing. On a group, **Not set** sets nothing.
-- Click **Save order and states**.
+- Set the entry's **Action** to **Install** or **Uninstall**. **Inherit**
+  sets nothing. On a group, the Inherit option reads **Not set**.
+- Click **Save changes**.
 
 FOG uses the first state that is set, in this order:
 
@@ -282,15 +299,25 @@ An assignment that sets nothing does not hide a group. A host that has the
 entry assigned directly, left on **Inherit**, still follows its groups.
 
 Example: the *Classroom* group installs `everything` on every member. To
-remove it from one PC, set that PC's row to **Uninstall (Absent)**. If the PC
-does not have the entry yet, assign it first. The other PCs keep the package.
-To undo, set the PC's row back to **Inherit**, or remove the entry from the
-PC.
+remove it from one PC, open the PC's **Software** tab. The `everything` row
+shows *Install (group Classroom)*. Set its **Action** to **Uninstall**, then
+save. The other PCs keep the package. To undo, set the PC's row back to
+**Inherit**.
 
-The host's **Software** tab also has an **Effective Software** card. It lists
-what the agent is sent: each entry, its backend and package, the state, and
-where the state comes from (*This host* or the group's name). The card shows
-the saved state, so reload the page after you save.
+### Removing an entry from a host or a group
+
+Removing a link does not uninstall the package. So **Remove** asks which
+result you want:
+
+- **Stop managing (leave installed)** removes the link. The package stays on
+  the PC, and the agent stops checking it.
+- **Uninstall from this host** sets the action to **Uninstall** and keeps the
+  link. After the agent reports `removed` or `converged`, the row shows
+  **Remove link**. Click it, then save, to drop the row.
+
+To remove several entries, select their checkboxes and click
+**Remove selected**. The same choice applies to all of them. If a group still
+grants an entry, the row stays on the host as inherited after the save.
 
 The host's **Software Status** tab shows, per entry, what the agent
 reported: the status, the installed version, and when it was checked. It
