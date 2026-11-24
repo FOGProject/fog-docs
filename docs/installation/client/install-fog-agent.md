@@ -252,6 +252,7 @@ reason is shown:
 | `new-seat` | Shown as "New OS on a host that already has an agent". The host has an agent on a different OS, as on a dual-boot machine. Approving adds an agent for this OS and keeps the other. See [[management/web/fog-agent#Dual-boot hosts: one agent per OS\|Dual-boot hosts]] |
 | `rebind` | The host already has a different key bound to it for this same OS. Either it was reimaged without a deploy FOG knows about, or something is claiming an enrolled machine's identity. Look before approving |
 | `identity-conflict` | The firmware identity matches more than one host. Fix the duplicate host records first |
+| `seat-removed` | Shown as "Agent seat removed by an admin". An admin removed this key's seat on the host page. A token or a recent deploy never approves it: only an admin's Approve lets that key back in. See [[management/web/fog-agent#Removing an agent seat\|Removing an agent seat]] |
 | `reissue` | The same key, asking again after its certificate was lost. The agent kept its key but not its certificate |
 | `no-mac` | The request carried no usable MAC address |
 

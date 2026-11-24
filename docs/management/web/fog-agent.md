@@ -133,6 +133,36 @@ changes.
 Two installs of the same OS on one disk share one seat. Each one's
 enrollment replaces the other's key, as a `rebind`.
 
+### Removing an agent seat
+
+>[!info] Applies to FOG 1.6 and later, from the Patches channel after
+>November 24, 2026.
+
+**General → Agent Seats** has a **Remove** button on each seat. Use it when
+a seat does not belong on the host: a cloned machine that enrolled as a new
+OS, a test install, or an OS you took off the disk. You need the Host edit
+permission. Removing a seat:
+
+- Revokes that agent's key. The agent stops authenticating at its next poll.
+  The host's other seats keep working.
+- Closes that OS's programs on the **Installed Software** tab. The other
+  OS's programs stay.
+- Puts the key on **Pending Agents** with the reason "Agent seat removed by
+  an admin" (`seat-removed`). A token or a recent deploy never approves it.
+  The key comes back only if an admin approves it there. Deny it to refuse
+  that key for good.
+- Writes an `agent.seat.remove` row to the audit log, with the OS, the key
+  prefix and who removed it.
+
+The REST API does the same with `POST /host/{id}/seat/remove` and the body
+`{"os": "windows"}`. It needs the same permission. A host you cannot see,
+or a host with no seat for that OS, returns 404.
+
+To move a machine to its own host record, for example a clone that kept the
+original's system UUID, give it a new system UUID first. Then remove its
+seat here, and delete the agent's state directory on the clone so it
+enrolls with a new key.
+
 ## The host page
 
 These places on a host's page belong to the agent:
@@ -155,8 +185,9 @@ These places on a host's page belong to the agent:
   and **Agent Version** in the host list, show the OS that checked in last.
 - **General → Agent Seats.** One line per OS that has an agent: the OS, its
   agent version, its last check-in, and when its certificate expires. This
-  is where you see when each OS of a dual-boot host last checked in. See
-  [[#Dual-boot hosts: one agent per OS]].
+  is where you see when each OS of a dual-boot host last checked in. Each
+  seat has a **Remove** button. See [[#Dual-boot hosts: one agent per OS]]
+  and [[#Removing an agent seat]].
 - **History Items → Agent Activity.** Every capability result and every
   fact the agent reported for this host, newest first, with the outcome and
   detail. When a printer will not install or a join fails, the reason is

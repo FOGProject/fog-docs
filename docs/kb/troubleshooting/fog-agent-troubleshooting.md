@@ -70,6 +70,10 @@ each. Two are worth pausing on:
   and one by a shared USB NIC. Merge or delete one, then the agent's next
   attempt matches cleanly. [[host-identity|Host Identity]] explains how FOG
   matches firmware identity.
+- `seat-removed`: an admin removed this agent's seat on the host page. A
+  token does not approve it. Approve it on Pending Agents to let this key
+  back in, or deny it. See
+  [[management/web/fog-agent#Removing an agent seat|Removing an agent seat]].
 
 **"denied by the server; retrying hourly".** An admin denied this key. The
 agent will never be approved with that key. Stop the service, delete the
@@ -270,7 +274,8 @@ list right after the OS you care about checks in.
 **General → Agent Seats**. A second seat means another machine with the
 same firmware identity enrolled as a new OS, for example a cloned virtual
 machine that kept the original's system UUID. Give the clone a new system
-UUID before its agent enrolls, so it registers as its own host.
+UUID, then remove its seat with **Remove** on that line. See
+[[management/web/fog-agent#Removing an agent seat|Removing an agent seat]].
 
 ## Two agents on one machine
 
