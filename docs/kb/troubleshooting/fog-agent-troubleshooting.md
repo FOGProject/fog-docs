@@ -233,11 +233,18 @@ poll that carried it. A server upgraded from 1.6.0 or 1.6.0.14 never got the
 report again, so every workgroup PC stayed blocked. Fixed on `dev-branch`
 (fogproject#2142): the server reads the report it stored. The fix reaches
 `stable` with the next stable release. Until then, run this in the `fog`
-database to make each agent send the report again on its next poll:
+database. It sets the workgroup flag on every host that the server has stored
+as an unjoined workgroup PC:
 
 ```sql
-DELETE FROM hostFactState WHERE hfsKind = 'directory';
+UPDATE hostDirectory
+SET hdRejoinState = JSON_MERGE_PATCH(hdRejoinState, '{"workgroup":true}')
+WHERE hdJoined = 0 AND hdKind = 'workgroup' AND hdRejoinState IS NOT NULL;
 ```
+
+The PC joins at its next agent poll. A PC that is already in a domain is not
+affected, because the join also requires that the PC reports no domain. If a
+PC deployed later shows the same line, run the statement again.
 
 **Task reboot: "the firmware lists no network boot entry to arm".** The
 machine's UEFI has a boot manager with no network boot option, usually
