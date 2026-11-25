@@ -89,6 +89,8 @@ FOS tries the address families in this order:
 - On any other boot: IPv4 first, as before, then IPv6.
 - When both fail, FOS shows the network error and reboots.
 
+An attempt succeeds only when FOS reaches the FOG web server at the `web=` address on its boot line. So the second family can help only if that address works over it. Set the FOG server address to a DNS name with an A record and an AAAA record. With an IPv4 address such as `10.0.0.5`, the IPv6 attempt cannot reach the server. It only adds a wait before the same network error.
+
 FOS keeps IPv6 off until an IPv6 attempt turns it on for one network card. So a boot that IPv4 serves takes no IPv6 address.
 
 An IPv6 attempt asks for a DHCPv6 lease first. With no lease, it waits for a SLAAC address from the router advertisement. Either address is enough.
