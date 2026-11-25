@@ -133,6 +133,19 @@ installed on the host. Install Flatpak or `snapd`. The agent checks again at
 every poll and converges after that. See
 [[software#Flatpak (Linux)|Flatpak]] and [[software#Snap (Linux)|Snap]].
 
+**Software: WinGet entries are `cannot_run` with "winget is not installed".**
+App Installer is not on the host, which is common on Windows Server and
+LTSC editions. Install App Installer in the image. The agent checks again at
+every poll. See [[software#WinGet (Windows)|WinGet]].
+
+**Software: a WinGet entry is `cannot_run` with "this agent has no winget
+backend".** The host runs fog-agent 0.1.28 or earlier. Update the agent to
+0.1.29 or later.
+
+**Software: a WinGet entry is `cannot_run` with "winget cannot use the
+msstore source from the service".** The entry's Source is `msstore`. The
+Microsoft Store source does not work under SYSTEM. Use the `winget` source.
+
 **Software: Snap reports "cannot communicate with server".** The `snapd`
 socket is not running. Run `sudo systemctl enable --now snapd.socket`.
 
