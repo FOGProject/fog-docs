@@ -81,10 +81,22 @@ A server with no IPv6 address gets the same configuration as before. It gets no 
 
 ## FOS
 
-The boot menu adds `ipv6boot=1` to the FOS kernel arguments. It does this when the client reached the FOG server over IPv6. FOS then brings up IPv6.
+The boot menu adds `ipv6boot=1` to the FOS kernel arguments. It does this when the client reached the FOG server over IPv6.
+
+FOS tries the address families in this order:
+
+- With `ipv6boot=1`: IPv6 first, then IPv4.
+- On any other boot: IPv4 first, as before, then IPv6.
+- When both fail, FOS shows the network error and reboots.
+
+FOS keeps IPv6 off until an IPv6 attempt turns it on for one network card. So a boot that IPv4 serves takes no IPv6 address.
+
+An IPv6 attempt asks for a DHCPv6 lease first. With no lease, it waits for a SLAAC address from the router advertisement. Either address is enough.
+
+FOS mounts the image share over NFS on IPv6 when the storage node address is IPv6. The installer exports the share to all addresses, so IPv6 clients need no change. If you edit the exports file by hand, allow the clients' IPv6 prefix.
 
 >[!warning] Needs a FOS release with IPv6 support
->The FOS support is pending. Until a FOS release has it, the client boots iPXE over IPv6, and FOS does not use IPv6.
+>An older FOS has no IPv6. Then the client boots iPXE over IPv6, but FOS needs IPv4 to reach the server. The support is in FOGProject/fos#208.
 
 ## Not supported yet
 
