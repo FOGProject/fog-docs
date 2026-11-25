@@ -44,7 +44,7 @@ This listing is for informational purposes only, as the required
 components will be automatically downloaded and installed by the FOG
 installation script:
 
--   PHP 5/7
+-   PHP 7.4 or later
 -   MySql 5+/MariaDB 10+,
 -   Apache 2+,
 -   DHCP (pretty much any!)
