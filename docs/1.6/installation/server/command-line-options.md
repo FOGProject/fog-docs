@@ -231,6 +231,9 @@ Usage: ./installfog.sh [-h?odEUHSCKYyXTFl] [-f <filename>] [-N <databasename>]
         -e    --endrange                DHCP End range
         -E    --no-exportbuild          Skip building nfs file
         -X    --exitFail                Do not exit if item fails
+              --skip-php-check          Continue when installed PHP is below
+                                                FOG's minimum, or has no PHP-FPM of
+                                                the same version. FOG will not run.
         -T    --no-tftpbuild            Do not rebuild the tftpd config file
         -F    --no-vhost                Do not touch the vhost file at all. FOG
                                                 normally rewrites only the region between its
@@ -487,6 +490,39 @@ the web server cannot read it — see
 [[1.6/kb/how-tos/secure-boot-signing|Secure Boot: signing FOS with your own key]] for the
 full procedure and for what to do on each client, and
 [[1.6/kb/reference/pki-zones|FOG PKI Infrastructure]] for the layout.
+
+## PHP version check
+
+The installer checks PHP after it installs the packages. It does this before
+it copies any FOG file or changes the database. FOG needs PHP 7.4 or later.
+The installer reads this minimum from the FOG code that it installs.
+
+The check stops the installer in these cases:
+
+| What the installer finds | What it prints |
+| --- | --- |
+| The PHP CLI is below the minimum | `PHP CLI is 7.3. FOG needs PHP 7.4 or later.` |
+| No PHP-FPM has the same version as the PHP CLI | `PHP CLI is 8.5, but no PHP-FPM 8.5 is installed.` |
+
+The web UI runs on PHP-FPM. The FOG services and the installer run on the
+PHP CLI. A third-party repository can install two different versions, for
+example a CLI of 8.5 and an FPM of 8.4. Then an extension can land on a PHP
+that nothing runs.
+
+Your existing install is not changed when the check stops. Install a
+supported PHP, then run the installer again.
+
+| Option | What it does |
+| --- | --- |
+| `--skip-php-check` | Continue after a failed PHP check. The web UI will not work until PHP is fixed. Applies to this run only; it is not saved in `.fogsettings`. `-X` (`--exitFail`) also continues past it |
+
+The installer also checks that PHP loads the extensions FOG calls: `curl`,
+`ftp`, `gettext`, `json`, `mbstring`, `openssl` and `pdo_mysql`, plus `pcntl`
+and `posix` for the CLI. A missing extension prints a warning and does not
+stop the installer. Arch skips this check, because the installer enables
+Arch's extensions later in the run.
+
+>[!info] Applies to FOG 1.6 and later.
 
 ## Kernel backups
 
