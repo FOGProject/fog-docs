@@ -61,7 +61,7 @@ Only a client that reaches FOG by a literal IPv6 address needs the addresses in 
 
 The installer re-issues the Web CA. It keeps the same root and the same key. The installer keeps the old certificate as `.fogWebCA.pem.<timestamp>`. The installer does not save the option. Add it to each run that must re-issue the CA.
 
-iPXE trusts the Web CA certificate itself. So the re-issue changes what iPXE must trust. Do these steps:
+The stock iPXE does not trust the Web CA, so most servers need nothing more. An iPXE built with `--rebuild-ipxe-with-my-ca` trusts the Web CA certificate itself. So on such a server, the re-issue changes what iPXE must trust. Do these steps:
 
 - Rebuild any USB or ESP boot media that you made from an older kit.
 - Re-run the installer on each storage node that builds its own iPXE.
