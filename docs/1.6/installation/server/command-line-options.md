@@ -88,6 +88,7 @@ them can be given on its own.
 | `--no-force-https`, `--no-https-redirect` | Serve both HTTP and HTTPS without redirecting. This is the default |
 | `--boot-delay <0-120>` | Seconds a client waits before its first DHCP attempt, for switches slow to come out of STP or port power-save. `0` writes no delay. Any non-zero value gives BIOS clients exactly ten seconds, because that is the only pre-built BIOS binary |
 | `--uefi-bootfile <snponly\|ipxe>` | The UEFI loader that FOG's DHCP config hands out. `snponly` (the default) uses the firmware's own NIC driver. `ipxe` uses iPXE's built-in drivers. Use `ipxe` when clients load iPXE but never get a link, or hang at the handoff to the FOS kernel. The signed chain and the per-architecture names do not change: 64-bit UEFI gets `secureboot/ipxe-shimx64.efi` instead of `secureboot/snponly-shimx64.efi`. Remembered in `.fogsettings`. See [[1.6/installation/network-setup/dhcp-server-settings\|DHCP server settings]] |
+| `--dhcp6-range <START,END>` | Writes the Kea DHCPv6 configuration, `/etc/kea/kea-dhcp6.conf`, for IPv6 network boot. The server needs an IPv6 address in the same /64 as the range. The installer remembers the range as `DHCP6_range_start` and `DHCP6_range_end` in `.fogsettings`. It opens 547/udp in the firewall. The configuration sends no DNS servers. Without this option, the installer writes no DHCPv6 file. FOG does not send router advertisements. See [[kb/how-tos/ipv6-network-boot\|Boot FOG over IPv6]] |
 | `--no-public-web-cert`, `--no-rebuild-ipxe-with-my-ca` | Undo the corresponding option |
 
 >[!important] `-S` no longer means what it used to
@@ -150,6 +151,10 @@ Usage: ./installfog.sh [-h?odEUHSCKYyXTFl] [-f <filename>] [-N <databasename>]
                                         firmware's NIC driver; ipxe uses iPXE's
                                         own, for firmware that hangs at the
                                         handoff to FOS. Kept across upgrades
+              --dhcp6-range            START,END: write the Kea DHCPv6 config for
+                                        IPv6 network boot. Needs a server IPv6
+                                        address in the same /64. Opens 547/udp.
+                                        Sends no DNS servers. Kept across upgrades
         -C    --recreate-CA             Recreate the CA Keys
                                                 Implies --recreate-keys below, and
                                                 re-anchors what fog-client pins
