@@ -3,7 +3,7 @@ title: Software Management
 aliases:
     - Software Management
     - Software
-description: Assign software to hosts and groups as desired state that the FOG Agent keeps installed, upgraded or absent through Chocolatey, Flatpak or Snap
+description: Assign software to hosts and groups as desired state that the FOG Agent keeps installed, upgraded or absent through Chocolatey, WinGet, Flatpak or Snap
 context_id: software
 tags:
     - 1_6-changes
@@ -13,6 +13,7 @@ tags:
     - agent
     - fog-agent
     - chocolatey
+    - winget
     - flatpak
     - snap
 ---
@@ -50,6 +51,7 @@ entry. The agent never chooses one for you.
 | Backend | OS | What Source means | Version policies |
 |---|---|---|---|
 | Chocolatey | Windows | The package feed or folder, passed as `--source` | Any, Latest, Pinned |
+| WinGet | Windows | The WinGet source name. Empty means `winget`. `msstore` is refused | Any, Latest, Pinned |
 | Flatpak | Linux | The Flatpak remote name. Empty means `flathub` | Any, Latest |
 | Snap | Linux | The snap channel. Empty means the default channel of the snap | Any, Latest |
 
@@ -62,15 +64,18 @@ with its own package manager. A backend that the host cannot run reports
 >every entry through Chocolatey, so the server sends them only their
 >Chocolatey entries. Update the agent on those hosts. See
 >[[agent-self-update|Agent Self-Update]].
+>
+>WinGet entries need fog-agent 0.1.29 or later. An agent from 0.1.22 to
+>0.1.28 reports a WinGet entry as `cannot_run` with "this agent has no
+>winget backend".
 
 ### Chocolatey (Windows)
 
-[Chocolatey](https://chocolatey.org/) is the Windows backend. The agent runs
-as SYSTEM under the Windows service, and Chocolatey is the Windows package
-manager built for exactly that: `winget` ships as an MSIX app that cannot be
-registered for the SYSTEM account, so it is not usable from a service.
-Chocolatey also accepts a folder or share as a package source, which is what
-an offline lab needs. Nothing else in the Software tables is
+[Chocolatey](https://chocolatey.org/) is a Windows backend. The agent runs
+as SYSTEM under the Windows service, and Chocolatey is built for exactly
+that. Chocolatey also accepts a folder or share as a package source, which
+is what an offline lab needs. For hosts with internet access, see also
+[[#WinGet (Windows)|WinGet]]. Nothing else in the Software tables is
 Chocolatey-specific except the package ids.
 
 The agent calls `%ProgramData%\chocolatey\bin\choco.exe` by full path, for
@@ -94,6 +99,73 @@ ways to get it there:
   Package Source** (`FOG_SOFTWARE_CHOCO_NUPKG_URL`) points the script at a
   `.nupkg` you host, for machines with no route to the community feed.
 - A snapin that runs the bootstrap script, as before.
+
+### WinGet (Windows)
+
+>[!info] fog-agent 0.1.29 and later
+
+[WinGet](https://learn.microsoft.com/windows/package-manager/winget/) is the
+package manager that ships with Windows 10 1809 and later, as part of App
+Installer. The agent runs WinGet as SYSTEM, so it installs for the whole
+machine only (`--scope machine`). It never installs per-user packages.
+
+WinGet ships as an MSIX app, so it is not on the `PATH` of the service.
+The agent finds `winget.exe` under
+`C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_*\` at every
+run, and uses the newest folder. An App Installer update moves that folder,
+and the next run finds the new one. Microsoft does not formally support
+WinGet under SYSTEM. The agent works with the parts that do work there: the
+`winget` source and machine-scope packages.
+
+For each entry, the agent runs these commands:
+
+| Action | Command |
+|---|---|
+| List | `winget export -o <file> --include-versions --accept-source-agreements --disable-interactivity` |
+| Install | `winget install --id <package> --exact --source <source or winget> --scope machine --silent --accept-package-agreements --accept-source-agreements --disable-interactivity [--version <pinned>] <extra arguments>` |
+| Upgrade | `winget upgrade --id <package> --exact --source <source or winget> --scope machine --silent --accept-package-agreements --accept-source-agreements --disable-interactivity <extra arguments>` |
+| Remove | `winget uninstall --id <package> --exact --source <source or winget> --scope machine --silent --accept-source-agreements --disable-interactivity` |
+
+**Package** is the WinGet package identifier, for example `7zip.7zip` or
+`Mozilla.Firefox`. Find it with `winget search <name>`. **Source** is a
+WinGet source name. An empty Source means `winget`, the community
+repository. A private REST source that you added on the host also works.
+
+**The `msstore` source is refused.** The Microsoft Store source does not work
+under SYSTEM. The agent reports an entry with Source `msstore` as
+`cannot_run` and runs nothing.
+
+WinGet supports all three version policies:
+
+- **Latest**: when no newer version exists, WinGet says "No available
+  upgrade found". The agent reports that as converged, not as a failure.
+- **Pinned**: WinGet does not downgrade a package. When a newer version is
+  installed, the agent uninstalls it and then installs the pinned version.
+- WinGet reports some versions with extra zero parts, for example
+  `26.02.00.0` for 7-Zip 26.02. The agent treats those as the same version,
+  so a pin to `26.02` converges.
+
+**WinGet has to be on the host.** Windows 10 1809 and later and Windows 11
+include it through App Installer. A host without it reports `cannot_run`,
+and the agent checks again at every poll. Windows Server and LTSC editions
+can lack App Installer. Install it in the image.
+
+**Exclusive does not remove WinGet packages.** The WinGet list includes
+Windows components, such as App Installer itself. The agent cannot tell
+which of those FOG may remove. See
+[[#Software management level|Software management level]].
+
+#### Doing it by hand
+
+These commands give the same result without FOG. Run them from an elevated
+prompt.
+
+```bat
+winget install --id 7zip.7zip --exact --source winget --scope machine --silent --accept-package-agreements --accept-source-agreements
+winget upgrade --id 7zip.7zip --exact --source winget --scope machine --silent --accept-package-agreements --accept-source-agreements
+winget uninstall --id 7zip.7zip --exact --source winget --scope machine --silent
+winget export -o installed.json --include-versions
+```
 
 ### Flatpak (Linux)
 
@@ -216,8 +288,8 @@ snap list
 
 ### What the agent does not do
 
-- The agent does not install Flatpak or `snapd`, and it does not add
-  remotes. A host without the tool reports `cannot_run` and gives the reason.
+- The agent does not install Flatpak, `snapd` or WinGet, and it does not add
+  remotes or sources. A host without the tool reports `cannot_run` and gives the reason.
   The agent checks again at every poll, so the entry converges soon after you
   install the tool. Only Chocolatey has an optional bootstrap.
 - The agent does not run a backend on the wrong OS. A Flatpak entry on a
@@ -336,7 +408,7 @@ member.
 | Level | What the agent does |
 |---|---|
 | **Assigned** (default) | It installs and uninstalls only the entries the host gets. A package FOG never assigned is left alone |
-| **Exclusive** | It also uninstalls every package its backends (Chocolatey, Flatpak, Snap) installed that the host does not get |
+| **Exclusive** | It also uninstalls every package its backends (Chocolatey, Flatpak, Snap) installed that the host does not get. WinGet packages are never removed this way |
 
 Exclusive never touches software outside the backends. Programs that the
 Windows registry or `dpkg` lists stay. The agent also keeps:
