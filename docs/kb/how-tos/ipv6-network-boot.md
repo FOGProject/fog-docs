@@ -47,13 +47,19 @@ A literal IPv6 address also works. The name is recommended. It survives an addre
 
 ## The web certificate
 
-The installer adds the IPv6 addresses of the server to the web certificate. These are the global and ULA addresses of the interface.
+A new install creates the FOG Web CA with IPv6 coverage. The installer adds the IPv6 addresses of the server to the web certificate. These are the global and ULA addresses of the interface.
 
 The FOG Web CA permits the /64 of each server address. An address change inside one /64 needs no new CA.
 
 ## Upgrading a server that gains IPv6
 
-The installer re-issues the Web CA once. It keeps the same root and the same key. The installer keeps the old certificate as `.fogWebCA.pem.<timestamp>`.
+By default, an upgrade leaves the Web CA alone. The IPv6 addresses that the CA does not cover stay off the web certificate. The installer prints a message about this.
+
+Boot by DNS name works without those addresses. This is the recommended way. See [[#Name the FOG server in DNS]].
+
+Only a client that reaches FOG by a literal IPv6 address needs the addresses in the certificate. To add them, run the installer once with `--reissue-web-ca`. See [[1.6/installation/server/command-line-options|Fog installer command line options]].
+
+The installer re-issues the Web CA. It keeps the same root and the same key. The installer keeps the old certificate as `.fogWebCA.pem.<timestamp>`. The installer does not save the option. Add it to each run that must re-issue the CA.
 
 iPXE trusts the Web CA certificate itself. So the re-issue changes what iPXE must trust. Do these steps:
 
@@ -62,7 +68,9 @@ iPXE trusts the Web CA certificate itself. So the re-issue changes what iPXE mus
 
 The installer rebuilds the iPXE of the server in the same run.
 
-The root CA key can be offline. Then the installer cannot re-issue the CA. It leaves the IPv6 addresses that the CA does not cover off the certificate. It prints a message. The certificate still verifies. Restore the key and run the installer again to add the addresses.
+The root CA key can be offline. Then the installer cannot re-issue the CA. It prints a message. The certificate still verifies. Restore the key first, and run the installer again with `--reissue-web-ca`.
+
+The installer never re-issues a CA that an admin supplied. With the option, it prints a message.
 
 A server with no IPv6 address gets the same configuration as before. It gets no re-issue and no iPXE rebuild.
 
