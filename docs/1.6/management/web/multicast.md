@@ -139,6 +139,41 @@ sender — and each site images at local network speed.
 >of this page. Keep multicast within the site holding the master and use
 >unicast elsewhere until you upgrade.
 
+## Multicast over IPv6
+
+>[!info] FOG 1.6 and later
+>This section applies to FOG 1.6 and later. It needs a FOS release that includes IPv6 multicast (FOGProject/fos#210).
+
+FOG runs an IPv6 multicast session when the IP Address of the storage node is an IPv6 literal, for example `fd00:f06:0:1::1`. A node that you enter by host name stays IPv4. Upper case, lower case, and brackets are all accepted. FOG compares the canonical form of the address.
+
+The session works the same way as an IPv4 session. It waits for the hosts in the task, as set by the session waiting time and the maximum wait. It drops a host that stops answering. It starts on the same signals. There is no new setting.
+
+### Requirements
+
+- The server needs the udpcast that the installer builds from this release. Run the installer again to upgrade.
+- The clients need the matching FOS init. Use **Kernel Update** to get it.
+- All hosts in a session use the family of the storage node. A session with mixed families is not supported.
+
+### Multicast addresses
+
+FOG uses `FOG_MULTICAST_ADDRESS` and `FOG_MULTICAST_RENDEZVOUS` only when their family matches the session. On an IPv6 session, FOG ignores an IPv4 value and logs it. On an IPv4 session, FOG ignores an IPv6 value and logs it. To use the defaults, set `FOG_MULTICAST_ADDRESS` to `0` and leave `FOG_MULTICAST_RENDEZVOUS` empty. These are the values after an install.
+
+| Address | IPv6 default |
+| --- | --- |
+| Rendezvous | `ff02::1` (all nodes, link local) |
+| Data group | `ff15::7564:0:<low 32 bits of the server address>` |
+
+FOG adds the offset of the task to the low 32 bits of an IPv6 multicast address. It does the same for an IPv4 one.
+
+### Network
+
+- The clients must be on the same layer 2 segment as the storage node. Otherwise the network must route the multicast groups (PIM). The rendezvous address `ff02::1` is link local.
+- Enable MLD snooping on the switches. MLD snooping is the IPv6 counterpart of IGMP snooping. Without it, the stream floods every port.
+- On IPv6, udpcast sends blocks of 1436 bytes by default. On IPv4 it sends 1456 bytes. An IPv6 packet then fits a 1500-byte MTU with no fragmentation.
+- Open the multicast UDP port range for IPv6 in the firewall. The iptables summary of the installer now prints an ip6tables line for it. The ufw and firewalld rules already cover both families.
+
+See also [[kb/how-tos/ipv6-network-boot|Boot FOG over IPv6]].
+
 ## Settings
 
 All of these live under **FOG Configuration → FOG
