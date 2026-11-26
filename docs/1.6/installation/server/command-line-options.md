@@ -155,7 +155,11 @@ Usage: ./installfog.sh [-h?odEUHSCKYyXTFl] [-f <filename>] [-N <databasename>]
               --dhcp6-range            START,END: write the Kea DHCPv6 config for
                                         IPv6 network boot. Needs a server IPv6
                                         address in the same /64. Opens 547/udp.
-                                        Sends no DNS servers. Kept across upgrades
+                                        Sends DNS servers only with --dhcp6-dns.
+                                        Kept across upgrades
+              --dhcp6-dns              ADDR[,ADDR...]: IPv6 DNS servers that
+                                        DHCPv6 clients receive (option 23).
+                                        Needs --dhcp6-range. Kept across upgrades
               --reissue-web-ca          Re-issue the FOG Web CA so it covers this
                                         server's IPv6 addresses. Needed only
                                         for clients that reach this server by

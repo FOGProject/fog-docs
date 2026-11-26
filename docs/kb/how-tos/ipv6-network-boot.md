@@ -37,7 +37,9 @@ You have two choices for DHCPv6.
 - Use FOG's own server. Pass `--dhcp6-range START,END` to the installer. See [[1.6/installation/server/command-line-options|Fog installer command line options]].
 - Use the DHCPv6 server of your site. Configure it to send option 59.
 
-The `--dhcp6-range` option writes `/etc/kea/kea-dhcp6.conf`. The server needs an IPv6 address in the same /64 as the range. The installer opens 547/udp. The configuration sends no DNS servers.
+The `--dhcp6-range` option writes `/etc/kea/kea-dhcp6.conf`. The server needs an IPv6 address in the same /64 as the range. The installer opens 547/udp.
+
+By default the configuration sends no DNS servers. An IPv6-only client then cannot look up a server name. Add `--dhcp6-dns` with one or more IPv6 DNS server addresses, for example `--dhcp6-dns fd00::53,fd00::54`. The installer adds them as DHCPv6 option 23. The installer keeps the value across upgrades.
 
 ## Name the FOG server in DNS
 
