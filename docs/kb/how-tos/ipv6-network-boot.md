@@ -81,6 +81,20 @@ A server with no IPv6 address gets the same configuration as before. It gets no 
 - nginx listens on IPv6 on ports 80 and 443.
 - vsftpd listens on IPv6 only when `net.ipv6.bindv6only` is `0`.
 
+## How default.ipxe picks the family
+
+On a dual-stack network, a client keeps the family that its firmware used for the PXE boot.
+
+- **PXE over IPv4:** iPXE runs `autoexec.ipxe`, which asks only DHCPv4. `default.ipxe` then chains to boot.php at the server's IPv4 address.
+- **PXE over IPv6:** iPXE does not run `autoexec.ipxe` after a PXEv6 boot. It configures IPv4 and IPv6 itself, and gets a DHCPv6 reply. `default.ipxe` sees that reply and chains to boot.php at the server's IPv6 address.
+- **IPv6-only network:** the same as PXE over IPv6.
+
+`default.ipxe` tries the other family when the first one fails. HTTPS netboot uses the server's host name, so DNS picks the family there.
+
+To boot over IPv6 on a dual-stack network, select the UEFI PXE IPv6 entry in the firmware boot menu. Most firmware tries IPv4 first.
+
+This needs the installer from FOG 1.6 `dev-branch` after FOGProject/fogproject#2174. Run the installer again to rewrite `default.ipxe`.
+
 ## FOS
 
 The boot menu adds `ipv6boot=1` to the FOS kernel arguments. It does this when the client reached the FOG server over IPv6.

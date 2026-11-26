@@ -30,7 +30,13 @@ The installer wrote one chain line in `default.ipxe`, to the server's IPv4 addre
 
 ## Fix
 
-Run the installer again. When the server has an IPv6 address, `default.ipxe` now chains to the IPv4 address only if iPXE has an IPv4 address. Otherwise it chains to the IPv6 address. A server with no IPv6 address gets the same file as before.
+Run the installer again. When the server has an IPv6 address, `default.ipxe` picks the family for the client:
+
+- After a UEFI PXE boot over IPv6, or on an IPv6-only network, it chains to the IPv6 address first.
+- After a PXE boot over IPv4, it chains to the IPv4 address.
+- If the first address fails, it tries the other family.
+
+A server with no IPv6 address gets the same file as before. See [[kb/how-tos/ipv6-network-boot#How default.ipxe picks the family|How default.ipxe picks the family]].
 
 After `default.ipxe`, the boot menu uses `FOG_WEB_HOST` for the next steps. On an IPv6-only segment, set `FOG_WEB_HOST` to a name with an AAAA record, or to the IPv6 address.
 
