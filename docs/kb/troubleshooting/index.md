@@ -26,5 +26,6 @@ or github issues to report the problem and get help.
 - [[cron-schedule-runs-at-the-wrong-time|Cron Schedule Runs at the Wrong Time]] — FOG 1.6 and later
 - [[secure-boot-dhcp-ipv6-router-advertisement|Secure Boot Client Stops on the Wrong NIC or Waits for DHCP]] — FOG 1.6 and later
 - [[ipv6-storage-by-name-network-unreachable|IPv6 Client Cannot Mount Storage by Name — Network is unreachable]] — FOG 1.6 and later
+- [[ipv6-ipxe-cannot-reach-boot-php|IPv6-Only Client Stops After default.ipxe — Network unreachable]] — FOG 1.6 and later
 - [[service-could-not-open-input-file|Service Fails with "Could not open input file"]] — FOG 1.6 and later
 - [[certificate-helper-not-installed|FOG Installed Under a Restrictive umask]] — FOG 1.6 and later
