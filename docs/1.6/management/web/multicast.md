@@ -142,7 +142,7 @@ sender — and each site images at local network speed.
 ## Multicast over IPv6
 
 >[!info] FOG 1.6 and later
->This section applies to FOG 1.6 and later. It needs a FOS init that includes IPv6 multicast. TODO-FOS-PR: a FOS release that includes IPv6 multicast (FOGProject/fos#<to be filled>).
+>This section applies to FOG 1.6 and later. It needs a FOS release that includes IPv6 multicast (FOGProject/fos#210).
 
 FOG runs an IPv6 multicast session when the IP Address of the storage node is an IPv6 literal, for example `fd00:f06:0:1::1`. A node that you enter by host name stays IPv4. Upper case, lower case, and brackets are all accepted. FOG compares the canonical form of the address.
 
@@ -156,7 +156,7 @@ The session works the same way as an IPv4 session. It waits for the hosts in the
 
 ### Multicast addresses
 
-FOG uses `FOG_MULTICAST_ADDRESS` and `FOG_MULTICAST_RENDEZVOUS` only when their family matches the session. On an IPv6 session, FOG ignores an IPv4 value and logs it. On an IPv4 session, FOG ignores an IPv6 value and logs it. Leave both settings empty to use the defaults.
+FOG uses `FOG_MULTICAST_ADDRESS` and `FOG_MULTICAST_RENDEZVOUS` only when their family matches the session. On an IPv6 session, FOG ignores an IPv4 value and logs it. On an IPv4 session, FOG ignores an IPv6 value and logs it. To use the defaults, set `FOG_MULTICAST_ADDRESS` to `0` and leave `FOG_MULTICAST_RENDEZVOUS` empty. These are the values after an install.
 
 | Address | IPv6 default |
 | --- | --- |
