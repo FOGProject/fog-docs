@@ -25,3 +25,4 @@ or github issues to report the problem and get help.
 - [[software-installs-and-uninstalls-repeatedly|Software Installs and Uninstalls on Every Check]] — FOG 1.6 and later
 - [[cron-schedule-runs-at-the-wrong-time|Cron Schedule Runs at the Wrong Time]] — FOG 1.6 and later
 - [[secure-boot-dhcp-ipv6-router-advertisement|Secure Boot Client Stops on the Wrong NIC or Waits for DHCP]] — FOG 1.6 and later
+- [[service-could-not-open-input-file|Service Fails with "Could not open input file"]] — FOG 1.6 and later
