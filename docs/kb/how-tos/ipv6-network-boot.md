@@ -102,7 +102,10 @@ FOS mounts the image share over NFS on IPv6 when the storage node address is IPv
 >[!warning] Needs a FOS release with IPv6 support
 >An older FOS has no IPv6. Then the client boots iPXE over IPv6, but FOS needs IPv4 to reach the server. The support is in FOGProject/fos#208.
 
+## Multicast
+
+Multicast over IPv6 works when the storage node IP Address is an IPv6 literal. See [[1.6/management/web/multicast#Multicast over IPv6|Multicast over IPv6]].
+
 ## Not supported yet
 
-- Multicast over IPv6.
 - Legacy BIOS PXE over IPv6.
