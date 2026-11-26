@@ -53,3 +53,5 @@ systemctl restart FOGAgentReleaseSync FOGPluginRunner FOGRetentionRunner
 ```
 
 Run them again after each installer run, until you update to a version with the fix.
+
+The same umask causes other failures too. To fix all of them at once, see [[certificate-helper-not-installed|FOG Installed Under a Restrictive umask]].
