@@ -37,6 +37,76 @@ lines — it is not something that distinguishes them.)
 These are documented in full, with their upgrade implications, on the
 [Multicast Sessions](multicast.md) page.
 
+## Email Settings
+
+FOG can send an email when an image task completes. The settings are in:
+
+> FOG Configuration → FOG Settings → FOG Email Settings
+
+| Setting | What it does |
+| --- | --- |
+| `FOG_EMAIL_ACTION` | Turns the image task completion email on or off. |
+| `FOG_EMAIL_ADDRESS` | The recipients. Separate addresses with commas. `${user-name}` becomes the user who created the task, and `${server-name}` becomes the storage node name. |
+| `FOG_FROM_EMAIL` | The address on the From line. `${server-name}` becomes the storage node name. If it is empty, FOG uses `noreply@fogserver.com`. |
+
+### Mail command
+
+The **Mail command** row shows the command that PHP uses to send all FOG
+email. It is `sendmail_path` in the `php.ini` that PHP-FPM reads, for example
+`/usr/sbin/sendmail -t -i`. The row is read-only, because PHP reads that value
+only at startup. To change it, edit `php.ini`, then restart PHP-FPM. A PHP-FPM
+pool file can also set it, with `php_admin_value[sendmail_path]`. A pool value
+overrides `php.ini`.
+
+If the command is not installed, the row shows a red message under the value.
+Install a mail server, such as postfix, or point `sendmail_path` at a command
+that is installed.
+
+>[!note] FOG_EMAIL_BINARY is removed
+>Older builds had a `FOG_EMAIL_BINARY` setting. It never had an effect: PHP
+>always used `sendmail_path`. The schema update removes the setting, and the
+>**Mail command** row replaces it.
+
+### Bounce address
+
+Each email also has a hidden bounce address (the envelope sender). The mail
+server sends failure notices to it, and some relays use it to accept or
+refuse a message. FOG does not set it, so it is the mail command's default:
+usually the web server account, for example `apache@yourserver`.
+
+To use a different bounce address, add `-f` to `sendmail_path`, then restart
+PHP-FPM:
+
+```ini
+sendmail_path = /usr/sbin/sendmail -t -i -f fog@example.com
+```
+
+### Send a test email
+
+Under the email settings, **Send a test email to** sends one message through
+the same path as the image task completion email. Type one or more addresses,
+separated by commas, then click **Send test email**. The form shows only to a
+user with the `settings.edit` permission. Each send writes an `email.test` row
+to the audit log.
+
+| Result | Meaning |
+| --- | --- |
+| **Test Email Sent** | The local mail server accepted the message. This does not mean it was delivered. Check the inbox. If the message does not arrive, read the mail server log, for example `journalctl -u postfix`. |
+| **Test Email Queued, Not Sent** | The mail command is postfix, exim or sendmail, and it accepted the message, but nothing listens on port 25 on this server. The mail server is probably stopped, so the message waits in the queue. Start it, for example `systemctl enable --now postfix`. The same warning shows under **Mail command**. |
+| **The mail command ... is not installed or is not executable** | `sendmail_path` names a command that is not there. See [[#Mail command]]. |
+| **The mail command refused the email.** | The command ran and failed. The text after it is PHP's reason. |
+
+>[!warning] The test From can differ from the real From
+>Both emails leave from the main FOG server, because every client reports
+>its task to that server. But `${server-name}` in `FOG_FROM_EMAIL` fills in
+>differently. A real image task email uses the name of the storage node that
+>served the task, for example `noreply@node1.com`. The test has no task, so
+>it uses `fogserver`, for example `noreply@fogserver.com`. A relay can accept
+>one and refuse the other. To make the two the same, set `FOG_FROM_EMAIL` to
+>a fixed address on your own domain, such as `fog@example.com`.
+
+For more help, see [[kb/troubleshooting/troubleshoot-email|Troubleshooting email]].
+
 ## Other Settings
 
 ## Table display mode (infinite scroll vs. paging)
