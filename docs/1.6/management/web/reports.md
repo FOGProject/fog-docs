@@ -163,29 +163,28 @@ that order.
 
 ### Unregistered machines in the Imaging Report
 
->[!info] Applies to the FOG 1.6 release after 1.6.0.158
+>[!info] Applies to FOG 1.6.1 and later
 >Earlier releases log no deploy to an unregistered machine.
 
 You can deploy an image to a machine that is not registered. Select
 **Deploy Image** or **Join Multicast Session** in the FOG boot menu, then
-sign in. The Imaging Report records each of these runs.
+sign in. FOG creates a real task for the run. The Imaging Report records
+it like the run of a registered host.
 
 -   **Host** shows the MAC address that the machine booted with, followed
     by *(unregistered)*. A machine that is registered but still pending
-    shows its host name.
+    is treated the same way.
 -   **By** shows the FOG user who signed in at the boot menu.
--   **State** shows *Started (unregistered)*, and **Finished** stays
-    empty.
+-   **State** shows the progress of the run and ends at *Complete* or
+    *Failed*. **Finished** shows the time the run ended.
 
-FOG creates no task for an unregistered machine. So the machine never
-reports back to the server, and FOG cannot know when the run finished or
-whether it failed. The row records that the deploy started, who started
-it, and which image it used. *Machines imaged* counts each MAC address as
-one machine.
+*Machines imaged* counts each MAC address as one machine.
 
-To get the full history of a run, register the machine before you deploy
-to it. A registered machine has a task, and its run shows each state
-through to *Complete* or *Failed*.
+A machine that runs an older FOS than the 1.6.1 release cannot report back.
+The run still shows in the report. After 24 hours the state changes to
+*No Report*. This state means that FOS sent no report within 24 hours. The
+imaging can have worked. Update FOS to get the full record. See
+[[management/web/tasks#Deploys to unregistered machines|Deploys to unregistered machines]].
 
 ## Exporting
 

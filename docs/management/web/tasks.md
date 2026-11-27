@@ -80,6 +80,23 @@ To capture anyway, tick **Cancel queued snapins first** on the Capture task. FOG
 
 A task that any check refuses cancels nothing. The queued snapins stay queued.
 
+### Deploys to unregistered machines
+
+>[!info] FOG 1.6.1 and later
+>This section applies to FOG 1.6.1 and later. Earlier versions create no task for a machine that is not registered.
+
+A machine that is not registered can pick **Deploy Image** or **Join Multicast Session** in the iPXE boot menu. FOG now creates a real task for the run. The task has no host.
+
+-   The task shows in **Active Tasks** and in the Imaging Report as `<MAC> (unregistered)`. It shows full progress. It ends *Complete* or *Failed*.
+-   The FOG user who signed in at the boot menu is the creator of the task.
+-   The task respects the **Max Clients** limit of the storage node. At the limit, the task waits in the queue like the task of a registered host.
+-   A host that is registered but still pending is treated as unregistered for this. It images and reports.
+-   FOG sends the notification events for image complete and image failed for these runs. The host name in the event is `<MAC> (unregistered)`.
+
+An init (FOS) older than the 1.6.1 release cannot report for these tasks. The run still shows in Active Tasks. After 24 hours, FOG moves the task to the state *No Report*. The reason is "FOS sent no report within 24 hours". *No Report* does not mean that the imaging failed. It means that FOS did not report. To fix this, update FOS. The installer pulls the latest FOS release.
+
+To refuse imaging for machines that are not registered, see [[1.6/management/fos/using-fog-boot-menu#Requiring registration before imaging|Requiring registration before imaging]]. For the report view, see [[1.6/management/web/reports#Unregistered machines in the Imaging Report|Unregistered machines in the Imaging Report]].
+
 ## Advanced Tasks
 
 The advanced Tasks in FOG include everything that is not a simple capture, simple deploy or mutlicast deploy.

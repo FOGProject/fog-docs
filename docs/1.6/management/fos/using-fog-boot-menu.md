@@ -76,8 +76,16 @@ entries and background on top of the built-in commands below.
 >     system ID, image ID, Primary User of the computer, asset tag 1,
 >     and asset tag 2.
 > -   If a valid hostname, os id, and image id are given and the option
->     is selected to image the workstation after registration, the host
->     will reboot and an imaging send will began.
+>     is selected to image the workstation after registration, the
+>     imaging send begins.
+>
+>     :   -   **FOG 1.6.1 and later:** the deploy starts in the same FOS
+>             boot, with no reboot. This needs the 1.6.1 FOS release. It
+>             applies when the host and the image use the running
+>             kernel, init, and kernel arguments, and FOS wrote no Secure
+>             Boot key. In any other case, the host reboots and then
+>             starts the deploy.
+>         -   Earlier versions always reboot first.
 > -   If a host is already registered, then only an inventory will be
 >     performed, this prevents end-users from re-registering a machine
 >     with a different hostname, etc.
@@ -110,6 +118,42 @@ entries and background on top of the built-in commands below.
 >
 >             :   -   The image id will be in the Address/url bar in the
 >                     format of `&imageid=xx`.
+
+### Deploy Image and Join Multicast Session
+
+> -   A machine that is not registered can pick **Deploy Image** or
+>     **Join Multicast Session** after it signs in at the menu.
+>
+> -   **FOG 1.6.1 and later:** FOG creates a real task for the run, with
+>     no host. The run shows in Active Tasks and in the Imaging Report
+>     as `<MAC> (unregistered)`. See
+>     [[management/web/tasks#Deploys to unregistered machines|Deploys to unregistered machines]].
+>     Earlier versions leave no record of the run.
+
+#### Requiring registration before imaging
+
+> -   **FOG 1.6.1 and later:** the **Menu Show with** setting of an
+>     iPXE menu item controls who can use **Deploy Image** and **Join
+>     Multicast Session**. The server enforces this setting. It does not
+>     only hide the item.
+>
+> -   Set both items to **Registered Hosts**. A host that is
+>     unregistered or pending is then refused with this message:
+>
+>     ```
+>     This host must be registered before it can be imaged.
+>     ```
+>
+> -   The refusal also applies when the host sends the menu URL by hand.
+>     FOG creates no task.
+>
+> -   A new install ships both items as **All Hosts**. Nothing changes
+>     until an administrator changes the setting.
+>
+> -   A deleted menu item counts as hidden.
+>
+> -   Earlier versions only hid the item. A host that sent the menu URL
+>     by hand could still start the task.
 
 ### Enroll Secure Boot Key
 
