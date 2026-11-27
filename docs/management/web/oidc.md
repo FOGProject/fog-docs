@@ -514,7 +514,7 @@ administrator made keeps whatever API setting it already had.
 | What you see | Usually means |
 |---|---|
 | *No FOG account exists for `name`* | The account has not been created, and **Create Users On First Login** is off. Either create it, or turn provisioning on. |
-| *The provider returned a configuration for a different issuer* | The **Issuer** field does not match what the discovery document says. Copy it from the provider exactly, with no trailing slash. |
+| *The provider returned a configuration for a different issuer* | The **Issuer** field does not match what the discovery document says. Copy it from the provider exactly, with a trailing slash only if the provider shows one. On plugins before `v1.6.32`, a provider whose issuer ends in a slash (Authentik) always fails. See [[oidc-issuer-trailing-slash\|OIDC Sign-in Fails — Configuration for a Different Issuer]]. |
 | *The ID token was issued to someone else* | Wrong **Client ID**, or the redirect URI registered at the provider belongs to a different application. |
 | *This identity is linked to a different FOG account* | The recorded subject and the username claim disagree. Somebody's username was probably reassigned; remove the stale identity link from the user. |
 | *The sign-in took too long; please start again* | More than ten minutes between clicking the button and coming back. |
