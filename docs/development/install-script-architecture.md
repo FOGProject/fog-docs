@@ -238,7 +238,7 @@ other functions in the library do.
 | `configureDefaultiPXEfile()` | *Internal.* Writes the iPXE boot script that chains to `service/ipxe/boot.php`. |
 | `configureNFS()` | Writes FOG's exports to the drop-in `/etc/exports.d/fog.exports` (unless `-E`/`--no-exportbuild`) and strips FOG's old entries from `/etc/exports` without rewriting the rest of it, mapping to the FOG user, and warns explicitly if an existing export still has `no_root_squash`. |
 | `configureFTP()` | Writes `vsftpd.conf`, adding `seccomp_sandbox=NO` on vsftpd ≥3.2. |
-| `configureUDPCast()` | Extracts the vendored UDPCast source and builds/installs it, with a Broadcom-CPU-specific `config.guess`/`config.sub` refresh. |
+| `configureUDPCast()` | Downloads the [FOGProject/udpcast](https://github.com/FOGProject/udpcast) release that `FOG_UDPCAST_VERSION` pins, checks its sha256, then builds and installs it, with a Broadcom-CPU-specific `config.guess`/`config.sub` refresh. FOS builds `udp-receiver` from the same release. For an offline install, place `udpcast-<version>.tar.gz` and its `.sha256` in `packages/`; a failed fetch stops the install. |
 
 ### Services & init scripts
 
