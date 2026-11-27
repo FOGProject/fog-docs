@@ -274,6 +274,6 @@ FOG cron schedules now follow the rules of standard cron. Some saved schedules r
 To keep the old days for a `*/2` day-of-month schedule, write the even days as a step from 2: `2-30/2`. To keep the old months for `*/3`, write `3-12/3`.
 
 >[!info] FOG 1.6 and later
->The behavior in this section is in FOG 1.6 dev-branch builds after 2026-11-23. It will ship in the next FOG 1.6 patch release after 1.6.0. See [[cron-schedule-runs-at-the-wrong-time|Cron Schedule Runs at the Wrong Time]] for the symptoms on earlier versions.
+>The behavior in this section is in FOG 1.6 dev-branch builds after 2026-11-23. It ships in FOG 1.6.1. See [[cron-schedule-runs-at-the-wrong-time|Cron Schedule Runs at the Wrong Time]] for the symptoms on earlier versions.
 
 For more information on cron, see [https://en.wikipedia.org/wiki/Cron](https://en.wikipedia.org/wiki/Cron).

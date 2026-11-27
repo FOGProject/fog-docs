@@ -126,7 +126,7 @@ Here's how you clone the FOG repository/code to your local machine:
 
 A plain clone gets you the `stable` branch — the default branch, and FOG's
 longer-term-tested line. **Since the 1.6.0 release, `stable` carries FOG
-1.6**, then the monthly 1.6.0.N releases. `dev-branch` carries the 1.6
+1.6**. It is now on 1.6.1, then the monthly 1.6.1.N releases. `dev-branch` carries the 1.6
 patches between those releases. 1.6 is a bigger jump than a point release,
 with a restructured PKI layout, Secure Boot support by default, and more.
 
@@ -218,7 +218,7 @@ The channels map to branches like this:
 
 | Channel | Branch | What it is |
 |---|---|---|
-| `stable` | `stable` | the last release: 1.6.0, then the monthly 1.6.0.N releases |
+| `stable` | `stable` | the last release: 1.6.1, then the monthly 1.6.1.N releases |
 | `patches` | `dev-branch` | the 1.6 patches line |
 | `beta` | the newest `working-*` | a development line, when one is open |
 | `rc` | the newest `rc-*` | the current release candidate, if one is published |

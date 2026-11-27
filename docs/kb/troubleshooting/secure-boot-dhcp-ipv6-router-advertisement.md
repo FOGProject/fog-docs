@@ -16,7 +16,7 @@ tags:
 # Secure Boot Client Stops on the Wrong NIC or Waits for DHCP
 
 >[!info] FOG 1.6 and later
->This affects clients that boot the upstream-signed iPXE binaries in `/tftpboot/secureboot/`. FOG 1.6 dev-branch builds after 2026-11-25 fix it (iPXE `v2.0.0-fog.10`). The fix ships in the next FOG 1.6 patch release after 1.6.0.
+>This affects clients that boot the upstream-signed iPXE binaries in `/tftpboot/secureboot/`. FOG 1.6 dev-branch builds after 2026-11-25 fix it (iPXE `v2.0.0-fog.10`). The fix ships in FOG 1.6.1.
 
 ## Symptom
 

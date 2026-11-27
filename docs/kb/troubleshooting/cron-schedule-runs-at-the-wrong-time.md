@@ -15,7 +15,7 @@ tags:
 # Cron Schedule Runs at the Wrong Time
 
 >[!info] FOG 1.6 and later
->The fix is in FOG 1.6 dev-branch builds after 2026-11-23. It will ship in the next FOG 1.6 patch release after 1.6.0.
+>The fix is in FOG 1.6 dev-branch builds after 2026-11-23. It ships in FOG 1.6.1.
 
 ## Symptom
 
