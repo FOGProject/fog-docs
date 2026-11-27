@@ -29,4 +29,5 @@ or github issues to report the problem and get help.
 - [[ipv6-ipxe-cannot-reach-boot-php|IPv6-Only Client Stops After default.ipxe — Network unreachable]] — FOG 1.6 and later
 - [[service-could-not-open-input-file|Service Fails with "Could not open input file"]] — FOG 1.6 and later
 - [[certificate-helper-not-installed|FOG Installed Under a Restrictive umask]] — FOG 1.6 and later
+- [[hostgetkey-refused-invalid-tasking|Host Key Refused — Could not get this host's key]] — FOG 1.6 and later
 - [[oidc-issuer-trailing-slash|OIDC Sign-in Fails — Configuration for a Different Issuer]] — FOG 1.6 and later
