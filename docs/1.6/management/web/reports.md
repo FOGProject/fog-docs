@@ -161,6 +161,32 @@ that order.
 >the Fleet Report counts them separately rather than bucketing them
 >together.
 
+### Unregistered machines in the Imaging Report
+
+>[!info] Applies to the FOG 1.6 release after 1.6.0.158
+>Earlier releases log no deploy to an unregistered machine.
+
+You can deploy an image to a machine that is not registered. Select
+**Deploy Image** or **Join Multicast Session** in the FOG boot menu, then
+sign in. The Imaging Report records each of these runs.
+
+-   **Host** shows the MAC address that the machine booted with, followed
+    by *(unregistered)*. A machine that is registered but still pending
+    shows its host name.
+-   **By** shows the FOG user who signed in at the boot menu.
+-   **State** shows *Started (unregistered)*, and **Finished** stays
+    empty.
+
+FOG creates no task for an unregistered machine. So the machine never
+reports back to the server, and FOG cannot know when the run finished or
+whether it failed. The row records that the deploy started, who started
+it, and which image it used. *Machines imaged* counts each MAC address as
+one machine.
+
+To get the full history of a run, register the machine before you deploy
+to it. A registered machine has a task, and its run shows each state
+through to *Complete* or *Failed*.
+
 ## Exporting
 
 Every report table carries the same toolbar.
