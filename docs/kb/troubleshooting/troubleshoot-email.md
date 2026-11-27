@@ -21,7 +21,7 @@ The settings are described in [[1.6/management/web/config#Email Settings]].
 On FOG 1.6, use **Send a test email to** under **FOG Configuration → FOG
 Settings → FOG Email Settings**. It sends through the same path as the image
 task email, so the result applies to both. The button is in dev-branch builds
-from 27 November 2026, and on stable from the next monthly update. On an older
+from 27 November 2026, and on stable from the next stable release. On an older
 build, test from a shell on the FOG server, as the web server account
 (`apache`, `www-data`, or `nginx`):
 
