@@ -95,6 +95,15 @@ to the audit log.
 | **The mail command ... is not installed or is not executable** | `sendmail_path` names a command that is not there. See [[#Mail command]]. |
 | **The mail command refused the email.** | The command ran and failed. The text after it is PHP's reason. |
 
+>[!warning] The test From can differ from the real From
+>Both emails leave from the main FOG server, because every client reports
+>its task to that server. But `${server-name}` in `FOG_FROM_EMAIL` fills in
+>differently. A real image task email uses the name of the storage node that
+>served the task, for example `noreply@node1.com`. The test has no task, so
+>it uses `fogserver`, for example `noreply@fogserver.com`. A relay can accept
+>one and refuse the other. To make the two the same, set `FOG_FROM_EMAIL` to
+>a fixed address on your own domain, such as `fog@example.com`.
+
 For more help, see [[kb/troubleshooting/troubleshoot-email|Troubleshooting email]].
 
 ## Other Settings

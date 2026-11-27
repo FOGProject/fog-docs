@@ -61,6 +61,16 @@ deliver it. Common reasons:
 **Fix:** read the mail server log for the refusal, for example
 `journalctl -u postfix`.
 
+## The test email arrives, but image task emails do not
+
+**Cause:** `FOG_FROM_EMAIL` holds `${server-name}`. The test fills it with
+`fogserver`. A real image task email fills it with the storage node's name. So
+the two emails carry different From addresses, and the relay refuses one of
+them. Both leave from the main FOG server.
+
+**Fix:** set `FOG_FROM_EMAIL` to a fixed address on your own domain, such as
+`fog@example.com`. Then send the test again.
+
 ## Changing FOG_EMAIL_BINARY has no effect
 
 **Cause:** the setting was never used. PHP always sends through
