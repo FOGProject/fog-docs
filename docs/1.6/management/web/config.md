@@ -92,6 +92,7 @@ to the audit log.
 | Result | Meaning |
 | --- | --- |
 | **Test Email Sent** | The local mail server accepted the message. This does not mean it was delivered. Check the inbox. If the message does not arrive, read the mail server log, for example `journalctl -u postfix`. |
+| **Test Email Queued, Not Sent** | The mail command is postfix, exim or sendmail, and it accepted the message, but nothing listens on port 25 on this server. The mail server is probably stopped, so the message waits in the queue. Start it, for example `systemctl enable --now postfix`. The same warning shows under **Mail command**. |
 | **The mail command ... is not installed or is not executable** | `sendmail_path` names a command that is not there. See [[#Mail command]]. |
 | **The mail command refused the email.** | The command ran and failed. The text after it is PHP's reason. |
 

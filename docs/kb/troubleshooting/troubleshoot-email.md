@@ -21,7 +21,7 @@ The settings are described in [[1.6/management/web/config#Email Settings]].
 On FOG 1.6, use **Send a test email to** under **FOG Configuration → FOG
 Settings → FOG Email Settings**. It sends through the same path as the image
 task email, so the result applies to both. The button is in dev-branch builds
-from 27 November 2026, and on stable from the next monthly update. On an older
+from 27 November 2026, and on stable from the next stable release. On an older
 build, test from a shell on the FOG server, as the web server account
 (`apache`, `www-data`, or `nginx`):
 
@@ -44,6 +44,38 @@ message is PHP's reason.
 
 **Fix:** run the shell test above to see the command's own error. Read the
 mail server log, for example `journalctl -u postfix`.
+
+## "The mail command is postfix, but nothing is listening on port 25 on this server"
+
+The message names `postfix`, `exim`, `exim4` or `sendmail`, whichever one
+your mail command uses.
+
+The test result is **Test Email Queued, Not Sent**, or the warning shows under
+**Mail command**.
+
+**Cause:** the mail server is installed but not running. The `sendmail`
+command of postfix, exim or sendmail only hands the message to the mail
+server. It succeeds while that server is stopped, so the message waits in the
+queue and never leaves. `journalctl -u postfix` shows nothing, because the
+service never ran. On older builds the test shows **Test Email Sent** in this
+case.
+
+**Fix:** start the mail server, and make it start at boot:
+
+```bash
+systemctl enable --now postfix
+```
+
+Then send the test again. Postfix delivers the waiting messages when it
+starts. Check with `systemctl is-active postfix`, which prints `active`.
+
+FOG checks only postfix, exim and sendmail. A mail command such as msmtp,
+ssmtp, esmtp, dma or nullmailer gets no warning, because it needs no local
+server on port 25.
+
+**False warning:** a mail server that listens only on a non-loopback address
+also shows the warning. In that case, run `systemctl is-active postfix` to
+confirm it runs.
 
 ## "Test Email Sent", but nothing arrives
 
