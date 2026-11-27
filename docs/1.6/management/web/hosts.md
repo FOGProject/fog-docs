@@ -40,6 +40,10 @@ Hosts](http://freeghost.sourceforge.net/videotutorials/hostinfo.html)
         be asked to Image Now.
     -   If desired, you can set the task and it will deploy the
         image on the next network boot.
+    -   **FOG 1.6.1 and later:** the deploy starts in the same FOS boot,
+        with no reboot. This needs the 1.6.1 FOS release, and the host and
+        image must use the running kernel, init, and kernel arguments.
+        If FOS wrote a Secure Boot key, the host reboots as before.
 
 -   After the requested information is entered, FOG will pull a quick
     hardware inventory the client.

@@ -126,6 +126,12 @@ besided restering this machine in Fog, also, a deployment task will be
 created. Upon next network boot of this machine, the image will be
 deployed to this machine.
 
+>[!info] FOG 1.6.1 and later
+>The deploy starts in the same FOS boot, with no reboot. This needs the
+>1.6.1 FOS release. The host and the image must use the running kernel,
+>init, and kernel arguments. If FOS wrote a Secure Boot key, the machine
+>reboots first.
+
 Say 'Y' here.
 
 ### FOG Username and password
