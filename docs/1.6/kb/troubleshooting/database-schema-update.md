@@ -167,8 +167,8 @@ is running, and confirm the filesystem has free space.
 ### The update fails on MySQL with error 1101
 
 >[!info] Fixed after FOG 1.6.0.158
->The fix is in FOG 1.6 dev-branch builds after 2026-11-20. It ships in the
->next FOG 1.6 patch release after 1.6.0.158.
+>The fix is in FOG 1.6 dev-branch builds after 2026-11-20. It ships in FOG
+>1.6.1.
 
 The schema update stops on a MySQL server with an error such as:
 

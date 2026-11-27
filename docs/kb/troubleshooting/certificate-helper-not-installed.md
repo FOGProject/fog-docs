@@ -17,7 +17,7 @@ tags:
 # FOG Installed Under a Restrictive umask
 
 >[!info] FOG 1.6 and later
->The fix is in FOG 1.6 dev-branch builds from 2026-11-26 ([#2169](https://github.com/FOGProject/fogproject/pull/2169) and [#2170](https://github.com/FOGProject/fogproject/pull/2170)). It will ship in the next FOG 1.6 patch release after 1.6.0.
+>The fix is in FOG 1.6 dev-branch builds from 2026-11-26 ([#2169](https://github.com/FOGProject/fogproject/pull/2169) and [#2170](https://github.com/FOGProject/fogproject/pull/2170)). It ships in FOG 1.6.1.
 
 ## Symptom
 

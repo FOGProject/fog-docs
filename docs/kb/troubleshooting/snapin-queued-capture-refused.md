@@ -15,7 +15,7 @@ tags:
 # Capture Refused — Host Has Queued Snapins
 
 >[!info] FOG 1.6 and later
->This refusal exists in FOG 1.6 dev-branch builds after 2026-11-23. It will ship in the next FOG 1.6 patch release after 1.6.0.
+>This refusal exists in FOG 1.6 dev-branch builds after 2026-11-23. It ships in FOG 1.6.1.
 
 ## Symptom
 

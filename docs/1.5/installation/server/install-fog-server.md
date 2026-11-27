@@ -123,7 +123,7 @@ command:
 
 It exists mainly for one job: **moving a 1.5 server onto 1.6.**
 
-    ./updatefog.sh --channel stable  # FOG 1.6.0, then its monthly releases
+    ./updatefog.sh --channel stable  # FOG 1.6.1, then its monthly releases
 
 > [!important]
 > Always pass `--channel stable`. With no `--channel`, the 1.5 `updatefog.sh`

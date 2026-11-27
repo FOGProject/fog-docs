@@ -16,7 +16,7 @@ tags:
 # Service Fails with "Could not open input file"
 
 >[!info] FOG 1.6 and later
->The fix is in FOG 1.6 dev-branch builds after 2026-11-26. It will ship in the next FOG 1.6 patch release after 1.6.0.
+>The fix is in FOG 1.6 dev-branch builds after 2026-11-26. It ships in FOG 1.6.1.
 
 ## Symptom
 
