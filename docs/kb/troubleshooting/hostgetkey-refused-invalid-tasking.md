@@ -43,7 +43,10 @@ FOG 1.6.1 fixes this.
 If the host-key request works, the reboot after Full Registration can still happen. These two reasons are by design:
 
 - **FOG_HOSTKEY_ALLOWED_SOURCES is set, and the imaging network is not in it.** `hostgetkey.php` refuses a caller outside the listed networks. FOS then falls back to a reboot.
-- **A plugin hooks the boot settings.** The Location plugin is one example. The server answers "reboot first", because the plugin can change the kernel or the storage node. FOS must boot again to use the new values.
+- **A plugin changes the kernel, the init, or the kernel arguments for this host.** FOS must boot again to use them. The server checks what the plugin changes for this host. It answers "reboot first" only when a file name, `loglevel`, the ramdisk size, or the keymap changes.
+
+>[!info] The Location plugin no longer forces a reboot
+>On FOG 1.6.1, any active plugin that hooks the boot settings makes every host reboot first. The Location plugin is the usual one. FOG 1.6 dev-branch builds after 2026-11-28 fix this, and the fix ships in the next FOG 1.6 release. A Location storage node is chosen while FOS runs, so it needs no reboot. The Location TFTP option serves the same kernel and init from another server, so it needs no reboot either.
 
 ## What to do
 
@@ -62,7 +65,9 @@ On FOG 1.6.1 or later, if the host still reboots first:
 2.  If the setting has a value, add the imaging network to it. Use a comma-separated list of CIDR ranges or single addresses, for example `10.0.0.0/8,192.168.5.20`.
 3.  Save, and register a host again with **deploy image now** to check.
 
-If a plugin that hooks the boot settings is active, the reboot is expected. No setting turns it off.
+On FOG 1.6.1 with the Location plugin active, the reboot is expected. To deploy in the same boot, update to a dev-branch build after 2026-11-28, or to the next FOG 1.6 release.
+
+If a plugin changes the kernel, the init, or the kernel arguments for the host, the reboot is expected. No setting turns it off.
 
 ## See also
 
